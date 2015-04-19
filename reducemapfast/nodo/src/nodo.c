@@ -25,7 +25,7 @@ int main(int argv, char** argc) {
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
-
+	printf("Ok\n");
 	return 0;
 }
 
