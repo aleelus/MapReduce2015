@@ -34,6 +34,9 @@ char * g_Ip_Fs;
 //Archivo con los bloques
 char* g_Archivo_Bin;
 
+//Tamanio archivo de bloques
+int g_Tamanio_Bin;
+
 //Directorio Temporal
 char* g_Dir_Temp;
 

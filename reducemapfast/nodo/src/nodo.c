@@ -54,6 +54,12 @@ void LevantarConfig() {
 		} else
 			Error("No se pudo leer el parametro ARCHIVO_BIN");
 
+		// Obtenemos el tamanio del archivo con los bloques
+				if (config_has_property(config, "ARCHIVO_BIN")) {
+					g_Tamanio_Bin = config_get_string_value(config, "TAMANIO_BIN");
+				} else
+					Error("No se pudo leer el parametro TAMANIO_BIN");
+
 		// Obtenemos el nombre del directorio temporal
 		if (config_has_property(config, "DIR_TEMP")) {
 			g_Dir_Temp = config_get_string_value(config, "DIR_TEMP");
