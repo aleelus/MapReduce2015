@@ -21,14 +21,52 @@ int main(int argv, char** argc) {
 	//g_MensajeError = malloc(1 * sizeof(char));
 	//char* temp_file = tmpnam(NULL);
 
-	//logger = log_create(NOMBRE_ARCHIVO_LOG, "msp", true, LOG_LEVEL_TRACE);
+	logger = log_create(NOMBRE_ARCHIVO_LOG, "nodo", true, LOG_LEVEL_TRACE);
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
+	crearArchivoBin();
+
 	printf("Ok\n");
+	fclose(archivoEspacioDatos);
 	return 0;
 }
 
+void crearArchivoBin() {
+	archivoEspacioDatos= fopen("data.bin", "wb");
+	int i;
+	grabarBloque();
+
+}
+void grabarBloque(){
+	//char * memoria = g_BaseMemoria;
+		int tamanio = TAMANIO_BLOQUE*1024*1024;
+		//char* txtSwap =  malloc(tamanio);
+		//memset(aux,'0', tamanio* sizeof(char));
+		char*txtBloq = malloc(TAMANIO_BLOQUE*1024*1024);
+		memset(txtBloq, '0', tamanio * sizeof(char));
+		//memoria = memoria + ((nroMarco * TAMANIO_PAGINA));
+		//while(tamanio--){
+		//memcpy(txtSwap, memoria, tamanio);
+		/*
+		 char* aux =  malloc(tamanio);
+		 memset(aux,'0', tamanio* sizeof(char));
+		 memcpy(aux, texto, strlen(texto)+1);
+		 char * memoria = g_BaseMemoria;
+		 memoria = memoria + (nroMarco*TAMANIO_PAGINA) + posicion;
+		 while(tamanio--){
+		 *memoria++ = *(aux++); //VERIFICAR QUE ESTO FUNCIONE
+		 printf("%c",*(memoria-1));
+		 }
+		 //NO HACE FREE DE AUX
+		 return 1;
+		 */
+
+		//}
+
+		fwrite(txtBloq, sizeof(char), tamanio, archivoEspacioDatos);
+		free(txtBloq);
+}
 
 #if 1 // METODOS CONFIGURACION //
 void LevantarConfig() {

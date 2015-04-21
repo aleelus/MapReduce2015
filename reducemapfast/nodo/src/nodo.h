@@ -23,8 +23,10 @@
 //Ruta del config
 #define PATH_CONFIG "config.cfg"
 //#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
-//#define NOMBRE_ARCHIVO_LOG 		   "msp.log"
+#define NOMBRE_ARCHIVO_LOG 		   "nodo.log"
 
+//Tamanio bloques 20mb
+#define TAMANIO_BLOQUE 20
 //Puerto de escucha del filesystem
 int g_Puerto_Fs;
 
@@ -48,6 +50,9 @@ char* g_Ip_Nodo;
 
 //Puerto Escucha del Nodo
 int g_Puerto_Nodo;
+
+// Archivo para Espacio de Datos
+FILE * archivoEspacioDatos;
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
