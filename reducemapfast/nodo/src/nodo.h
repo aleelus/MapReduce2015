@@ -1,4 +1,5 @@
 // Bibliotecas //
+#include <sys/mman.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -53,6 +54,12 @@ int g_Puerto_Nodo;
 
 // Archivo para Espacio de Datos
 FILE * archivoEspacioDatos;
+
+//FUNCIONES //
+void GrabarBloque();
+void CrearArchivoBin();
+void mapeo();
+
 
 // METODOS CONFIGURACION //
 void LevantarConfig();

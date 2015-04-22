@@ -25,48 +25,69 @@ int main(int argv, char** argc) {
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
+	printf("el tamanio es %d \n",g_Tamanio_Bin);
+	printf("el archivo es %s \n",g_Archivo_Bin);
 	crearArchivoBin();
-
+	mapeo();
 	printf("Ok\n");
 	fclose(archivoEspacioDatos);
 	return 0;
 }
 
 void crearArchivoBin() {
-	archivoEspacioDatos= fopen("data.bin", "wb");
-	int i;
-	grabarBloque();
-
+	archivoEspacioDatos= fopen(g_Archivo_Bin, "wb");
+	if(archivoEspacioDatos == NULL)
+		Error("No se pudo abrir el archivo");
+	int i=g_Tamanio_Bin;
+	while(i>20){
+		grabarBloque();
+		i=i-20;
+	}
+	fclose(archivoEspacioDatos);
 }
 void grabarBloque(){
-	//char * memoria = g_BaseMemoria;
-		int tamanio = TAMANIO_BLOQUE*1024*1024;
-		//char* txtSwap =  malloc(tamanio);
-		//memset(aux,'0', tamanio* sizeof(char));
-		char*txtBloq = malloc(TAMANIO_BLOQUE*1024*1024);
+		int tamanio = TAMANIO_BLOQUE; //*1024*1024; //Tamanio del bloque 20mb
+		char*txtBloq = malloc(TAMANIO_BLOQUE);//*1024*1024);
 		memset(txtBloq, '0', tamanio * sizeof(char));
-		//memoria = memoria + ((nroMarco * TAMANIO_PAGINA));
-		//while(tamanio--){
-		//memcpy(txtSwap, memoria, tamanio);
-		/*
-		 char* aux =  malloc(tamanio);
-		 memset(aux,'0', tamanio* sizeof(char));
-		 memcpy(aux, texto, strlen(texto)+1);
-		 char * memoria = g_BaseMemoria;
-		 memoria = memoria + (nroMarco*TAMANIO_PAGINA) + posicion;
-		 while(tamanio--){
-		 *memoria++ = *(aux++); //VERIFICAR QUE ESTO FUNCIONE
-		 printf("%c",*(memoria-1));
-		 }
-		 //NO HACE FREE DE AUX
-		 return 1;
-		 */
-
-		//}
-
+		//Rellena de 0 el txtBloq que se va a grabar
 		fwrite(txtBloq, sizeof(char), tamanio, archivoEspacioDatos);
+		//Grabo en el archivo el bloque
 		free(txtBloq);
+		//Libero el puntero
 }
+
+int tamanio_archivo(int fd){
+	struct stat buf;
+	fstat(fd, &buf);
+	return buf.st_size;
+}
+
+void mapeo(){
+
+	char* mapeo;
+	//int tamanio;
+
+	//char* nombre_archivo = "arch.dat";
+
+	if(( archivoEspacioDatos = fopen (g_Archivo_Bin, "rb") ) == NULL){
+		//Si no se pudo abrir, imprimir el error y abortar;
+		fprintf(stderr, "Error al abrir el archivo '%s': %s\n", g_Archivo_Bin, strerror(errno));
+		abort();
+	}
+	int mapper= fileno(archivoEspacioDatos);
+	//tamanio = tamanio_archivo(mapper);
+	if( (mapeo = mmap( NULL, TAMANIO_BLOQUE, PROT_READ, MAP_SHARED, mapper, 0 )) == MAP_FAILED){
+		//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
+		fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
+		abort();
+	}
+	printf ("Tamaño leido: %d\nContenido:'%s'\n", TAMANIO_BLOQUE, mapeo);
+
+	//Seamos prolijos
+	munmap( mapeo, TAMANIO_BLOQUE );
+	//fclose(mapper);
+	//Libero lo mapeado y no cierro el archivo aca xq lo cierro en el main.
+	}
 
 #if 1 // METODOS CONFIGURACION //
 void LevantarConfig() {
@@ -94,7 +115,7 @@ void LevantarConfig() {
 
 		// Obtenemos el tamanio del archivo con los bloques
 				if (config_has_property(config, "ARCHIVO_BIN")) {
-					g_Tamanio_Bin = config_get_string_value(config, "TAMANIO_BIN");
+					g_Tamanio_Bin = config_get_int_value(config, "TAMANIO_BIN");
 				} else
 					Error("No se pudo leer el parametro TAMANIO_BIN");
 
