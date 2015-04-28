@@ -17,9 +17,11 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 		}
 
-	/* Abrir Archivos */
-	if ( (in = fopen(argv[1],"rb")) == NULL ) {
-		mostrarError(NoSePudoAbrirIn);
-		return EXIT_FAILURE;
-		}
+
+	// Abrir conexion con Marta
+
+	// Solicitar opcion de comando
+
+	// Ejecutar
+
 }
