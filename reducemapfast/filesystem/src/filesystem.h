@@ -20,16 +20,16 @@
 #include <semaphore.h>
 
 // CONSTANTES //
-//Ruta del config
-#define PATH_CONFIG "config.cfg"
-//#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
-//#define NOMBRE_ARCHIVO_LOG 		   "msp.log"
 
-//Puerto de escucha
-int g_Puerto_Listen;
+#define PATH_CONFIG 			"config.cfg"	//Ruta del config
+#define NOMBRE_ARCHIVO_CONSOLA  "Archivo_msp.txt"
+#define NOMBRE_ARCHIVO_LOG 		"msp.log"
 
-//Lista de Nodos necesarios para empezar
-char * g_Lista_Nodos;
+
+
+int g_Puerto_Listen;	//Puerto de escucha
+char * g_Lista_Nodos;	//Lista de Nodos necesarios para empezar
+
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
@@ -38,4 +38,7 @@ void LevantarConfig();
 void Error(const char* mensaje, ...);
 
 // Logger del commons
-t_log* logger;
+//t_log* logger;
+
+
+
