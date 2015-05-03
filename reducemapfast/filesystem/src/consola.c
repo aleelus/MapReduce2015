@@ -1,16 +1,11 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
 #include "consola.h"
 
 int main(int argc, char *argv[]){
 
 	int sock_desc;
 	struct sockaddr_in sock_addr;
+	char *input;
+
 
 	/* Verifica sin argumentos */
 	if (argc == 1){
@@ -25,13 +20,23 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 		}
 
+	/* Reservo memoria para la seleccion */
+	if ((input = malloc(sizeof int)) == NULL)
+		return EXIT_FAILURE;
+
 
 	// Abrir conexion con Marta
 	crear_conexion(sock_desc);
 	conectar_socket(sock_desc, sock_addr);
 
 	// Solicitar opcion de comando
+	printf("Ejecute una opcion: ");
 
+	if (fgets(input, CANTMAX, stdin) == 0)
+		printf("Error al seleccionar comando\n");
+
+	if(strcmp(input, "\n") == 1)
+		ejecutarComando((int)&input);
 	// Ejecutar
 
 }

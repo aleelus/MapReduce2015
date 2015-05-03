@@ -58,7 +58,7 @@ void LevantarConfig() {
 
 #endif
 
-#if 1 // METODOS MANEJO DE ERRORES //
+/*#if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {
 	char* nuevo;
 	va_list arguments;
@@ -72,4 +72,4 @@ void Error(const char* mensaje, ...) {
 	if (nuevo != NULL )
 		free(nuevo);
 }
-#endif
+#endif*/
