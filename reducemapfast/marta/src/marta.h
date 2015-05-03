@@ -23,10 +23,13 @@
 //Ruta del config
 #define PATH_CONFIG "config.cfg"
 //#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
-//#define NOMBRE_ARCHIVO_LOG 		   "msp.log"
+#define NOMBRE_ARCHIVO_LOG 		   "marta.log"
+
+//Tamaño del buffer
+#define BUFFERSIZE 100
 
 //Puerto de escucha del filesystem
-int g_Puerto_Fs;
+int g_Puerto;
 
 //Ip del filesystem
 char * g_Ip_Fs;
@@ -54,3 +57,18 @@ void Error(const char* mensaje, ...);
 
 // Logger del commons
 t_log* logger;
+
+// Definimos los hilos principales
+pthread_t hOrquestadorConexiones, hConsola;
+
+//METODOS MANEJO SOCKETS
+void HiloOrquestadorDeConexiones();
+
+// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
+int g_Ejecutando = 1;
+
+//Longitud del Buffer
+int longitudBuffer;
+
+//Mensajes aceptados
+#define MSJ_SALUDO          1

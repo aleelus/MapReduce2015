@@ -21,10 +21,23 @@ int main(int argv, char** argc) {
 	//g_MensajeError = malloc(1 * sizeof(char));
 	//char* temp_file = tmpnam(NULL);
 
-	//logger = log_create(NOMBRE_ARCHIVO_LOG, "msp", true, LOG_LEVEL_TRACE);
+	logger = log_create(NOMBRE_ARCHIVO_LOG, "marta", true, LOG_LEVEL_TRACE);
 
 	// Levantamos el archivo de configuracion.
-	//LevantarConfig();
+	LevantarConfig();
+
+
+	//Hilo orquestador conexiones
+	int iThreadOrquestador = pthread_create(&hOrquestadorConexiones, NULL,
+			(void*) HiloOrquestadorDeConexiones, NULL );
+	if (iThreadOrquestador) {
+		fprintf(stderr,
+			"Error al crear hilo - pthread_create() return code: %d\n",
+			iThreadOrquestador);
+		exit(EXIT_FAILURE);
+	}
+
+	pthread_join(hOrquestadorConexiones, NULL );
 
 	return 0;
 }
@@ -36,48 +49,11 @@ void LevantarConfig() {
 	// Nos fijamos si el archivo de conf. pudo ser leido y si tiene los parametros
 	if (config->properties->table_current_size != 0) {
 
-		// Preguntamos y obtenemos el puerto donde esta escuchando el filesystem
-		if (config_has_property(config, "PUERTO_FS")) {
-			g_Puerto_Fs = config_get_int_value(config, "PUERTO_FS");
+		// Puerto de escucha
+		if (config_has_property(config, "PUERTO")) {
+			g_Puerto = config_get_int_value(config, "PUERTO");
 		} else
-			Error("No se pudo leer el parametro PUERTO_FS");
-
-		// Preguntamos y obtenemos la ip donde esta ejecutandose el filesystem
-		if (config_has_property(config, "IP_FS")) {
-			g_Ip_Fs = config_get_string_value(config,"IP_FS");
-		} else
-			Error("No se pudo leer el parametro IP_FS");
-
-		// Obtenemos el nombre del archivo con los bloques
-		if (config_has_property(config, "ARCHIVO_BIN")) {
-			g_Archivo_Bin = config_get_string_value(config, "ARCHIVO_BIN");
-		} else
-			Error("No se pudo leer el parametro ARCHIVO_BIN");
-
-		// Obtenemos el nombre del directorio temporal
-		if (config_has_property(config, "DIR_TEMP")) {
-			g_Dir_Temp = config_get_string_value(config, "DIR_TEMP");
-		} else
-			Error("No se pudo leer el parametro DIR_TEMP");
-
-		// Obtenemos si es nodo nuevo
-		if (config_has_property(config, "NODO_NUEVO")) {
-			g_Nodo_Nuevo = config_get_string_value(config, "NODO_NUEVO");
-		} else
-			Error("No se pudo leer el parametro NODO_NUEVO");
-
-		// Obtenemos la ip del nodo
-		if (config_has_property(config, "IP_NODO")) {
-			g_Ip_Nodo = config_get_string_value(config, "IP_NODO");
-		} else
-			Error("No se pudo leer el parametro IP_NODO");
-
-		// Obtenemos el puerto de escucha del nodo
-		if (config_has_property(config, "PUERTO_NODO")) {
-			g_Puerto_Nodo = config_get_int_value(config, "PUERTO_NODO");
-		} else
-			Error("No se pudo leer el parametro PUERTO_NODO");
-
+			Error("No se pudo leer el parametro PUERTO");
 	} else {
 		//ErrorFatal("No se pudo abrir el archivo de configuracion");
 	}
@@ -87,6 +63,7 @@ void LevantarConfig() {
 }
 
 #endif
+
 
 #if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {
@@ -103,3 +80,193 @@ void Error(const char* mensaje, ...) {
 		free(nuevo);
 }
 #endif
+
+char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos) {
+	*bytesRecibidos = 0;
+	if (buffer != NULL ) {
+		free(buffer);
+	}
+
+	char* bufferAux = malloc(BUFFERSIZE * sizeof(char));
+	memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+	if ((*bytesRecibidos = *bytesRecibidos
+			+ recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
+		Error(
+				"Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",
+				socket);
+	}
+
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%i", socket,
+			(char*) bufferAux, strlen(bufferAux));
+	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
+}
+
+int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
+// Retardo antes de contestar una solicitud
+	//sleep(g_Retardo / 1000);
+
+	int bytecount;
+
+	//printf("CantidadBytesAEnviar:%i\n",cantidadDeBytesAEnviar);
+
+	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
+		Error("No puedo enviar información a al clientes. Socket: %d", socket);
+
+	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
+	char * bufferLogueo = malloc(cantidadDeBytesAEnviar+1);
+	bufferLogueo[cantidadDeBytesAEnviar] = '\0';
+	memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
+	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
+			(char*) bufferLogueo);
+
+	return bytecount;
+}
+
+void CerrarSocket(int socket) {
+	close(socket);
+	//Traza("SOCKET SE CIERRA: (%d).", socket);
+	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
+}
+
+void ErrorFatal(const char* mensaje, ...) {
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, mensaje);
+	nuevo = string_from_vformat(mensaje, arguments);
+	printf("\nERROR FATAL--> %s \n", nuevo);
+	log_error(logger, "\nERROR FATAL--> %s \n", nuevo);
+	char fin;
+
+	printf(
+			"El programa se cerrara. Presione ENTER para finalizar la ejecución.");
+	fin = scanf("%c", &fin);
+
+	va_end(arguments);
+	if (nuevo != NULL )
+		free(nuevo);
+	exit(EXIT_FAILURE);
+}
+
+
+int AtiendeCliente(void * arg) {
+	int socket = (int) arg;
+
+//Es el ID del programa con el que está trabajando actualmente el HILO.
+//Nos es de gran utilidad para controlar los permisos de acceso (lectura/escritura) del programa.
+//(en otras palabras que no se pase de vivo y quiera acceder a una posicion de memoria que no le corresponde.)
+//	int id_Programa = 0;
+//	int tipo_Cliente = 0;
+	int longitudBuffer;
+	//printf("ENTRE");
+
+// Es el encabezado del mensaje. Nos dice que acción se le está solicitando a la msp
+	int tipo_mensaje = 0;
+
+// Dentro del buffer se guarda el mensaje recibido por el cliente.
+	char* buffer;
+	buffer = malloc(BUFFERSIZE * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+
+// Cantidad de bytes recibidos.
+	int bytesRecibidos;
+
+// La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
+	int desconexionCliente = 0;
+
+// Código de salida por defecto
+	int code = 0;
+
+	while ((!desconexionCliente) & g_Ejecutando) {
+		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+		if (buffer != NULL )
+			free(buffer);
+		buffer = string_new();
+		char * mensaje = "Hola";
+		//Recibimos los datos del cliente
+		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
+
+		if (bytesRecibidos > 0) {
+			//Analisamos que peticion nos está haciendo (obtenemos el comando)
+			tipo_mensaje = 1; //ObtenerComandoMSJ(buffer);
+
+			//Evaluamos los comandos
+			switch (tipo_mensaje) {
+			case MSJ_SALUDO:
+				string_append(&buffer, mensaje);
+				break;
+			default:
+				string_append(&buffer, mensaje);
+				longitudBuffer=strlen(buffer);
+				break;
+			}
+			printf("\nRespuesta: %s\n",buffer);
+			// Enviamos datos al cliente.
+			EnviarDatos(socket, buffer,longitudBuffer);
+		} else
+			desconexionCliente = 1;
+
+	}
+
+	CerrarSocket(socket);
+
+	return code;
+}
+
+
+void HiloOrquestadorDeConexiones() {
+
+	int socket_host;
+	struct sockaddr_in client_addr;
+	struct sockaddr_in my_addr;
+	int yes = 1;
+	socklen_t size_addr = 0;
+
+	socket_host = socket(AF_INET, SOCK_STREAM, 0);
+	if (socket_host == -1)
+		ErrorFatal(
+				"No se pudo inicializar el socket que escucha a los clientes");
+
+	if (setsockopt(socket_host, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
+			== -1) {
+		ErrorFatal("Error al hacer el 'setsockopt'");
+	}
+
+	my_addr.sin_family = AF_INET;
+	my_addr.sin_port = htons(g_Puerto);
+	my_addr.sin_addr.s_addr = htons(INADDR_ANY );
+	memset(&(my_addr.sin_zero), '\0', 8 * sizeof(char));
+
+	if (bind(socket_host, (struct sockaddr*) &my_addr, sizeof(my_addr)) == -1)
+		ErrorFatal("Error al hacer el Bind. El puerto está en uso");
+
+	if (listen(socket_host, 10) == -1) // el "10" es el tamaño de la cola de conexiones.
+		ErrorFatal(
+				"Error al hacer el Listen. No se pudo escuchar en el puerto especificado");
+
+	//Traza("El socket está listo para recibir conexiones. Numero de socket: %d, puerto: %d", socket_host, g_Puerto);
+	log_trace(logger,
+			"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
+			socket_host, g_Puerto);
+
+	while (g_Ejecutando) {
+		int socket_client;
+
+		size_addr = sizeof(struct sockaddr_in);
+
+		if ((socket_client = accept(socket_host,
+				(struct sockaddr *) &client_addr, &size_addr)) != -1) {
+			//Traza("Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d", inet_ntoa(client_addr.sin_addr), client_addr.sin_port, socket_client);
+			log_trace(logger,
+					"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
+					inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
+					socket_client);
+			// Aca hay que crear un nuevo hilo, que será el encargado de atender al cliente
+			pthread_t hNuevoCliente;
+			pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
+					(void *) socket_client);
+		} else {
+			Error("ERROR AL ACEPTAR LA CONEXIÓN DE UN CLIENTE");
+		}
+	}
+	CerrarSocket(socket_host);
+}
