@@ -35,10 +35,10 @@ enum Error {
 #define CANTMAX					1			//Cantidad maxima para seleccionar un comando
 
 
-int crear_socket(int *);							//Crear un socket
-int conectar_socket(int, struct sockaddr_in);	//Conectar un socket
+int crear_socket(int);							//Crear un socket
+int conectar_socket(int, struct sockaddr_in);		//Conectar un socket
 void mostrarAyuda();								//Mostrar ayuda
-void mostrarError(Error);							//Mostrar error
+void mostrarError(Error unError);					//Mostrar error
 void ejecutarComando(int);							//Ejecutar un comando
 void formatearMDFS();								//Formatear el MDFS
 void procesarArchivo();								//Procesar archivo

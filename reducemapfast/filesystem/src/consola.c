@@ -1,5 +1,6 @@
 #include "consola.h"
 
+
 int main(int argc, char *argv[]){
 
 	int sock_desc;
@@ -36,7 +37,7 @@ int main(int argc, char *argv[]){
 		printf("Error al seleccionar comando\n");
 
 	if(strcmp(input, "\n") == 1)
-		ejecutarComando((int)&input);
+		ejecutarComando(input);
 	// Ejecutar
 
 }
