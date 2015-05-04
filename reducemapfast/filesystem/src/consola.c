@@ -31,6 +31,7 @@ int main(int argc, char *argv[]){
 //	crear_conexion(sock_desc);
 //	conectar_socket(sock_desc, sock_addr);
 
+	while(eleccion != 10){
 	// Solicitar opcion de comando
 	printf("Ejecute una opcion: \n");
 
@@ -38,13 +39,13 @@ int main(int argc, char *argv[]){
 //		printf("Error al seleccionar comando\n");
 	scanf("%d", &eleccion);
 	ejecutarComando(eleccion);
-
+	}
 //	if(strcmp(input, "\n") == 1){
 //		eleccion = atoi(input);
 //		ejecutarComando(eleccion);
 	// Ejecutar
 
-	}
+//	}
 
 
 }

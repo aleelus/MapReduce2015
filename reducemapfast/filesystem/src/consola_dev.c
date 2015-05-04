@@ -41,6 +41,7 @@ void mostrarAyuda(){
 	printf("7 - Ver/Borrar/Copiar los bloques que componen un archivo\n");
 	printf("8 - Agregar un nodo de datos\n");
 	printf("9 - Eliminar un nodo de datos\n");
+	printf("10 - Salir\n");
 	printf("------------------------------------------------------------\n");
 	printf("Ejecute una opcion: \n");
 }
