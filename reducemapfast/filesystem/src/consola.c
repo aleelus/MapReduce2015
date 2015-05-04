@@ -4,7 +4,7 @@ int main(int argc, char *argv[]){
 
 	int sock_desc;
 	struct sockaddr_in sock_addr;
-	char *input;
+	char* input;
 
 
 	/* Verifica sin argumentos */
@@ -20,8 +20,8 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 		}
 
-	/* Reservo memoria para la seleccion */
-	if ((input = malloc(sizeof int)) == NULL)
+//	/* Reservo memoria para la seleccion */
+	if ((input = malloc(CANTMAX)) == NULL)
 		return EXIT_FAILURE;
 
 
