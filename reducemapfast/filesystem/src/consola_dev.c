@@ -42,7 +42,7 @@ void mostrarAyuda(){
 	printf("8 - Agregar un nodo de datos\n");
 	printf("9 - Eliminar un nodo de datos\n");
 	printf("------------------------------------------------------------\n");
-	printf("Seleccione un comando: \n");
+	printf("Ejecute una opcion: \n");
 }
 
 //Mostrar Error

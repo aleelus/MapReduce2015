@@ -34,12 +34,14 @@ int main(int argc, char *argv[]){
 	// Solicitar opcion de comando
 	printf("Ejecute una opcion: \n");
 
-	if (fgets(input, CANTMAX, stdin) == 0)
-		printf("Error al seleccionar comando\n");
+//	if (fgets(input, CANTMAX, stdin) == 0)
+//		printf("Error al seleccionar comando\n");
+	scanf("%d", &eleccion);
+	ejecutarComando(eleccion);
 
-	if(strcmp(input, "\n") == 1){
-		eleccion = atoi(input);
-		ejecutarComando(eleccion);
+//	if(strcmp(input, "\n") == 1){
+//		eleccion = atoi(input);
+//		ejecutarComando(eleccion);
 	// Ejecutar
 
 	}
