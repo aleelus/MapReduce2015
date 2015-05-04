@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
 
 
 	/* Verifica cantidad de argumentos */
-	if (argc != 5){
+	if (argc != 2){
 		mostrarError(CantidadArgumentosIncorrecta);
 		return EXIT_FAILURE;
 		}
@@ -32,14 +32,14 @@ int main(int argc, char *argv[]){
 //	conectar_socket(sock_desc, sock_addr);
 
 	// Solicitar opcion de comando
-	printf("Ejecute una opcion: ");
+	printf("Ejecute una opcion: \n");
 
 	if (fgets(input, CANTMAX, stdin) == 0)
 		printf("Error al seleccionar comando\n");
 
 	if(strcmp(input, "\n") == 1){
 		eleccion = atoi(input);
-		ejecutarComando((int)input);
+		ejecutarComando(eleccion);
 	// Ejecutar
 
 	}
