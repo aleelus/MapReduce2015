@@ -16,8 +16,17 @@
 
 int main(int argv, char** argc) {
 
+int puerto_listen;								//Puerto de escucha
+char lista_nodos;								//Lista de Nodos necesarios para empezar
+char linea[MAXLINEA];							//Linea de configuracion
+char ch;										//caracter
+unsigned int i;									//numero de linea
+unsigned int puerto;							//puerto obtenido
+struct configuracion configuracion[1] = {{0}};	//Datos de configuracion
+FILE *config;									//Archivo de configuracion
+
 	/* Abrir Archivo de Configuracion */
-	if ( (config = fopen(argv[1],"rb")) == NULL ) {
+	if ( (config = fopen(PATH_CONFIG,"rb")) == NULL ) {
 		mostrarError(NoSePudoAbrirConfig);
 		return EXIT_FAILURE;
 		}
@@ -27,27 +36,28 @@ int main(int argv, char** argc) {
 		if(sscanf(linea, "%*[^\n#]%c", &ch) == 1)
 			;	//Se ignoran las lineas en blanco y comentarios
 
-		if(sscanf(linea, " PUERTO_LISTEN %u = %[^\n]", &i, &puerto_listen) != 1){
+		if(sscanf(linea, " PUERTO_LISTEN %u = %u", &i, &puerto_listen) != 1){
 			mostrarError(NoSePuedeObtenerPuerto);
 			return EXIT_FAILURE;
 		} else {
 			// Se obtiene el puerto
-			configuracion.puerto_listen = malloc(strlen(puerto_listen) +1);
-			strcpy(configuracion.puerto_listen, puerto_listen);
+			configuracion[1].puerto_listen = puerto_listen;
+			//strcpy(configuracion.puerto_listen, puerto_listen);			
 		}
-		if(sscanf(linea, " LISTA_NODOS %u = %[^\n]", &lista_nodos) != 1){
+		
+		if(sscanf(linea, " LISTA_NODOS %u = %[^\n]", &i, &lista_nodos) != 1){
 			mostrarError(NoSePuedeObtenerNodos);
 			return EXIT_FAILURE;
 		} else {
 			// Se obtienen los nodos
-			configuracion.lista_nodos = malloc(strlen(lista_nodos) +1);
-			strcpy(configuracion.lista_nodos);
+			//configuracion[1].lista_nodos = malloc(strlen(lista_nodos) +1);
+			//strcpy(configuracion[1].lista_nodos, lista_nodos);
 		}
 
 		}
 
-	printf("Puerto: \n", configuracion.puerto_listen);
-	printf("Nodos: \n", configuracion.lista_nodos);
+	printf("Puerto: %u\n", configuracion[1].puerto_listen);
+	printf("Nodos: %s\n", configuracion[1].lista_nodos);
 
 	}
 
@@ -70,12 +80,12 @@ int main(int argv, char** argc) {
 	//return 0;
 
 
-#if 1 // METODOS CONFIGURACION //
-void LevantarConfig() {
+//#if 1 // METODOS CONFIGURACION //
+//void LevantarConfig() {
 
 
 
-	t_config* config = config_create(PATH_CONFIG);
+//	t_config* config = config_create(PATH_CONFIG);
 	// Nos fijamos si el archivo de conf. pudo ser leido y si tiene los parametros
 //	if (config->properties->table_current_size != 0) {
 //
@@ -97,9 +107,9 @@ void LevantarConfig() {
 //	if (config != NULL ) {
 //		free(config);
 //	}
-}
+//}
 
-#endif
+//#endif
 
 /*#if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {

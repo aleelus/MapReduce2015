@@ -31,20 +31,13 @@
 
 // TIPOS //
 struct configuracion {
-	int puerto_listen;
+	unsigned puerto_listen;
 	char *lista_nodos;
 };
 
 
 // VARIABLES GLOBALES //
-int puerto_listen;								//Puerto de escucha
-char lista_nodos;								//Lista de Nodos necesarios para empezar
-FILE *config;									//Archivo de configuracion
-char linea[MAXLINEA];							//Linea de configuracion
-char ch;										//caracter
-unsigned int i;									//numero de linea
-unsigned int puerto;							//puerto obtenido
-struct configuracion configuracion[1] = {{0}};	//Datos de configuracion
+
 
 
 // METODOS CONFIGURACION //
