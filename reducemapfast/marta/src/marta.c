@@ -12,14 +12,27 @@
 #include "marta.h"
 
 int main(int argv, char** argc) {
+	//HARDCODEANDO
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	t_list *lista_nodos;
 	lista_nodos = list_create();
-	t_nodo *aux;
-	aux = nodo_create("NodoA","192.168.0.1",12);
-	list_add(lista_nodos,aux );
+
+	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000));
+	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",3500));
+	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200));
+	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600));
+	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050));
+
 	t_nodo *el_nodo;
-	el_nodo = list_get(lista_nodos, 0);
-	printf("EL nodo: %s \n%s \n%d\n",el_nodo->nombreNodo,el_nodo->ipNodo,el_nodo->puertoNodo);
+	int i=0;
+	while(i<list_size(lista_nodos)){
+		el_nodo = list_get(lista_nodos, i);
+		printf("Nodo: %s \t IP: %s \t Puerto: %d\n",el_nodo->nombreNodo,el_nodo->ipNodo,el_nodo->puertoNodo);
+		i++;
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//inicializamos los semaforos
 	//sem_init(&semaforoAccesoMemoria, 0, 1);
 	//sem_init(&semaforoMarcosLibres, 0, 0);

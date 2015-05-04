@@ -79,21 +79,43 @@ int longitudBuffer;
 typedef struct{
     char *nodo;
     char *bloque;
-}arrayCopias;
+}t_array_copias;
 
 //Estructura Lista de Bloques
 typedef struct{
     char *bloque;
-    arrayCopias array[3];
-    struct listaDeBloques *next;
-}listaDeBloques;
+    t_array_copias array[3];
+    struct t_bloque *next;
+}t_bloque;
+
+static t_bloque *bloque_create(char *bloque, t_array_copias array) {
+	t_bloque *new = malloc(sizeof(bloque));
+	new->bloque = strdup(bloque);
+	new->array[0].bloque="";
+	new->array[0].nodo="";
+	new->array[1].bloque="";
+	new->array[1].nodo="";
+	new->array[2].bloque="";
+	new->array[2].nodo="";
+	new->next=NULL;
+	return new;
+}
 
 //Estructura Lista de Archivos
 typedef struct{
     char *nombreArchivo;
-    listaDeBloques *listaBloques;
-    struct listaDeArchivos *next;
-}listaDeArchivos;
+    t_bloque *listaBloques;
+    struct t_archivo *next;
+}t_archivo;
+
+static t_archivo *archivo_create(char *nombreArchivo, t_bloque *listaBloques) {
+	t_archivo *new = malloc(sizeof(t_archivo));
+	new->nombreArchivo = strdup(nombreArchivo);
+	new->listaBloques= NULL;
+	new->next=NULL;
+	return new;
+}
+
 
 typedef struct {
 	//Estructura Lista de Nodos
