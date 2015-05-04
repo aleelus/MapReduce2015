@@ -20,9 +20,9 @@
 typedef enum {
 	CantidadArgumentosIncorrecta,
 	NoEsUnVolumen,
-	NoSePudoAbrirIn,
-	NoSePudoAbrirOut1,
-	NoSePudoAbrirOut2,
+	NoSePudoAbrirConfig,
+	NoSePuedeObtenerPuerto,
+	NoSePuedeObtenerNodos,
 	ErrorEnLectura,
 	ErrorEnEscritura,
 	OtroError,

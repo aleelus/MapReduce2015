@@ -53,6 +53,9 @@ void mostrarAyuda(){
 void mostrarError(error unError){
 	switch(unError){
 		case CantidadArgumentosIncorrecta: puts("CantidadArgumentosIncorrecta.");break;
+		case NoSePudoAbrirConfig:		   puts("No se pudo abrir configuracion");break;
+		case NoSePuedeObtenerPuerto:	   puts("No se pudo obtener puerto");break;
+		case NoSePuedeObtenerNodos:		   puts("No se pudo obtener nodos");break;
 		case OtroError:	 				   puts("OtroError.");break;
 	};
 }
