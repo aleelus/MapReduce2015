@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
 
 	while(eleccion != 10){
 	// Solicitar opcion de comando
-	printf("Ejecute una opcion: \n");
+	printf("Ejecute una opcion: ");
 
 //	if (fgets(input, CANTMAX, stdin) == 0)
 //		printf("Error al seleccionar comando\n");

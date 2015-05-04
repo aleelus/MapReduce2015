@@ -7,6 +7,7 @@
 
 #include "consola.h"
 
+int eleccion;
 
 int crear_socket(int socket_desc){
 	if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -43,7 +44,9 @@ void mostrarAyuda(){
 	printf("9 - Eliminar un nodo de datos\n");
 	printf("10 - Salir\n");
 	printf("------------------------------------------------------------\n");
-	printf("Ejecute una opcion: \n");
+	printf("Ejecute una opcion: ");
+	scanf("%d", &eleccion);
+	ejecutarComando(eleccion);
 }
 
 //Mostrar Error
@@ -73,51 +76,51 @@ void ejecutarComando(int unComando){
 
 //Formatear el MDFS
 void formatearMDFS(){
-	printf("Esta opcion debe formatear el MDFS");
+	printf("Esta opcion debe formatear el MDFS\n");
 };
 
 //Procesar archivo
 void procesarArchivo(){
-	printf("Esta opcion debe procesar un archivo");
+	printf("Esta opcion debe procesar un archivo\n");
 };
 
 //Procesar directorio
 void procesarDirectorio(){
-	printf("Esta opcion debe procesar un directorio");
+	printf("Esta opcion debe procesar un directorio\n");
 };
 
 //Copiar archivo local al MDFS
 void copiarLocalAlMFDS(){
-	printf("Esta opcion debe copiar un archivo local al MDFS");
+	printf("Esta opcion debe copiar un archivo local al MDFS\n");
 };
 
 //Copiar archivo del MDFS al Filesystem
 void copiarMDFSalFilesystem(){
-	printf("Esta opcion debe copiar un archivo del MDFS al Filesystem");
+	printf("Esta opcion debe copiar un archivo del MDFS al Filesystem\n");
 };
 
 //Solicitar MD5 de un archivo
 void solicitarMD5(){
-	printf("Esta opcion debe solicitar el MD5 de un archivo");
+	printf("Esta opcion debe solicitar el MD5 de un archivo\n");
 };
 
 //Procesar bloques
 void procesarBloques(){
-	printf("Esta opcion debe procesar bloques");
+	printf("Esta opcion debe procesar bloques\n");
 };
 
 //Agregar un nodo
 void agregarNodo(){
-	printf("Esta opcion debe agregar un nodo");
+	printf("Esta opcion debe agregar un nodo\n");
 };
 
 //Eliminar un nodo
 void eliminarNodo(){
-	printf("Esta opcion debe eliminar un nodo");
+	printf("Esta opcion debe eliminar un nodo\n");
 };
 
 //Comando desconocido
 void comandoDesconocido(){
-	printf("Esta opcion debe solicitar que ingrese un comando valido");
+	printf("Esta opcion debe solicitar que ingrese un comando valido\n");
 };
 
