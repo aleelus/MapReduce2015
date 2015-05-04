@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
 		printf("Error al seleccionar comando\n");
 
 	if(strcmp(input, "\n") == 1)
-		ejecutarComando(input);
+		ejecutarComando((int)input);
 	// Ejecutar
 
 }

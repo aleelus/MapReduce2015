@@ -17,7 +17,7 @@
 #include <unistd.h>
 
 
-enum Error {
+typedef enum {
 	CantidadArgumentosIncorrecta,
 	NoEsUnVolumen,
 	NoSePudoAbrirIn,
@@ -26,7 +26,7 @@ enum Error {
 	ErrorEnLectura,
 	ErrorEnEscritura,
 	OtroError,
-};
+} Error;
 
 
 #define IP 						"127.0.0.1"
