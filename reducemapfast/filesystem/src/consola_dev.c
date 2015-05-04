@@ -72,51 +72,51 @@ void ejecutarComando(int unComando){
 
 //Formatear el MDFS
 void formatearMDFS(){
-	println("Esta opcion debe formatear el MDFS");
+	printf("Esta opcion debe formatear el MDFS");
 };
 
 //Procesar archivo
 void procesarArchivo(){
-	println("Esta opcion debe procesar un archivo");
+	printf("Esta opcion debe procesar un archivo");
 };
 
 //Procesar directorio
 void procesarDirectorio(){
-	println("Esta opcion debe procesar un directorio");
+	printf("Esta opcion debe procesar un directorio");
 };
 
 //Copiar archivo local al MDFS
 void copiarLocalAlMFDS(){
-	println("Esta opcion debe copiar un archivo local al MDFS");
+	printf("Esta opcion debe copiar un archivo local al MDFS");
 };
 
 //Copiar archivo del MDFS al Filesystem
 void copiarMDFSalFilesystem(){
-	println("Esta opcion debe copiar un archivo del MDFS al Filesystem");
+	printf("Esta opcion debe copiar un archivo del MDFS al Filesystem");
 };
 
 //Solicitar MD5 de un archivo
 void solicitarMD5(){
-	println("Esta opcion debe solicitar el MD5 de un archivo");
+	printf("Esta opcion debe solicitar el MD5 de un archivo");
 };
 
 //Procesar bloques
 void procesarBloques(){
-	println("Esta opcion debe procesar bloques");
+	printf("Esta opcion debe procesar bloques");
 };
 
 //Agregar un nodo
 void agregarNodo(){
-	println("Esta opcion debe agregar un nodo");
+	printf("Esta opcion debe agregar un nodo");
 };
 
 //Eliminar un nodo
 void eliminarNodo(){
-	println("Esta opcion debe eliminar un nodo");
+	printf("Esta opcion debe eliminar un nodo");
 };
 
 //Comando desconocido
 void comandoDesconocido(){
-	println("Esta opcion debe solicitar que ingrese un comando valido");
+	printf("Esta opcion debe solicitar que ingrese un comando valido");
 };
 
