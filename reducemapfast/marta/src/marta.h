@@ -72,3 +72,50 @@ int longitudBuffer;
 
 //Mensajes aceptados
 #define MSJ_SALUDO          1
+
+
+//ESTRUCTURAS//
+//Estructura de Array Copias
+typedef struct{
+    char *nodo;
+    char *bloque;
+}arrayCopias;
+
+//Estructura Lista de Bloques
+typedef struct{
+    char *bloque;
+    arrayCopias array[3];
+    struct listaDeBloques *next;
+}listaDeBloques;
+
+//Estructura Lista de Archivos
+typedef struct{
+    char *nombreArchivo;
+    listaDeBloques *listaBloques;
+    struct listaDeArchivos *next;
+}listaDeArchivos;
+
+typedef struct {
+	//Estructura Lista de Nodos
+	    char *nombreNodo;
+	    char *ipNodo;
+	    int puertoNodo;
+	    int estado;
+	    int procesando;
+	    char *nombreArchivo;
+	    char *bloqueArchivo;
+	    char *tarea;
+} t_nodo;
+
+static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo) {
+	t_nodo *new = malloc(sizeof(t_nodo));
+	new->nombreNodo = strdup(nombreNodo);
+	new->ipNodo = strdup(ipNodo);
+	new->puertoNodo = puertoNodo;
+	new->estado = 1;
+	new->procesando = 0;
+	new->nombreArchivo = "";
+	new->bloqueArchivo = "";
+	new->tarea = "";
+	return new;
+}

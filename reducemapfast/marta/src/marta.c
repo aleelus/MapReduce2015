@@ -12,6 +12,14 @@
 #include "marta.h"
 
 int main(int argv, char** argc) {
+	t_list *lista_nodos;
+	lista_nodos = list_create();
+	t_nodo *aux;
+	aux = nodo_create("NodoA","192.168.0.1",12);
+	list_add(lista_nodos,aux );
+	t_nodo *el_nodo;
+	el_nodo = list_get(lista_nodos, 0);
+	printf("EL nodo: %s \n%s \n%d\n",el_nodo->nombreNodo,el_nodo->ipNodo,el_nodo->puertoNodo);
 	//inicializamos los semaforos
 	//sem_init(&semaforoAccesoMemoria, 0, 1);
 	//sem_init(&semaforoMarcosLibres, 0, 0);
@@ -25,6 +33,7 @@ int main(int argv, char** argc) {
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
+
 
 
 	//Hilo orquestador conexiones
@@ -108,7 +117,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	//printf("CantidadBytesAEnviar:%i\n",cantidadDeBytesAEnviar);
+	printf("CantidadBytesAEnviar:%i\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
@@ -181,7 +190,8 @@ int AtiendeCliente(void * arg) {
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
-		char * mensaje = "Hola";
+		char * mensaje = "Como estas?";
+
 		//Recibimos los datos del cliente
 		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
 
@@ -196,12 +206,13 @@ int AtiendeCliente(void * arg) {
 				break;
 			default:
 				string_append(&buffer, mensaje);
-				longitudBuffer=strlen(buffer);
 				break;
 			}
-			printf("\nRespuesta: %s\n",buffer);
+			longitudBuffer=strlen(buffer);
+			printf("Longitud:%d\n",longitudBuffer);
+			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
-			EnviarDatos(socket, buffer,longitudBuffer);
+			EnviarDatos(socket, mensaje,longitudBuffer);
 		} else
 			desconexionCliente = 1;
 
