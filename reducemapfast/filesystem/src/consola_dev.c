@@ -31,27 +31,27 @@ int conectar_socket(int socket_desc, struct sockaddr_in server){
 
 //Mostrar Ayuda
 void mostrarAyuda(){
-	println("Comandos posibles: \n");
-	println("1 - Formatear MDFS\n");
-	println("2 - Eliminar/Renombrar/Mover Archivos\n");
-	println("3 - Crear/Eliminar/Renombrar/Mover Directorios\n");
-	println("4 - Copiar un archivo local al MDFS\n");
-	println("5 - Copiar un archivo del MDFS al filesystem local\n");
-	println("6 - Solicitar el MD5 de un archivo en MDFS\n");
-	println("7 - Ver/Borrar/Copiar los bloques que componen un archivo\n");
-	println("8 - Agregar un nodo de datos\n");
-	println("9 - Eliminar un nodo de datos\n");
-	println("------------------------------------------------------------\n");
-	println("Seleccione un comando: \n");
+	printf("Comandos posibles: \n");
+	printf("1 - Formatear MDFS\n");
+	printf("2 - Eliminar/Renombrar/Mover Archivos\n");
+	printf("3 - Crear/Eliminar/Renombrar/Mover Directorios\n");
+	printf("4 - Copiar un archivo local al MDFS\n");
+	printf("5 - Copiar un archivo del MDFS al filesystem local\n");
+	printf("6 - Solicitar el MD5 de un archivo en MDFS\n");
+	printf("7 - Ver/Borrar/Copiar los bloques que componen un archivo\n");
+	printf("8 - Agregar un nodo de datos\n");
+	printf("9 - Eliminar un nodo de datos\n");
+	printf("------------------------------------------------------------\n");
+	printf("Seleccione un comando: \n");
 }
 
 //Mostrar Error
-void mostrarError(Error unError){
+void mostrarError(error unError){
 	switch(unError){
 		case CantidadArgumentosIncorrecta: puts("CantidadArgumentosIncorrecta.");break;
 		case OtroError:	 				   puts("OtroError.");break;
 	};
-};
+}
 
 
 //Ejecutar un comando

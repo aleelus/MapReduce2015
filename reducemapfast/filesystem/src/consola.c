@@ -27,8 +27,8 @@ int main(int argc, char *argv[]){
 
 
 	// Abrir conexion con Marta
-	crear_conexion(sock_desc);
-	conectar_socket(sock_desc, sock_addr);
+//	crear_conexion(sock_desc);
+//	conectar_socket(sock_desc, sock_addr);
 
 	// Solicitar opcion de comando
 	printf("Ejecute una opcion: ");

@@ -26,7 +26,7 @@ typedef enum {
 	ErrorEnLectura,
 	ErrorEnEscritura,
 	OtroError,
-} Error;
+} error;
 
 
 #define IP 						"127.0.0.1"
@@ -38,7 +38,7 @@ typedef enum {
 int crear_socket(int);							//Crear un socket
 int conectar_socket(int, struct sockaddr_in);		//Conectar un socket
 void mostrarAyuda();								//Mostrar ayuda
-void mostrarError(Error unError);					//Mostrar error
+void mostrarError(error unError);					//Mostrar error
 void ejecutarComando(int);							//Ejecutar un comando
 void formatearMDFS();								//Formatear el MDFS
 void procesarArchivo();								//Procesar archivo
