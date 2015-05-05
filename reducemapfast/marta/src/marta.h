@@ -71,8 +71,9 @@ int g_Ejecutando = 1;
 int longitudBuffer;
 
 //Mensajes aceptados
-#define MSJ_SALUDO          1
-
+//#define MSJ_SALUDO          1
+#define ES_JOB	2
+#define ES_FS	1
 
 //ESTRUCTURAS//
 //Estructura de Array Copias

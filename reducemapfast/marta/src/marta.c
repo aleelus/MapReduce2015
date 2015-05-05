@@ -203,29 +203,34 @@ int AtiendeCliente(void * arg) {
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
-		char * mensaje = "Como estas?";
+		char * mensajeOk = "ok";
 
 		//Recibimos los datos del cliente
 		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
 
 		if (bytesRecibidos > 0) {
 			//Analisamos que peticion nos está haciendo (obtenemos el comando)
-			tipo_mensaje = 1; //ObtenerComandoMSJ(buffer);
+			tipo_mensaje = ObtenerComandoMSJ(buffer);
 
 			//Evaluamos los comandos
 			switch (tipo_mensaje) {
-			case MSJ_SALUDO:
-				string_append(&buffer, mensaje);
+			case ES_JOB:
+				printf("implementar atiendeJob\n");
+				//atiendeJob(buffer);
+				break;
+			case ES_FS:
+				printf("implementar atiendeFS\n");
+				//atiendeFS(buffer);
 				break;
 			default:
-				string_append(&buffer, mensaje);
+				string_append(&buffer, mensajeOk);
 				break;
 			}
 			longitudBuffer=strlen(buffer);
 			printf("Longitud:%d\n",longitudBuffer);
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
-			EnviarDatos(socket, mensaje,longitudBuffer);
+			EnviarDatos(socket, mensajeOk,longitudBuffer);
 		} else
 			desconexionCliente = 1;
 
@@ -293,4 +298,34 @@ void HiloOrquestadorDeConexiones() {
 		}
 	}
 	CerrarSocket(socket_host);
+}
+
+int chartToInt(char x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+
+int posicionDeBufferAInt(char* buffer, int posicion) {
+	int logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return chartToInt(buffer[posicion]);
+}
+
+int ObtenerComandoMSJ(char* buffer) {
+//Hay que obtener el comando dado el buffer.
+//El comando está dado por el primer caracter, que tiene que ser un número.
+	return posicionDeBufferAInt(buffer, 0);
 }
