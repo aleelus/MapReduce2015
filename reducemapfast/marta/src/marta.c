@@ -102,6 +102,35 @@ void Error(const char* mensaje, ...) {
 		free(nuevo);
 }
 #endif
+int chartToInt(char x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+
+int posicionDeBufferAInt(char* buffer, int posicion) {
+	int logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return chartToInt(buffer[posicion]);
+}
+
+int ObtenerComandoMSJ(char* buffer) {
+//Hay que obtener el comando dado el buffer.
+//El comando está dado por el primer caracter, que tiene que ser un número.
+	return posicionDeBufferAInt(buffer, 0);
+}
 
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos) {
 	*bytesRecibidos = 0;
@@ -130,7 +159,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	printf("CantidadBytesAEnviar:%i\n",cantidadDeBytesAEnviar);
+	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
@@ -170,6 +199,44 @@ void ErrorFatal(const char* mensaje, ...) {
 	exit(EXIT_FAILURE);
 }
 
+char* digitosNombreArchivo(char *buffer,int posicion){
+
+	char *nombreArch=string_new();
+	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
+
+	digito=posicionDeBufferAInt(buffer,posicion);
+	for(i=1;i<=digito;i++){
+		algo=posicionDeBufferAInt(buffer,posicion+i);
+		aux=aux*10+algo;
+	}
+	for(j=posicion+i;j<posicion+i+aux;j++){
+		nombreArch[x]=buffer[j];
+		x++;
+	}
+	nombreArch[x]='\0';
+
+	return nombreArch;
+
+}
+
+#define DIG_NARCHIVO 1
+
+void atiendeJob (char *buffer){
+	//BUFFER RECIBIDO = 21210file02.txt (EJEMPLO)
+
+	int tipo_mensaje=0;
+	char *nArchivo=string_new();
+	tipo_mensaje=posicionDeBufferAInt(buffer,1);
+	switch (tipo_mensaje) {
+	case DIG_NARCHIVO:
+		nArchivo=digitosNombreArchivo(buffer,2);
+		printf("Nombre Archivo: %s\n",nArchivo);
+		break;
+	default:
+		break;
+	}
+
+}
 
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
@@ -203,7 +270,7 @@ int AtiendeCliente(void * arg) {
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
-		char * mensajeOk = "ok";
+		char * mensajeOk = "Ok\n";
 
 		//Recibimos los datos del cliente
 		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
@@ -215,19 +282,17 @@ int AtiendeCliente(void * arg) {
 			//Evaluamos los comandos
 			switch (tipo_mensaje) {
 			case ES_JOB:
-				printf("implementar atiendeJob\n");
-				//atiendeJob(buffer);
+				printf("Implemento Job(atiendeJob)\n");
+				atiendeJob(buffer);
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");
 				//atiendeFS(buffer);
 				break;
 			default:
-				string_append(&buffer, mensajeOk);
 				break;
 			}
-			longitudBuffer=strlen(buffer);
-			printf("Longitud:%d\n",longitudBuffer);
+			longitudBuffer=strlen(mensajeOk);
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
 			EnviarDatos(socket, mensajeOk,longitudBuffer);
@@ -300,32 +365,4 @@ void HiloOrquestadorDeConexiones() {
 	CerrarSocket(socket_host);
 }
 
-int chartToInt(char x) {
-	int numero = 0;
-	char * aux = string_new();
-	string_append_with_format(&aux, "%c", x);
-	//char* aux = malloc(1 * sizeof(char));
-	//sprintf(aux, "%c", x);
-	numero = strtol(aux, (char **) NULL, 10);
 
-	if (aux != NULL )
-		free(aux);
-	return numero;
-}
-
-
-int posicionDeBufferAInt(char* buffer, int posicion) {
-	int logitudBuffer = 0;
-	logitudBuffer = strlen(buffer);
-
-	if (logitudBuffer <= posicion)
-		return 0;
-	else
-		return chartToInt(buffer[posicion]);
-}
-
-int ObtenerComandoMSJ(char* buffer) {
-//Hay que obtener el comando dado el buffer.
-//El comando está dado por el primer caracter, que tiene que ser un número.
-	return posicionDeBufferAInt(buffer, 0);
-}
