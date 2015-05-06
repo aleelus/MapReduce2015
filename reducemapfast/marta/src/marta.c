@@ -143,12 +143,11 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos) {
 
 	if ((*bytesRecibidos = *bytesRecibidos
 			+ recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
-		Error(
-				"Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",
+		Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",
 				socket);
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%i", socket,
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
 			(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
@@ -201,23 +200,23 @@ void ErrorFatal(const char* mensaje, ...) {
 	exit(EXIT_FAILURE);
 }
 
-char* digitosNombreArchivo(char *buffer,int posicion){
+char* digitosNombreArchivo(char *buffer,int *posicion){
 
 	char *nombreArch;
 	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
 
-	digito=posicionDeBufferAInt(buffer,posicion);
+	digito=posicionDeBufferAInt(buffer,*posicion);
 	for(i=1;i<=digito;i++){
-		algo=posicionDeBufferAInt(buffer,posicion+i);
+		algo=posicionDeBufferAInt(buffer,*posicion+i);
 		aux=aux*10+algo;
 	}
 	nombreArch = malloc(aux+1);
-	for(j=posicion+i;j<posicion+i+aux;j++){
+	for(j=*posicion+i;j<*posicion+i+aux;j++){
 		nombreArch[x]=buffer[j];
 		x++;
 	}
 	nombreArch[x]='\0';
-
+	*posicion=*posicion+i+aux;
 	return nombreArch;
 }
 
@@ -226,16 +225,15 @@ char* digitosNombreArchivo(char *buffer,int posicion){
 void atiendeJob (char *buffer){
 	//BUFFER RECIBIDO = 21210file02.txt210file000.txt1 (EJEMPLO)
 
-	int tipo_mensaje=0;
+	int tipo_mensaje=0,posicionActual=2;
 	char *nArchivo;
 	char *nResultado;
 	int tieneCombiner;
 	tipo_mensaje=posicionDeBufferAInt(buffer,1);
 	switch (tipo_mensaje) {
 	case DIG_NARCHIVO:
-		printf("EL BUFFER:%d\n",strlen(buffer));
-		nArchivo=digitosNombreArchivo(buffer,2);
-		nResultado=digitosNombreArchivo(buffer,5+strlen(nArchivo));
+		nArchivo=digitosNombreArchivo(buffer,&posicionActual);
+		nResultado=digitosNombreArchivo(buffer,&posicionActual);
 		tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
 		printf("Nombre Archivo: %s\n",nArchivo);
 		printf("Nombre Resultado: %s\n",nResultado);
@@ -279,6 +277,7 @@ int AtiendeCliente(void * arg) {
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
+
 		char * mensajeOk = "Ok";
 
 		//Recibimos los datos del cliente
