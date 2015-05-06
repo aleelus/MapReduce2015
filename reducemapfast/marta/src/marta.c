@@ -165,11 +165,13 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
 
 	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
-	char * bufferLogueo = malloc(cantidadDeBytesAEnviar+1);
-	bufferLogueo[cantidadDeBytesAEnviar] = '\0';
-	memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
+
+	//char * bufferLogueo = malloc(5);
+	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
+
+	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) bufferLogueo);
+			(char*) buffer);
 
 	return bytecount;
 }
@@ -201,7 +203,7 @@ void ErrorFatal(const char* mensaje, ...) {
 
 char* digitosNombreArchivo(char *buffer,int posicion){
 
-	char *nombreArch=string_new();
+	char *nombreArch;
 	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
 
 	digito=posicionDeBufferAInt(buffer,posicion);
@@ -209,6 +211,7 @@ char* digitosNombreArchivo(char *buffer,int posicion){
 		algo=posicionDeBufferAInt(buffer,posicion+i);
 		aux=aux*10+algo;
 	}
+	nombreArch = malloc(aux+1);
 	for(j=posicion+i;j<posicion+i+aux;j++){
 		nombreArch[x]=buffer[j];
 		x++;
@@ -216,21 +219,27 @@ char* digitosNombreArchivo(char *buffer,int posicion){
 	nombreArch[x]='\0';
 
 	return nombreArch;
-
 }
 
 #define DIG_NARCHIVO 1
 
 void atiendeJob (char *buffer){
-	//BUFFER RECIBIDO = 21210file02.txt (EJEMPLO)
+	//BUFFER RECIBIDO = 21210file02.txt210file000.txt1 (EJEMPLO)
 
 	int tipo_mensaje=0;
-	char *nArchivo=string_new();
+	char *nArchivo;
+	char *nResultado;
+	int tieneCombiner;
 	tipo_mensaje=posicionDeBufferAInt(buffer,1);
 	switch (tipo_mensaje) {
 	case DIG_NARCHIVO:
+		printf("EL BUFFER:%d\n",strlen(buffer));
 		nArchivo=digitosNombreArchivo(buffer,2);
+		nResultado=digitosNombreArchivo(buffer,5+strlen(nArchivo));
+		tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
 		printf("Nombre Archivo: %s\n",nArchivo);
+		printf("Nombre Resultado: %s\n",nResultado);
+		printf("Tiene Combiner:%d\n",tieneCombiner);
 		break;
 	default:
 		break;
@@ -270,7 +279,7 @@ int AtiendeCliente(void * arg) {
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
-		char * mensajeOk = "Ok\n";
+		char * mensajeOk = "Ok";
 
 		//Recibimos los datos del cliente
 		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
