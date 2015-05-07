@@ -220,7 +220,8 @@ char* digitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
-#define DIG_NARCHIVO 1
+#define ES_UN_SOLO_ARCHIVO 1
+#define ES_MUCHOS_ARCHIVOS 2
 
 void atiendeJob (char *buffer){
 	//BUFFER RECIBIDO = 21210file02.txt210file000.txt1 (EJEMPLO)
@@ -231,13 +232,16 @@ void atiendeJob (char *buffer){
 	int tieneCombiner;
 	tipo_mensaje=posicionDeBufferAInt(buffer,1);
 	switch (tipo_mensaje) {
-	case DIG_NARCHIVO:
+	case ES_UN_SOLO_ARCHIVO:
 		nArchivo=digitosNombreArchivo(buffer,&posicionActual);
 		nResultado=digitosNombreArchivo(buffer,&posicionActual);
 		tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
 		printf("Nombre Archivo: %s\n",nArchivo);
 		printf("Nombre Resultado: %s\n",nResultado);
 		printf("Tiene Combiner:%d\n",tieneCombiner);
+		posicionActual=2;
+		break;
+	case ES_MUCHOS_ARCHIVOS:
 		break;
 	default:
 		break;
