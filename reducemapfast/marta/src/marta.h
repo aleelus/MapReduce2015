@@ -142,3 +142,7 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo) {
 	new->tarea = "";
 	return new;
 }
+
+// El tipo de Mensaje para el Job
+#define ES_UN_SOLO_ARCHIVO 1
+#define ES_MUCHOS_ARCHIVOS 2

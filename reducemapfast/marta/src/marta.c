@@ -220,11 +220,7 @@ char* digitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
-#define ES_UN_SOLO_ARCHIVO 1
-#define ES_MUCHOS_ARCHIVOS 2
-
 void atiendeJob (char *buffer){
-	//BUFFER RECIBIDO = 21210file02.txt210file000.txt1 (EJEMPLO)
 
 	int tipo_mensaje=0,posicionActual=2;
 	char *nArchivo;
@@ -233,6 +229,7 @@ void atiendeJob (char *buffer){
 	tipo_mensaje=posicionDeBufferAInt(buffer,1);
 	switch (tipo_mensaje) {
 	case ES_UN_SOLO_ARCHIVO:
+		//BUFFER RECIBIDO = 21210file02.txt211file000.txt1 (EJEMPLO)
 		nArchivo=digitosNombreArchivo(buffer,&posicionActual);
 		nResultado=digitosNombreArchivo(buffer,&posicionActual);
 		tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
@@ -240,8 +237,17 @@ void atiendeJob (char *buffer){
 		printf("Nombre Resultado: %s\n",nResultado);
 		printf("Tiene Combiner:%d\n",tieneCombiner);
 		posicionActual=2;
+		//planificar(nArchivo,nResultado,tieneCombiner);
 		break;
 	case ES_MUCHOS_ARCHIVOS:
+		//BUFFER RECIBIDO = 2221015210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
+		//BUFFER RECIBIDO = 2213210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
+		//BUFFER RECIBIDO = 2212210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
+		//BUFFER RECIBIDO = 22215resultado.txt1 (EJEMPLO)
+
+		//BUFFER RECIBIDO = 2510000 (EJEMPLO)
+		//BUFFER RECIBIDO = 2121015210file02.txt211file000.txt210file02.txt215resultado.txt1
+
 		break;
 	default:
 		break;
