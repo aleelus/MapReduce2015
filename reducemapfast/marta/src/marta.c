@@ -132,19 +132,42 @@ int ObtenerComandoMSJ(char* buffer) {
 	return posicionDeBufferAInt(buffer, 0);
 }
 
-char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos) {
+int obtenerTamanio (char *buffer , int dig_tamanio){
+	int x,digito,aux=0;
+	for(x=0;x<dig_tamanio;x++){
+		digito=posicionDeBufferAInt(buffer,2+x);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
+char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
+	char *bufferAux= malloc(1);
+	int digTamanio;
 	if (buffer != NULL ) {
 		free(buffer);
 	}
 
-	char* bufferAux = malloc(BUFFERSIZE * sizeof(char));
-	memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+	if(*cantRafaga==1){
+		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
+		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
 
-	if ((*bytesRecibidos = *bytesRecibidos
-			+ recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
-		Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",
-				socket);
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
+
+		digTamanio=posicionDeBufferAInt(bufferAux,1);
+		*tamanio=obtenerTamanio(bufferAux,digTamanio);
+
+
+	}else if(*cantRafaga==2){
+		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
+		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
 	}
 
 	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
@@ -220,9 +243,9 @@ char* digitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
-void atiendeJob (char *buffer){
+void atiendeJob (char *buffer, int *cantRafaga){
 
-	int tipo_mensaje=0,posicionActual=2;
+	/*int tipo_mensaje=0,posicionActual=2;
 	char *nArchivo;
 	char *nResultado;
 	int tieneCombiner;
@@ -245,14 +268,33 @@ void atiendeJob (char *buffer){
 		//BUFFER RECIBIDO = 2212210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
 		//BUFFER RECIBIDO = 22215resultado.txt1 (EJEMPLO)
 
-		//BUFFER RECIBIDO = 2510000 (EJEMPLO)
-		//BUFFER RECIBIDO = 2121015210file02.txt211file000.txt210file02.txt215resultado.txt1
+		//BUFFER RECIBIDO = 2270 (EJEMPLO)
+		//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
 
 		break;
 	default:
 		break;
 	}
+	*/
+	char *nArchivo,*nResultado;
+	int digitosCantDeArchivos=0,cantDeArchivos=0;
+	int x,posActual=0;
+	int tieneCombiner;
 
+	digitosCantDeArchivos=posicionDeBufferAInt(buffer,1);
+	cantDeArchivos=obtenerTamanio(buffer,digitosCantDeArchivos);
+	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
+	posActual=2+digitosCantDeArchivos;
+	//Muestro por pantalla los Archivos
+	for(x=0;x<cantDeArchivos;x++){
+		nArchivo=digitosNombreArchivo(buffer,&posActual);
+		printf("%d) %s\n",x+1,nArchivo);
+	}
+	nResultado=digitosNombreArchivo(buffer,&posActual);
+	printf("Archivo Resultado: %s\n",nResultado);
+	tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
+	printf("Combiner: %d\n",tieneCombiner);
+	*cantRafaga=1;
 }
 
 int AtiendeCliente(void * arg) {
@@ -281,7 +323,7 @@ int AtiendeCliente(void * arg) {
 
 // Código de salida por defecto
 	int code = 0;
-
+	int cantRafaga=1,tamanio=0;
 	while ((!desconexionCliente) & g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
@@ -291,7 +333,8 @@ int AtiendeCliente(void * arg) {
 		char * mensajeOk = "Ok";
 
 		//Recibimos los datos del cliente
-		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
+		buffer = RecibirDatos(socket, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+
 
 		if (bytesRecibidos > 0) {
 			//Analisamos que peticion nos está haciendo (obtenemos el comando)
@@ -300,8 +343,12 @@ int AtiendeCliente(void * arg) {
 			//Evaluamos los comandos
 			switch (tipo_mensaje) {
 			case ES_JOB:
-				printf("Implemento Job(atiendeJob)\n");
-				atiendeJob(buffer);
+				if(cantRafaga==2){
+					printf("Implemento Job(atiendeJob)\n");
+					atiendeJob(buffer,&cantRafaga);
+				}else{
+					cantRafaga=2;
+				}
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");

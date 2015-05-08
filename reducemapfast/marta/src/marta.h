@@ -26,7 +26,7 @@
 #define NOMBRE_ARCHIVO_LOG 		   "marta.log"
 
 //Tamaño del buffer
-#define BUFFERSIZE 100
+#define BUFFERSIZE 10
 
 //Puerto de escucha del filesystem
 int g_Puerto;
