@@ -102,6 +102,7 @@ void LevantarConfig() {
 		if (config_has_property(config, "PUERTO_LISTEN")) {
 //			g_Puerto_Listen = config_get_int_value(config, "PUERTO_LISTEN");
 			puerto_listen = config_get_int_value(config, "PUERTO_LISTEN");
+			printf("Puerto Listen: %d", puerto_listen);
 		} else
 			//Error("No se pudo leer el parametro PUERTO_LISTEN");
 			printf("No se pudo leer el parametro PUERTO_LISTEN");
@@ -110,6 +111,7 @@ void LevantarConfig() {
 		if (config_has_property(config, "LISTA_NODOS")) {
 			//g_Lista_Nodos = config_get_string_value(config,"LISTA_NODOS");
 			lista_nodos = config_get_string_value(config,"LISTA_NODOS");
+			printf("Lista Nodos: %s", lista_nodos);
 		} else
 			//Error("No se pudo leer el parametro LISTA_NODOS");
 			printf("No se pudo leer el parametro LISTA_NODOS");
