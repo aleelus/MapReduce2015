@@ -105,6 +105,8 @@ static t_bloque *bloque_create(char *bloque, t_array_copias array) {
 //Estructura Lista de Archivos
 typedef struct{
     char *nombreArchivo;
+    char *nombreArchivoResultado;
+    int tieneCombiner;
     t_bloque *listaBloques;
     struct t_archivo *next;
 }t_archivo;
@@ -112,6 +114,8 @@ typedef struct{
 static t_archivo *archivo_create(char *nombreArchivo, t_bloque *listaBloques) {
 	t_archivo *new = malloc(sizeof(t_archivo));
 	new->nombreArchivo = strdup(nombreArchivo);
+	new->nombreArchivoResultado="";
+	new->tieneCombiner=0;
 	new->listaBloques= NULL;
 	new->next=NULL;
 	return new;

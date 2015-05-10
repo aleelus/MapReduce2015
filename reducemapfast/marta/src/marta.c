@@ -243,57 +243,45 @@ char* digitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
+void cargarArchivoALista(t_list *t_archivo, char* nomArchivo){
+
+	list_add(t_archivo,archivo_create(nomArchivo,NULL));
+
+}
 void atiendeJob (char *buffer, int *cantRafaga){
 
-	/*int tipo_mensaje=0,posicionActual=2;
-	char *nArchivo;
-	char *nResultado;
-	int tieneCombiner;
-	tipo_mensaje=posicionDeBufferAInt(buffer,1);
-	switch (tipo_mensaje) {
-	case ES_UN_SOLO_ARCHIVO:
-		//BUFFER RECIBIDO = 21210file02.txt211file000.txt1 (EJEMPLO)
-		nArchivo=digitosNombreArchivo(buffer,&posicionActual);
-		nResultado=digitosNombreArchivo(buffer,&posicionActual);
-		tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
-		printf("Nombre Archivo: %s\n",nArchivo);
-		printf("Nombre Resultado: %s\n",nResultado);
-		printf("Tiene Combiner:%d\n",tieneCombiner);
-		posicionActual=2;
-		//planificar(nArchivo,nResultado,tieneCombiner);
-		break;
-	case ES_MUCHOS_ARCHIVOS:
-		//BUFFER RECIBIDO = 2221015210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
-		//BUFFER RECIBIDO = 2213210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
-		//BUFFER RECIBIDO = 2212210file02.txt211file000.txt210file02.txt1 (EJEMPLO)
-		//BUFFER RECIBIDO = 22215resultado.txt1 (EJEMPLO)
-
-		//BUFFER RECIBIDO = 2270 (EJEMPLO)
-		//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
-
-		break;
-	default:
-		break;
-	}
-	*/
+	//BUFFER RECIBIDO = 2270 (EJEMPLO)
+	//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
 	char *nArchivo,*nResultado;
 	int digitosCantDeArchivos=0,cantDeArchivos=0;
 	int x,posActual=0;
 	int tieneCombiner;
+	t_list *lista_archivos=list_create();
+	t_archivo *el_archivo;
 
 	digitosCantDeArchivos=posicionDeBufferAInt(buffer,1);
 	cantDeArchivos=obtenerTamanio(buffer,digitosCantDeArchivos);
 	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
 	posActual=2+digitosCantDeArchivos;
-	//Muestro por pantalla los Archivos
+
 	for(x=0;x<cantDeArchivos;x++){
 		nArchivo=digitosNombreArchivo(buffer,&posActual);
-		printf("%d) %s\n",x+1,nArchivo);
+		cargarArchivoALista(lista_archivos,nArchivo);
 	}
 	nResultado=digitosNombreArchivo(buffer,&posActual);
-	printf("Archivo Resultado: %s\n",nResultado);
 	tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
-	printf("Combiner: %d\n",tieneCombiner);
+
+	//Muestro por pantalla los Archivos
+	int i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		el_archivo->nombreArchivoResultado=nResultado;
+		el_archivo->tieneCombiner=tieneCombiner;
+		printf("%d) %s\n",i+1,el_archivo->nombreArchivo);
+		i++;
+	}
+	printf("Archivo Resultado: %s\n",el_archivo->nombreArchivoResultado);
+	printf("Combiner: %d\n",el_archivo->tieneCombiner);
 	*cantRafaga=1;
 }
 
