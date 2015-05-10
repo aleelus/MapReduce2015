@@ -70,6 +70,9 @@ int g_Ejecutando = 1;
 //Longitud del Buffer
 int longitudBuffer;
 
+//contador de ID JOB (semaforo)
+int id_job=0;
+
 //Mensajes aceptados
 //#define MSJ_SALUDO          1
 #define ES_JOB	2
@@ -107,6 +110,7 @@ typedef struct{
     char *nombreArchivo;
     char *nombreArchivoResultado;
     int tieneCombiner;
+    int idJob;
     t_bloque *listaBloques;
     struct t_archivo *next;
 }t_archivo;

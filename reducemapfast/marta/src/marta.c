@@ -256,6 +256,7 @@ void atiendeJob (char *buffer, int *cantRafaga){
 	int digitosCantDeArchivos=0,cantDeArchivos=0;
 	int x,posActual=0;
 	int tieneCombiner;
+	int contIdJob=id_job;
 	t_list *lista_archivos=list_create();
 	t_archivo *el_archivo;
 
@@ -277,12 +278,16 @@ void atiendeJob (char *buffer, int *cantRafaga){
 		el_archivo = list_get(lista_archivos, i);
 		el_archivo->nombreArchivoResultado=nResultado;
 		el_archivo->tieneCombiner=tieneCombiner;
+		el_archivo->idJob=contIdJob;
 		printf("%d) %s\n",i+1,el_archivo->nombreArchivo);
 		i++;
 	}
 	printf("Archivo Resultado: %s\n",el_archivo->nombreArchivoResultado);
 	printf("Combiner: %d\n",el_archivo->tieneCombiner);
+	printf("ID : %d\n",el_archivo->idJob);
 	*cantRafaga=1;
+	id_job++;
+
 }
 
 int AtiendeCliente(void * arg) {
@@ -400,8 +405,7 @@ void HiloOrquestadorDeConexiones() {
 
 		size_addr = sizeof(struct sockaddr_in);
 
-		if ((socket_client = accept(socket_host,
-				(struct sockaddr *) &client_addr, &size_addr)) != -1) {
+		if ((socket_client = accept(socket_host,(struct sockaddr *) &client_addr, &size_addr)) != -1) {
 			//Traza("Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d", inet_ntoa(client_addr.sin_addr), client_addr.sin_port, socket_client);
 			log_trace(logger,
 					"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
