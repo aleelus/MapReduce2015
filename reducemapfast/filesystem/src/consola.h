@@ -35,7 +35,7 @@ typedef enum {
 #define CANTMAX					1			//Cantidad maxima para seleccionar un comando
 
 
-int crear_socket(int);							//Crear un socket
+int crear_socket(int);								//Crear un socket
 int conectar_socket(int, struct sockaddr_in);		//Conectar un socket
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(error unError);					//Mostrar error
@@ -50,5 +50,7 @@ void procesarBloques();								//Procesar bloques
 void agregarNodo();									//Agregar un nodo
 void eliminarNodo();								//Eliminar un nodo
 void comandoDesconocido(); 							//Comando desconocido
+
+int conectar_nodos();
 
 #endif /* CONSOLA_H_ */

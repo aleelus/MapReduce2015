@@ -23,7 +23,7 @@
 
 // CONSTANTES //
 
-#define PATH_CONFIG 			"config.cfg"	//Ruta del config
+#define PATH_CONFIG 			"/home/gabriel/workspace/sisop/tp-2015-1c-los-barderos/reducemapfast/filesystem/src/config.cfg"	//Ruta del config
 #define NOMBRE_ARCHIVO_CONSOLA  "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		"msp.log"
 #define MAXLINEA				4096			//Maximo de linea de configuracion

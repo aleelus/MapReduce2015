@@ -1,6 +1,6 @@
 #include "consola.h"
 
-
+/*
 int main(int argc, char *argv[]){
 
 	int sock_desc;
@@ -9,20 +9,21 @@ int main(int argc, char *argv[]){
 	int eleccion;
 
 
-	/* Verifica sin argumentos */
+	// Verifica sin argumentos
+
 	if (argc == 1){
 		mostrarAyuda();
 		return EXIT_SUCCESS;
 		}
 
 
-	/* Verifica cantidad de argumentos */
+	// Verifica cantidad de argumentos
 	if (argc != 2){
 		mostrarError(CantidadArgumentosIncorrecta);
 		return EXIT_FAILURE;
 		}
 
-//	/* Reservo memoria para la seleccion */
+	// Reservo memoria para la seleccion
 	if ((input = malloc(CANTMAX)) == NULL)
 		return EXIT_FAILURE;
 
@@ -48,4 +49,4 @@ int main(int argc, char *argv[]){
 //	}
 
 
-}
+}*/
