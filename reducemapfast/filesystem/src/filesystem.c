@@ -26,7 +26,7 @@ struct configuracion configuracion[1] = {{0}};	//Datos de configuracion
 FILE *config;									//Archivo de configuracion
 
 
-/*
+
 	// Abrir Archivo de Configuracion
 	if ( (config = fopen(PATH_CONFIG,"rb")) == NULL ) {
 		mostrarError(NoSePudoAbrirConfig);
@@ -62,14 +62,14 @@ FILE *config;									//Archivo de configuracion
 
 	printf("Puerto: %u\n", configuracion[1].puerto_listen);
 	printf("Nodos: %s\n", configuracion[1].lista_nodos);
-
+	return 0;
 	}
 
 
 	// Obtener conexiones de nodos
-	obtener_nodos();
+	//obtener_nodos();
 
-*/
+
 
 	//inicializamos los semaforos
 	//sem_init(&semaforoAccesoMemoria, 0, 1);
@@ -83,11 +83,11 @@ FILE *config;									//Archivo de configuracion
 	//logger = log_create(NOMBRE_ARCHIVO_LOG, "msp", true, LOG_LEVEL_TRACE);
 
 	// Levantamos el archivo de configuracion.
-	LevantarConfig();
-	printf("Ok\n");
-	return 0;
+//	LevantarConfig();
+//	printf("Ok\n");
+//	return 0;
 
-}
+
 
 //#if 1 // METODOS CONFIGURACION //
 void LevantarConfig() {
