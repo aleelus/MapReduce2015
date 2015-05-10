@@ -49,6 +49,9 @@ char* g_Ip_Nodo;
 //Puerto Escucha del Nodo
 int g_Puerto_Nodo;
 
+//Lista de Archivos
+t_list *lista_archivos;
+
 // METODOS CONFIGURACION //
 void LevantarConfig();
 
@@ -77,6 +80,8 @@ int id_job=0;
 //#define MSJ_SALUDO          1
 #define ES_JOB	2
 #define ES_FS	1
+#define COMANDO 9
+#define COMANDOBLOQUES 8
 
 //ESTRUCTURAS//
 //Estructura de Array Copias
@@ -92,15 +97,13 @@ typedef struct{
     struct t_bloque *next;
 }t_bloque;
 
-static t_bloque *bloque_create(char *bloque, t_array_copias array) {
-	t_bloque *new = malloc(sizeof(bloque));
+static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
+	t_bloque *new = malloc(sizeof(t_bloque));
 	new->bloque = strdup(bloque);
-	new->array[0].bloque="";
-	new->array[0].nodo="";
-	new->array[1].bloque="";
-	new->array[1].nodo="";
-	new->array[2].bloque="";
-	new->array[2].nodo="";
+	//new->estado = "procesado";
+	new->array[0] = array[0];
+	new->array[1] = array[1];
+	new->array[2] = array[2];
 	new->next=NULL;
 	return new;
 }
@@ -111,16 +114,17 @@ typedef struct{
     char *nombreArchivoResultado;
     int tieneCombiner;
     int idJob;
-    t_bloque *listaBloques;
+    t_list *listaBloques;
     struct t_archivo *next;
 }t_archivo;
 
-static t_archivo *archivo_create(char *nombreArchivo, t_bloque *listaBloques) {
+static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	t_archivo *new = malloc(sizeof(t_archivo));
+	new->idJob = id;
 	new->nombreArchivo = strdup(nombreArchivo);
 	new->nombreArchivoResultado="";
 	new->tieneCombiner=0;
-	new->listaBloques= NULL;
+	new->listaBloques= list_create();
 	new->next=NULL;
 	return new;
 }
@@ -136,6 +140,7 @@ typedef struct {
 	    char *nombreArchivo;
 	    char *bloqueArchivo;
 	    char *tarea;
+	    int id_job;
 } t_nodo;
 
 static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo) {

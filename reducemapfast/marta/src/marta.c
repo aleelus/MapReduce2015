@@ -16,6 +16,7 @@ int main(int argv, char** argc) {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	t_list *lista_nodos;
 	lista_nodos = list_create();
+	lista_archivos=list_create();
 
 	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000));
 	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",3500));
@@ -243,22 +244,26 @@ char* digitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
-void cargarArchivoALista(t_list *t_archivo, char* nomArchivo){
+void cargarArchivoALista(char* nomArchivo, int id){
 
-	list_add(t_archivo,archivo_create(nomArchivo,NULL));
+	list_add(lista_archivos,archivo_create(nomArchivo,id));
 
 }
-void atiendeJob (char *buffer, int *cantRafaga){
+void atiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 
 	//BUFFER RECIBIDO = 2270 (EJEMPLO)
 	//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
+
 	char *nArchivo,*nResultado;
 	int digitosCantDeArchivos=0,cantDeArchivos=0;
 	int x,posActual=0;
 	int tieneCombiner;
-	int contIdJob=id_job;
-	t_list *lista_archivos=list_create();
+	*contIdJob=id_job;
 	t_archivo *el_archivo;
+
+	//wait(mutex)
+	id_job++;
+	//signal(mutex)
 
 	digitosCantDeArchivos=posicionDeBufferAInt(buffer,1);
 	cantDeArchivos=obtenerTamanio(buffer,digitosCantDeArchivos);
@@ -267,7 +272,7 @@ void atiendeJob (char *buffer, int *cantRafaga){
 
 	for(x=0;x<cantDeArchivos;x++){
 		nArchivo=digitosNombreArchivo(buffer,&posActual);
-		cargarArchivoALista(lista_archivos,nArchivo);
+		cargarArchivoALista(nArchivo,*contIdJob);
 	}
 	nResultado=digitosNombreArchivo(buffer,&posActual);
 	tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
@@ -276,22 +281,105 @@ void atiendeJob (char *buffer, int *cantRafaga){
 	int i=0;
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		el_archivo->nombreArchivoResultado=nResultado;
-		el_archivo->tieneCombiner=tieneCombiner;
-		el_archivo->idJob=contIdJob;
-		printf("%d) %s\n",i+1,el_archivo->nombreArchivo);
+		if (el_archivo->idJob == *contIdJob) {
+			el_archivo->nombreArchivoResultado=nResultado;
+			el_archivo->tieneCombiner=tieneCombiner;
+		}
 		i++;
 	}
-	printf("Archivo Resultado: %s\n",el_archivo->nombreArchivoResultado);
-	printf("Combiner: %d\n",el_archivo->tieneCombiner);
-	printf("ID : %d\n",el_archivo->idJob);
 	*cantRafaga=1;
-	id_job++;
+}
 
+void recorrerArchivos(){
+	t_archivo * el_archivo;
+
+	int i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		printf("El id del Job:%d\n",el_archivo->idJob);
+		printf("El archivo:%s\n",el_archivo->nombreArchivo);
+		printf("El archivo de resultado:%s\n",el_archivo->nombreArchivoResultado);
+		printf("Tiene Combiner:%d\n",el_archivo->tieneCombiner);
+		i++;
+	}
+}
+
+void recorrerListaBloques(int id){
+	t_archivo * el_archivo;
+	t_bloque * el_bloque;
+
+	int i=0;
+	int j=0;
+
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		if(el_archivo->idJob == id && el_archivo->listaBloques != NULL){
+			printf("El id del Job:%d\n",el_archivo->idJob);
+			printf("El archivo:%s\n",el_archivo->nombreArchivo);
+			while(j<list_size(el_archivo->listaBloques)){
+				el_bloque = list_get(el_archivo->listaBloques, j);
+				printf("Bloque:%s\n",el_bloque->bloque);
+				printf("Copia1:\n");
+				printf("Nodo:%s\n",el_bloque->array[0].nodo);
+				printf("Bloque:%s\n",el_bloque->array[0].bloque);
+				printf("Copia2:\n");
+				printf("Nodo:%s\n",el_bloque->array[1].nodo);
+				printf("Bloque:%s\n",el_bloque->array[1].bloque);
+				printf("Copia3:\n");
+				printf("Nodo:%s\n",el_bloque->array[2].nodo);
+				printf("Bloque:%s\n",el_bloque->array[2].bloque);
+				j++;
+			}
+		}
+		i++;
+	}
+}
+
+void obtenerInfoDeNodos(int id_job){
+
+	t_archivo * el_archivo;
+	t_array_copias array[3];
+	t_bloque * el_bloque;
+
+	//Se carga la informacion de los bloques del archivo
+	int i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		if (el_archivo->idJob == id_job) {
+			//preguntar a FS por Archivo
+			//el_archivo->nombreArchivo";
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoA";
+			array[1].bloque = "Bloque30";
+			array[1].nodo = "NodoB";
+			array[2].bloque = "Bloque30";
+			array[2].nodo = "NodoD";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque0",array));
+			array[0].bloque = "Bloque10";
+			array[0].nodo = "NodoD";
+			array[1].bloque = "Bloque50";
+			array[1].nodo = "NodoE";
+			array[2].bloque = "Bloque40";
+			array[2].nodo = "NodoF";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque1",array));
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoG";
+			array[1].bloque = "Bloque50";
+			array[1].nodo = "NodoH";
+			array[2].bloque = "Bloque40";
+			array[2].nodo = "NodoJ";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque2",array));
+		}
+		i++;
+	}
+	printf("EL TAMAÑO:%d\n",list_size(el_archivo->listaBloques));
+	el_bloque = list_get(el_archivo->listaBloques,2);
+	printf("El BLOQUE:%s\n",el_bloque->array[0].bloque);
 }
 
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
+	int id=-1;
 
 //Es el ID del programa con el que está trabajando actualmente el HILO.
 //Nos es de gran utilidad para controlar los permisos de acceso (lectura/escritura) del programa.
@@ -338,7 +426,10 @@ int AtiendeCliente(void * arg) {
 			case ES_JOB:
 				if(cantRafaga==2){
 					printf("Implemento Job(atiendeJob)\n");
-					atiendeJob(buffer,&cantRafaga);
+					atiendeJob(&id,buffer,&cantRafaga);
+					obtenerInfoDeNodos(id);
+					//planificar(&id);
+					//
 				}else{
 					cantRafaga=2;
 				}
@@ -346,6 +437,14 @@ int AtiendeCliente(void * arg) {
 			case ES_FS:
 				printf("implementar atiendeFS\n");
 				//atiendeFS(buffer);
+				break;
+			case COMANDO:
+				printf("Muestre toda la lista de Archivos:");
+				recorrerArchivos();
+				break;
+			case COMANDOBLOQUES:
+				printf("Muestre toda la lista de Bloques:");
+				recorrerListaBloques(id);
 				break;
 			default:
 				break;
