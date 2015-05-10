@@ -108,13 +108,13 @@ void LevantarConfig() {
 			printf("No se pudo leer el parametro PUERTO_LISTEN");
 
 		// Lista de nodos minima que deben estar conectados para que funcione
-		if (config_has_property(config, "LISTA_NODOS")) {
+//		if (config_has_property(config, "LISTA_NODOS")) {
 			//g_Lista_Nodos = config_get_string_value(config,"LISTA_NODOS");
-			lista_nodos = config_get_string_value(config,"LISTA_NODOS");
-			sprintf("Lista Nodos: %s", &lista_nodos);
-		} else
-			//Error("No se pudo leer el parametro LISTA_NODOS");
-			printf("No se pudo leer el parametro LISTA_NODOS");
+//			lista_nodos = config_get_string_value(config,"LISTA_NODOS");
+//			sprintf("Lista Nodos: %s", &lista_nodos);
+//		} else
+//			//Error("No se pudo leer el parametro LISTA_NODOS");
+//			printf("No se pudo leer el parametro LISTA_NODOS");
 
 	} else {
 		//ErrorFatal("No se pudo abrir el archivo de configuracion");
