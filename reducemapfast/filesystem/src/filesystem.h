@@ -41,7 +41,7 @@ struct configuracion {
 
 
 // METODOS CONFIGURACION //
-void LevantarConfig();
+//void LevantarConfig();
 
 // METODOS MANEJO DE ERRORES //
 //void Error(const char* mensaje, ...);
