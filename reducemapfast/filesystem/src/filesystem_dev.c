@@ -5,33 +5,12 @@
  *      Author: gabriel
  */
 
-#include "consola.h"
+#include "filesystem.h"
 
 int eleccion;
 int socket_desc , new_socket , c;
     struct sockaddr_in server , client;
     char *message;
-
-int crear_socket(int socket_desc){
-	if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-		return EXIT_FAILURE;
-	return EXIT_SUCCESS;
-}
-
-int conectar_socket(int socket_desc, struct sockaddr_in server){
-	server.sin_addr.s_addr = inet_addr("74.125.235.20");
-	server.sin_family = AF_INET;
-	server.sin_port = htons( 80 );
-
-	//Connect to remote server
-	if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0){
-		puts("Conection Error!");
-		return EXIT_FAILURE;
-	}
-
-    puts("Connected");
-    return EXIT_SUCCESS;
-}
 
 //Mostrar Ayuda
 void mostrarAyuda(){
@@ -130,14 +109,56 @@ void comandoDesconocido(){
 	printf("Esta opcion debe solicitar que ingrese un comando valido\n");
 };
 
+int leer_config(){
+	
+	char *lista_nodos;								//Lista de Nodos necesarios para empezar
+	char linea[MAXLINEA];							//Linea de configuracion
+	struct configuracion configuracion;				//Datos de configuracion
+	nodos nodos[MAXNODOS];							//Datos de nodos
+	FILE *config;									//Archivo de configuracion
+	char *origen;									//Para manejo de cadenas
+	char ch;										//Exclusion de lineas
+	int i;
+
+	if ( (config = fopen(PATH_CONFIG,"rt")) == NULL ) {
+		mostrarError(NoSePudoAbrirConfig);
+		return EXIT_FAILURE;
+		}
+
+	if ((lista_nodos = malloc(MAXLINEA+1)) == NULL)
+		return EXIT_FAILURE;
+
+	while(fgets(linea, MAXLINEA, config) != NULL){		// Obtener valores de configuracion
+
+		if(sscanf(linea, "%*[^\n#]%c", &ch) != 1){
+			;											//Se ignoran las lineas en blanco y comentarios
+		} 
+
+		if(sscanf(linea, " PUERTO_LISTEN= %u", &configuracion.puerto_listen) == 1){
+			printf("%u\n", configuracion.puerto_listen);
+		} 
+
+		if(sscanf(linea, " LISTA_NODOS=[%s]", lista_nodos) == 1){
+			for(i = 0, origen = strtok(lista_nodos, ","); origen; i++, origen = strtok(NULL, ",")){
+				sscanf(origen, "Nodo%c", &nodos[i].nodo);
+				printf("Nodos: %c\n", nodos[i].nodo);
+			}
+			configuracion.lista_nodos = nodos;
+		}
+	}
+	fclose(config);
+}
+
+//Conectar a Marta
+int conectar_marta(){
+	return EXIT_SUCCESS;
+}
+
 //Conectar nodos
 int conectar_nodos(){
     //Create socket
-    socket_desc = socket(AF_INET , SOCK_STREAM , 0);
-    if (socket_desc == -1)
-    {
-        printf("Could not create socket");
-    }
+    if ((socket_desc = socket(AF_INET , SOCK_STREAM , 0)) == -1)
+    	return EXIT_FAILURE;
 
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
@@ -146,32 +167,61 @@ int conectar_nodos(){
 
     //Bind
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        puts("bind failed");
-    }
-    puts("bind done");
-
+    	return EXIT_FAILURE;
+     
     //Listen
     listen(socket_desc , 3);
-
-
+     
     //Accept and incoming connection
-    puts("Waiting for incoming connections...");
+    puts("Esperando conexiones de nodos...");
     c = sizeof(struct sockaddr_in);
     while( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
-        puts("Connection accepted");
-
+        puts("Nodo conectado");
+         
         //Reply to the client
-        message = "Hello Client , I have received your connection. But I have to go now, bye\n";
+        message = "El nodo se conecto al filesystem..\n";
         write(new_socket , message , strlen(message));
     }
+     
+    //if (new_socket<0)
+    //{
+    //    perror("accept failed");
+    //    return 1;
+    //}
 
-    if (new_socket<0)
-    {
-        perror("accept failed");
-        return 1;
-    }
+}
 
-    return 0;
+void LevantarConfig() {
+	int puerto_listen;
+	char *lista_nodos;
+
+	t_config* config = config_create(PATH_CONFIG);
+	// Nos fijamos si el archivo de conf. pudo ser leido y si tiene los parametros
+	if (config->properties->table_current_size != 0) {
+
+		// Puerto de escucha
+		if (config_has_property(config, "PUERTO_LISTEN")) {
+//			g_Puerto_Listen = config_get_int_value(config, "PUERTO_LISTEN");
+			puerto_listen = config_get_int_value(config, "PUERTO_LISTEN");
+			printf("Puerto Listen: %d", puerto_listen);
+		} else
+			//Error("No se pudo leer el parametro PUERTO_LISTEN");
+			printf("No se pudo leer el parametro PUERTO_LISTEN");
+
+		// Lista de nodos minima que deben estar conectados para que funcione
+		if (config_has_property(config, "LISTA_NODOS")) {
+			//g_Lista_Nodos = config_get_string_value(config,"LISTA_NODOS");
+			lista_nodos = config_get_string_value(config,"LISTA_NODOS");
+			sprintf("Lista Nodos: %s", &lista_nodos);
+		} else
+//			//Error("No se pudo leer el parametro LISTA_NODOS");
+			printf("No se pudo leer el parametro LISTA_NODOS");
+
+	} else {
+		//ErrorFatal("No se pudo abrir el archivo de configuracion");
+	}
+	if (config != NULL ) {
+		free(config);
+	}
 }
