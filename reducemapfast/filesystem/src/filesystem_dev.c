@@ -147,6 +147,8 @@ int leer_config(){
 		}
 	}
 	fclose(config);
+	return EXIT_SUCCESS;
+
 }
 
 //Conectar a Marta
@@ -184,6 +186,7 @@ int conectar_nodos(){
         write(new_socket , message , strlen(message));
     }
      
+    return EXIT_SUCCESS;
     //if (new_socket<0)
     //{
     //    perror("accept failed");
