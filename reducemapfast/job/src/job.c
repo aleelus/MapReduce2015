@@ -7,8 +7,8 @@
  Description : Trabajo Practivo Sistemas Operativos 1C 2015
  Testing	 :
  ============================================================================
- */
 
+*/
 #include "job.h"
 
 int main(int argv, char** argc) {
@@ -21,11 +21,14 @@ int main(int argv, char** argc) {
 	//g_MensajeError = malloc(1 * sizeof(char));
 	//char* temp_file = tmpnam(NULL);
 
-	//logger = log_create(NOMBRE_ARCHIVO_LOG, "msp", true, LOG_LEVEL_TRACE);
+	logger = log_create(NOMBRE_ARCHIVO_LOG, "msp", true, LOG_LEVEL_TRACE);
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
+
+	//CreoSocket();
 	printf("Ok\n");
+
 	return 0;
 }
 
@@ -79,7 +82,7 @@ void LevantarConfig() {
 			Error("No se pudo leer el parametro RESULTADO");
 
 	} else {
-		//ErrorFatal("No se pudo abrir el archivo de configuracion");
+		Error("No se pudo abrir el archivo de configuracion");
 	}
 	if (config != NULL ) {
 		free(config);
@@ -88,6 +91,25 @@ void LevantarConfig() {
 
 #endif
 
+#if 1 // MÉTODO MANEJO DE SOCKETS
+	void CreoSocket()
+		{
+			int desc_socket=socket(AF_INET,SOCK_STREAM,0);
+			struct sockaddr_in socketdest;
+			if (desc_socket<0)
+			{
+				Error("No se pudo crear el socket");
+			}
+			else
+			{
+				socketdest.sin_family = AF_INET;
+				socketdest.sin_port = htons(g_Puerto_Marta);
+				socketdest.sin_addr.s_addr =  inet_addr(g_Ip_Marta);
+				memset(&(socketdest.sin_zero), '\0', 8);
+				bind(desc_socket,(struct sockaddr*)&socketdest, sizeof(struct sockaddr));
+			}
+		}
+#endif
 #if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {
 	char* nuevo;

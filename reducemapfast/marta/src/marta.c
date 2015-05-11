@@ -12,6 +12,28 @@
 #include "marta.h"
 
 int main(int argv, char** argc) {
+	//HARDCODEANDO
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	t_list *lista_nodos;
+	lista_nodos = list_create();
+	lista_archivos=list_create();
+
+	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000));
+	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",3500));
+	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200));
+	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600));
+	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050));
+
+	t_nodo *el_nodo;
+	int i=0;
+	while(i<list_size(lista_nodos)){
+		el_nodo = list_get(lista_nodos, i);
+		printf("Nodo: %s \t IP: %s \t Puerto: %d\n",el_nodo->nombreNodo,el_nodo->ipNodo,el_nodo->puertoNodo);
+		i++;
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//inicializamos los semaforos
 	//sem_init(&semaforoAccesoMemoria, 0, 1);
 	//sem_init(&semaforoMarcosLibres, 0, 0);
@@ -25,6 +47,7 @@ int main(int argv, char** argc) {
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
+
 
 
 	//Hilo orquestador conexiones
@@ -80,24 +103,75 @@ void Error(const char* mensaje, ...) {
 		free(nuevo);
 }
 #endif
+int chartToInt(char x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
 
-char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos) {
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+
+int posicionDeBufferAInt(char* buffer, int posicion) {
+	int logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return chartToInt(buffer[posicion]);
+}
+
+int ObtenerComandoMSJ(char* buffer) {
+//Hay que obtener el comando dado el buffer.
+//El comando está dado por el primer caracter, que tiene que ser un número.
+	return posicionDeBufferAInt(buffer, 0);
+}
+
+int obtenerTamanio (char *buffer , int dig_tamanio){
+	int x,digito,aux=0;
+	for(x=0;x<dig_tamanio;x++){
+		digito=posicionDeBufferAInt(buffer,2+x);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
+char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
+	char *bufferAux= malloc(1);
+	int digTamanio;
 	if (buffer != NULL ) {
 		free(buffer);
 	}
 
-	char* bufferAux = malloc(BUFFERSIZE * sizeof(char));
-	memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+	if(*cantRafaga==1){
+		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
+		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
 
-	if ((*bytesRecibidos = *bytesRecibidos
-			+ recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
-		Error(
-				"Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",
-				socket);
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
+
+		digTamanio=posicionDeBufferAInt(bufferAux,1);
+		*tamanio=obtenerTamanio(bufferAux,digTamanio);
+
+
+	}else if(*cantRafaga==2){
+		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
+		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%i", socket,
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
 			(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
@@ -108,17 +182,19 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	//printf("CantidadBytesAEnviar:%i\n",cantidadDeBytesAEnviar);
+	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
 
 	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
-	char * bufferLogueo = malloc(cantidadDeBytesAEnviar+1);
-	bufferLogueo[cantidadDeBytesAEnviar] = '\0';
-	memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
+
+	//char * bufferLogueo = malloc(5);
+	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
+
+	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) bufferLogueo);
+			(char*) buffer);
 
 	return bytecount;
 }
@@ -148,9 +224,258 @@ void ErrorFatal(const char* mensaje, ...) {
 	exit(EXIT_FAILURE);
 }
 
+char* digitosNombreArchivo(char *buffer,int *posicion){
+
+	char *nombreArch;
+	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
+
+	digito=posicionDeBufferAInt(buffer,*posicion);
+	for(i=1;i<=digito;i++){
+		algo=posicionDeBufferAInt(buffer,*posicion+i);
+		aux=aux*10+algo;
+	}
+	nombreArch = malloc(aux+1);
+	for(j=*posicion+i;j<*posicion+i+aux;j++){
+		nombreArch[x]=buffer[j];
+		x++;
+	}
+	nombreArch[x]='\0';
+	*posicion=*posicion+i+aux;
+	return nombreArch;
+}
+
+void cargarArchivoALista(char* nomArchivo, int id){
+
+	list_add(lista_archivos,archivo_create(nomArchivo,id));
+
+}
+void atiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
+
+	//BUFFER RECIBIDO = 2270 (EJEMPLO)
+	//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
+
+	char *nArchivo,*nResultado;
+	int digitosCantDeArchivos=0,cantDeArchivos=0;
+	int x,posActual=0;
+	int tieneCombiner;
+	*contIdJob=id_job;
+	t_archivo *el_archivo;
+
+	//wait(mutex)
+	id_job++;
+	//signal(mutex)
+
+	digitosCantDeArchivos=posicionDeBufferAInt(buffer,1);
+	cantDeArchivos=obtenerTamanio(buffer,digitosCantDeArchivos);
+	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
+	posActual=2+digitosCantDeArchivos;
+
+	for(x=0;x<cantDeArchivos;x++){
+		nArchivo=digitosNombreArchivo(buffer,&posActual);
+		cargarArchivoALista(nArchivo,*contIdJob);
+	}
+	nResultado=digitosNombreArchivo(buffer,&posActual);
+	tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
+
+	//Muestro por pantalla los Archivos
+	int i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		if (el_archivo->idJob == *contIdJob) {
+			el_archivo->nombreArchivoResultado=nResultado;
+			el_archivo->tieneCombiner=tieneCombiner;
+		}
+		i++;
+	}
+	*cantRafaga=1;
+}
+
+void recorrerArchivos(){
+	t_archivo * el_archivo;
+
+	int i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		printf("El id del Job:%d\n",el_archivo->idJob);
+		printf("El archivo:%s\n",el_archivo->nombreArchivo);
+		printf("El archivo de resultado:%s\n",el_archivo->nombreArchivoResultado);
+		printf("Tiene Combiner:%d\n",el_archivo->tieneCombiner);
+		i++;
+	}
+}
+
+void recorrerArrayListas(int cantidad){
+	t_dato * el_dato;
+
+	int i,j;
+	for(i=0;i<cantidad;i++){
+		j=0;
+		while(j<list_size(array_listas[i])){
+			el_dato = list_get(array_listas[i],j);
+			if(j==0){
+				printf("%s :::: ",el_dato->dato);
+			} else {
+				printf("%s--",el_dato->dato);
+			}
+			j++;
+		}
+		printf("\n");
+	}
+}
+
+
+void recorrerListaBloques(int id){
+	t_archivo * el_archivo;
+	t_bloque * el_bloque;
+
+	int i=0;
+	int j=0;
+
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		if(el_archivo->idJob == id && el_archivo->listaBloques != NULL){
+			printf("El id del Job:%d\n",el_archivo->idJob);
+			printf("El archivo:%s\n",el_archivo->nombreArchivo);
+			while(j<list_size(el_archivo->listaBloques)){
+				el_bloque = list_get(el_archivo->listaBloques, j);
+				printf("%s :: ",el_bloque->bloque);
+				//printf("Copia1:\n");
+				printf("%s--",el_bloque->array[0].nodo);
+				printf("%s  ",el_bloque->array[0].bloque);
+				//printf("Copia2:\n");
+				printf("%s--",el_bloque->array[1].nodo);
+				printf("%s  ",el_bloque->array[1].bloque);
+				//printf("Copia3:\n");
+				printf("%s--",el_bloque->array[2].nodo);
+				printf("%s  \n",el_bloque->array[2].bloque);
+				j++;
+			}
+			j=0;
+		}
+		i++;
+	}
+}
+
+void obtenerInfoDeNodos(int id_job){
+
+	t_archivo * el_archivo;
+	t_array_copias array[3];
+	t_bloque * el_bloque;
+
+	//Se carga la informacion de los bloques del archivo
+	int i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		if (el_archivo->idJob == id_job) {
+			//preguntar a FS por Archivo
+			//el_archivo->nombreArchivo";
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoA";
+			array[1].bloque = "Bloque30";
+			array[1].nodo = "NodoB";
+			array[2].bloque = "Bloque30";
+			array[2].nodo = "NodoD";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque0",array));
+			array[0].bloque = "Bloque10";
+			array[0].nodo = "NodoB";
+			array[1].bloque = "Bloque50";
+			array[1].nodo = "NodoE";
+			array[2].bloque = "Bloque40";
+			array[2].nodo = "NodoA";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque1",array));
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoG";
+			array[1].bloque = "Bloque50";
+			array[1].nodo = "NodoB";
+			array[2].bloque = "Bloque40";
+			array[2].nodo = "NodoJ";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque2",array));
+		}
+		i++;
+	}
+	printf("EL TAMAÑO:%d\n",list_size(el_archivo->listaBloques));
+	el_bloque = list_get(el_archivo->listaBloques,2);
+	printf("El BLOQUE:%s\n",el_bloque->array[0].bloque);
+}
+
+void funcionmagica(t_list* listaBloques){
+
+	t_bloque *el_bloque;
+	t_dato *el_dato;
+
+	int cantidadBloques;
+	int posicion=0;
+	int i,j,k;
+	cantidadBloques = list_size(listaBloques);
+
+	array_listas =(t_list**) malloc (cantidadBloques*3*sizeof(t_dato));
+
+	for(i=0;i<cantidadBloques*3;i++){
+		array_listas[i] = list_create();
+	}
+
+	for(i=0;i<cantidadBloques;i++){//recorro los bloques del archivo
+
+		el_bloque = list_get(listaBloques,i);
+
+		for(j=0;j<3;j++){          //recorro las 3 copias del bloque del archivo
+
+			for(k=0;k<cantidadBloques*3;k++){        //recorre el array de la lista de nodos y bloques
+
+				bool _true(void *elem) {
+					return ( !strcmp(((t_dato*) elem)->dato,el_bloque->array[j].nodo) );
+				}
+				//buscar si el nodo de la copia existe en una lista de array_lista
+
+				el_dato = list_find(array_listas[k], _true);
+
+				if(el_dato != NULL){
+					posicion = k;
+					k=cantidadBloques*3;// salgo del for (no se si deberia usar exit o break)
+				}
+
+			}
+
+			if(el_dato != NULL){
+
+				list_add(array_listas[posicion],dato_create(el_bloque->bloque));
+
+			}else{
+
+				int h = 0;
+				while(array_listas[h]->head != NULL){
+					h++;
+				}
+
+				list_add(array_listas[h],dato_create(el_bloque->array[j].nodo));
+				list_add(array_listas[h],dato_create(el_bloque->bloque));
+
+			}
+		}
+	}
+}
+
+void planificar(int id){
+	printf("laalala ESTOY PLANIFICANDO\n");
+	t_archivo *el_archivo;
+	int encontrado = 0;
+
+	int i=0;
+	while(i<list_size(lista_archivos) && !encontrado){
+		el_archivo = list_get(lista_archivos, i);
+		if(el_archivo->idJob == id) encontrado = 1;
+		i++;
+	}
+
+	funcionmagica(el_archivo->listaBloques);
+	recorrerArrayListas(list_size(el_archivo->listaBloques)*3);
+	//array[0] = nodoA, NodoB
+	//array[1] = NodoC, NodoA
+}
 
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
+	int id=-1;
 
 //Es el ID del programa con el que está trabajando actualmente el HILO.
 //Nos es de gran utilidad para controlar los permisos de acceso (lectura/escritura) del programa.
@@ -175,33 +500,55 @@ int AtiendeCliente(void * arg) {
 
 // Código de salida por defecto
 	int code = 0;
-
+	int cantRafaga=1,tamanio=0;
 	while ((!desconexionCliente) & g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
-		char * mensaje = "Hola";
+
+		char * mensajeOk = "Ok";
+
 		//Recibimos los datos del cliente
-		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
+		buffer = RecibirDatos(socket, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+
 
 		if (bytesRecibidos > 0) {
 			//Analisamos que peticion nos está haciendo (obtenemos el comando)
-			tipo_mensaje = 1; //ObtenerComandoMSJ(buffer);
+			tipo_mensaje = ObtenerComandoMSJ(buffer);
 
 			//Evaluamos los comandos
 			switch (tipo_mensaje) {
-			case MSJ_SALUDO:
-				string_append(&buffer, mensaje);
+			case ES_JOB:
+				if(cantRafaga==2){
+					printf("Implemento Job(atiendeJob)\n");
+					atiendeJob(&id,buffer,&cantRafaga);
+					obtenerInfoDeNodos(id);
+					planificar(id);
+					//
+				}else{
+					cantRafaga=2;
+				}
+				break;
+			case ES_FS:
+				printf("implementar atiendeFS\n");
+				//atiendeFS(buffer);
+				break;
+			case COMANDO:
+				printf("Muestre toda la lista de Archivos:");
+				recorrerArchivos();
+				break;
+			case COMANDOBLOQUES:
+				printf("Muestre toda la lista de Bloques:\n");
+				recorrerListaBloques(id);
 				break;
 			default:
-				string_append(&buffer, mensaje);
-				longitudBuffer=strlen(buffer);
 				break;
 			}
-			printf("\nRespuesta: %s\n",buffer);
+			longitudBuffer=strlen(mensajeOk);
+			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
-			EnviarDatos(socket, buffer,longitudBuffer);
+			EnviarDatos(socket, mensajeOk,longitudBuffer);
 		} else
 			desconexionCliente = 1;
 
@@ -253,8 +600,7 @@ void HiloOrquestadorDeConexiones() {
 
 		size_addr = sizeof(struct sockaddr_in);
 
-		if ((socket_client = accept(socket_host,
-				(struct sockaddr *) &client_addr, &size_addr)) != -1) {
+		if ((socket_client = accept(socket_host,(struct sockaddr *) &client_addr, &size_addr)) != -1) {
 			//Traza("Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d", inet_ntoa(client_addr.sin_addr), client_addr.sin_port, socket_client);
 			log_trace(logger,
 					"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
@@ -270,3 +616,5 @@ void HiloOrquestadorDeConexiones() {
 	}
 	CerrarSocket(socket_host);
 }
+
+

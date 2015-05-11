@@ -21,9 +21,9 @@
 
 // CONSTANTES //
 //Ruta del config
-#define PATH_CONFIG "config.cfg"
-//#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
-//#define NOMBRE_ARCHIVO_LOG 		   "msp.log"
+#define PATH_CONFIG "src/config.cfg"
+#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
+#define NOMBRE_ARCHIVO_LOG 		   "msp.log"
 
 //Ip de Marta
 char * g_Ip_Marta;
@@ -48,6 +48,9 @@ char * g_Resultado;
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
+
+// MÉTODOS SOCKETS
+void CreoSocket();
 
 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...);
