@@ -546,7 +546,7 @@ int AtiendeCliente(void * arg) {
 					AtiendeJob(&id,buffer,&cantRafaga);
 					ObtenerInfoDeNodos(id);
 					Planificar(id);
-					//
+					//EnviarPlanificacionAJob(id);
 				}else{
 					cantRafaga=2;
 				}
