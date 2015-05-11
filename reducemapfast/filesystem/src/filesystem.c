@@ -13,7 +13,7 @@
 #include "consola.h"
 
 int puerto_listen;								//Puerto de escucha
-char lista_nodos;								//Lista de Nodos necesarios para empezar
+char *lista_nodos;								//Lista de Nodos necesarios para empezar
 
 int main(int argv, char** argc) {
 
@@ -24,6 +24,8 @@ unsigned int i;									//numero de linea
 unsigned int puerto;							//puerto obtenido
 struct configuracion configuracion[1] = {{0}};	//Datos de configuracion
 FILE *config;									//Archivo de configuracion
+char *origen;
+char *nodo;
 
 
 
@@ -32,6 +34,12 @@ FILE *config;									//Archivo de configuracion
 		mostrarError(NoSePudoAbrirConfig);
 		return EXIT_FAILURE;
 		}
+
+	if ((lista_nodos = malloc(MAXLINEA+1)) == NULL)
+		return EXIT_FAILURE;
+
+	if ((nodo = malloc(MAXNODO+1)) == NULL)
+		return EXIT_FAILURE;
 
 	// Obtener valores de configuracion
 	while(fgets(linea, MAXLINEA, config) != NULL){
@@ -60,13 +68,20 @@ FILE *config;									//Archivo de configuracion
 		*/
 		if(sscanf(linea, "%*[^\n#]%c", &ch) != 1){
 			;	//Se ignoran las lineas en blanco y comentarios
-		} else {
-			if(sscanf(linea, " PUERTO_LISTEN= %u", &puerto_listen) == 1){
-				configuracion[1].puerto_listen = puerto_listen;
-				printf("%u\n", configuracion[1].puerto_listen);
-			} else {
-		printf("%s", linea);
-		}}}
+		} 
+
+		if(sscanf(linea, " PUERTO_LISTEN= %u", &configuracion[1].puerto_listen) == 1){
+			printf("%u\n", configuracion[1].puerto_listen);
+		} 
+
+		if(sscanf(linea, " LISTA_NODOS=[%s]", lista_nodos) == 1){
+			printf("%s\n", lista_nodos);
+			for(origen = strtok(lista_nodos, ","); origen; origen = strtok(NULL, ","))
+				printf("%s\n", origen);
+			} 
+			
+
+		}
 
 	//printf("Puerto: %u\n", configuracion[1].puerto_listen);
 	//printf("Nodos: %s\n", configuracion[1].lista_nodos);

@@ -28,11 +28,16 @@
 #define NOMBRE_ARCHIVO_LOG 		"msp.log"
 #define MAXLINEA				4096			//Maximo de linea de configuracion
 #define MAXPUERTO				4				//Maximo puerto
+#define MAXNODO					5				//Tamanio maximo del nombre de nodo
 
 // TIPOS //
+struct Nodos {
+	char *nodo;
+};
+
 struct configuracion {
-	unsigned puerto_listen;
-	char *lista_nodos;
+	unsigned int puerto_listen;
+	char* lista_nodos;
 };
 
 
