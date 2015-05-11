@@ -313,12 +313,13 @@ void recorrerArrayListas(int cantidad){
 		while(j<list_size(array_listas[i])){
 			el_dato = list_get(array_listas[i],j);
 			if(j==0){
-				printf("Nodo:%s\n",el_dato->dato);
+				printf("%s :::: ",el_dato->dato);
 			} else {
-				printf("Bloque:%s\n",el_dato->dato);
+				printf("%s--",el_dato->dato);
 			}
 			j++;
 		}
+		printf("\n");
 	}
 }
 
@@ -337,18 +338,19 @@ void recorrerListaBloques(int id){
 			printf("El archivo:%s\n",el_archivo->nombreArchivo);
 			while(j<list_size(el_archivo->listaBloques)){
 				el_bloque = list_get(el_archivo->listaBloques, j);
-				printf("Bloque:%s\n",el_bloque->bloque);
-				printf("Copia1:\n");
-				printf("Nodo:%s\n",el_bloque->array[0].nodo);
-				printf("Bloque:%s\n",el_bloque->array[0].bloque);
-				printf("Copia2:\n");
-				printf("Nodo:%s\n",el_bloque->array[1].nodo);
-				printf("Bloque:%s\n",el_bloque->array[1].bloque);
-				printf("Copia3:\n");
-				printf("Nodo:%s\n",el_bloque->array[2].nodo);
-				printf("Bloque:%s\n",el_bloque->array[2].bloque);
+				printf("%s :: ",el_bloque->bloque);
+				//printf("Copia1:\n");
+				printf("%s--",el_bloque->array[0].nodo);
+				printf("%s  ",el_bloque->array[0].bloque);
+				//printf("Copia2:\n");
+				printf("%s--",el_bloque->array[1].nodo);
+				printf("%s  ",el_bloque->array[1].bloque);
+				//printf("Copia3:\n");
+				printf("%s--",el_bloque->array[2].nodo);
+				printf("%s  \n",el_bloque->array[2].bloque);
 				j++;
 			}
+			j=0;
 		}
 		i++;
 	}
@@ -375,16 +377,16 @@ void obtenerInfoDeNodos(int id_job){
 			array[2].nodo = "NodoD";
 			list_add(el_archivo->listaBloques,bloque_create("Bloque0",array));
 			array[0].bloque = "Bloque10";
-			array[0].nodo = "NodoD";
+			array[0].nodo = "NodoB";
 			array[1].bloque = "Bloque50";
 			array[1].nodo = "NodoE";
 			array[2].bloque = "Bloque40";
-			array[2].nodo = "NodoF";
+			array[2].nodo = "NodoA";
 			list_add(el_archivo->listaBloques,bloque_create("Bloque1",array));
 			array[0].bloque = "Bloque30";
 			array[0].nodo = "NodoG";
 			array[1].bloque = "Bloque50";
-			array[1].nodo = "NodoH";
+			array[1].nodo = "NodoB";
 			array[2].bloque = "Bloque40";
 			array[2].nodo = "NodoJ";
 			list_add(el_archivo->listaBloques,bloque_create("Bloque2",array));
@@ -406,7 +408,9 @@ void funcionmagica(t_list* listaBloques){
 	int i,j,k;
 	cantidadBloques = list_size(listaBloques);
 
-	for(i=0;i<cantidadBloques;i++){
+	array_listas =(t_list**) malloc (cantidadBloques*3*sizeof(t_dato));
+
+	for(i=0;i<cantidadBloques*3;i++){
 		array_listas[i] = list_create();
 	}
 
@@ -414,18 +418,24 @@ void funcionmagica(t_list* listaBloques){
 
 		el_bloque = list_get(listaBloques,i);
 
-		for(j=0;j<3;j++){//recorro las 3 copias del bloque del archivo
+		for(j=0;j<3;j++){          //recorro las 3 copias del bloque del archivo
 
-			for(k=0;k<cantidadBloques*3;k++){//recorre el array de la lista de nodos y bloques
+			for(k=0;k<cantidadBloques*3;k++){        //recorre el array de la lista de nodos y bloques
 
 				bool _true(void *elem) {
-					return (((t_dato*) elem)->dato == el_bloque->array[j].nodo);
+					return ( !strcmp(((t_dato*) elem)->dato,el_bloque->array[j].nodo) );
 				}
 				//buscar si el nodo de la copia existe en una lista de array_lista
 
-				el_dato = list_find(array_listas[k], (void*) _true);
-				posicion = k;
+				el_dato = list_find(array_listas[k], _true);
+
+				if(el_dato != NULL){
+					posicion = k;
+					k=cantidadBloques*3;// salgo del for (no se si deberia usar exit o break)
+				}
+
 			}
+
 			if(el_dato != NULL){
 
 				list_add(array_listas[posicion],dato_create(el_bloque->bloque));
@@ -433,16 +443,20 @@ void funcionmagica(t_list* listaBloques){
 			}else{
 
 				int h = 0;
-				while(array_listas[h] != NULL) h++;
+				while(array_listas[h]->head != NULL){
+					h++;
+				}
+
 				list_add(array_listas[h],dato_create(el_bloque->array[j].nodo));
 				list_add(array_listas[h],dato_create(el_bloque->bloque));
+
 			}
 		}
 	}
 }
 
 void planificar(int id){
-	printf("laalala ESTOY PLANIFICANDO");
+	printf("laalala ESTOY PLANIFICANDO\n");
 	t_archivo *el_archivo;
 	int encontrado = 0;
 
@@ -453,7 +467,7 @@ void planificar(int id){
 		i++;
 	}
 
-	funcionmagica(el_archivo->listaBloques); //devolverte un array de conjunto de nodos.
+	funcionmagica(el_archivo->listaBloques);
 	recorrerArrayListas(list_size(el_archivo->listaBloques)*3);
 	//array[0] = nodoA, NodoB
 	//array[1] = NodoC, NodoA
@@ -525,7 +539,7 @@ int AtiendeCliente(void * arg) {
 				recorrerArchivos();
 				break;
 			case COMANDOBLOQUES:
-				printf("Muestre toda la lista de Bloques:");
+				printf("Muestre toda la lista de Bloques:\n");
 				recorrerListaBloques(id);
 				break;
 			default:

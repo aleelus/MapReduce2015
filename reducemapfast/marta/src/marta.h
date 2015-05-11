@@ -53,7 +53,7 @@ int g_Puerto_Nodo;
 t_list *lista_archivos;
 
 //Array de Listas para funcion magica
-t_list *array_listas[];
+t_list **array_listas;
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
