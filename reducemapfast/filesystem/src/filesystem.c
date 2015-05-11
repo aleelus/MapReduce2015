@@ -28,14 +28,14 @@ FILE *config;									//Archivo de configuracion
 
 
 	// Abrir Archivo de Configuracion
-	if ( (config = fopen(PATH_CONFIG,"rb")) == NULL ) {
+	if ( (config = fopen(PATH_CONFIG,"rt")) == NULL ) {
 		mostrarError(NoSePudoAbrirConfig);
 		return EXIT_FAILURE;
 		}
 
 	// Obtener valores de configuracion
 	while(fgets(linea, MAXLINEA, config) != NULL){
-		if(sscanf(linea, "%*[^\n#]%c", &ch) == 1)
+		/*if(sscanf(linea, "%*[^\n#]%c", &ch) == 1)
 			;	//Se ignoran las lineas en blanco y comentarios
 
 		if(sscanf(linea, " PUERTO_LISTEN %u = %u", &i, &puerto_listen) != 1){
@@ -57,11 +57,19 @@ FILE *config;									//Archivo de configuracion
 			//configuracion[1].lista_nodos = malloc(strlen(lista_nodos) +1);
 			//strcpy(configuracion[1].lista_nodos, lista_nodos);
 		}
+		*/
+		if(sscanf(linea, "%*[^\n#]%c", &ch) != 1){
+			;	//Se ignoran las lineas en blanco y comentarios
+		} else {
+			if(sscanf(linea, " PUERTO_LISTEN= %u", &puerto_listen) == 1){
+				configuracion[1].puerto_listen = puerto_listen;
+				printf("%u\n", configuracion[1].puerto_listen);
+			} else {
+		printf("%s", linea);
+		}}}
 
-		}
-
-	printf("Puerto: %u\n", configuracion[1].puerto_listen);
-	printf("Nodos: %s\n", configuracion[1].lista_nodos);
+	//printf("Puerto: %u\n", configuracion[1].puerto_listen);
+	//printf("Nodos: %s\n", configuracion[1].lista_nodos);
 	return 0;
 	}
 
