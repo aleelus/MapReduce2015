@@ -304,6 +304,25 @@ void recorrerArchivos(){
 	}
 }
 
+void recorrerArrayListas(int cantidad){
+	t_dato * el_dato;
+
+	int i,j;
+	for(i=0;i<cantidad;i++){
+		j=0;
+		while(j<list_size(array_listas[i])){
+			el_dato = list_get(array_listas[i],j);
+			if(j==0){
+				printf("Nodo:%s\n",el_dato->dato);
+			} else {
+				printf("Bloque:%s\n",el_dato->dato);
+			}
+			j++;
+		}
+	}
+}
+
+
 void recorrerListaBloques(int id){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
@@ -377,6 +396,69 @@ void obtenerInfoDeNodos(int id_job){
 	printf("El BLOQUE:%s\n",el_bloque->array[0].bloque);
 }
 
+void funcionmagica(t_list* listaBloques){
+
+	t_bloque *el_bloque;
+	t_dato *el_dato;
+
+	int cantidadBloques;
+	int posicion=0;
+	int i,j,k;
+	cantidadBloques = list_size(listaBloques);
+
+	for(i=0;i<cantidadBloques;i++){
+		array_listas[i] = list_create();
+	}
+
+	for(i=0;i<cantidadBloques;i++){//recorro los bloques del archivo
+
+		el_bloque = list_get(listaBloques,i);
+
+		for(j=0;j<3;j++){//recorro las 3 copias del bloque del archivo
+
+			for(k=0;k<cantidadBloques*3;k++){//recorre el array de la lista de nodos y bloques
+
+				bool _true(void *elem) {
+					return (((t_dato*) elem)->dato == el_bloque->array[j].nodo);
+				}
+				//buscar si el nodo de la copia existe en una lista de array_lista
+
+				el_dato = list_find(array_listas[k], (void*) _true);
+				posicion = k;
+			}
+			if(el_dato != NULL){
+
+				list_add(array_listas[posicion],dato_create(el_bloque->bloque));
+
+			}else{
+
+				int h = 0;
+				while(array_listas[h] != NULL) h++;
+				list_add(array_listas[h],dato_create(el_bloque->array[j].nodo));
+				list_add(array_listas[h],dato_create(el_bloque->bloque));
+			}
+		}
+	}
+}
+
+void planificar(int id){
+	printf("laalala ESTOY PLANIFICANDO");
+	t_archivo *el_archivo;
+	int encontrado = 0;
+
+	int i=0;
+	while(i<list_size(lista_archivos) && !encontrado){
+		el_archivo = list_get(lista_archivos, i);
+		if(el_archivo->idJob == id) encontrado = 1;
+		i++;
+	}
+
+	funcionmagica(el_archivo->listaBloques); //devolverte un array de conjunto de nodos.
+	recorrerArrayListas(list_size(el_archivo->listaBloques)*3);
+	//array[0] = nodoA, NodoB
+	//array[1] = NodoC, NodoA
+}
+
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
 	int id=-1;
@@ -428,7 +510,7 @@ int AtiendeCliente(void * arg) {
 					printf("Implemento Job(atiendeJob)\n");
 					atiendeJob(&id,buffer,&cantRafaga);
 					obtenerInfoDeNodos(id);
-					//planificar(&id);
+					planificar(id);
 					//
 				}else{
 					cantRafaga=2;

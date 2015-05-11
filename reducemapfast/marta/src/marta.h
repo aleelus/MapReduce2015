@@ -52,6 +52,9 @@ int g_Puerto_Nodo;
 //Lista de Archivos
 t_list *lista_archivos;
 
+//Array de Listas para funcion magica
+t_list *array_listas[];
+
 // METODOS CONFIGURACION //
 void LevantarConfig();
 
@@ -84,6 +87,17 @@ int id_job=0;
 #define COMANDOBLOQUES 8
 
 //ESTRUCTURAS//
+//Estructura de array para funcion magica
+typedef struct{
+	char*dato;
+}t_dato;
+
+static t_dato *dato_create(char *dato) {
+	t_dato *new = malloc(sizeof(t_dato));
+	new->dato = strdup(dato);
+	return new;
+}
+
 //Estructura de Array Copias
 typedef struct{
     char *nodo;
