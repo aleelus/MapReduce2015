@@ -103,7 +103,7 @@ void Error(const char* mensaje, ...) {
 		free(nuevo);
 }
 #endif
-int chartToInt(char x) {
+int ChartToInt(char x) {
 	int numero = 0;
 	char * aux = string_new();
 	string_append_with_format(&aux, "%c", x);
@@ -117,26 +117,26 @@ int chartToInt(char x) {
 }
 
 
-int posicionDeBufferAInt(char* buffer, int posicion) {
+int PosicionDeBufferAInt(char* buffer, int posicion) {
 	int logitudBuffer = 0;
 	logitudBuffer = strlen(buffer);
 
 	if (logitudBuffer <= posicion)
 		return 0;
 	else
-		return chartToInt(buffer[posicion]);
+		return ChartToInt(buffer[posicion]);
 }
 
 int ObtenerComandoMSJ(char* buffer) {
 //Hay que obtener el comando dado el buffer.
 //El comando está dado por el primer caracter, que tiene que ser un número.
-	return posicionDeBufferAInt(buffer, 0);
+	return PosicionDeBufferAInt(buffer, 0);
 }
 
-int obtenerTamanio (char *buffer , int dig_tamanio){
+int ObtenerTamanio (char *buffer , int dig_tamanio){
 	int x,digito,aux=0;
 	for(x=0;x<dig_tamanio;x++){
-		digito=posicionDeBufferAInt(buffer,2+x);
+		digito=PosicionDeBufferAInt(buffer,2+x);
 		aux=aux*10+digito;
 	}
 	return aux;
@@ -158,8 +158,8 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 		}
 
-		digTamanio=posicionDeBufferAInt(bufferAux,1);
-		*tamanio=obtenerTamanio(bufferAux,digTamanio);
+		digTamanio=PosicionDeBufferAInt(bufferAux,1);
+		*tamanio=ObtenerTamanio(bufferAux,digTamanio);
 
 
 	}else if(*cantRafaga==2){
@@ -224,14 +224,14 @@ void ErrorFatal(const char* mensaje, ...) {
 	exit(EXIT_FAILURE);
 }
 
-char* digitosNombreArchivo(char *buffer,int *posicion){
+char* DigitosNombreArchivo(char *buffer,int *posicion){
 
 	char *nombreArch;
 	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
 
-	digito=posicionDeBufferAInt(buffer,*posicion);
+	digito=PosicionDeBufferAInt(buffer,*posicion);
 	for(i=1;i<=digito;i++){
-		algo=posicionDeBufferAInt(buffer,*posicion+i);
+		algo=PosicionDeBufferAInt(buffer,*posicion+i);
 		aux=aux*10+algo;
 	}
 	nombreArch = malloc(aux+1);
@@ -244,12 +244,12 @@ char* digitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
-void cargarArchivoALista(char* nomArchivo, int id){
+void CargarArchivoALista(char* nomArchivo, int id){
 
 	list_add(lista_archivos,archivo_create(nomArchivo,id));
 
 }
-void atiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
+void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 
 	//BUFFER RECIBIDO = 2270 (EJEMPLO)
 	//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
@@ -265,17 +265,17 @@ void atiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	id_job++;
 	//signal(mutex)
 
-	digitosCantDeArchivos=posicionDeBufferAInt(buffer,1);
-	cantDeArchivos=obtenerTamanio(buffer,digitosCantDeArchivos);
+	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,1);
+	cantDeArchivos=ObtenerTamanio(buffer,digitosCantDeArchivos);
 	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
 	posActual=2+digitosCantDeArchivos;
 
 	for(x=0;x<cantDeArchivos;x++){
-		nArchivo=digitosNombreArchivo(buffer,&posActual);
-		cargarArchivoALista(nArchivo,*contIdJob);
+		nArchivo=DigitosNombreArchivo(buffer,&posActual);
+		CargarArchivoALista(nArchivo,*contIdJob);
 	}
-	nResultado=digitosNombreArchivo(buffer,&posActual);
-	tieneCombiner=posicionDeBufferAInt(buffer,strlen(buffer)-3);
+	nResultado=DigitosNombreArchivo(buffer,&posActual);
+	tieneCombiner=PosicionDeBufferAInt(buffer,strlen(buffer)-3);
 
 	//Muestro por pantalla los Archivos
 	int i=0;
@@ -290,7 +290,7 @@ void atiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	*cantRafaga=1;
 }
 
-void recorrerArchivos(){
+void RecorrerArchivos(){
 	t_archivo * el_archivo;
 
 	int i=0;
@@ -304,7 +304,7 @@ void recorrerArchivos(){
 	}
 }
 
-void recorrerArrayListas(int cantidad){
+void RecorrerArrayListas(int cantidad){
 	t_dato * el_dato;
 
 	int i,j;
@@ -324,7 +324,7 @@ void recorrerArrayListas(int cantidad){
 }
 
 
-void recorrerListaBloques(int id){
+void RecorrerListaBloques(int id){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
 
@@ -356,7 +356,7 @@ void recorrerListaBloques(int id){
 	}
 }
 
-void obtenerInfoDeNodos(int id_job){
+void ObtenerInfoDeNodos(int id_job){
 
 	t_archivo * el_archivo;
 	t_array_copias array[3];
@@ -390,6 +390,27 @@ void obtenerInfoDeNodos(int id_job){
 			array[2].bloque = "Bloque40";
 			array[2].nodo = "NodoJ";
 			list_add(el_archivo->listaBloques,bloque_create("Bloque2",array));
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoA";
+			array[1].bloque = "Bloque30";
+			array[1].nodo = "NodoB";
+			array[2].bloque = "Bloque30";
+			array[2].nodo = "NodoD";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque3",array));
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoA";
+			array[1].bloque = "Bloque30";
+			array[1].nodo = "NodoB";
+			array[2].bloque = "Bloque30";
+			array[2].nodo = "NodoD";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque4",array));
+			array[0].bloque = "Bloque30";
+			array[0].nodo = "NodoA";
+			array[1].bloque = "Bloque30";
+			array[1].nodo = "NodoB";
+			array[2].bloque = "Bloque30";
+			array[2].nodo = "NodoD";
+			list_add(el_archivo->listaBloques,bloque_create("Bloque5",array));
 		}
 		i++;
 	}
@@ -398,7 +419,7 @@ void obtenerInfoDeNodos(int id_job){
 	printf("El BLOQUE:%s\n",el_bloque->array[0].bloque);
 }
 
-void funcionmagica(t_list* listaBloques){
+void FuncionMagica(t_list* listaBloques){
 
 	t_bloque *el_bloque;
 	t_dato *el_dato;
@@ -455,7 +476,7 @@ void funcionmagica(t_list* listaBloques){
 	}
 }
 
-void planificar(int id){
+void Planificar(int id){
 	printf("laalala ESTOY PLANIFICANDO\n");
 	t_archivo *el_archivo;
 	int encontrado = 0;
@@ -467,8 +488,8 @@ void planificar(int id){
 		i++;
 	}
 
-	funcionmagica(el_archivo->listaBloques);
-	recorrerArrayListas(list_size(el_archivo->listaBloques)*3);
+	FuncionMagica(el_archivo->listaBloques);
+	RecorrerArrayListas(list_size(el_archivo->listaBloques)*3);
 	//array[0] = nodoA, NodoB
 	//array[1] = NodoC, NodoA
 }
@@ -522,9 +543,9 @@ int AtiendeCliente(void * arg) {
 			case ES_JOB:
 				if(cantRafaga==2){
 					printf("Implemento Job(atiendeJob)\n");
-					atiendeJob(&id,buffer,&cantRafaga);
-					obtenerInfoDeNodos(id);
-					planificar(id);
+					AtiendeJob(&id,buffer,&cantRafaga);
+					ObtenerInfoDeNodos(id);
+					Planificar(id);
 					//
 				}else{
 					cantRafaga=2;
@@ -536,11 +557,11 @@ int AtiendeCliente(void * arg) {
 				break;
 			case COMANDO:
 				printf("Muestre toda la lista de Archivos:");
-				recorrerArchivos();
+				RecorrerArchivos();
 				break;
 			case COMANDOBLOQUES:
 				printf("Muestre toda la lista de Bloques:\n");
-				recorrerListaBloques(id);
+				RecorrerListaBloques(id);
 				break;
 			default:
 				break;
