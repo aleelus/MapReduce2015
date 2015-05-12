@@ -27,7 +27,7 @@
 #define NOMBRE_ARCHIVO_LOG 		   "nodo.log"
 
 //Tamanio bloques 20mb
-#define TAMANIO_BLOQUE 20
+#define TAMANIO_BLOQUE 1024*1024*20
 //Puerto de escucha del filesystem
 int g_Puerto_Fs;
 
@@ -69,3 +69,8 @@ void Error(const char* mensaje, ...);
 
 // Logger del commons
 t_log* logger;
+
+//Funciones interfaz FileSystem
+char* getBloque(int numero);
+void setBloque(int numero, char*datos);
+char * getFileContent(char* nombre);
