@@ -35,6 +35,7 @@ typedef enum {
 #define MAXLINEA				4096			//Maximo de linea de configuracion
 #define MAXNODOS				5				//Tamanio maximo del nombre de nodo
 #define TAMANIO_BLOQUE			20480			//Tamanio maximo de bloque
+#define MAXDIRECTORIOS			1024			//Cantidad maxima de directorios
 
 
 // TIPOS //
@@ -46,6 +47,27 @@ struct configuracion {
 	unsigned int puerto_listen;
 	nodos* lista_nodos;
 };
+
+typedef struct {
+	char nodo[80];
+	int  nro_bloque;	
+} t_block;
+
+typedef struct {
+	t_block bloques[3];
+} t_bloques;
+
+struct t_archivo {
+	char nombre_archivo[255];	//Nombre del archivo
+	int padre;					//Directorio Padre
+	int estado;
+	t_bloques *bloques;
+};
+
+
+
+
+
 
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(error unError);					//Mostrar error

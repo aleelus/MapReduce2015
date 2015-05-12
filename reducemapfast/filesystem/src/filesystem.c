@@ -11,13 +11,14 @@
 
 #include "filesystem.h"
 
+
 int main(int argv, char** argc) {
 
 	// Abrir Archivo de Configuracion
 	leer_config();
 
 	// Conectar a Marta
-	conectar_marta();
+	//conectar_marta();
 
 	// Abrir conexiones de nodos
 	conectar_nodos();
