@@ -14,14 +14,37 @@
 
 int main(int argv, char** argc) {
 
+	int eleccion;
+
 	// Abrir Archivo de Configuracion
 	leer_config();
 
-	// Conectar a Marta
-	//conectar_marta();
-
 	// Abrir conexiones de nodos
 	conectar_nodos();
+
+	if (configuracion.cantidadNodos == 4){ 		//cantidad minima de nodos a conectarse
+
+		//Iniciar Mongo
+		iniciar_mongo();
+
+		// Conectar a Marta
+		conectar_marta();		//deberia ir un mutex.. creo..
+
+		// Iniciar consola
+		while(eleccion != 10){
+			// Solicitar opcion de comando
+			printf("Ejecute una opcion: ");
+
+	//	if (fgets(input, CANTMAX, stdin) == 0)
+	//		printf("Error al seleccionar comando\n");
+			scanf("%d", &eleccion);
+			ejecutarComando(eleccion);
+		}		
+
+
+	}
+
+	return EXIT_SUCCESS; 	
 
 }
 

@@ -188,16 +188,16 @@ void sockets_destroy_server(t_socket_server *server){
 
 //Crear socket
 t_socket *sockets_create(char* ip, int port){
-	t_socket* sckt = malloc( sizeof(t_socket) );
-	sckt->desc = socket(AF_INET, SOCK_STREAM, 0);
+	t_socket* socket_l = malloc( sizeof(t_socket) );
+	socket_l->desc = socket(AF_INET, SOCK_STREAM, 0);
 	int flag = 1;
-	setsockopt(sckt->desc, SOL_TCP, TCP_NODELAY, &flag, sizeof(flag));
-	if( !sockets_bind(sckt, ip, port) ){
-		free(sckt);
+	setsockopt(socket_l->desc, SOL_TCP, TCP_NODELAY, &flag, sizeof(flag));
+	if( !sockets_bind(socket_l, ip, port) ){
+		free(socket_l);
 		return NULL;
 	}
-	sockets_setMode(sckt, SOCKETMODE_BLOCK);
-	return sckt;
+	sockets_setMode(socket_l, SOCKETMODE_BLOCK);
+	return socket_l;
 }
 
 //Generar socketsaddr
@@ -219,28 +219,28 @@ void sockets_setState(t_socket_client *client, e_socket_state state){
 };
 
 //Libera socket
-void sockets_destroy(t_socket* sckt){
-	if( sckt->desc > 0 ){
-		close(sckt->desc);
+void sockets_destroy(t_socket* socket){
+	if( socket->desc > 0 ){
+		close(socket->desc);
 	}
-	free(sckt->my_addr);
-	free(sckt);
+	free(socket->my_addr);
+	free(socket);
 };
 
 //Bindea socket
-int sockets_bind(t_socket* sckt, char* ip, int port){
+int sockets_bind(t_socket* socket, char* ip, int port){
 	int yes=1;
-	sckt->my_addr = sockets_makeaddr(ip,port);
+	socket->my_addr = sockets_makeaddr(ip,port);
 
-	if (setsockopt(sckt->desc, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
-		free(sckt->my_addr);
-		sckt->my_addr = NULL;
+	if (setsockopt(socket->desc, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+		free(socket->my_addr);
+		socket->my_addr = NULL;
 		return 0;
 	}
 
-	if (bind(sckt->desc, (struct sockaddr *)sckt->my_addr, sizeof(struct sockaddr_in)) == -1) {
-		free(sckt->my_addr);
-		sckt->my_addr = NULL;
+	if (bind(socket->desc, (struct sockaddr *)socket->my_addr, sizeof(struct sockaddr_in)) == -1) {
+		free(socket->my_addr);
+		socket->my_addr = NULL;
 		return 0;
 	}
 	return 1;

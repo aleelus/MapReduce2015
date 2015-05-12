@@ -11,18 +11,9 @@
 #include <commons/collections/list.h>
 #include <commons/log.h>
 #include <semaphore.h>
-
-
-typedef enum {
-	CantidadArgumentosIncorrecta,
-	NoEsUnVolumen,
-	NoSePudoAbrirConfig,
-	NoSePuedeObtenerPuerto,
-	NoSePuedeObtenerNodos,
-	ErrorEnLectura,
-	ErrorEnEscritura,
-	OtroError,
-} error;
+//#include <usr/local/include/libbson-1.0/bson.h>
+//#include <usr/local/include/libmongoc-1.0/mongoc.h>
+#include <stdio.h>
 
 
 #define IP 						"127.0.0.1"
@@ -38,6 +29,17 @@ typedef enum {
 #define MAXDIRECTORIOS			1024			//Cantidad maxima de directorios
 
 
+typedef enum {
+	CantidadArgumentosIncorrecta,
+	NoEsUnVolumen,
+	NoSePudoAbrirConfig,
+	NoSePuedeObtenerPuerto,
+	NoSePuedeObtenerNodos,
+	ErrorEnLectura,
+	ErrorEnEscritura,
+	OtroError,
+} error;
+
 // TIPOS //
 typedef struct {
 	char nodo;
@@ -46,6 +48,7 @@ typedef struct {
 struct configuracion {
 	unsigned int puerto_listen;
 	nodos* lista_nodos;
+	int cantidadNodos;
 };
 
 typedef struct {
@@ -64,10 +67,7 @@ struct t_archivo {
 	t_bloques *bloques;
 };
 
-
-
-
-
+	struct configuracion configuracion;				//Datos de configuracion
 
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(error unError);					//Mostrar error
@@ -87,7 +87,7 @@ int leer_config();									//Leer archivo de configuracion
 int conectar_nodos();								//Conectar nodos
 int conectar_marta();								//Conectar a marta
 
-
+void iniciar_mongo();								//Inicar Mongo DB		
 
 // VARIABLES GLOBALES //
 

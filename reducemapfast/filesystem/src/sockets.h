@@ -1,4 +1,7 @@
 
+#ifndef SOCKETS_H_
+#define SOCKETS_H_
+
 #include <sys/select.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -80,6 +83,8 @@ void 			sockets_destroy_server(t_socket_server *server);							//Termina socket
 t_socket 		*sockets_create(char* ip, int port);										//Crear socket
 
 void 			sockets_setState(t_socket_client *client, e_socket_state state);			//Setea estado
-void 			sockets_destroy(t_socket* sckt);											//Libera socket
-int 			sockets_bind(t_socket* sckt, char* ip, int port);							//Bindea socket
+void 			sockets_destroy(t_socket* socket);											//Libera socket
+int 			sockets_bind(t_socket* socket, char* ip, int port);							//Bindea socket
 int 			sockets_write(t_socket_client *client, void *data, int datalen);			//Escribir en cliente
+
+#endif
