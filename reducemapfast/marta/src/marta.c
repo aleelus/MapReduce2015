@@ -494,9 +494,45 @@ void Planificar(int id){
 	//array[1] = NodoC, NodoA
 }
 
+void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
+
+
+
+	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
+	printf("RAFAGA:%d\n",tipo_mensaje);
+	if(*cantRafaga == 2){
+		switch(tipo_mensaje){
+		case RECIBIR_ARCHIVO:
+			AtiendeJob(id,buffer,cantRafaga);
+			*cantRafaga=0;
+			ObtenerInfoDeNodos(*id);
+			Planificar(*id);
+			//EnviarPlanificacionAJob(id);
+			*cantRafaga=1;
+			break;
+		case NOTIFICACION_NODO:
+			break;
+		case RECIBIDO_OK:
+			break;
+		default:
+			break;
+		}
+		*mensaje = "Ok";
+	} else {
+		if (*cantRafaga==1) {
+			*mensaje = "Ok";
+			*cantRafaga = 2;
+		} else {
+			*mensaje = "No";
+		}
+	}
+}
+
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
 	int id=-1;
+	cantHilos++;
+	printf("Hilo numero:%d\n",cantHilos);
 
 //Es el ID del programa con el que está trabajando actualmente el HILO.
 //Nos es de gran utilidad para controlar los permisos de acceso (lectura/escritura) del programa.
@@ -506,8 +542,8 @@ int AtiendeCliente(void * arg) {
 	int longitudBuffer;
 	//printf("ENTRE");
 
-// Es el encabezado del mensaje. Nos dice que acción se le está solicitando a la msp
-	int tipo_mensaje = 0;
+// Es el encabezado del mensaje. Nos dice quien envia el mensaje
+	int emisor = 0;
 
 // Dentro del buffer se guarda el mensaje recibido por el cliente.
 	char* buffer;
@@ -522,13 +558,12 @@ int AtiendeCliente(void * arg) {
 // Código de salida por defecto
 	int code = 0;
 	int cantRafaga=1,tamanio=0;
+	char * mensaje;
 	while ((!desconexionCliente) & g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
-
-		char * mensajeOk = "Ok";
 
 		//Recibimos los datos del cliente
 		buffer = RecibirDatos(socket, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
@@ -536,24 +571,16 @@ int AtiendeCliente(void * arg) {
 
 		if (bytesRecibidos > 0) {
 			//Analisamos que peticion nos está haciendo (obtenemos el comando)
-			tipo_mensaje = ObtenerComandoMSJ(buffer);
+			emisor = ObtenerComandoMSJ(buffer);
 
 			//Evaluamos los comandos
-			switch (tipo_mensaje) {
+			switch (emisor) {
 			case ES_JOB:
-				if(cantRafaga==2){
-					printf("Implemento Job(atiendeJob)\n");
-					AtiendeJob(&id,buffer,&cantRafaga);
-					ObtenerInfoDeNodos(id);
-					Planificar(id);
-					//EnviarPlanificacionAJob(id);
-				}else{
-					cantRafaga=2;
-				}
+				implementoJob(&id,buffer,&cantRafaga,&mensaje);
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");
-				//atiendeFS(buffer);
+				//implementoFS(buffer,&cantRafaga,&mensaje);
 				break;
 			case COMANDO:
 				printf("Muestre toda la lista de Archivos:");
@@ -566,10 +593,10 @@ int AtiendeCliente(void * arg) {
 			default:
 				break;
 			}
-			longitudBuffer=strlen(mensajeOk);
+			longitudBuffer=strlen(mensaje);
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
-			EnviarDatos(socket, mensajeOk,longitudBuffer);
+			EnviarDatos(socket, mensaje,longitudBuffer);
 		} else
 			desconexionCliente = 1;
 

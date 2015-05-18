@@ -25,6 +25,11 @@
 //#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "marta.log"
 
+//Constantes de Manejo de Job
+#define RECIBIR_ARCHIVO 1
+#define NOTIFICACION_NODO 2
+#define RECIBIDO_OK 3
+
 //Tamaño del buffer
 #define BUFFERSIZE 10
 
@@ -63,6 +68,9 @@ void Error(const char* mensaje, ...);
 
 // Logger del commons
 t_log* logger;
+
+//Contador de Hilos
+int cantHilos=0;
 
 // Definimos los hilos principales
 pthread_t hOrquestadorConexiones, hConsola;
