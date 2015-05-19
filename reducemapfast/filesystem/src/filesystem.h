@@ -11,8 +11,8 @@
 #include <commons/collections/list.h>
 #include <commons/log.h>
 #include <semaphore.h>
-//#include <usr/local/include/libbson-1.0/bson.h>
-//#include <usr/local/include/libmongoc-1.0/mongoc.h>
+#include <bson.h>
+#include <mongoc.h>
 #include <stdio.h>
 
 
