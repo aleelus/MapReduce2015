@@ -19,24 +19,30 @@ int main(int argv, char** argc) {
 	printf("el tamanio de pag es %d",pagina);
 
 	//char* temp_file = tmpnam(NULL);
-
+	char* temp_file = getFileContent("temporalPrueba.tmp");
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "nodo", true, LOG_LEVEL_TRACE);
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
 	printf("el archivo es %s \n",g_Archivo_Bin);
-	archivoEspacioDatos= fopen(g_Archivo_Bin, "r+");
+	if(( archivoEspacioDatos = fopen(g_Archivo_Bin, "r+b") ) == NULL){
+		//Si no se pudo abrir, imprimir el error y abortar;
+		fprintf(stderr, "Error al abrir el archivo '%s': %s\n", g_Archivo_Bin, strerror(errno));
+		abort();
+	}
 	//mapeo();
 	printf("Escriba el numero de bloque que quiere escribir.\n");
 	int numero;
 	scanf("%d", &numero);
 	printf("Escriba lo que quiere grabar en el bloque.\n");
-	char* datos = "";
+	char* datos = "Este es el bloque 2";
 	setBloque(numero,datos);
 	printf("Escriba el numero de bloque que quiere ver.\n");
 	scanf("%d", &numero);
 	char * bloqueSolicitado;
 		bloqueSolicitado = getBloque(numero);
-		munmap( bloqueSolicitado, TAMANIO_BLOQUE );
+		printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloqueSolicitado);
+		free(bloqueSolicitado);
+		//munmap( bloqueSolicitado, TAMANIO_BLOQUE );
 
 
 	printf("Ok\n");
@@ -56,9 +62,9 @@ void grabarBloque(){
 		//Libero el puntero
 }
 
-int tamanio_archivo(int fd){
+int tamanio_archivo(char* nomArch){
 	struct stat buf;
-	fstat(fd, &buf);
+	stat(nomArch, &buf);
 	return buf.st_size;
 }
 
@@ -89,7 +95,7 @@ void mapeo(){
 	//Libero lo mapeado y no cierro el archivo aca xq lo cierro en el main.
 	}
 
-char* getBloque(int numero){
+/* char* getBloque(int numero){
 	char* bloque;
 	int fd= fileno(archivoEspacioDatos);
 	int offset = numero*5120;
@@ -101,9 +107,22 @@ char* getBloque(int numero){
 	printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
 
 	return bloque;
+}*/
+char* getBloque(int numero){
+	char* bloque = malloc(TAMANIO_BLOQUE);
+	long int offset=numero*TAMANIO_BLOQUE;
+	fseek(archivoEspacioDatos, offset, SEEK_SET);
+	fread(bloque, sizeof(char), TAMANIO_BLOQUE, archivoEspacioDatos);
+	return bloque;
 }
 
+
 void setBloque(int numero, char*datos){
+	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
+			//Si no se pudo abrir, imprimir el error y abortar;
+			printf("El bloque no existe en el archivo. \n");
+			abort();
+		}
 	long int tamanio = TAMANIO_BLOQUE; //Tamanio del bloque 20mb
 	char*txtBloq = malloc(TAMANIO_BLOQUE);
 	memset(txtBloq, '0', tamanio * sizeof(char));
@@ -111,6 +130,7 @@ void setBloque(int numero, char*datos){
 	memcpy(txtBloq, datos, strlen(datos)+1);
 	//Copia los datos a grabar en el bloque auxiliar
 	long int offset=numero*TAMANIO_BLOQUE;
+
 	fseek(archivoEspacioDatos, offset, SEEK_SET);
 	//Posicion el puntero en el bloque pedido
 	fwrite(txtBloq, sizeof(char), tamanio, archivoEspacioDatos);
@@ -123,11 +143,73 @@ void setBloque(int numero, char*datos){
 
 
 char * getFileContent(char* nombre){
-	char* contenido;
+	FILE* archivoTemporal;
+	static char ruta[] = "DIR_TEMP";
+	char* nombreT = string_new();
+	string_append(&nombreT,ruta);
+	string_append(&nombreT,"/");
+	string_append(&nombreT,nombre);
+	char fname[PATH_MAX];
+	strcpy(fname,nombreT);
+	printf("%s \n",fname);
+	char* contenido= malloc(tamanio_archivo(fname));
 	//Busca el archivo temporal nombre y devuelve su contenido
-
-
+	if(( archivoTemporal = fopen(fname, "r+b") ) == NULL){
+			//Si no se pudo abrir, imprimir el error y abortar;
+			fprintf(stderr, "Error al abrir el archivo '%s': %s\n", fname, strerror(errno));
+			abort();
+		}
+	fread(contenido, sizeof(char),tamanio_archivo(fname),archivoTemporal);
+	printf("Filename is %s\n", fname);
+	printf("Received string: %s", contenido);
 	return contenido;
+}
+
+int pipesPrueba(void)
+{
+        int fd[2], nbytes, temp;
+        pid_t   childpid;
+        char*    string = "Hello, world!\nBomba la loca \nAloha manola\n";
+        char    readbuffer[80];
+        static char template[] = "/tmp/mytemporalXXXXXX";
+        char fname[PATH_MAX];
+
+        pipe(fd);
+
+        if((childpid = fork()) == -1)
+        {
+                perror("fork");
+                exit(1);
+        }
+
+        if(childpid == 0)
+        {
+                /* Proceso hijo cierra la entrada del pipe */
+                close(fd[0]);
+
+                /* Manda 'string' por la salida del pipe*/
+                write(fd[1], string, (strlen(string)+1));
+
+
+
+                close(fd);				/* Cierro el temporal */
+        }
+        else
+        {
+                /* Proceso padre cierra la salida del pipe */
+                close(fd[1]);
+                /* Leo un string por el pipe */
+                nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
+                /* Creo un archivo temporal a donde voy a hacer sort*/
+                strcpy(fname,template);
+                temp =  mkstemp(fname);
+                write(temp, string, (strlen(string)+1));
+                printf("Filename is %s\n", fname);
+                printf("Received string: %s", readbuffer);
+                /* Ejecuto sort sobre el archivo temporal*/
+                execlp("sort","sort",fname,NULL);
+        }
+        return(0);
 }
 
 

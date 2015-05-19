@@ -19,7 +19,7 @@
 #include <commons/collections/list.h>
 #include <commons/log.h>
 #include <semaphore.h>
-
+#include <limits.h>	/* for PATH_MAX */
 // CONSTANTES //
 //Ruta del config
 #define PATH_CONFIG "config.cfg"
