@@ -22,9 +22,15 @@ int main(int argv, char** argc) {
 	//char* temp_file = tmpnam(NULL);
 
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "job", true, LOG_LEVEL_TRACE);
-	char * buffer;
-	int tamanio=0,cantRafaga=1;
+	char * buffer,*nomRes;
+	char *bufferArchivos=string_new();
+
+
+
+
+	int tamanio=10,cantRafaga=1;
 	int bytesRecibidos;
+	int j=0,contadorArchivos=0;
 	buffer = string_new();
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
@@ -32,9 +38,28 @@ int main(int argv, char** argc) {
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
 
+	obtenerArrayArchivos(&contadorArchivos);
+	nomRes=obtenerNombreResultado();
+	//Agrego el nombre de Resultado al final de array_archivos
+	array_archivos[contadorArchivos]=nomRes;
+	//Muestro los archivos por pantalla
+	printf("***********************\n");
+	for(j=0;j<contadorArchivos;j++){
+		printf("Archivo %d: %s\n",j,array_archivos[j]);
+	}
+	printf("Resultado: %s\n",array_archivos[contadorArchivos]);
+	printf("***********************\n");
+
+
+
+	bufferArchivos=procesarArchivos(bufferArchivos,contadorArchivos);
+
+	printf("=======> Buffer a Enviar a MaRTA =======> %s \n",bufferArchivos);
+
 	//CreoSocket();
 	conectarMarta();
-	EnviarDatos("2270", strlen("2270"));
+	EnviarDatos("2270", 10);
+	EnviarDatos("213210file02.txt211file000.txt210file02.txt213resultado.txt1", 70);
 
 	while ((!desconexionCliente) & g_Ejecutando) {
 			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
@@ -72,11 +97,11 @@ int main(int argv, char** argc) {
 					break;
 				}*/
 				printf("--------El BUFFER:%s\n",buffer);
+
 				//longitudBuffer=strlen(mensaje);
 				//printf("\nRespuesta: %s\n",buffer);
 				// Enviamos datos al cliente.
 				//EnviarDatos(socket, mensaje,longitudBuffer);
-				EnviarDatos("213210file02.txt211file000.txt210file02.txt213resultado.txt1", strlen("213210file02.txt211file000.txt210file02.txt213resultado.txt1"));
 			} else
 				desconexionCliente = 1;
 
@@ -87,6 +112,85 @@ int main(int argv, char** argc) {
 	//	return code;
 
 	return 0;
+}
+
+char * procesarArchivos (char *bufferArch,int contArch){
+	//2269
+	//212220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
+
+	int j=0;
+	int tam=0,contDig=0,tamDigArch=0,cont=0,combiner=9;
+
+	tamDigArch=contArch;
+	while(tamDigArch>1){
+		tamDigArch=tamDigArch/10;
+		cont++;
+	}
+	string_append(&bufferArch,"2");
+	string_append(&bufferArch,string_itoa(cont));
+	string_append(&bufferArch,string_itoa(contArch));
+
+	for(j=0;j<contArch;j++){
+		tam=strlen(array_archivos[j]);
+		contDig=0;
+		while(tam>1){
+			tam=tam/10;
+			contDig++;
+		}
+		string_append(&bufferArch,string_itoa(contDig));
+		string_append(&bufferArch,string_itoa(strlen(array_archivos[j])));
+		string_append(&bufferArch,array_archivos[j]);
+	}
+	if(strcmp(g_Combiner,"SI")==0)
+		combiner=1;
+	else
+		combiner=0;
+
+	string_append(&bufferArch,string_itoa(combiner));
+	string_append(&bufferArch,"\0");
+
+	return bufferArch;
+
+}
+char* obtenerNombreResultado(){
+	char **array;
+	int cont=0;
+	array =(char**) malloc (strlen(g_Resultado));
+	array=string_split(g_Resultado,"/");
+	while (array[cont]!=NULL){
+				cont++;
+	}
+	return array[cont-1];
+}
+void obtenerArrayArchivos(int *contadorArchivos){
+
+	char **array;
+	int cont=0,j=0,i=0;
+
+	array =(char**) malloc (strlen(g_Archivos));
+		array=string_split(g_Archivos,"/");
+
+		while (array[cont]!=NULL){
+			for(j=0;j<strlen(array[cont]);j++){
+				if(array[cont][j]=='.'){
+					*contadorArchivos=*contadorArchivos+1;//no me tomaba el *contadorArchivos++ XD
+				}
+			}
+			cont++;
+		}
+		array_archivos=(char**) malloc (*contadorArchivos*strlen(g_Archivos)+strlen(g_Resultado));
+		cont=0;
+		while (array[cont]!=NULL){
+				for(j=0;j<strlen(array[cont]);j++){
+					if(array[cont][j]=='.'){
+							array_archivos[i]=array[cont];
+							i++;
+					}
+				}
+				cont++;
+		}
+
+
 }
 
 int ChartToInt(char x) {

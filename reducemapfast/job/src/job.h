@@ -31,6 +31,10 @@
 void conectarMarta();
 int EnviarDatos(char*,int);
 char* RecibirDatos(char *, int *,int *,int *);
+void obtenerArrayArchivos(int *);
+char* obtenerNombreResultado();
+char * procesarArchivos (char *,int);
+
 
 //Ip de Marta
 char * g_Ip_Marta;
@@ -55,6 +59,9 @@ char* g_Archivos;
 
 //Archivo donde van a estar los resultados
 char * g_Resultado;
+
+//Array de nombres de archivos
+char **array_archivos;
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
