@@ -21,16 +21,196 @@ int main(int argv, char** argc) {
 	//g_MensajeError = malloc(1 * sizeof(char));
 	//char* temp_file = tmpnam(NULL);
 
-	logger = log_create(NOMBRE_ARCHIVO_LOG, "msp", true, LOG_LEVEL_TRACE);
+	logger = log_create(NOMBRE_ARCHIVO_LOG, "job", true, LOG_LEVEL_TRACE);
+	char * buffer;
+	int tamanio=0,cantRafaga=1;
+	int bytesRecibidos;
+	buffer = string_new();
+	int desconexionCliente = 0;
+	int g_Ejecutando = 1;
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
 
 	//CreoSocket();
-	printf("Ok\n");
+	conectarMarta();
+	EnviarDatos("2270", strlen("2270"));
+
+	while ((!desconexionCliente) & g_Ejecutando) {
+			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+			if (buffer != NULL )
+				free(buffer);
+			buffer = string_new();
+			//buffer = NULL;
+
+			//Recibimos los datos del cliente
+			buffer = RecibirDatos(buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+
+			printf("BytesRecibidos:%d\n",bytesRecibidos);
+			if (bytesRecibidos>0) {
+				//Analisamos que peticion nos está haciendo (obtenemos el comando)
+				/*emisor = ObtenerComandoMSJ(buffer);
+
+				//Evaluamos los comandos
+				switch (emisor) {
+				case ES_JOB:
+					implementoJob(&id,buffer,&cantRafaga,&mensaje);
+					break;
+				case ES_FS:
+					printf("implementar atiendeFS\n");
+					//implementoFS(buffer,&cantRafaga,&mensaje);
+					break;
+				case COMANDO:
+					printf("Muestre toda la lista de Archivos:");
+					RecorrerArchivos();
+					break;
+				case COMANDOBLOQUES:
+					printf("Muestre toda la lista de Bloques:\n");
+					RecorrerListaBloques(id);
+					break;
+				default:
+					break;
+				}*/
+				printf("--------El BUFFER:%s\n",buffer);
+				//longitudBuffer=strlen(mensaje);
+				//printf("\nRespuesta: %s\n",buffer);
+				// Enviamos datos al cliente.
+				//EnviarDatos(socket, mensaje,longitudBuffer);
+				EnviarDatos("213210file02.txt211file000.txt210file02.txt213resultado.txt1", strlen("213210file02.txt211file000.txt210file02.txt213resultado.txt1"));
+			} else
+				desconexionCliente = 1;
+
+		}
+
+		//CerrarSocket(socket);
+
+	//	return code;
 
 	return 0;
 }
+
+int ChartToInt(char x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+int PosicionDeBufferAInt(char* buffer, int posicion) {
+	int logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return ChartToInt(buffer[posicion]);
+}
+
+int ObtenerTamanio (char *buffer , int dig_tamanio){
+	int x,digito,aux=0;
+	for(x=0;x<dig_tamanio;x++){
+		digito=PosicionDeBufferAInt(buffer,2+x);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
+char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
+	*bytesRecibidos = 0;
+	char *bufferAux= malloc(1);
+	int digTamanio;
+	if (buffer != NULL ) {
+		free(buffer);
+	}
+
+	if(*cantRafaga==1){
+		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
+		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, BUFFERSIZE, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
+		}
+
+		digTamanio=PosicionDeBufferAInt(bufferAux,1);
+		*tamanio=ObtenerTamanio(bufferAux,digTamanio);
+
+
+	}else if(*cantRafaga==2){
+		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
+		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, *tamanio, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
+		}
+	}
+
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta,
+			(char*) bufferAux, strlen(bufferAux));
+	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
+}
+
+
+int EnviarDatos(char *buffer, int cantidadDeBytesAEnviar) {
+// Retardo antes de contestar una solicitud
+	//sleep(g_Retardo / 1000);
+
+	int bytecount;
+
+	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+
+	if ((bytecount = send(socket_Marta, buffer, cantidadDeBytesAEnviar, 0)) == -1)
+		Error("No puedo enviar información a al clientes. Socket: %d", socket_Marta);
+
+	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
+
+	//char * bufferLogueo = malloc(5);
+	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
+
+	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
+	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket_Marta,
+			(char*) buffer);
+
+	return bytecount;
+}
+
+
+void conectarMarta() {
+
+	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON MARTA
+	log_info(logger, "Intentando conectar a Marta\n");
+	//char * puerto = "7000";
+	//conectar con Marta
+	struct addrinfo hints;
+	struct addrinfo *serverInfo;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
+	hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
+
+
+	if (getaddrinfo(g_Ip_Marta, g_Puerto_Marta, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
+		log_info(logger,
+				"ERROR: cargando datos de conexion socket_Marta");
+	}
+
+	if ((socket_Marta = socket(serverInfo->ai_family, serverInfo->ai_socktype,
+			serverInfo->ai_protocol)) < 0) {
+		log_info(logger, "ERROR: crear socket_Marta");
+	}
+	if (connect(socket_Marta, serverInfo->ai_addr, serverInfo->ai_addrlen)
+			< 0) {
+		log_info(logger, "ERROR: conectar socket_Marta");
+	}
+	freeaddrinfo(serverInfo);	// No lo necesitamos mas
+
+}
+
 
 
 #if 1 // METODOS CONFIGURACION //
@@ -42,12 +222,14 @@ void LevantarConfig() {
 		// Obtenemos la ip de Marta
 		if (config_has_property(config, "IP_MARTA")) {
 			g_Ip_Marta = config_get_string_value(config, "IP_MARTA");
+			//printf("IP:%s",g_Ip_Marta);
 		} else
 			Error("No se pudo leer el parametro IP_MARTA");
 
 		// Obtenemos el puerto de escucha de Marta
 		if (config_has_property(config, "PUERTO_MARTA")) {
-			g_Puerto_Marta = config_get_int_value(config,"PUERTO_MARTA");
+			g_Puerto_Marta = config_get_string_value(config,"PUERTO_MARTA");
+			//printf("IP:%d",g_Puerto_Marta);
 		} else
 			Error("No se pudo leer el parametro PUERTO_MARTA");
 
@@ -91,7 +273,7 @@ void LevantarConfig() {
 
 #endif
 
-#if 1 // MÉTODO MANEJO DE SOCKETS
+/*#if 1 // MÉTODO MANEJO DE SOCKETS
 	void CreoSocket()
 		{
 			int desc_socket=socket(AF_INET,SOCK_STREAM,0);
@@ -110,6 +292,7 @@ void LevantarConfig() {
 			}
 		}
 #endif
+*/
 #if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {
 	char* nuevo;

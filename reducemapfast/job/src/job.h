@@ -18,18 +18,28 @@
 #include <commons/collections/list.h>
 #include <commons/log.h>
 #include <semaphore.h>
+#include <netdb.h>
 
 // CONSTANTES //
 //Ruta del config
-#define PATH_CONFIG "src/config.cfg"
+#define PATH_CONFIG "config.cfg"
 #define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "msp.log"
+#define BUFFERSIZE 10
+
+// METODOS SOCKET //
+void conectarMarta();
+int EnviarDatos(char*,int);
+char* RecibirDatos(char *, int *,int *,int *);
 
 //Ip de Marta
 char * g_Ip_Marta;
 
 //Puerto de Marta
-int g_Puerto_Marta;
+char * g_Puerto_Marta;
+
+//Socket Marta
+int socket_Marta;
 
 //Programa rutina de mapping
 char* g_Mapper;
