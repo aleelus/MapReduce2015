@@ -275,7 +275,7 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 		CargarArchivoALista(nArchivo,*contIdJob);
 	}
 	nResultado=DigitosNombreArchivo(buffer,&posActual);
-	tieneCombiner=PosicionDeBufferAInt(buffer,strlen(buffer)-3);
+	tieneCombiner=PosicionDeBufferAInt(buffer,posActual); // CAMBIE strlen(buffer)-3 por posActual
 
 	//Muestro por pantalla los Archivos
 	int i=0;
@@ -302,6 +302,7 @@ void RecorrerArchivos(){
 		printf("Tiene Combiner:%d\n",el_archivo->tieneCombiner);
 		i++;
 	}
+
 }
 
 void RecorrerArrayListas(int cantidad){
