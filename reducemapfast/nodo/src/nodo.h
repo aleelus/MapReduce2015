@@ -20,14 +20,21 @@
 #include <commons/log.h>
 #include <semaphore.h>
 #include <limits.h>	/* for PATH_MAX */
+#include <netdb.h>
+#include <signal.h>
+
+
+
 // CONSTANTES //
 //Ruta del config
 #define PATH_CONFIG "config.cfg"
+
 //#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "nodo.log"
 
 //Tamanio bloques 20mb
 #define TAMANIO_BLOQUE 1024*1024*20
+
 //Puerto de escucha del filesystem
 int g_Puerto_Fs;
 
@@ -52,12 +59,25 @@ char* g_Ip_Nodo;
 //Puerto Escucha del Nodo
 int g_Puerto_Nodo;
 
+// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
+int g_Ejecutando = 1;
+
+// Retardo (en milisegundos) para contestar una solicitud a un cliente
+int g_Retardo = 0;
+
+// Tamanio del buffer
+#define BUFFERSIZE 1024*4 //Definir tamanio buffer
+
+//Mensajes aceptados
+#define MSJ_LEER_BLOQUE          1
+#define MSJ_ESCRIBIR_BLOQUE      2
+#define MSJ_GET_TEMP             3
+
 // Archivo para Espacio de Datos
 FILE * archivoEspacioDatos;
 
 //FUNCIONES //
 void GrabarBloque();
-void CrearArchivoBin();
 void mapeo();
 
 
@@ -67,8 +87,13 @@ void LevantarConfig();
 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...);
 
+//Mensaje de error global.
+char* g_MensajeError;
+
 // Logger del commons
 t_log* logger;
+
+int pagina;  //Tamanio paginas Mapeo
 
 //Funciones interfaz FileSystem
 char* getBloque(int numero);
