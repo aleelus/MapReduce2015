@@ -23,7 +23,8 @@ int main(int argv, char** argc) {
 
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "job", true, LOG_LEVEL_TRACE);
 	char * buffer,*nomRes;
-	char *bufferArchivos=string_new();
+	char *bufferRafaga_Dos=string_new();
+	char *bufferRafaga_Uno=string_new();
 
 
 	int tamanio=10,cantRafaga=1;
@@ -49,14 +50,17 @@ int main(int argv, char** argc) {
 	printf("***********************\n");
 
 
-	bufferArchivos=procesarArchivos(bufferArchivos,contadorArchivos);
+	bufferRafaga_Dos=procesarArchivos(bufferRafaga_Dos,contadorArchivos);
+	bufferRafaga_Uno=obtenerRafaga_Uno(bufferRafaga_Uno,bufferRafaga_Dos);
 
-	printf("=======> Buffer a Enviar a MaRTA =======> %s \n",bufferArchivos);
+	printf("=======> Buffer a Enviar a MaRTA RAFAGA 1=======> %s \n",bufferRafaga_Uno);
+	printf("=======> Buffer a Enviar a MaRTA RAFAGA 2=======> %s \n",bufferRafaga_Dos);
+
 
 	//CreoSocket();
 	conectarMarta();
-	EnviarDatos("2270", 10);
-	EnviarDatos("213210file02.txt211file000.txt210file02.txt213resultado.txt1", 70);
+	EnviarDatos(bufferRafaga_Uno, strlen(bufferRafaga_Uno));
+	EnviarDatos(bufferRafaga_Dos, strlen(bufferRafaga_Dos));
 
 	while ((!desconexionCliente) & g_Ejecutando) {
 			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
@@ -111,12 +115,27 @@ int main(int argv, char** argc) {
 	return 0;
 }
 
+char* obtenerRafaga_Uno(char *buffer,char* bufferAux){
+	int tamanio=0,cont=0;
+	tamanio=strlen(bufferAux);
+	string_append(&buffer,"2");
+	while(tamanio>1){
+		tamanio=tamanio/10;
+		cont++;
+	}
+	string_append(&buffer,string_itoa(cont));
+	string_append(&buffer,string_itoa(strlen(bufferAux)+5));//Le agrego 5 bytes mas por las dudas POR AHORA
+
+	return buffer;
+}
+
 char * procesarArchivos (char *bufferArch,int contArch){
-	//2269
-	//212220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
+	//2271
+	//212220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1 TAMANIO 66 + los 5 que le agrego por las dudas
 
 	int j=0;
-	int tam=0,contDig=0,tamDigArch=0,cont=0,combiner=9;
+	int contDig=0,tamDigArch=0,cont=0,combiner=9;
+	float tam=0;
 
 	tamDigArch=contArch;
 	while(tamDigArch>1){
@@ -127,7 +146,7 @@ char * procesarArchivos (char *bufferArch,int contArch){
 	string_append(&bufferArch,string_itoa(cont));
 	string_append(&bufferArch,string_itoa(contArch));
 
-	for(j=0;j<contArch;j++){
+	for(j=0;j<=contArch;j++){
 		tam=strlen(array_archivos[j]);
 		contDig=0;
 		while(tam>1){

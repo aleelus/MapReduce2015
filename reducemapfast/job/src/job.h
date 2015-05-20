@@ -34,6 +34,7 @@ char* RecibirDatos(char *, int *,int *,int *);
 void obtenerArrayArchivos(int *);
 char* obtenerNombreResultado();
 char * procesarArchivos (char *,int);
+char* obtenerRafaga_Uno(char *,char*);
 
 
 //Ip de Marta
