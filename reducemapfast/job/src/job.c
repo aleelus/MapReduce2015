@@ -26,8 +26,6 @@ int main(int argv, char** argc) {
 	char *bufferArchivos=string_new();
 
 
-
-
 	int tamanio=10,cantRafaga=1;
 	int bytesRecibidos;
 	int j=0,contadorArchivos=0;
@@ -49,7 +47,6 @@ int main(int argv, char** argc) {
 	}
 	printf("Resultado: %s\n",array_archivos[contadorArchivos]);
 	printf("***********************\n");
-
 
 
 	bufferArchivos=procesarArchivos(bufferArchivos,contadorArchivos);
@@ -189,7 +186,6 @@ void obtenerArrayArchivos(int *contadorArchivos){
 				}
 				cont++;
 		}
-
 
 }
 
