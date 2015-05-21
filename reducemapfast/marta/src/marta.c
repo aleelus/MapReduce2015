@@ -133,10 +133,10 @@ int ObtenerComandoMSJ(char* buffer) {
 	return PosicionDeBufferAInt(buffer, 0);
 }
 
-int ObtenerTamanio (char *buffer , int dig_tamanio){
+int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 	int x,digito,aux=0;
 	for(x=0;x<dig_tamanio;x++){
-		digito=PosicionDeBufferAInt(buffer,2+x);
+		digito=PosicionDeBufferAInt(buffer,posicion+x);
 		aux=aux*10+digito;
 	}
 	return aux;
@@ -159,7 +159,7 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 		}
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
-		*tamanio=ObtenerTamanio(bufferAux,digTamanio);
+		*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
 
 
 	}else if(*cantRafaga==2){
@@ -251,9 +251,6 @@ void CargarArchivoALista(char* nomArchivo, int id){
 }
 void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 
-	//BUFFER RECIBIDO = 2270 (EJEMPLO)
-	//BUFFER RECIBIDO = 213210file02.txt211file000.txt210file02.txt213resultado.txt1
-
 	char *nArchivo,*nResultado;
 	int digitosCantDeArchivos=0,cantDeArchivos=0;
 	int x,posActual=0;
@@ -265,13 +262,19 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	id_job++;
 	//signal(mutex)
 
-	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,1);
-	cantDeArchivos=ObtenerTamanio(buffer,digitosCantDeArchivos);
+	//BUFFER RECIBIDO = 2270 (EJEMPLO)
+	//BUFFER RECIBIDO = 2112220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
+	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 211
+
+	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,2);
+	printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
+	cantDeArchivos=ObtenerTamanio(buffer,3,digitosCantDeArchivos);
 	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
-	posActual=2+digitosCantDeArchivos;
+	posActual=3+digitosCantDeArchivos;
 
 	for(x=0;x<cantDeArchivos;x++){
 		nArchivo=DigitosNombreArchivo(buffer,&posActual);
+		printf("NOMBRE:%s\n",nArchivo);
 		CargarArchivoALista(nArchivo,*contIdJob);
 	}
 	nResultado=DigitosNombreArchivo(buffer,&posActual);
@@ -302,7 +305,6 @@ void RecorrerArchivos(){
 		printf("Tiene Combiner:%d\n",el_archivo->tieneCombiner);
 		i++;
 	}
-
 }
 
 void RecorrerArrayListas(int cantidad){
@@ -325,39 +327,43 @@ void RecorrerArrayListas(int cantidad){
 }
 
 
-void RecorrerListaBloques(int id){
+void RecorrerListaBloques(){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
 
 	int i=0;
-	int j=0;
+	int j=0,p=0;
+	printf("IDJOB:%d\n",id_job);
+	while(p<3){
+		while(i<list_size(lista_archivos)){
+			el_archivo = list_get(lista_archivos, i);
+			if(el_archivo->idJob == p && el_archivo->listaBloques != NULL){
+				printf("El id del Job:%d\n",el_archivo->idJob);
+				printf("El archivo:%s\n",el_archivo->nombreArchivo);
 
-	while(i<list_size(lista_archivos)){
-		el_archivo = list_get(lista_archivos, i);
-		if(el_archivo->idJob == id && el_archivo->listaBloques != NULL){
-			printf("El id del Job:%d\n",el_archivo->idJob);
-			printf("El archivo:%s\n",el_archivo->nombreArchivo);
-			while(j<list_size(el_archivo->listaBloques)){
-				el_bloque = list_get(el_archivo->listaBloques, j);
-				printf("%s :: ",el_bloque->bloque);
-				//printf("Copia1:\n");
-				printf("%s--",el_bloque->array[0].nodo);
-				printf("%s  ",el_bloque->array[0].bloque);
-				//printf("Copia2:\n");
-				printf("%s--",el_bloque->array[1].nodo);
-				printf("%s  ",el_bloque->array[1].bloque);
-				//printf("Copia3:\n");
-				printf("%s--",el_bloque->array[2].nodo);
-				printf("%s  \n",el_bloque->array[2].bloque);
-				j++;
+				while(j<list_size(el_archivo->listaBloques)){
+					el_bloque = list_get(el_archivo->listaBloques, j);
+					printf("%s :: ",el_bloque->bloque);
+					//printf("Copia1:\n");
+					printf("%s--",el_bloque->array[0].nodo);
+					printf("%s  ",el_bloque->array[0].bloque);
+					//printf("Copia2:\n");
+					printf("%s--",el_bloque->array[1].nodo);
+					printf("%s  ",el_bloque->array[1].bloque);
+					//printf("Copia3:\n");
+					printf("%s--",el_bloque->array[2].nodo);
+					printf("%s  \n",el_bloque->array[2].bloque);
+					j++;
+				}
+				j=0;
 			}
-			j=0;
+			i++;
 		}
-		i++;
+		p++;
 	}
 }
 
-void ObtenerInfoDeNodos(int id_job){
+void ObtenerInfoDeNodos(int id){
 
 	t_archivo * el_archivo;
 	t_array_copias array[3];
@@ -367,7 +373,7 @@ void ObtenerInfoDeNodos(int id_job){
 	int i=0;
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		if (el_archivo->idJob == id_job) {
+		if (el_archivo->idJob == id) {
 			//preguntar a FS por Archivo
 			//el_archivo->nombreArchivo";
 			array[0].bloque = "Bloque30";
@@ -584,12 +590,14 @@ int AtiendeCliente(void * arg) {
 				//implementoFS(buffer,&cantRafaga,&mensaje);
 				break;
 			case COMANDO:
-				printf("Muestre toda la lista de Archivos:");
+				printf("Muestre toda la lista de Archivos:\n");
 				RecorrerArchivos();
+				mensaje = "Ok";
 				break;
 			case COMANDOBLOQUES:
 				printf("Muestre toda la lista de Bloques:\n");
-				RecorrerListaBloques(id);
+				RecorrerListaBloques();
+				mensaje = "Ok";
 				break;
 			default:
 				break;
