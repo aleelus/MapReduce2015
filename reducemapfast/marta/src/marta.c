@@ -334,33 +334,30 @@ void RecorrerListaBloques(){
 	int i=0;
 	int j=0,p=0;
 	printf("IDJOB:%d\n",id_job);
-	while(p<3){
-		while(i<list_size(lista_archivos)){
-			el_archivo = list_get(lista_archivos, i);
-			if(el_archivo->idJob == p && el_archivo->listaBloques != NULL){
-				printf("El id del Job:%d\n",el_archivo->idJob);
-				printf("El archivo:%s\n",el_archivo->nombreArchivo);
 
-				while(j<list_size(el_archivo->listaBloques)){
-					el_bloque = list_get(el_archivo->listaBloques, j);
-					printf("%s :: ",el_bloque->bloque);
-					//printf("Copia1:\n");
-					printf("%s--",el_bloque->array[0].nodo);
-					printf("%s  ",el_bloque->array[0].bloque);
-					//printf("Copia2:\n");
-					printf("%s--",el_bloque->array[1].nodo);
-					printf("%s  ",el_bloque->array[1].bloque);
-					//printf("Copia3:\n");
-					printf("%s--",el_bloque->array[2].nodo);
-					printf("%s  \n",el_bloque->array[2].bloque);
-					j++;
-				}
-				j=0;
-			}
-			i++;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		printf("El id del Job:%d\n",el_archivo->idJob);
+		printf("El archivo:%s\n",el_archivo->nombreArchivo);
+
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque = list_get(el_archivo->listaBloques, j);
+			printf("%s :: ",el_bloque->bloque);
+			//printf("Copia1:\n");
+			printf("%s--",el_bloque->array[0].nodo);
+			printf("%s  ",el_bloque->array[0].bloque);
+			//printf("Copia2:\n");
+			printf("%s--",el_bloque->array[1].nodo);
+			printf("%s  ",el_bloque->array[1].bloque);
+			//printf("Copia3:\n");
+			printf("%s--",el_bloque->array[2].nodo);
+			printf("%s  \n",el_bloque->array[2].bloque);
+			j++;
 		}
-		p++;
+		j=0;
+		i++;
 	}
+
 }
 
 void ObtenerInfoDeNodos(int id){

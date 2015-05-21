@@ -143,6 +143,7 @@ char * procesarArchivos (char *bufferArch,int contArch){
 		cont++;
 	}
 	string_append(&bufferArch,"2");
+	string_append(&bufferArch,"1");
 	string_append(&bufferArch,string_itoa(cont));
 	string_append(&bufferArch,string_itoa(contArch));
 
