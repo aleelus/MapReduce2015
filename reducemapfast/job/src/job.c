@@ -25,7 +25,7 @@ int main(int argv, char** argc) {
 	char * buffer,*nomRes;
 	char *bufferRafaga_Dos=string_new();
 	char *bufferRafaga_Uno=string_new();
-
+	int cantidadRafagaMarta=1;
 
 	int tamanio=10,cantRafaga=1;
 	int bytesRecibidos;
@@ -60,7 +60,7 @@ int main(int argv, char** argc) {
 	//CreoSocket();
 	conectarMarta();
 	EnviarDatos(bufferRafaga_Uno, strlen(bufferRafaga_Uno));
-	EnviarDatos(bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+	cantidadRafagaMarta=2;
 
 	while ((!desconexionCliente) & g_Ejecutando) {
 			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
@@ -98,7 +98,10 @@ int main(int argv, char** argc) {
 					break;
 				}*/
 				printf("--------El BUFFER:%s\n",buffer);
-
+				if(cantidadRafagaMarta==2){
+					EnviarDatos(bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+					cantidadRafagaMarta=1;
+				}
 				//longitudBuffer=strlen(mensaje);
 				//printf("\nRespuesta: %s\n",buffer);
 				// Enviamos datos al cliente.
