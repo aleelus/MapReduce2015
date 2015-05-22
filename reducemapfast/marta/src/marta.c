@@ -299,10 +299,10 @@ void RecorrerArchivos(){
 	int i=0;
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		printf("El id del Job:%d\n",el_archivo->idJob);
-		printf("El archivo:%s\n",el_archivo->nombreArchivo);
-		printf("El archivo de resultado:%s\n",el_archivo->nombreArchivoResultado);
-		printf("Tiene Combiner:%d\n",el_archivo->tieneCombiner);
+		printf("El id del Job:"COLOR_VERDE "%d\n"DEFAULT,el_archivo->idJob);
+		printf("El archivo:"  COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+		printf("El archivo de resultado:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivoResultado);
+		printf("Tiene Combiner:"COLOR_VERDE "%d\n"DEFAULT,el_archivo->tieneCombiner);
 		i++;
 	}
 }
@@ -332,13 +332,13 @@ void RecorrerListaBloques(){
 	t_bloque * el_bloque;
 
 	int i=0;
-	int j=0,p=0;
-	printf("IDJOB:%d\n",id_job);
+	int j=0;
+	printf("IDJOB:"COLOR_VERDE"%d\n",id_job);
 
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		printf("El id del Job:%d\n",el_archivo->idJob);
-		printf("El archivo:%s\n",el_archivo->nombreArchivo);
+		printf("El id del Job:"COLOR_VERDE"%d\n"DEFAULT,el_archivo->idJob);
+		printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
 
 		while(j<list_size(el_archivo->listaBloques)){
 			el_bloque = list_get(el_archivo->listaBloques, j);
