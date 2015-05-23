@@ -453,6 +453,56 @@ int ObtenerComandoMSJ(char* buffer) {
 	return PosicionDeBufferAInt(buffer, 0);
 }
 
+char* DigitosNombreArchivo(char *buffer,int *posicion){
+
+	char *nombreArch;
+	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
+
+	digito=PosicionDeBufferAInt(buffer,*posicion);
+	for(i=1;i<=digito;i++){
+		algo=PosicionDeBufferAInt(buffer,*posicion+i);
+		aux=aux*10+algo;
+	}
+	nombreArch = malloc(aux+1);
+	for(j=*posicion+i;j<*posicion+i+aux;j++){
+		nombreArch[x]=buffer[j];
+		x++;
+	}
+	nombreArch[x]='\0';
+	*posicion=*posicion+i+aux;
+	return nombreArch;
+}
+
+
+void AtiendeJob (char *buffer, int *cantRafaga){
+	//semaforo
+	estado = 1;
+	char *nArchivo,*nResultado;
+	int digitosCantDeArchivos=0,cantDeArchivos=0;
+	int x,posActual=0;
+	int tieneCombiner;
+
+	//BUFFER RECIBIDO = 2270 (EJEMPLO)
+	//BUFFER RECIBIDO = 2112220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
+	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 211
+
+	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,2);
+	printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
+	cantDeArchivos=ObtenerTamanio(buffer,3,digitosCantDeArchivos);
+	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
+	posActual=3+digitosCantDeArchivos;
+
+	for(x=0;x<cantDeArchivos;x++){
+		nArchivo=DigitosNombreArchivo(buffer,&posActual);
+		printf("NOMBRE:%s\n",nArchivo);
+	}
+	nResultado=DigitosNombreArchivo(buffer,&posActual);
+	tieneCombiner=PosicionDeBufferAInt(buffer,posActual); // CAMBIE strlen(buffer)-3 por posActual
+
+	*cantRafaga=1;
+}
+
+
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 
 
@@ -461,9 +511,9 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	printf("RAFAGA:%d\n",tipo_mensaje);
 	if(*cantRafaga == 2){
 		switch(tipo_mensaje){
-		case RECIBIR_ARCHIVO:
-			//AtiendeJob(id,buffer,cantRafaga);
-			//*cantRafaga=0;
+		case RECIBIR_TRABAJO:
+			AtiendeJob(buffer,cantRafaga);
+			*cantRafaga=0;
 			//ObtenerInfoDeNodos(*id);
 			//Planificar(*id);
 			//EnviarPlanificacionAJob(id);

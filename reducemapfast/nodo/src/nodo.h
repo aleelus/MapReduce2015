@@ -39,7 +39,7 @@
 #define ES_NODO 3
 
 //Tipos de Mensajes del Job
-#define RECIBIR_ARCHIVO 1
+#define RECIBIR_TRABAJO 1
 #define NOTIFICACION_NODO 2
 #define RECIBIDO_OK 3
 //Funciones por Telnet
@@ -75,8 +75,11 @@ int g_Ejecutando = 1;
 // Retardo (en milisegundos) para contestar una solicitud a un cliente
 int g_Retardo = 0;
 
-// Definimos los hilos principales
+//Definimos los hilos principales
 pthread_t hOrquestadorConexiones, hConsola;
+
+//Variable Global del Estado de Nodo 1=Ocupado 0=Desocupado
+int estado=0;
 
 //METODOS MANEJO SOCKETS
 void HiloOrquestadorDeConexiones();
