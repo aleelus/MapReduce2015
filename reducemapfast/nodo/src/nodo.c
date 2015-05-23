@@ -475,6 +475,12 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 
 
 void AtiendeJob (char *buffer, int *cantRafaga){
+	//Cadena recibida del Job
+	//21270xxxxxxxxx212barriendo.sh233213resultado.txt
+	//2: soy Job 1: recibo tarea 2: cant de dig del tamaño del .sh 70: tamaño del sh
+	//2: cant de dig de tamaño del nombre del .sh 12: tamaño del nombre del .sh y luego el nombre
+	//2: cant de dig del numero de bloque 33: numero de bloque, el nombre del arch de resultado lo sacas jajaja
+
 	//semaforo
 	estado = 1;
 	char *nArchivo,*nResultado;
@@ -504,8 +510,6 @@ void AtiendeJob (char *buffer, int *cantRafaga){
 
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
-
-
 
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 	printf("RAFAGA:%d\n",tipo_mensaje);

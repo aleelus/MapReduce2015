@@ -11,6 +11,12 @@
 */
 #include "job.h"
 
+//Cadena recibida del Job
+	//21270xxxxxxxxx212barriendo.sh233213resultado.txt
+	//2: soy Job 1: recibo tarea 2: cant de dig del tamaño del .sh 70: tamaño del sh
+	//2: cant de dig de tamaño del nombre del .sh 12: tamaño del nombre del .sh y luego el nombre
+	//2: cant de dig del numero de bloque 33: numero de bloque, el nombre del arch de resultado lo sacas jajaja
+
 int main(int argv, char** argc) {
 	//inicializamos los semaforos
 	//sem_init(&semaforoAccesoMemoria, 0, 1);
