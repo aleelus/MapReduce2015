@@ -28,10 +28,22 @@ int main(int argv, char** argc) {
 		abort();
 			}
 
-	socket_fsystem = conectarFS();
-
 	//Prueba getFileContent
-	char* temp_file = getFileContent("temporalPrueba.tmp");
+	//char* temp_file = getFileContent("temporalPrueba.tmp");
+
+
+	//Socket para escuchar al Job, FS y otros Nodos
+	//Hilo orquestador conexiones
+	int iThreadOrquestador = pthread_create(&hOrquestadorConexiones, NULL,
+			(void*) HiloOrquestadorDeConexiones, NULL );
+	if (iThreadOrquestador) {
+		fprintf(stderr,
+			"Error al crear hilo - pthread_create() return code: %d\n",
+			iThreadOrquestador);
+		exit(EXIT_FAILURE);
+	}
+
+	pthread_join(hOrquestadorConexiones, NULL );
 
 	//Prueba setBloque
 	printf("Escriba el numero de bloque que quiere escribir.\n");
@@ -169,103 +181,6 @@ char * getFileContent(char* nombre){
 	return contenido;
 }
 
-int conectarFS() {
-
-	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON MSP
-	log_info(logger, "Intentando conectar a file system\n");
-
-	//conectar con memoria
-	struct addrinfo hints;
-	struct addrinfo *serverInfo;
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
-	hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
-
-	if (getaddrinfo(g_Ip_Fs, g_Puerto_Fs, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
-		log_info(logger,
-				"ERROR: cargando datos de conexion socket_filesystem");
-	}
-
-	int socket_filesystem;
-	if ((socket_filesystem = socket(serverInfo->ai_family, serverInfo->ai_socktype,
-			serverInfo->ai_protocol)) < 0) {
-		log_info(logger, "ERROR: crear socket_filesystem");
-	}
-	if (connect(socket_filesystem, serverInfo->ai_addr, serverInfo->ai_addrlen)
-			< 0) {
-		log_info(logger, "ERROR: conectar socket_filesystem");
-	}
-	freeaddrinfo(serverInfo);	// No lo necesitamos mas
-
-	return (socket_filesystem);
-}
-
-void HiloOrquestadorDeConexiones() {
-
-	int socket_host;
-	struct sockaddr_in client_addr;
-	struct sockaddr_in my_addr;
-	int yes = 1;
-	socklen_t size_addr = 0;
-
-	socket_host = socket(AF_INET, SOCK_STREAM, 0);
-	if (socket_host == -1)
-		ErrorFatal(
-				"No se pudo inicializar el socket que escucha a los clientes");
-
-	if (setsockopt(socket_host, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
-			== -1) {
-		ErrorFatal("Error al hacer el 'setsockopt'");
-	}
-
-	my_addr.sin_family = AF_INET;
-	my_addr.sin_port = htons(g_Puerto_Nodo);
-	my_addr.sin_addr.s_addr = htons(INADDR_ANY );
-	memset(&(my_addr.sin_zero), '\0', 8 * sizeof(char));
-
-	if (bind(socket_host, (struct sockaddr*) &my_addr, sizeof(my_addr)) == -1)
-		ErrorFatal("Error al hacer el Bind. El puerto está en uso");
-
-	if (listen(socket_host, 10) == -1) // el "10" es el tamaño de la cola de conexiones.
-		ErrorFatal(
-				"Error al hacer el Listen. No se pudo escuchar en el puerto especificado");
-
-	//Traza("El socket está listo para recibir conexiones. Numero de socket: %d, puerto: %d", socket_host, g_Puerto);
-	log_trace(logger,
-			"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
-			socket_host, g_Puerto_Nodo);
-
-	while (g_Ejecutando) {
-		int socket_client;
-
-		size_addr = sizeof(struct sockaddr_in);
-
-		if ((socket_client = accept(socket_host,
-				(struct sockaddr *) &client_addr, &size_addr)) != -1) {
-			//Traza("Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d", inet_ntoa(client_addr.sin_addr), client_addr.sin_port, socket_client);
-			log_trace(logger,
-					"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
-					inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
-					socket_client);
-			// Aca hay que crear un nuevo hilo, que será el encargado de atender al cliente
-			pthread_t hNuevoCliente;
-			pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
-					(void *) socket_client);
-		} else {
-			Error("ERROR AL ACEPTAR LA CONEXIÓN DE UN CLIENTE");
-		}
-	}
-	CerrarSocket(socket_host);
-}
-
-
-void CerrarSocket(int socket) {
-	close(socket);
-	//Traza("SOCKET SE CIERRA: (%d).", socket);
-	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
-}
-
 int enviarDatos(int socket, void *buffer) {
 	int bytecount;
 
@@ -278,288 +193,6 @@ int enviarDatos(int socket, void *buffer) {
 
 	return (bytecount);
 }
-
-int recibirDatos(int socket, char *buffer) {
-	int bytecount;
-	// memset se usa para llenar el buffer con 0s
-	memset(buffer, 0, BUFFERSIZE);
-
-	//Nos ponemos a la escucha de las peticiones que nos envie el file system
-	//aca si recibo 0 bytes es que se desconecto el otro, cerrar el hilo.
-	if ((bytecount = recv(socket, buffer, BUFFERSIZE, 0)) == -1)//1 pid del file system,
-		log_info(logger, "ERROR: error al intentar recibir datos");
-
-	log_info(logger, "RECIBO datos. socket: %d. buffer: %s\n", socket,
-			(char*) buffer);
-	return (bytecount);
-}
-
-int AtiendeCliente(void * arg) {
-	int socket = (int) arg;
-
-//Es el ID del programa con el que está trabajando actualmente el HILO.
-//Nos es de gran utilidad para controlar los permisos de acceso (lectura/escritura) del programa.
-//(en otras palabras que no se pase de vivo y quiera acceder a una posicion de memoria que no le corresponde.)
-	int id_Programa = 0;
-	int tipo_Cliente = 0;
-	int longitudBuffer;
-
-// Es el encabezado del mensaje. Nos dice que acción se le está solicitando a la msp
-	int tipo_mensaje = 0;
-
-// Dentro del buffer se guarda el mensaje recibido por el cliente.
-	char* buffer;
-	buffer = malloc(1000000 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
-
-// Cantidad de bytes recibidos.
-	int bytesRecibidos;
-
-// La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
-	int desconexionCliente = 0;
-
-// Código de salida por defecto
-	int code = 0;
-
-	while ((!desconexionCliente) & g_Ejecutando) {
-
-		if (buffer != NULL )
-			free(buffer);
-		buffer = string_new();
-		//Recibimos los datos del cliente
-		buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
-
-		if (bytesRecibidos > 0) {
-			//Analizamos que peticion nos está haciendo (obtenemos el comando)
-			tipo_mensaje = ObtenerComandoMSJ(buffer);
-
-			//Evaluamos los comandos
-			switch (tipo_mensaje) {
-
-			case MSJ_LEER_BLOQUE:
-				buffer = ComandoLeerBloque(buffer, &id_Programa, tipo_Cliente, &longitudBuffer);
-				break;
-			case MSJ_ESCRIBIR_BLOQUE:
-				buffer = ComandoEscribirBLoque(buffer, &id_Programa,
-						tipo_Cliente, socket,&longitudBuffer);
-				break;
-			case MSJ_GET_TEMP:
-				buffer = ComandoObtenerTemporal(buffer, &id_Programa, tipo_Cliente, &longitudBuffer);
-				break;
-			default:
-				buffer = RespuestaClienteError(buffer,
-						"El ingresado no es un comando válido\n");
-				longitudBuffer=strlen(buffer);
-				break;
-			}
-			printf("\nRespuesta: %s\n",buffer);
-			// Enviamos datos al cliente.
-			EnviarDatos(socket, buffer,longitudBuffer);
-		} else
-			desconexionCliente = 1;
-
-	}
-
-	CerrarSocket(socket);
-
-	return code;
-}
-
-char* ComandoLeerBloque(char *buffer, int *idProg, int tipoCliente, int *longitud){
-// Lee la memoria
-// Formato del mensaje: CABBBB...
-// C = Codigo de mensaje ( = 1)
-// A = Cantidad de digitos que tiene el bloque
-// BBBB = Bloque del nodo (hasta 9999)
-
-
-// Retorna: Lo solicitado en la lectura
-//			0 + mensaje error si no se pudo leer
-
-	int ok = 0;
-
-	int desplazamiento = 0;
-	int longitudBuffer = 0;
-	int offset = 0;
-
-	int cantidadDigitosBloque = 0;
-	int cantidadDigitosDesplazamiento = 0;
-	int cantidadDigitoslongitudBuffer = 0;
-	int posicion = 1;
-	// Me fijo cuantos digitos tiene el numero de Bloque
-
-	cantidadDigitosBloque = posicionDeBufferAInt(buffer, posicion);
-	printf("Cantidad Digitos del Bloque:%d\n", cantidadDigitosBloque);
-	// Grabo el Numero del Bloque
-	posicion++;
-
-	*idProg = subCadenaAInt(buffer, posicion, cantidadDigitosBloque);
-	printf("Bloque:%d\n", *idProg);
-	log_trace(logger, "COMANDO Leer Bloque. Num Bloque: %d", *idProg);
-
-	char* lectura = malloc(TAMANIO_BLOQUE);
-
-	printf(
-			"PARAMETROS: Bloque:%d\n",
-			*idProg);
-	lectura = getBloque(*idProg);
-	//printf("\nESTE ES EL POSTA POSTA:");
-
-	//lectura[longitudBuffer] = '\0';
-
-	//printf("LECTURA:%s \n", lectura);
-
-	if (ok) {
-		if (buffer != NULL )
-			free(buffer);
-		buffer = malloc(TAMANIO_BLOQUE);
-		memcpy(buffer,lectura,TAMANIO_BLOQUE);
-		/*int tamanio = (longitudBuffer + 1) * sizeof(char);
-		 buffer = realloc(buffer, tamanio * sizeof(char));
-		 memset(buffer, 0, tamanio * sizeof(char));
-		 sprintf(buffer, "%s%s", "1", lectura);*/
-	} else {
-		char* stringErrorAux = string_new();
-		string_append(&stringErrorAux, g_MensajeError);
-		SetearErrorGlobal(
-				"ERROR LEER BLOQUE. %s. Id: %d",stringErrorAux, idProg);
-		if (buffer != NULL )
-					free(buffer);
-		buffer = malloc(3);
-		string_append(&buffer, "-1");
-		*longitud= strlen(buffer);
-		if (stringErrorAux != NULL )
-			free(stringErrorAux);
-	}
-
-	if (lectura != NULL )
-		free(lectura);
-	return buffer;
-}
-
-char* ComandoEscribirBloque(char *buffer, int *idBloq, int tipoCliente,
-		int socket, int *longitud) {
-	// Graba en la memoria
-	// Formato del mensaje: CABBBBOOOOOOOOO....
-	// C = Codigo de mensaje ( = 2)
-	// A = Cantidad de digitos que tiene el bloque
-	// BBBB = Bloque del nodo (hasta 9999)
-	// OOOOOOOOO = Datos a escribir
-
-	// Retorna: 1 + Bytes si se leyo ok
-	//			0 + mensaje error si no se pudo leer
-
-	int ok = 0;
-	int bytesRecibidos;
-
-	int longitudBuffer = 0;
-
-	int cantidadDigitosBloque = 0;
-	int posicion = 1;
-	// Me fijo cuantos digitos tiene el numero de bloque
-	cantidadDigitosBloque = posicionDeBufferAInt(buffer, posicion);
-	// Grabo el Num del Bloque
-	posicion++;
-
-	*idBloq = subCadenaAInt(buffer, posicion, cantidadDigitosBloque);
-
-	log_trace(logger, "COMANDO Escribir Bloque. Id Bloque: %d", *idBloq);
-
-	buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
-
-	char * aux = buffer;
-	char* escritura = malloc(TAMANIO_BLOQUE);
-	memcpy(escritura, aux,TAMANIO_BLOQUE);
-	ok = escribirMemoria(*idBloq, escritura);
-
-	printf("Memoria Escrita: %d\n", longitudBuffer);
-	if (ok) {
-		if (buffer != NULL )
-			free(buffer);
-		buffer = malloc(longitudBuffer+1);
-		memcpy(buffer,escritura,longitudBuffer+1);
-		//buffer = string_new();
-		//string_append(&buffer, escritura);
-
-		/*int tamanio = (longitudBuffer + 1) * sizeof(char);
-		 buffer = realloc(buffer, tamanio * sizeof(char));
-		 memset(buffer, 0, tamanio * sizeof(char));
-		 sprintf(buffer, "%s%s", "1", lectura);*/
-	} else {
-		char* stringErrorAux = string_new();
-		string_append(&stringErrorAux, g_MensajeError);
-		SetearErrorGlobal("ERROR GRABAR MEMORIA. %s. Id Bloque: %d",stringErrorAux, idBloq);
-
-		if (buffer != NULL )
-			free(buffer);
-		buffer = malloc(2);
-		string_append(&buffer, string_itoa(-1));
-		*longitud= strlen(buffer);
-		printf("LA LONGITUD DE BUFFER: %i\n",longitud);
-		if (stringErrorAux != NULL )
-			free(stringErrorAux);
-	}
-
-	if (escritura != NULL )
-		free(escritura);
-	return buffer;
-}
-
-char* ComandoObtenerTemporal(char *buffer, int *idBloq, int tipoCliente,
-		int socket, int *longitud) {
-// Obtiene y devuelve el contenido del archivo temporal pedido
-// Formato del mensaje: CNNNN...
-// C = Codigo de mensaje ( = 3)
-// NNNNNN = Nombre del archivo temporal
-
-// Retorna: Lo solicitado en la lectura
-//			0 + mensaje error si no se pudo leer
-
-	int ok = 0;
-	int bytesRecibidos;
-
-	int desplazamiento = 0;
-	int longitudBuffer = 0;
-	int offset = 0;
-
-
-	int posicion = 1;
-	// Me fijo cuantos digitos tiene el numero de Bloque
-
-	log_trace(logger, "COMANDO Leer Archivo Temporal");
-
-	buffer = RecibirDatos(socket, buffer, &bytesRecibidos);
-
-	char * aux = buffer;
-	char* archivoTemporal = malloc(strlen(buffer));
-	memcpy(archivoTemporal, aux,strlen(buffer));
-	char* lectura = getFileContent(archivoTemporal);
-	ok = 1; //Resultado de operacion
-
-
-	if (ok) {
-		if (buffer != NULL )
-			free(buffer);
-		buffer = malloc(strlen(lectura));
-		memcpy(buffer,lectura,strlen(lectura));
-	} else {
-		char* stringErrorAux = string_new();
-		string_append(&stringErrorAux, g_MensajeError);
-		SetearErrorGlobal(
-				"ERROR LEER ARCHIVO TEMPORAL. %s.",stringErrorAux);
-		if (buffer != NULL )
-					free(buffer);
-		buffer = malloc(3);
-		string_append(&buffer, "-1");
-		*longitud= strlen(buffer);
-		if (stringErrorAux != NULL )
-			free(stringErrorAux);
-	}
-
-	if (lectura != NULL )
-		free(lectura);
-	return buffer;
-}
-
 
 int pipesPrueba(void)
 {
@@ -698,4 +331,330 @@ void SetearErrorGlobal(const char* mensaje, ...) {
 		// NMR COMENTADO POR ERROR A ULTIMO MOMENTO	free(g_MensajeError);
 		g_MensajeError = string_from_vformat(mensaje, arguments);
 	va_end(arguments);
+}
+
+void ErrorFatal(const char* mensaje, ...) {
+	char* nuevo;
+	va_list arguments;
+	va_start(arguments, mensaje);
+	nuevo = string_from_vformat(mensaje, arguments);
+	printf("\nERROR FATAL--> %s \n", nuevo);
+	log_error(logger, "\nERROR FATAL--> %s \n", nuevo);
+	char fin;
+
+	printf(
+			"El programa se cerrara. Presione ENTER para finalizar la ejecución.");
+	fin = scanf("%c", &fin);
+
+	va_end(arguments);
+	if (nuevo != NULL )
+		free(nuevo);
+	exit(EXIT_FAILURE);
+}
+
+int ChartToInt(char x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+int PosicionDeBufferAInt(char* buffer, int posicion) {
+	int logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return ChartToInt(buffer[posicion]);
+}
+
+int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
+	int x,digito,aux=0;
+	for(x=0;x<dig_tamanio;x++){
+		digito=PosicionDeBufferAInt(buffer,posicion+x);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
+char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
+	*bytesRecibidos = 0;
+	char *bufferAux= malloc(1);
+	int digTamanio;
+	if (buffer != NULL ) {
+		free(buffer);
+	}
+
+	if(*cantRafaga==1){
+		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
+		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
+
+		digTamanio=PosicionDeBufferAInt(bufferAux,1);
+		*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
+
+
+	}else if(*cantRafaga==2){
+		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
+		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
+	}
+
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
+			(char*) bufferAux, strlen(bufferAux));
+	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
+}
+
+int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
+// Retardo antes de contestar una solicitud
+	//sleep(g_Retardo / 1000);
+
+	int bytecount;
+
+	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+
+	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
+		Error("No puedo enviar información a al clientes. Socket: %d", socket);
+
+	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
+
+	//char * bufferLogueo = malloc(5);
+	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
+
+	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
+	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
+			(char*) buffer);
+
+	return bytecount;
+}
+
+void CerrarSocket(int socket) {
+	close(socket);
+	//Traza("SOCKET SE CIERRA: (%d).", socket);
+	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
+}
+
+int ObtenerComandoMSJ(char* buffer) {
+//Hay que obtener el comando dado el buffer.
+//El comando está dado por el primer caracter, que tiene que ser un número.
+	return PosicionDeBufferAInt(buffer, 0);
+}
+
+void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
+
+
+
+	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
+	printf("RAFAGA:%d\n",tipo_mensaje);
+	if(*cantRafaga == 2){
+		switch(tipo_mensaje){
+		case RECIBIR_ARCHIVO:
+			//AtiendeJob(id,buffer,cantRafaga);
+			//*cantRafaga=0;
+			//ObtenerInfoDeNodos(*id);
+			//Planificar(*id);
+			//EnviarPlanificacionAJob(id);
+			*cantRafaga=1;
+			break;
+		case NOTIFICACION_NODO:
+			break;
+		case RECIBIDO_OK:
+			break;
+		default:
+			break;
+		}
+		*mensaje = "Ok";
+	} else {
+		if (*cantRafaga==1) {
+			*mensaje = "Ok";
+			*cantRafaga = 2;
+		} else {
+			*mensaje = "No";
+		}
+	}
+}
+
+
+
+int AtiendeCliente(void * arg) {
+	int socket = (int) arg;
+	int id=-1;
+	//cantHilos++;
+	//printf("Hilo numero:%d\n",cantHilos);
+
+//Es el ID del programa con el que está trabajando actualmente el HILO.
+//Nos es de gran utilidad para controlar los permisos de acceso (lectura/escritura) del programa.
+//(en otras palabras que no se pase de vivo y quiera acceder a una posicion de memoria que no le corresponde.)
+//	int id_Programa = 0;
+//	int tipo_Cliente = 0;
+	int longitudBuffer;
+	//printf("ENTRE");
+
+// Es el encabezado del mensaje. Nos dice quien envia el mensaje
+	int emisor = 0;
+
+// Dentro del buffer se guarda el mensaje recibido por el cliente.
+	char* buffer;
+	buffer = malloc(BUFFERSIZE * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+
+// Cantidad de bytes recibidos.
+	int bytesRecibidos;
+
+// La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
+	int desconexionCliente = 0;
+
+// Código de salida por defecto
+	int code = 0;
+	int cantRafaga=1,tamanio=0;
+	char * mensaje;
+	while ((!desconexionCliente) & g_Ejecutando) {
+		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+		if (buffer != NULL )
+			free(buffer);
+		buffer = string_new();
+
+		//Recibimos los datos del cliente
+		buffer = RecibirDatos(socket, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+
+
+		if (bytesRecibidos > 0) {
+			//Analisamos que peticion nos está haciendo (obtenemos el comando)
+			emisor = ObtenerComandoMSJ(buffer);
+
+			//Evaluamos los comandos
+			switch (emisor) {
+			case ES_JOB:
+				implementoJob(&id,buffer,&cantRafaga,&mensaje);
+				//BUFFER RECIBIDO = 23100 (EJEMPLO PRIMERA RAFAGA)
+				//BUFFER ENVIADO = Ok
+				//BUFFER RECIBIDO = 2
+				//BUFFER ENVIADO = 311
+
+				break;
+			case ES_FS:
+				printf("implementar atiendeFS\n");
+				//implementoFS(buffer,&cantRafaga,&mensaje);
+				//Esto va en nodo.h y son define
+				//PRIMERA_CONEXION 1
+				//GET_BLOQUE 2
+				//SET_BLOQUE 3
+				//GET_FILE_CONTENT 4
+
+				//BUFFER RECIBIDO = 11 --- 1:soy FS 1:estas disponible para conectarte?
+				//BUFFER ENVIADO = 311250 --- 3: soy nodo 1: estoy vivo 1: soy nuevo 2: cant de dig de cant de
+				// 							   de bloques 50: cantidad de bloques
+
+				//SET_BLOQUE
+				//BUFFER RECIBIDO = 13820971520  --- 1: soy FS 3: quiero un set bloque 8: cant de dig de tamanio
+				//								    de lo que necesitamos que grabe 20971520: tamaño en bytes
+				//BUFFER ENVIADO = Ok
+
+				//GET_BLOQUE
+				//BUFFER RECIBIDO = 12210 1: soy FS 2: quiero un get bloque 3:cant de dig de numero de bloque
+				//						  10: numero de bloque que necesito recibir
+				//BUFFER ENVIADO = 32820971520 3: soy nodo 2: va un get bloque 8: cant de dig de tamanio de
+				//								bloque solicitado 20971520: tamanio de bloque
+
+				//GET_FILE_CONTENT
+				//BUFFER RECIBIDO = 14213resultado.txt 1: soy FS 4: solicito un get file content 2: cant de dig
+				//					de tamanio de archivo solicitado 13:tamanio de archivo y luego el archivo
+				//BUFFER ENVIADO = 34820971520 3: soy nodo 4: va un get file content solicitado 8: cant de dig
+				//							   de tamanio de arch de result 20971520: tamanio de archivo
+
+				break;
+			case ES_NODO:
+				printf("implementar atiendeNodo\n");
+				//RecorrerArchivos();
+				mensaje = "Ok";
+				break;
+			case COMANDOBLOQUES:
+				printf("Despues vemos que hace esto\n");
+				//RecorrerListaBloques();
+				mensaje = "Ok";
+				break;
+			default:
+				break;
+			}
+			longitudBuffer=strlen(mensaje);
+			//printf("\nRespuesta: %s\n",buffer);
+			// Enviamos datos al cliente.
+			EnviarDatos(socket, mensaje,longitudBuffer);
+		} else
+			desconexionCliente = 1;
+
+	}
+
+	CerrarSocket(socket);
+
+	return code;
+}
+
+void HiloOrquestadorDeConexiones() {
+
+	int socket_host;
+	struct sockaddr_in client_addr;
+	struct sockaddr_in my_addr;
+	int yes = 1;
+	socklen_t size_addr = 0;
+
+	socket_host = socket(AF_INET, SOCK_STREAM, 0);
+	if (socket_host == -1)
+		ErrorFatal(
+				"No se pudo inicializar el socket que escucha a los clientes");
+
+	if (setsockopt(socket_host, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
+			== -1) {
+		ErrorFatal("Error al hacer el 'setsockopt'");
+	}
+
+	my_addr.sin_family = AF_INET;
+	my_addr.sin_port = htons(g_Puerto_Nodo);
+	my_addr.sin_addr.s_addr = htons(INADDR_ANY );
+	memset(&(my_addr.sin_zero), '\0', 8 * sizeof(char));
+
+	if (bind(socket_host, (struct sockaddr*) &my_addr, sizeof(my_addr)) == -1)
+		ErrorFatal("Error al hacer el Bind. El puerto está en uso");
+
+	if (listen(socket_host, 10) == -1) // el "10" es el tamaño de la cola de conexiones.
+		ErrorFatal(
+				"Error al hacer el Listen. No se pudo escuchar en el puerto especificado");
+
+	//Traza("El socket está listo para recibir conexiones. Numero de socket: %d, puerto: %d", socket_host, g_Puerto);
+	log_trace(logger,
+			"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
+			socket_host, g_Puerto_Nodo);
+
+	while (g_Ejecutando) {
+		int socket_client;
+
+		size_addr = sizeof(struct sockaddr_in);
+
+		if ((socket_client = accept(socket_host,(struct sockaddr *) &client_addr, &size_addr)) != -1) {
+			//Traza("Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d", inet_ntoa(client_addr.sin_addr), client_addr.sin_port, socket_client);
+			log_trace(logger,
+					"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
+					inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
+					socket_client);
+			// Aca hay que crear un nuevo hilo, que será el encargado de atender al cliente
+			pthread_t hNuevoCliente;
+			pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
+					(void *) socket_client);
+		} else {
+			Error("ERROR AL ACEPTAR LA CONEXIÓN DE UN CLIENTE");
+		}
+	}
+	CerrarSocket(socket_host);
 }
