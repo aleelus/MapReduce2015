@@ -14,15 +14,15 @@
 int main(int argv, char** argc) {
 	//HARDCODEANDO
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	t_list *lista_nodos;
+
 	lista_nodos = list_create();
 	lista_archivos=list_create();
 
-	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000));
-	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",3500));
-	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200));
-	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600));
-	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050));
+	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000,0));
+	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",35000,0));
+	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200,0));
+	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600,0));
+	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050,0));
 
 	t_nodo *el_nodo;
 	int i=0;
@@ -419,8 +419,7 @@ void ObtenerInfoDeNodos(int id){
 		i++;
 	}
 	printf("EL TAMAÑO:%d\n",list_size(el_archivo->listaBloques));
-	el_bloque = list_get(el_archivo->listaBloques,2);
-	printf("El BLOQUE:%s\n",el_bloque->array[0].bloque);
+
 }
 
 void FuncionMagica(t_list* listaBloques){
@@ -498,7 +497,33 @@ void Planificar(int id){
 	//array[1] = NodoC, NodoA
 }
 
-void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
+void enviarPlanificacionAJob (int id,int socket){
+
+	t_nodo *el_nodo;
+	int i=0;
+	char *mensaje;
+	mensaje=string_new();
+
+	while(i<list_size(lista_nodos)){
+		el_nodo=list_get(lista_nodos,i);
+		if(el_nodo->id_job==id){
+			string_append(&mensaje,el_nodo->nombreNodo);
+			string_append(&mensaje,"-");
+			string_append(&mensaje,el_nodo->ipNodo);
+			string_append(&mensaje,"-");
+			string_append(&mensaje,string_itoa(el_nodo->puertoNodo));
+			string_append(&mensaje,"-");
+			string_append(&mensaje,string_itoa(el_nodo->id_job));
+		}
+		break;
+		i++;
+	}
+	string_append(&mensaje,"\0");
+	EnviarDatos(socket, mensaje,strlen(mensaje));
+
+}
+
+void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
 
 
@@ -511,7 +536,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			*cantRafaga=0;
 			ObtenerInfoDeNodos(*id);
 			Planificar(*id);
-			//EnviarPlanificacionAJob(id);
+			enviarPlanificacionAJob(*id,socket);
 			*cantRafaga=1;
 			break;
 		case NOTIFICACION_NODO:
@@ -521,7 +546,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 		default:
 			break;
 		}
-		*mensaje = "Ok";
+		//*mensaje = "Ok";
 	} else {
 		if (*cantRafaga==1) {
 			*mensaje = "Ok";
@@ -580,7 +605,7 @@ int AtiendeCliente(void * arg) {
 			//Evaluamos los comandos
 			switch (emisor) {
 			case ES_JOB:
-				implementoJob(&id,buffer,&cantRafaga,&mensaje);
+				implementoJob(&id,buffer,&cantRafaga,&mensaje,socket);
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");

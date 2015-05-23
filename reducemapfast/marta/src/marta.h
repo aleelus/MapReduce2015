@@ -64,6 +64,9 @@ t_list *lista_archivos;
 //Array de Listas para funcion magica
 t_list **array_listas;
 
+//Lista de Nodos
+t_list *lista_nodos;
+
 // METODOS CONFIGURACION //
 void LevantarConfig();
 
@@ -169,11 +172,12 @@ typedef struct {
 	    int id_job;
 } t_nodo;
 
-static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo) {
+static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo, int id) {
 	t_nodo *new = malloc(sizeof(t_nodo));
 	new->nombreNodo = strdup(nombreNodo);
 	new->ipNodo = strdup(ipNodo);
 	new->puertoNodo = puertoNodo;
+	new->id_job=id;
 	new->estado = 1;
 	new->procesando = 0;
 	new->nombreArchivo = "";

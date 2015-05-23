@@ -74,38 +74,19 @@ int main(int argv, char** argc) {
 
 			printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
-				//Analisamos que peticion nos está haciendo (obtenemos el comando)
-				/*emisor = ObtenerComandoMSJ(buffer);
 
-				//Evaluamos los comandos
-				switch (emisor) {
-				case ES_JOB:
-					implementoJob(&id,buffer,&cantRafaga,&mensaje);
-					break;
-				case ES_FS:
-					printf("implementar atiendeFS\n");
-					//implementoFS(buffer,&cantRafaga,&mensaje);
-					break;
-				case COMANDO:
-					printf("Muestre toda la lista de Archivos:");
-					RecorrerArchivos();
-					break;
-				case COMANDOBLOQUES:
-					printf("Muestre toda la lista de Bloques:\n");
-					RecorrerListaBloques(id);
-					break;
-				default:
-					break;
-				}*/
-				printf("--------El BUFFER:%s\n",buffer);
-				if(cantidadRafagaMarta==2){
-					EnviarDatos(bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+				//printf("--------El BUFFER:%s\n",buffer);
+				if(cantidadRafagaMarta==3){
+					printf("Recibe Planificacion de Marta: %s\n",buffer);
 					cantidadRafagaMarta=1;
 				}
-				//longitudBuffer=strlen(mensaje);
-				//printf("\nRespuesta: %s\n",buffer);
-				// Enviamos datos al cliente.
-				//EnviarDatos(socket, mensaje,longitudBuffer);
+				else if(cantidadRafagaMarta==2){
+					EnviarDatos(bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+					cantidadRafagaMarta=3;
+					cantRafaga=3;
+				}
+
+
 			} else
 				desconexionCliente = 1;
 
@@ -264,6 +245,7 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 		*tamanio=ObtenerTamanio(bufferAux,digTamanio);
 
 
+
 	}else if(*cantRafaga==2){
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
 		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
@@ -271,6 +253,17 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, *tamanio, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
 		}
+
+	}else{
+
+		bufferAux = realloc(bufferAux,100* sizeof(char));
+		memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, 100, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
+		}
+		cantRafaga=1;
+
 	}
 
 	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta,
