@@ -63,7 +63,6 @@ int main(int argv, char** argc) {
 	printf("=======> Buffer a Enviar a MaRTA RAFAGA 2=======> %s \n",bufferRafaga_Dos);
 
 
-	//CreoSocket();
 	conectarMarta();
 	EnviarDatos(bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
@@ -73,7 +72,6 @@ int main(int argv, char** argc) {
 			if (buffer != NULL )
 				free(buffer);
 			buffer = string_new();
-			//buffer = NULL;
 
 			//Recibimos los datos del cliente
 			buffer = RecibirDatos(buffer, &bytesRecibidos,&cantRafaga,&tamanio);
@@ -180,7 +178,7 @@ void obtenerArrayArchivos(int *contadorArchivos){
 		while (array[cont]!=NULL){
 			for(j=0;j<strlen(array[cont]);j++){
 				if(array[cont][j]=='.'){
-					*contadorArchivos=*contadorArchivos+1;//no me tomaba el *contadorArchivos++ XD
+					*contadorArchivos=*contadorArchivos+1;
 				}
 			}
 			cont++;
@@ -241,10 +239,10 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 
 	if(*cantRafaga==1){
 		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
-		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, BUFFERSIZE, 0)) == -1) {
-			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
+			Error("Ocurrio un error al intentar recibir datos desde Marta. Socket: %d",socket_Marta);
 		}
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
@@ -254,7 +252,7 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 
 	}else if(*cantRafaga==2){
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
-		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, *tamanio, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
@@ -263,18 +261,18 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 	}else{
 
 		bufferAux = realloc(bufferAux,100* sizeof(char));
-		memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+		memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, 100, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
 		}
-		cantRafaga=1;
+		*cantRafaga=1;
 
 	}
 
 	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta,
 			(char*) bufferAux, strlen(bufferAux));
-	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
+	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo.
 }
 
 
@@ -289,12 +287,6 @@ int EnviarDatos(char *buffer, int cantidadDeBytesAEnviar) {
 	if ((bytecount = send(socket_Marta, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket_Marta);
 
-	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
-
-	//char * bufferLogueo = malloc(5);
-	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
-
-	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket_Marta,
 			(char*) buffer);
 
@@ -395,26 +387,6 @@ void LevantarConfig() {
 
 #endif
 
-/*#if 1 // MÉTODO MANEJO DE SOCKETS
-	void CreoSocket()
-		{
-			int desc_socket=socket(AF_INET,SOCK_STREAM,0);
-			struct sockaddr_in socketdest;
-			if (desc_socket<0)
-			{
-				Error("No se pudo crear el socket");
-			}
-			else
-			{
-				socketdest.sin_family = AF_INET;
-				socketdest.sin_port = htons(g_Puerto_Marta);
-				socketdest.sin_addr.s_addr =  inet_addr(g_Ip_Marta);
-				memset(&(socketdest.sin_zero), '\0', 8);
-				bind(desc_socket,(struct sockaddr*)&socketdest, sizeof(struct sockaddr));
-			}
-		}
-#endif
-*/
 #if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {
 	char* nuevo;
