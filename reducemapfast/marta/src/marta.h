@@ -144,7 +144,7 @@ typedef struct{
     int tieneCombiner;
     int idJob;
     t_list *listaBloques;
-    struct t_archivo *next;
+    t_list **array_de_listas;
 }t_archivo;
 
 static t_archivo *archivo_create(char *nombreArchivo, int id) {
@@ -154,7 +154,6 @@ static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	new->nombreArchivoResultado="";
 	new->tieneCombiner=0;
 	new->listaBloques= list_create();
-	new->next=NULL;
 	return new;
 }
 
@@ -170,6 +169,7 @@ typedef struct {
 	    char *bloqueArchivo;
 	    char *tarea;
 	    int id_job;
+
 } t_nodo;
 
 static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo, int id) {

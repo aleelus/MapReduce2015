@@ -307,22 +307,25 @@ void RecorrerArchivos(){
 	}
 }
 
-void RecorrerArrayListas(int cantidad){
+void RecorrerArrayListas(t_archivo *el_archivo){
 	t_dato * el_dato;
 
 	int i,j;
-	for(i=0;i<cantidad;i++){
+	printf("Nombre Archivo:"COLOR_VERDE " %s\n"DEFAULT,el_archivo->nombreArchivo);
+	for(i=0;i<list_size(el_archivo->listaBloques)*3;i++){
 		j=0;
-		while(j<list_size(array_listas[i])){
-			el_dato = list_get(array_listas[i],j);
+		while(j<list_size(el_archivo->array_de_listas[i])){
+			el_dato = list_get(el_archivo->array_de_listas[i],j);
 			if(j==0){
 				printf("%s :::: ",el_dato->dato);
 			} else {
 				printf("%s--",el_dato->dato);
 			}
 			j++;
+			if(j==list_size(el_archivo->array_de_listas[i]))
+				printf("\n");
 		}
-		printf("\n");
+
 	}
 }
 
@@ -482,17 +485,20 @@ void FuncionMagica(t_list* listaBloques){
 void Planificar(int id){
 	printf("laalala ESTOY PLANIFICANDO\n");
 	t_archivo *el_archivo;
-	int encontrado = 0;
 
 	int i=0;
-	while(i<list_size(lista_archivos) && !encontrado){
+	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		if(el_archivo->idJob == id) encontrado = 1;
+		if(el_archivo->idJob == id){
+			FuncionMagica(el_archivo->listaBloques);
+			el_archivo->array_de_listas=array_listas;
+			RecorrerArrayListas(el_archivo);
+
+		}
 		i++;
 	}
 
-	FuncionMagica(el_archivo->listaBloques);
-	RecorrerArrayListas(list_size(el_archivo->listaBloques)*3);
+
 	//array[0] = nodoA, NodoB
 	//array[1] = NodoC, NodoA
 }
