@@ -474,7 +474,7 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 }
 
 
-void AtiendeJob (char *buffer, int *cantRafaga){
+void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//Cadena recibida del Job
 	//21270xxxxxxxxx212barriendo.sh233213resultado.txt
 	//2: soy Job 1: recibo tarea 2: cant de dig del tamaño del .sh 70: tamaño del sh
@@ -483,40 +483,51 @@ void AtiendeJob (char *buffer, int *cantRafaga){
 
 	//semaforo
 	estado = 1;
-	char *nArchivo,*nResultado;
-	int digitosCantDeArchivos=0,cantDeArchivos=0;
-	int x,posActual=0;
-	int tieneCombiner;
+	char *nArchivoSH;
+	int digitosCantDeDigitos=0,tamanioSH=0,digitosCantDeDigitosSH,digitosTamanioBloque;
+	int numeroBloque;
+	int posActual=0;
+	char * fileSH,*nArchivoResultado;
 
-	//BUFFER RECIBIDO = 2270 (EJEMPLO)
-	//BUFFER RECIBIDO = 2112220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
-	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 211
+	digitosCantDeDigitosSH=PosicionDeBufferAInt(buffer,2);
+	//printf("Cantidad Digitos de tamaño de contenido SH:%d\n",digitosCantDeDigitosSH);
+	tamanioSH=ObtenerTamanio(buffer,3,digitosCantDeDigitosSH);
+	//printf("Tamanio del SH: %d\n",tamanioSH);
+	posActual=2+digitosCantDeDigitos;
 
-	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,2);
-	printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
-	cantDeArchivos=ObtenerTamanio(buffer,3,digitosCantDeArchivos);
-	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
-	posActual=3+digitosCantDeArchivos;
+	fileSH=DigitosNombreArchivo(buffer,&posActual);
+	//printf("Contenido de archivo SH:%s\n",fileSH);
 
-	for(x=0;x<cantDeArchivos;x++){
-		nArchivo=DigitosNombreArchivo(buffer,&posActual);
-		printf("NOMBRE:%s\n",nArchivo);
-	}
-	nResultado=DigitosNombreArchivo(buffer,&posActual);
-	tieneCombiner=PosicionDeBufferAInt(buffer,posActual); // CAMBIE strlen(buffer)-3 por posActual
+	nArchivoSH=DigitosNombreArchivo(buffer,&posActual);
+	//printf("Nombre Archivo SH:%s\n",nArchivoSH);
 
+	//printf("Posicion Actual:%d\n",posActual);
+	digitosTamanioBloque=PosicionDeBufferAInt(buffer,posActual);
+	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
+	numeroBloque=ObtenerTamanio(buffer,posActual+1,digitosTamanioBloque);
+	//printf("Numero de bloque: %d\n",numeroBloque);
+
+	posActual = posActual + digitosTamanioBloque;
+	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
+	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
+
+	*job = job_create(nArchivoSH,fileSH,numeroBloque,nArchivoResultado);
 	*cantRafaga=1;
 }
 
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
-
+	t_job * job;
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 	printf("RAFAGA:%d\n",tipo_mensaje);
 	if(*cantRafaga == 2){
 		switch(tipo_mensaje){
 		case RECIBIR_TRABAJO:
-			AtiendeJob(buffer,cantRafaga);
+			AtiendeJob(&job,buffer,cantRafaga);
+			printf("Nombre de SH:%s\n",job->nombreSH);
+			printf("Contenido de SH:%s\n",job->contenidoSH);
+			printf("Numero de bloque:%d\n",job->numeroBloque);
+			printf("Nombre de Resultado:%s\n",job->nombreResultado);
 			*cantRafaga=0;
 			//ObtenerInfoDeNodos(*id);
 			//Planificar(*id);

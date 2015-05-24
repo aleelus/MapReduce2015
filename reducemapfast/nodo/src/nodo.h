@@ -118,3 +118,21 @@ int pagina;  //Tamanio paginas Mapeo
 char* getBloque(int numero);
 void setBloque(int numero, char*datos);
 char * getFileContent(char* nombre);
+
+//Estructura Datos del Job
+typedef struct{
+    char *nombreSH;
+    char *contenidoSH;
+    int numeroBloque;
+    char *nombreResultado;
+}t_job;
+
+static t_job *job_create(char *nSH, char* contenidoSH, int numeroBloque, char * nResultado) {
+	t_job *new = malloc(sizeof(t_job));
+	new->nombreSH = strdup(nSH);
+	new->contenidoSH = strdup(contenidoSH);
+	new->numeroBloque = numeroBloque;
+	new->nombreResultado = strdup(nResultado);
+	return new;
+}
+
