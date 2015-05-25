@@ -18,11 +18,11 @@ int main(int argv, char** argc) {
 	lista_nodos = list_create();
 	lista_archivos=list_create();
 
-	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000,0));
-	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",35000,0));
-	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200,0));
-	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600,0));
-	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050,0));
+	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000));
+	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",35000));
+	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200));
+	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600));
+	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050));
 
 	t_nodo *el_nodo;
 	int i=0;
@@ -487,13 +487,13 @@ void Planificar(int id){
 	t_archivo *el_archivo;
 
 	int i=0;
+
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
 		if(el_archivo->idJob == id){
-			FuncionMagica(el_archivo->listaBloques);
+			FuncionMagica(el_archivo->listaBloques);//cargo array_listas
 			el_archivo->array_de_listas=array_listas;
 			RecorrerArrayListas(el_archivo);
-
 		}
 		i++;
 	}
@@ -506,24 +506,22 @@ void Planificar(int id){
 void enviarPlanificacionAJob (int id,int socket){
 
 	t_nodo *el_nodo;
-	int i=0;
 	char *mensaje;
 	mensaje=string_new();
 
-	while(i<list_size(lista_nodos)){
-		el_nodo=list_get(lista_nodos,i);
-		if(el_nodo->id_job==id){
-			string_append(&mensaje,el_nodo->nombreNodo);
-			string_append(&mensaje,"-");
-			string_append(&mensaje,el_nodo->ipNodo);
-			string_append(&mensaje,"-");
-			string_append(&mensaje,string_itoa(el_nodo->puertoNodo));
-			string_append(&mensaje,"-");
-			string_append(&mensaje,string_itoa(el_nodo->id_job));
-		}
-		break;
-		i++;
-	}
+	el_nodo=list_get(lista_nodos,0);
+	string_append(&mensaje,"4");//Viene de MarTA
+	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
+	string_append(&mensaje,el_nodo->nombreNodo);
+	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"127.0.0.1");
+	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
+	string_append(&mensaje,"18");
+	string_append(&mensaje,"Bloque30");
+	string_append(&mensaje,"213");
+	string_append(&mensaje,"resultado.txt");
+
+
 	string_append(&mensaje,"\0");
 	EnviarDatos(socket, mensaje,strlen(mensaje));
 

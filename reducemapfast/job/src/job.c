@@ -11,11 +11,7 @@
 */
 #include "job.h"
 
-//Cadena recibida del Job
-	//21270xxxxxxxxx212barriendo.sh233213resultado.txt
-	//2: soy Job 1: recibo tarea 2: cant de dig del tamaño del .sh 70: tamaño del sh
-	//2: cant de dig de tamaño del nombre del .sh 12: tamaño del nombre del .sh y luego el nombre
-	//2: cant de dig del numero de bloque 33: numero de bloque, el nombre del arch de resultado lo sacas jajaja
+
 
 int main(int argv, char** argc) {
 	//inicializamos los semaforos
@@ -31,6 +27,7 @@ int main(int argv, char** argc) {
 	char * buffer,*nomRes;
 	char *bufferRafaga_Dos=string_new();
 	char *bufferRafaga_Uno=string_new();
+	char *bufferANodo = string_new();
 	int cantidadRafagaMarta=1;
 
 	int tamanio=10,cantRafaga=1;
@@ -39,6 +36,9 @@ int main(int argv, char** argc) {
 	buffer = string_new();
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
+	char *aux=string_new();
+	t_job_a_nodo el_job;
+
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
@@ -82,6 +82,26 @@ int main(int argv, char** argc) {
 				//printf("--------El BUFFER:%s\n",buffer);
 				if(cantidadRafagaMarta==3){
 					printf("Recibe Planificacion de Marta: %s\n",buffer);
+
+					el_job=procesoJob(buffer);
+					string_append(&bufferANodo,"21");
+					aux=abrir_Mapper(aux);
+					string_append(&bufferANodo,aux);
+					free(aux);
+					aux=obtenerSubBuffer(g_Mapper);
+					string_append(&bufferANodo,aux);
+					free(aux);
+					aux=obtenerSubBuffer(el_job.archResultado);
+					string_append(&bufferANodo,aux);
+					free(aux);
+
+					//Me conecto con el Nodo
+					conectarNodo(el_job);
+					//Le envio Nodo
+					EnviarDatos(bufferANodo, strlen(bufferANodo));
+
+
+
 					cantidadRafagaMarta=1;
 				}
 				else if(cantidadRafagaMarta==2){
@@ -101,6 +121,157 @@ int main(int argv, char** argc) {
 	//	return code;
 
 	return 0;
+}
+
+void conectarNodo(t_job_a_nodo el_job){
+
+	int socket_nodo;
+	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON UN NODO
+	log_info(logger, "Intentando conectar a %s\n",el_job.nodo);
+
+	struct addrinfo hints;
+	struct addrinfo *serverInfo;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
+	hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
+
+
+	if (getaddrinfo(el_job.ip, el_job.puerto, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
+		log_info(logger,
+				"ERROR: cargando datos de conexion socket_nodo");
+	}
+
+	if ((socket_nodo = socket(serverInfo->ai_family, serverInfo->ai_socktype,
+			serverInfo->ai_protocol)) < 0) {
+		log_info(logger, "ERROR: crear socket_nodo");
+	}
+	if (connect(socket_nodo, serverInfo->ai_addr, serverInfo->ai_addrlen)
+			< 0) {
+		log_info(logger, "ERROR: conectar socket_nodo");
+	}
+	freeaddrinfo(serverInfo);	// No lo necesitamos mas
+
+
+}
+
+t_job_a_nodo procesoJob (char *buffer){
+
+	//415 NodoA   19 127.0.0.1    14 6000      18 Bloque30      213 resultado.txt
+
+	t_job_a_nodo el_job;
+	int pos=1;
+
+
+	el_job.nodo=DigitosNombreArchivo(buffer,&pos);
+	el_job.ip=DigitosNombreArchivo(buffer,&pos);
+	el_job.puerto=DigitosNombreArchivo(buffer,&pos);
+	el_job.bloque=DigitosNombreArchivo(buffer,&pos);
+	el_job.archResultado=DigitosNombreArchivo(buffer,&pos);
+
+	return el_job;
+}
+
+char* obtenerSubBuffer(char *nombre){
+	// Esta funcion recibe un nombre y devuelve ese nombre de acuerdo al protocolo. Ej: carlos ------> 16carlos
+	char *aux=string_new();
+	int tamanioNombre=0;
+	float tam=0;
+	int cont=0;
+
+	tamanioNombre=strlen(nombre);
+	tam=tamanioNombre;
+	while(tam>1){
+		tam=tam/10;
+		cont++;
+	}
+	string_append(&aux,string_itoa(cont));
+	string_append(&aux,string_itoa(tamanioNombre));
+	string_append(&aux,nombre);
+
+	return aux;
+}
+
+char* abrir_Mapper(char *aux){
+
+	FILE *f;
+	int tamanioArchivo=0;
+	float tam=0;
+	int cont=0;
+	char *aux2=string_new();
+
+	f= fopen(g_Mapper,"rb");
+	fseek(f,0,SEEK_END);
+	tamanioArchivo=ftell(f);
+	rewind(f);
+	aux2=(char*)malloc(sizeof(char)*tamanioArchivo);
+	memset(aux2, 0, tamanioArchivo * sizeof(char));
+	fread(aux2,1,tamanioArchivo,f);
+
+	tam=tamanioArchivo;
+	while(tam>1){
+		tam=tam/10;
+		cont++;
+	}
+	string_append(&aux,string_itoa(cont));
+	string_append(&aux,string_itoa(tamanioArchivo));
+	string_append(&aux,aux2);
+
+	fclose(f);
+
+	return aux;
+}
+
+
+int ChartToInt(char x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+int PosicionDeBufferAInt(char* buffer, int posicion) {
+	int logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return ChartToInt(buffer[posicion]);
+}
+
+
+int ObtenerComandoMSJ(char* buffer) {
+//Hay que obtener el comando dado el buffer.
+//El comando está dado por el primer caracter, que tiene que ser un número.
+	return PosicionDeBufferAInt(buffer, 0);
+}
+
+
+char* DigitosNombreArchivo(char *buffer,int *posicion){
+
+	char *nombreArch;
+	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
+
+	digito=PosicionDeBufferAInt(buffer,*posicion);
+	for(i=1;i<=digito;i++){
+		algo=PosicionDeBufferAInt(buffer,*posicion+i);
+		aux=aux*10+algo;
+	}
+	nombreArch = malloc(aux+1);
+	for(j=*posicion+i;j<*posicion+i+aux;j++){
+		nombreArch[x]=buffer[j];
+		x++;
+	}
+	nombreArch[x]='\0';
+	*posicion=*posicion+i+aux;
+	return nombreArch;
 }
 
 char* obtenerRafaga_Uno(char *buffer,char* bufferAux){
@@ -197,28 +368,7 @@ void obtenerArrayArchivos(int *contadorArchivos){
 
 }
 
-int ChartToInt(char x) {
-	int numero = 0;
-	char * aux = string_new();
-	string_append_with_format(&aux, "%c", x);
-	//char* aux = malloc(1 * sizeof(char));
-	//sprintf(aux, "%c", x);
-	numero = strtol(aux, (char **) NULL, 10);
 
-	if (aux != NULL )
-		free(aux);
-	return numero;
-}
-
-int PosicionDeBufferAInt(char* buffer, int posicion) {
-	int logitudBuffer = 0;
-	logitudBuffer = strlen(buffer);
-
-	if (logitudBuffer <= posicion)
-		return 0;
-	else
-		return ChartToInt(buffer[posicion]);
-}
 
 int ObtenerTamanio (char *buffer , int dig_tamanio){
 	int x,digito,aux=0;

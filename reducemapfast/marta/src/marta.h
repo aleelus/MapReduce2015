@@ -157,6 +157,20 @@ static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	return new;
 }
 
+typedef struct{
+    char *bloque;
+    char *archivo;
+    int procesando;
+}t_bloqueArchivo;
+
+static t_bloqueArchivo *bloqueArchivo_create(char *bloque, char *archivo, int procesando) {
+	t_bloqueArchivo *new = malloc(sizeof(t_bloqueArchivo));
+	new->bloque = strdup(bloque);
+	new->archivo = strdup(archivo);
+	new->procesando= strdup(procesando);
+	return new;
+}
+
 
 typedef struct {
 	//Estructura Lista de Nodos
@@ -164,25 +178,20 @@ typedef struct {
 	    char *ipNodo;
 	    int puertoNodo;
 	    int estado;
-	    int procesando;
-	    char *nombreArchivo;
-	    char *bloqueArchivo;
+	    t_list *listaBloqueArchivo;
 	    char *tarea;
-	    int id_job;
 
 } t_nodo;
 
-static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo, int id) {
+static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo) {
 	t_nodo *new = malloc(sizeof(t_nodo));
 	new->nombreNodo = strdup(nombreNodo);
 	new->ipNodo = strdup(ipNodo);
 	new->puertoNodo = puertoNodo;
-	new->id_job=id;
 	new->estado = 1;
-	new->procesando = 0;
-	new->nombreArchivo = "";
-	new->bloqueArchivo = "";
+	new->listaBloqueArchivo= list_create();
 	new->tarea = "";
+
 	return new;
 }
 
