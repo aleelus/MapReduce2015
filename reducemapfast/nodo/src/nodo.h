@@ -33,6 +33,11 @@
 //Tamanio bloques 20mb
 #define TAMANIO_BLOQUE 1024*1024*20
 
+//Tipos de Mensaje segun Interface
+#define GET_BLOQUE 2
+#define SET_BLOQUE 3
+#define GET_FILE_CONTENT 4
+
 //Tipos de Emisores de Mensaje
 #define ES_JOB 2
 #define ES_FS 1
@@ -42,6 +47,10 @@
 #define RECIBIR_TRABAJO 1
 #define NOTIFICACION_NODO 2
 #define RECIBIDO_OK 3
+
+//Tipos de Mensaje de FS
+#define SOLICITUD_DE_CONEXION 1
+
 //Funciones por Telnet
 #define COMANDOBLOQUES 9
 
@@ -80,6 +89,9 @@ pthread_t hOrquestadorConexiones, hConsola;
 
 //Variable Global del Estado de Nodo 1=Ocupado 0=Desocupado
 int estado=0;
+
+//Variable Global que indica si ya estuvo conectado al FS
+int conectado=0;
 
 //METODOS MANEJO SOCKETS
 void HiloOrquestadorDeConexiones();

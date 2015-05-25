@@ -1,6 +1,6 @@
 #include "sockets.h"
 
-
+/*
 //Destruir buffer
 void sockets_buffer_destroy(t_socket_buffer *tbuffer){
 	free(tbuffer);
@@ -250,4 +250,4 @@ int sockets_bind(t_socket* socket, char* ip, int port){
 //Escribir en cliente
 int sockets_write(t_socket_client *client, void *data, int datalen){
 	return write(client->socket->desc, data, datalen);
-};
+};*/

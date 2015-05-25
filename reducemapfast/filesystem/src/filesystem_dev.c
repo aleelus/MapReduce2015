@@ -5,10 +5,10 @@
  *      Author: gabriel
  */
 
-#include "filesystem.h"
-#include "sockets.h"
+//#include "filesystem.h"
+//#include "sockets.h"
 
-int eleccion;
+//int eleccion;
 /*int socket_desc , new_socket , c;
     struct sockaddr_in server , client;
     char *message, server_reply[2000];
@@ -16,7 +16,7 @@ int eleccion;
 */
 
 //Mostrar Ayuda
-void mostrarAyuda(){
+/*void mostrarAyuda(){
 	printf("Comandos posibles: \n");
 	printf("1 - Formatear MDFS\n");
 	printf("2 - Eliminar/Renombrar/Mover Archivos\n");
@@ -32,22 +32,11 @@ void mostrarAyuda(){
 	printf("Ejecute una opcion: ");
 	scanf("%d", &eleccion);
 	ejecutarComando(eleccion);
-}
-
-//Mostrar Error
-void mostrarError(error unError){
-	switch(unError){
-		case CantidadArgumentosIncorrecta: puts("CantidadArgumentosIncorrecta.");break;
-		case NoSePudoAbrirConfig:		   puts("No se pudo abrir configuracion");break;
-		case NoSePuedeObtenerPuerto:	   puts("No se pudo obtener puerto");break;
-		case NoSePuedeObtenerNodos:		   puts("No se pudo obtener nodos");break;
-		case OtroError:	 				   puts("OtroError.");break;
-	};
-}
+}*/
 
 
 //Ejecutar un comando
-void ejecutarComando(int unComando){
+/*void ejecutarComando(int unComando){
 	switch(unComando){
 		case 1:	{ formatearMDFS(); break;}
 		case 2: { procesarArchivo(); break;}
@@ -154,9 +143,9 @@ int leer_config(){
 	return EXIT_SUCCESS;
 
 }
-
+*/
 //Conectar a Marta
-int conectar_marta(){
+//int conectar_marta(){
     //Create socket
     /*
     if ((socket_desc = socket(AF_INET , SOCK_STREAM , 0)) == -1)
@@ -183,12 +172,12 @@ int conectar_marta(){
     puts("Reply received\n");
     puts(server_reply);    
     */
-	return EXIT_SUCCESS;
+	//return EXIT_SUCCESS;
 
-}
+//}
 
 //Conectar nodos
-int conectar_nodos(){
+/*int conectar_nodos(){
 
     t_socket_server *server = sockets_create_server(INADDR_ANY, 8888);
     t_socket_client *client;
@@ -258,3 +247,4 @@ void LevantarConfig() {
 void iniciar_mongo(){
 	
 }
+*/

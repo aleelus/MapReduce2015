@@ -552,7 +552,45 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	}
 }
 
+void implementoFS(char * buffer,int *cantRafaga,char** mensaje){
+	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
+		printf("RAFAGA:%d\n",tipo_mensaje);
+		if(*cantRafaga == 2){
+			switch(tipo_mensaje){
+			case GET_BLOQUE:
+			//	AtiendeJob(&job,buffer,cantRafaga);
+			//	printf("Nombre de SH:%s\n",job->nombreSH);
+			//	printf("Contenido de SH:%s\n",job->contenidoSH);
+			//	printf("Numero de bloque:%d\n",job->numeroBloque);
+			//	printf("Nombre de Resultado:%s\n",job->nombreResultado);
+			//	*cantRafaga=0;
+				//ObtenerInfoDeNodos(*id);
+				//Planificar(*id);
+				//EnviarPlanificacionAJob(id);
+				*cantRafaga=1;
+				break;
+			case SOLICITUD_DE_CONEXION:
+				if(conectado == 0){
+					*mensaje = "Ok!";
+					conectado = 1;
+				}
+				break;
+			case SET_BLOQUE:
+				break;
+			default:
+				break;
+			}
+			*mensaje = "Ok";
+		} else {
+			if (*cantRafaga==1) {
+				*mensaje = "Ok!!";
+				*cantRafaga = 2;
+			} else {
+				*mensaje = "No";
+			}
+		}
 
+}
 
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
@@ -611,7 +649,7 @@ int AtiendeCliente(void * arg) {
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");
-				//implementoFS(buffer,&cantRafaga,&mensaje);
+				implementoFS(buffer,&cantRafaga,&mensaje);
 				//Esto va en nodo.h y son define
 				//PRIMERA_CONEXION 1
 				//GET_BLOQUE 2
