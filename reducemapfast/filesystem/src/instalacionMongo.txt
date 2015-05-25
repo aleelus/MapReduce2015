@@ -1,0 +1,23 @@
+#instalar Mongo
+apt-get install mongodb-clients
+apt-get install mongodb-server
+
+#instalar driver mongo-c
+wget https://github.com/mongodb/mongo-c-driver/releases/download/1.1.4/mongo-c-driver-1.1.4.tar.gz
+tar -xzf mongo-c-driver-1.1.4.tar.gz # cd mongo-c-driver-1.1.4/
+./configure
+make
+make install
+
+#ubicar donde se encuentra el archivo libmongoc-1.0.so.0
+find / -name libmongoc-1.0.so.0
+
+#concatenar la ubicacion encontrada, ej. /usr/local/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+#agregar al proyecto de filesystem lo siguiente
+-I/usr/local/include/libbson-1.0
+-I/usr/local/include/libmongoc-1.0
+-lmongoc-1.0
+-lbson-1.0
+

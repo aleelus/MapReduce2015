@@ -12,8 +12,8 @@
 #include <commons/collections/list.h>
 #include <commons/log.h>
 #include <semaphore.h>
-//#include <bson.h>
-//#include <mongoc.h>
+#include <bson.h>
+#include <mongoc.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -130,7 +130,7 @@ int ObtenerComandoMSJ(char*);							//Obtiene el tipo del comando del emisor
 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...);
 char* RecibirDatos(int,char*,int*,int*,int*);
-
+int iniciarMongo();
 // Logger del commons
 t_log* logger;
 
