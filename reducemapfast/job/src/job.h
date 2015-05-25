@@ -35,7 +35,25 @@ void obtenerArrayArchivos(int *);
 char* obtenerNombreResultado();
 char * procesarArchivos (char *,int);
 char* obtenerRafaga_Uno(char *,char*);
+int PosicionDeBufferAInt(char* , int );
+int ChartToInt(char );
+int ObtenerTamanio (char * , int );
+char* abrir_Mapper(char *);
+char* obtenerSubBuffer(char *);
+char* DigitosNombreArchivo(char *,int *);
+void conectarNodo(t_job_a_nodo);
 
+typedef struct {
+	char *nodo;
+	char *ip;
+	char *puerto;
+	char *bloque;
+	char *archResultado;
+
+}t_job_a_nodo;
+
+
+t_job_a_nodo procesoJob (char *);
 
 //Ip de Marta
 char * g_Ip_Marta;
