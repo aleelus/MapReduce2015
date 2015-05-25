@@ -29,7 +29,7 @@
 
 // METODOS SOCKET //
 void conectarMarta();
-int EnviarDatos(char*,int);
+int EnviarDatos(int,char*,int);
 char* RecibirDatos(char *, int *,int *,int *);
 void obtenerArrayArchivos(int *);
 char* obtenerNombreResultado();
@@ -41,7 +41,7 @@ int ObtenerTamanio (char * , int );
 char* abrir_Mapper(char *);
 char* obtenerSubBuffer(char *);
 char* DigitosNombreArchivo(char *,int *);
-void conectarNodo(t_job_a_nodo);
+
 
 typedef struct {
 	char *nodo;
@@ -52,7 +52,7 @@ typedef struct {
 
 }t_job_a_nodo;
 
-
+int conectarNodo(t_job_a_nodo , int );
 t_job_a_nodo procesoJob (char *);
 
 //Ip de Marta

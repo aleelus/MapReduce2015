@@ -38,6 +38,7 @@ int main(int argv, char** argc) {
 	int g_Ejecutando = 1;
 	char *aux=string_new();
 	t_job_a_nodo el_job;
+	int socket_nodo;
 
 
 	// Levantamos el archivo de configuracion.
@@ -64,7 +65,7 @@ int main(int argv, char** argc) {
 
 
 	conectarMarta();
-	EnviarDatos(bufferRafaga_Uno, strlen(bufferRafaga_Uno));
+	EnviarDatos(socket_Marta,bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
 
 	while ((!desconexionCliente) & g_Ejecutando) {
@@ -96,16 +97,16 @@ int main(int argv, char** argc) {
 					free(aux);
 
 					//Me conecto con el Nodo
-					conectarNodo(el_job);
+					socket_nodo=conectarNodo(el_job,socket_nodo);
 					//Le envio Nodo
-					EnviarDatos(bufferANodo, strlen(bufferANodo));
+					EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
 
 
 
 					cantidadRafagaMarta=1;
 				}
 				else if(cantidadRafagaMarta==2){
-					EnviarDatos(bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+					EnviarDatos(socket_Marta,bufferRafaga_Dos, strlen(bufferRafaga_Dos));
 					cantidadRafagaMarta=3;
 					cantRafaga=3;
 				}
@@ -123,9 +124,9 @@ int main(int argv, char** argc) {
 	return 0;
 }
 
-void conectarNodo(t_job_a_nodo el_job){
+int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 
-	int socket_nodo;
+
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON UN NODO
 	log_info(logger, "Intentando conectar a %s\n",el_job.nodo);
 
@@ -152,7 +153,7 @@ void conectarNodo(t_job_a_nodo el_job){
 	}
 	freeaddrinfo(serverInfo);	// No lo necesitamos mas
 
-
+	return socket_nodo;
 }
 
 t_job_a_nodo procesoJob (char *buffer){
@@ -426,7 +427,7 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 }
 
 
-int EnviarDatos(char *buffer, int cantidadDeBytesAEnviar) {
+int EnviarDatos(int socket,char *buffer, int cantidadDeBytesAEnviar) {
 // Retardo antes de contestar una solicitud
 	//sleep(g_Retardo / 1000);
 
@@ -434,10 +435,10 @@ int EnviarDatos(char *buffer, int cantidadDeBytesAEnviar) {
 
 	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
-	if ((bytecount = send(socket_Marta, buffer, cantidadDeBytesAEnviar, 0)) == -1)
-		Error("No puedo enviar información a al clientes. Socket: %d", socket_Marta);
+	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
+		Error("No puedo enviar información a al clientes. Socket: %d", socket);
 
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket_Marta,
+	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
 			(char*) buffer);
 
 	return bytecount;
