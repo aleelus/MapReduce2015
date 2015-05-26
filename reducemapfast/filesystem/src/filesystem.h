@@ -46,6 +46,11 @@
 //Tamaño del buffer
 #define BUFFERSIZE 10
 
+
+//Variable global para sufijo de nombre de nodo
+char letra = 'A'; //hay que ponerle semaforo
+char * nombre;
+
 typedef enum {
 	CantidadArgumentosIncorrecta,
 	//NoEsUnVolumen,

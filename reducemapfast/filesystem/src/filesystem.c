@@ -17,6 +17,9 @@ int main(int argv, char** argc) {
 	// Abrir Archivo de Configuracion
 	leer_config();
 
+	//Variable del nombre de los nodos
+	 nombre = string_new();
+
 	//Lista de nodos
 	lista_nodos = list_create();
 
@@ -252,6 +255,13 @@ int EnviarInfoMarta(int socket) {
 		string_append(&buffer,el_archivo->nombreArchivo);
 		i++;
 	}
+	//BUFFER RECIBIDO = 1212220temperatura-2012.txt121015NODOA23015NODOB22215NODOF18
+	//												 1115NODOE23015NODOJ22215NODOW18
+	//					    220temperatura-2013.txt121015NODOA23015NODOB22215NODOF23
+	//												 1115NODOE23015NODOJ22215NODOW18
+	//					15NODOA19127.0.0.114600015NODOB19127.0.0.1146000
+	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
+
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
@@ -594,6 +604,14 @@ int agregarNodo(){
 	char * puertoNodo = malloc(sizeof(int));
 	int socket_Nodo;
 	t_nodo *nodo;
+	free(nombre);
+	nombre = string_new();
+	if(letra>'B'){
+		letra = 'A';
+		string_append(&nombre,"NodoA");
+	} else {
+		string_append(&nombre,"Nodo");
+	}
 	printf("Ingrese la ip del nodo: ");
 	scanf("%s",ipNodo);
 	fflush(stdin);
@@ -604,9 +622,11 @@ int agregarNodo(){
 		EnviarDatos(socket_Nodo,"110", strlen("110"));
 		printf("\nNodo Conectado!");
 		//Agregar Mutex
-		nodo = nodo_create("Nodo",ipNodo,puertoNodo,1);
+		string_append(&nombre,&letra);
+		nodo = nodo_create(nombre,ipNodo,puertoNodo,1);
 		list_add(lista_nodos,nodo);
 		//MUTEX
+		letra++;
 		return 1;
 	} else {
 		printf("\nNo se pudo conectar el nodo porque no esta implementado");
