@@ -30,9 +30,8 @@
 // METODOS SOCKET //
 void conectarMarta();
 int EnviarDatos(int,char*,int);
-char* RecibirDatos(char *, int *,int *,int *);
+char* RecibirDatos(int ,char *, int *,int *,int *);
 void obtenerArrayArchivos(int *);
-char* obtenerNombreResultado();
 char * procesarArchivos (char *,int);
 char* obtenerRafaga_Uno(char *,char*);
 int PosicionDeBufferAInt(char* , int );
@@ -41,6 +40,8 @@ int ObtenerTamanio (char * , int );
 char* abrir_Mapper(char *);
 char* obtenerSubBuffer(char *);
 char* DigitosNombreArchivo(char *,int *);
+int AtiendeCliente(void *);
+void CerrarSocket(int);
 
 
 typedef struct {
@@ -55,6 +56,7 @@ typedef struct {
 int conectarNodo(t_job_a_nodo , int );
 t_job_a_nodo procesoJob (char *);
 
+char * bufferANodo;
 //Ip de Marta
 char * g_Ip_Marta;
 
@@ -81,6 +83,8 @@ char * g_Resultado;
 
 //Array de nombres de archivos
 char **array_archivos;
+
+int g_Ejecutando = 1;
 
 // METODOS CONFIGURACION //
 void LevantarConfig();

@@ -336,7 +336,7 @@ void RecorrerListaBloques(){
 
 	int i=0;
 	int j=0;
-	printf("IDJOB:"COLOR_VERDE"%d\n",id_job);
+	printf("IDJOB:"COLOR_VERDE"%d\n"DEFAULT,id_job);
 
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
@@ -514,8 +514,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
 	string_append(&mensaje,el_nodo->nombreNodo);
-	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"127.0.0.1");
+	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"192.168.1.24");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");
@@ -611,6 +611,7 @@ int AtiendeCliente(void * arg) {
 			switch (emisor) {
 			case ES_JOB:
 				implementoJob(&id,buffer,&cantRafaga,&mensaje,socket);
+
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");

@@ -24,16 +24,17 @@ int main(int argv, char** argc) {
 	//char* temp_file = tmpnam(NULL);
 
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "job", true, LOG_LEVEL_TRACE);
-	char * buffer,*nomRes;
+	char * buffer= string_new();
 	char *bufferRafaga_Dos=string_new();
 	char *bufferRafaga_Uno=string_new();
-	char *bufferANodo = string_new();
+	bufferANodo=string_new();
 	int cantidadRafagaMarta=1;
+
 
 	int tamanio=10,cantRafaga=1;
 	int bytesRecibidos;
 	int j=0,contadorArchivos=0;
-	buffer = string_new();
+
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
 	char *aux=string_new();
@@ -45,9 +46,8 @@ int main(int argv, char** argc) {
 	LevantarConfig();
 
 	obtenerArrayArchivos(&contadorArchivos);
-	nomRes=obtenerNombreResultado();
 	//Agrego el nombre de Resultado al final de array_archivos
-	array_archivos[contadorArchivos]=nomRes;
+	array_archivos[contadorArchivos]=g_Resultado;
 	//Muestro los archivos por pantalla
 	printf("***********************\n");
 	for(j=0;j<contadorArchivos;j++){
@@ -75,7 +75,7 @@ int main(int argv, char** argc) {
 			buffer = string_new();
 
 			//Recibimos los datos del cliente
-			buffer = RecibirDatos(buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 
 			printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
@@ -98,8 +98,12 @@ int main(int argv, char** argc) {
 
 					//Me conecto con el Nodo
 					socket_nodo=conectarNodo(el_job,socket_nodo);
-					//Le envio Nodo
-					EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
+
+					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
+					pthread_t hNuevoCliente;
+					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
+										(void *) socket_nodo);
+
 
 
 
@@ -109,20 +113,77 @@ int main(int argv, char** argc) {
 					EnviarDatos(socket_Marta,bufferRafaga_Dos, strlen(bufferRafaga_Dos));
 					cantidadRafagaMarta=3;
 					cantRafaga=3;
+
 				}
 
 
-			} else
+			} else{
 				desconexionCliente = 1;
-
+				free(buffer);
+			}
 		}
 
-		//CerrarSocket(socket);
+		CerrarSocket(socket_nodo);
 
 	//	return code;
 
 	return 0;
 }
+
+int AtiendeCliente(void * arg) {
+	int socket_nodo = (int) arg;
+	int longitudBuffer;
+
+	//Le envio Nodo
+	EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
+
+	int emisor = 0;
+	int code=0;
+
+// Dentro del buffer se guarda el mensaje recibido por el nodo.
+	char* buffer;
+	buffer = malloc(BUFFERSIZE * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+
+// Cantidad de bytes recibidos.
+	int bytesRecibidos;
+
+// La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
+	int desconexionCliente = 0;
+
+	int cantRafaga=1,tamanio=0;
+	char * mensaje;
+	while ((!desconexionCliente) & g_Ejecutando) {
+
+		if (buffer != NULL )
+			free(buffer);
+		buffer = string_new();
+
+		//Recibimos los datos del nodo
+		buffer = RecibirDatos(socket_nodo, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+
+
+		if (bytesRecibidos > 0) {
+
+
+		} else{
+			desconexionCliente = 1;
+			free(buffer);
+			free(bufferANodo);
+		}
+
+	}
+
+	CerrarSocket(socket_nodo);
+
+	return code;
+}
+
+void CerrarSocket(int socket) {
+	close(socket);
+	//Traza("SOCKET SE CIERRA: (%d).", socket);
+	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
+}
+
 
 int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 
@@ -218,6 +279,7 @@ char* abrir_Mapper(char *aux){
 	string_append(&aux,string_itoa(tamanioArchivo));
 	string_append(&aux,aux2);
 
+	free(aux2);
 	fclose(f);
 
 	return aux;
@@ -276,7 +338,8 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 }
 
 char* obtenerRafaga_Uno(char *buffer,char* bufferAux){
-	int tamanio=0,cont=0;
+	int cont=0;
+	float tamanio=0;
 	tamanio=strlen(bufferAux);
 	string_append(&buffer,"2");
 	while(tamanio>1){
@@ -294,8 +357,8 @@ char * procesarArchivos (char *bufferArch,int contArch){
 	//212220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1 TAMANIO 66 + los 5 que le agrego por las dudas
 
 	int j=0;
-	int contDig=0,tamDigArch=0,cont=0,combiner=9;
-	float tam=0;
+	int contDig=0,cont=0,combiner=9;
+	float tam=0,tamDigArch=0;
 
 	tamDigArch=contArch;
 	while(tamDigArch>1){
@@ -329,7 +392,8 @@ char * procesarArchivos (char *bufferArch,int contArch){
 	return bufferArch;
 
 }
-char* obtenerNombreResultado(){
+/*
+  char* obtenerNombreResultado(){
 	char **array;
 	int cont=0;
 	array =(char**) malloc (strlen(g_Resultado));
@@ -337,15 +401,20 @@ char* obtenerNombreResultado(){
 	while (array[cont]!=NULL){
 				cont++;
 	}
+	free(array);
 	return array[cont-1];
 }
+ */
+
 void obtenerArrayArchivos(int *contadorArchivos){
 
 	char **array;
-	int cont=0,j=0,i=0;
+	int cont=0,j=0,i=0,c=0,index=0;
+	char *aux=string_new();
 
 	array =(char**) malloc (strlen(g_Archivos));
 		array=string_split(g_Archivos,"/");
+
 
 		while (array[cont]!=NULL){
 			for(j=0;j<strlen(array[cont]);j++){
@@ -355,17 +424,31 @@ void obtenerArrayArchivos(int *contadorArchivos){
 			}
 			cont++;
 		}
+
+
 		array_archivos=(char**) malloc (*contadorArchivos*strlen(g_Archivos)+strlen(g_Resultado));
+
 		cont=0;
+		i=0;
 		while (array[cont]!=NULL){
 				for(j=0;j<strlen(array[cont]);j++){
 					if(array[cont][j]=='.'){
-							array_archivos[i]=array[cont];
+							for(c=index;c<=cont;c++){
+								string_append(&aux,"/");
+								string_append(&aux,array[c]);
+
+							}
+							index=cont+1;
+							array_archivos[i]=aux;
+							aux=string_new();
 							i++;
 					}
 				}
 				cont++;
 		}
+		free(aux);
+		free(array);
+
 
 }
 
@@ -380,7 +463,7 @@ int ObtenerTamanio (char *buffer , int dig_tamanio){
 	return aux;
 }
 
-char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
+char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
 	char *bufferAux= malloc(1);
 	int digTamanio;
@@ -392,8 +475,8 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
 		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
-		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, BUFFERSIZE, 0)) == -1) {
-			Error("Ocurrio un error al intentar recibir datos desde Marta. Socket: %d",socket_Marta);
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde Marta. Socket: %d",socket);
 		}
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
@@ -405,23 +488,25 @@ char* RecibirDatos(char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamani
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
 		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
-		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, *tamanio, 0)) == -1) {
-			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
+		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
+			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 		}
 
 	}else{
 
-		bufferAux = realloc(bufferAux,100* sizeof(char));
-		memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con ceros.
+		if(*cantRafaga==3){
 
-		if ((*bytesRecibidos = *bytesRecibidos+recv(socket_Marta, bufferAux, 100, 0)) == -1) {
-			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket_Marta);
+			bufferAux = realloc(bufferAux,100* sizeof(char));
+			memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con ceros.
+
+			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 100, 0)) == -1) {
+				Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+			}
+			*cantRafaga=1;
 		}
-		*cantRafaga=1;
-
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta,
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
 			(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo.
 }
