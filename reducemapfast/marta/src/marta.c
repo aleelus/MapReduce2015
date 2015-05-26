@@ -508,7 +508,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	t_nodo *el_nodo;
 	char *mensaje;
 	mensaje=string_new();
-
+	//En la lista de archivos en el array esta la planificacion
+	//busco en base a la id y envio planificacion de cada archivo y de cada nodo.
 	el_nodo=list_get(lista_nodos,0);
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
