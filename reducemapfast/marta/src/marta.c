@@ -159,8 +159,8 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 
 
 	}else if(*cantRafaga==2){
-		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
-		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+		bufferAux = realloc(bufferAux,*tamanio * sizeof(char)+1);
+		memset(bufferAux, 0, *tamanio * sizeof(char)+1); //-> llenamos el bufferAux con barras ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
@@ -371,6 +371,23 @@ void RecorrerListaBloques(){
 
 }
 
+void RecorrerListaNodos(){
+
+	t_nodo *el_nodo;
+	int i=0;
+
+	while(i<list_size(lista_nodos)){
+		el_nodo=list_get(lista_nodos,i);
+		printf("************************************************\n");
+		printf("Nombre: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->nombreNodo);
+		printf("IP: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->ipNodo);
+		printf("Puerto: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->puertoNodo);
+		i++;
+	}
+	printf("************************************************\n");
+
+}
+
 char* obtenerSubBuffer(char *nombre){
 	// Esta funcion recibe un nombre y devuelve ese nombre de acuerdo al protocolo. Ej: carlos ------> 16carlos
 	char *aux=string_new();
@@ -510,23 +527,34 @@ void ObtenerInfoDeNodos(int id){
 
 	//Recibo la primera rafaga de FS
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
-	cantRafaga = 2;
-	rafaga1Fs= buffer;
-	printf("Rafaga1FS=%s\n",rafaga1Fs);
-	//Envio el Ok
 	EnviarDatos(socket_fs, "Ok",strlen("Ok"));
 
+	rafaga1Fs= buffer;
+
+
+	cantRafaga=2;
 	//Recibo la segunda rafaga de Fs
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 	rafaga2Fs= buffer;
-	printf("Rafaga2FS=%s\n",rafaga2Fs);
 
 
-	//BUFFER RECIBIDO = 1212220temperatura-2012.txt1215NODOA18Bloque3015NODOB15NODOF17Bloque8
-	//												 15NODOA18Bloque1315NODOB15NODOF17Bloque7
-	//					    220temperatura-2013.txt1215NODOA18Bloque3015NODOB15NODOF17Bloque8
-	//												 15NODOA18Bloque1315NODOB15NODOF17Bloque7
-	//					1215NODOA19127.0.0.114600015NODOB19127.0.0.1146000
+	//BUFFER RECIBIDO = 1212237/user/juan/datos/temperatura-2012.txt1215NODOA18Bloque3015NODOB18Bloque3715NODOF17Bloque8
+		//											 				  15NODOE18Bloque1315NODOA18Bloque3815NODOC17Bloque7
+		//			        237/user/juan/datos/temperatura-2013.txt1215NODOP18Bloque3115NODOF18Bloque4215NODOH17Bloque9
+		//										     			      15NODOK18Bloque1115NODOB18Bloque5515NODOF17Bloque3
+		//				  1815NODOA19127.0.0.114600015NODOB19127.0.0.1146000
+	//						15NODOC19127.0.0.114600015NODOE19127.0.0.1146000
+	//						15NODOF19127.0.0.114600015NODOH19127.0.0.1146000
+	//						15NODOK19127.0.0.114600015NODOP19127.0.0.1146000
+
+
+
+	//Bloque0 :: NODOA:Bloque30 NODOB:Bloque37 NODOF:Bloque8
+	//Bloque1 :: NODOE:Bloque13 NODOA:Bloque38 NODOC:Bloque7
+
+	//Bloque0 :: NODOP:Bloque21 NODOF:Bloque42 NODOH:Bloque9
+	//Bloque1 :: NODOK:Bloque11 NODOB:Bloque55 NODOF:Bloque3
+
 
 
 	int x=0,cantArch=0,digCantArch=0,posActual=0,j=0,c=0;
@@ -541,7 +569,8 @@ void ObtenerInfoDeNodos(int id){
 	int cantNodo=0, digCantNodo=0;
 
 
-	t_array_copias array[3];
+	t_bloque *el_bloque= malloc(sizeof(t_bloque));
+
 
 	string_append(&aux,"Bloque");
 
@@ -549,9 +578,11 @@ void ObtenerInfoDeNodos(int id){
 	cantArch=ObtenerTamanio(rafaga2Fs,3,digCantArch);
 	posActual=3+digCantArch;
 
+
 	for(x=0;x<cantArch;x++){
 		j=0;
 		nomArch=DigitosNombreArchivo(rafaga2Fs,&posActual);
+
 		while(j<list_size(lista_archivos)){
 			el_archivo=list_get(lista_archivos,j);
 			if(el_archivo->idJob==id && strcmp(el_archivo->nombreArchivo,nomArch)==0){
@@ -559,32 +590,53 @@ void ObtenerInfoDeNodos(int id){
 			}
 			j++;
 		}
+
 		//Cantidad de Bloques
 		digCantBloq=PosicionDeBufferAInt(rafaga2Fs,posActual);
 		cantBloq=ObtenerTamanio(rafaga2Fs,posActual+1,digCantBloq);
 		posActual=posActual+1+digCantBloq;
 		for(c=0;c<cantBloq;c++){
-			nodo=DigitosNombreArchivo(rafaga2Fs,&posActual);
-			bloque=DigitosNombreArchivo(rafaga2Fs,&posActual);
-			array[c].nodo=nodo;
-			array[c].bloque=bloque;
-			array[c].estado=0;
+			for(j=0;j<3;j++){
+				nodo=DigitosNombreArchivo(rafaga2Fs,&posActual);
+				bloque=DigitosNombreArchivo(rafaga2Fs,&posActual);
+				el_bloque->array[j].nodo=nodo;
+				el_bloque->array[j].bloque=bloque;
+				el_bloque->array[j].estado=0;
+			}
+
 			string_append(&aux,string_itoa(contador));
 			contador++;
+			list_add(el_archivo->listaBloques,bloque_create(aux,el_bloque->array));
+
 			aux=string_new();
 			string_append(&aux,"Bloque");
-			list_add(el_archivo->listaBloques,bloque_create(aux,array));
 
 		}
 		contador=0;
-		FuncionMagica(el_archivo->listaBloques);
-		el_archivo->array_de_listas=array_listas;
+		c=0;
+
 	}
+
+
+	i=0;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		if(el_archivo->idJob == id){
+			FuncionMagica(el_archivo->listaBloques);//cargo array_listas
+			el_archivo->array_de_listas=array_listas;
+			RecorrerArrayListas(el_archivo);
+		}
+		i++;
+	}
+
 	//Cantidada de Nodos
 	digCantNodo=PosicionDeBufferAInt(rafaga2Fs,posActual);
 	cantNodo=ObtenerTamanio(rafaga2Fs,posActual+1,digCantNodo);
 	posActual=posActual+1+digCantNodo;
 	t_nodo *el_nodo=NULL;
+
+
+
 
 	for(c=0;c<cantNodo;c++){
 		nodo=DigitosNombreArchivo(rafaga2Fs,&posActual);
@@ -817,6 +869,11 @@ int AtiendeCliente(void * arg) {
 			case COMANDOBLOQUES:
 				printf("Muestre toda la lista de Bloques:\n");
 				RecorrerListaBloques();
+				mensaje = "Ok";
+				break;
+			case COMANDONODOS:
+				printf("Muestre toda la lista de NODOS:\n");
+				RecorrerListaNodos();
 				mensaje = "Ok";
 				break;
 			default:

@@ -224,7 +224,7 @@ int ObtenerComandoMSJ(char* buffer) {
 }
 int cuentaDigitos(int valor){
 	int cont = 0;
-	int tamDigArch=valor;
+	float tamDigArch=valor;
 	while(tamDigArch>1){
 		tamDigArch=tamDigArch/10;
 		cont++;
@@ -241,20 +241,8 @@ int EnviarInfoMarta(int socket) {
 	char*buffer = string_new();
 	char*bufferR = string_new();
 	char*bufferE = string_new();
-	string_append(&buffer,"121");//4: que es FS y 2: tipo de mensaje y 1: cant digitos de cant arch
-	cant = list_size(lista_archivos);
-	string_append(&buffer,string_itoa(cant));
-	while(i<list_size(lista_archivos)){
-		el_archivo = list_get(lista_archivos, i);
-		contArch = strlen(el_archivo->nombreArchivo);
-		tamDigArch=contArch;
-		cont = cuentaDigitos(tamDigArch);
-		string_append(&buffer,string_itoa(cont));
-		cont = 0;
-		string_append(&buffer,string_itoa(contArch));
-		string_append(&buffer,el_archivo->nombreArchivo);
-		i++;
-	}
+
+	//VIEJO PROTOCOLO
 	//BUFFER RECIBIDO = 1212220temperatura-2012.txt121015NODOA23015NODOB22215NODOF18
 	//												 1115NODOE23015NODOJ22215NODOW18
 	//					    220temperatura-2013.txt121015NODOA23015NODOB22215NODOF23
@@ -262,6 +250,25 @@ int EnviarInfoMarta(int socket) {
 	//					15NODOA19127.0.0.114600015NODOB19127.0.0.1146000
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
 
+	//NUEVO PROTOCOLO
+	//BUFFER RECIBIDO = 1212237/user/juan/datos/temperatura-2012.txt1215NODOA18Bloque3015NODOB18Bloque3715NODOF17Bloque8
+		//											 				  15NODOE18Bloque1315NODOA18Bloque3815NODOC17Bloque7
+		//			        237/user/juan/datos/temperatura-2013.txt1215NODOP18Bloque3115NODOF18Bloque4215NODOH17Bloque9
+		//										     			      15NODOK18Bloque1115NODOB18Bloque5515NODOF17Bloque3
+		//				  1815NODOA19127.0.0.114600015NODOB19127.0.0.1146000
+//							15NODOC19127.0.0.114600015NODOE19127.0.0.1146000
+//							15NODOF19127.0.0.114600015NODOH19127.0.0.1146000
+//							15NODOK19127.0.0.114600015NODOP19127.0.0.1146000
+
+	//Bloque0 :: NODOA:Bloque30 NODOB:Bloque37 NODOF:Bloque8
+	//Bloque1 :: NODOE:Bloque13 NODOA:Bloque38 NODOC:Bloque7
+
+	//Bloque0 :: NODOP:Bloque21 NODOF:Bloque42 NODOH:Bloque9
+	//Bloque1 :: NODOK:Bloque11 NODOB:Bloque55 NODOF:Bloque3
+
+
+	buffer=string_new();
+	string_append(&buffer,"1212237/user/juan/datos/temperatura-2012.txt1215NODOA18Bloque3015NODOB18Bloque3715NODOF17Bloque815NODOE18Bloque1315NODOA18Bloque3815NODOC17Bloque7237/user/juan/datos/temperatura-2013.txt1215NODOP18Bloque3115NODOF18Bloque4215NODOH17Bloque915NODOK18Bloque1115NODOB18Bloque5515NODOF17Bloque31815NODOA19127.0.0.114600015NODOB19127.0.0.114600015NODOC19127.0.0.114600015NODOE19127.0.0.114600015NODOF19127.0.0.114600015NODOH19127.0.0.114600015NODOK19127.0.0.114600015NODOP19127.0.0.1146000");
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
@@ -271,22 +278,22 @@ int EnviarInfoMarta(int socket) {
 	//Primera Rafaga para Marta
 	if ((bytecount = send(socket, bufferE, strlen(bufferE), 0)) == -1)
 		Error("No puedo enviar información al cliente. Socket: %d", socket);
-
-
-	bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
 		(char*) bufferE);
 
-	if(!strcmp(bufferR,"Ok")){
-		Error("Marta tuvo algun problema con la rafaga 1. Socket: %d", socket);
-		return 0;
-	} else {
+	bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+
+	if(strcmp(bufferR,"Ok")==0){
 		//Segunda Rafaga para Marta
 		if ((bytecount = send(socket, buffer, strlen(buffer), 0)) == -1)
 			Error("No puedo enviar información al cliente. Socket: %d", socket);
-		bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
 			(char*) buffer);
+		bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+
+	} else {
+		Error("Marta tuvo algun problema con la rafaga 1. Socket: %d", socket);
+		return 0;
 	}
 	return bytecount;
 }

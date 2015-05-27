@@ -110,6 +110,7 @@ int id_job=0;
 #define ES_FS	1
 #define COMANDO 9
 #define COMANDOBLOQUES 8
+#define COMANDONODOS 7
 
 //ESTRUCTURAS//
 //Estructura de array para funcion magica
