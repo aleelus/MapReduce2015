@@ -79,11 +79,11 @@ void LevantarConfig() {
 		} else
 			Error("No se pudo leer el parametro PUERTO");
 		if (config_has_property(config, "IP_FS")) {
-			g_Ip_Fs = config_get_int_value(config, "PUERTO");
+			g_Ip_Fs = config_get_string_value(config, "IP_FS");
 		} else
-			Error("No se pudo leer el parametro PUERTO");
+			Error("No se pudo leer el parametro IP_FS");
 		if (config_has_property(config, "PUERTO_FS")) {
-			g_Puerto_Fs = config_get_int_value(config, "PUERTO");
+			g_Puerto_Fs = config_get_string_value(config, "PUERTO_FS");
 		} else
 			Error("No se pudo leer el parametro PUERTO");
 
@@ -405,7 +405,7 @@ char* obtenerSubBuffer(char *nombre){
 	return aux;
 }
 
-int conectarAFileSystem(int socket_fs) {
+void conectarAFileSystem() {
 
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON UN NODO
 		log_info(logger, "Intentando conectar a FS\n");
@@ -417,7 +417,8 @@ int conectarAFileSystem(int socket_fs) {
 		hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
 		hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
 
-
+		printf("IP de FS:%s\n",g_Ip_Fs);
+		printf("Puerto de FS:%s\n",g_Puerto_Fs);
 		if (getaddrinfo(g_Ip_Fs, g_Puerto_Fs, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
 			log_info(logger,
 					"ERROR: cargando datos de conexion socket_fs");
@@ -432,8 +433,6 @@ int conectarAFileSystem(int socket_fs) {
 			log_info(logger, "ERROR: conectar socket_fs");
 		}
 		freeaddrinfo(serverInfo);	// No lo necesitamos mas
-
-		return socket_fs;
 }
 
 
@@ -444,10 +443,9 @@ void ObtenerInfoDeNodos(int id){
 	//BUFFER RECIBIDO = 4112237/user/juan/datos/temperatura-2012.txt237/user/juan/datos/temperatura-2013.txt
 
 	t_archivo * el_archivo;
-	t_bloque * el_bloque;
+	//t_bloque * el_bloque;
 	char *bufferUno=string_new();
 	char *bufferDos=string_new();
-	int socket;
 
 	//Se carga la informacion de los bloques del archivo
 	int i=0,contArchivos=0;
@@ -506,44 +504,37 @@ void ObtenerInfoDeNodos(int id){
 	printf("****** %s\n",bufferDos);
 
 	//Me conecto con el FS
-	socket_fs=conectarAFileSystem(socket_fs);
+	conectarAFileSystem();
 
 	int desconexionCliente=0;
 	int bytesRecibidos=0;
 	int tamanio=10,cantRafaga=1;
 	int cantidadRafagaFs=0;
 	char *buffer=string_new();
+	char *rafaga1Fs=string_new(),*rafaga2Fs=string_new();
 
+	//Envio Rafaga Uno a FS
 	EnviarDatos(socket_fs, bufferUno,strlen(bufferUno));
-	cantidadRafagaFs=2;
 
-	while ((!desconexionCliente) & g_Ejecutando) {
+	//Recibo el Ok
+	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 
-		if (buffer != NULL )
-			free(buffer);
-		buffer = string_new();
+	//Envio la Segunda Rafaga
+	EnviarDatos(socket_fs, bufferDos,strlen(bufferDos));
 
-		//Recibimos los datos del FS
-		buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+	//Recibo la primera rafaga de FS
+	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+	cantRafaga = 2;
+	rafaga1Fs= buffer;
+	printf("Rafaga1FS=%s\n",rafaga1Fs);
+	//Envio el Ok
+	EnviarDatos(socket_fs, "Ok",strlen("Ok"));
 
-		printf("BytesRecibidos:%d\n",bytesRecibidos);
-		if (bytesRecibidos>0) {
-
-			if(cantidadRafagaFs==2){
-				//Envio segunda rafaga a FS
-				EnviarDatos(socket_fs, bufferDos,strlen(bufferDos));
-				cantidadRafagaFs=3;
-				cantRafaga=1;
-			}
-
-
-		} else{
-			desconexionCliente = 1;
-			free(buffer);
-		}
-	}
-
-		CerrarSocket(socket_fs);
+	//Recibo la segunda rafaga de Fs
+	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+	rafaga2Fs= buffer;
+	printf("Rafaga2FS=%s\n",rafaga2Fs);
+	CerrarSocket(socket_fs);
 
 }
 
@@ -636,8 +627,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
 	string_append(&mensaje,el_nodo->nombreNodo);
-	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"192.168.1.24");
+	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"127.0.0.1");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");

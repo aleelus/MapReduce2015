@@ -92,7 +92,7 @@ pthread_t hOrquestadorConexiones, hConsola;
 void HiloOrquestadorDeConexiones();
 
 char* obtenerSubBuffer(char *);
-int conectarAFileSystem(int );
+void conectarAFileSystem();
 
 // - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
 int g_Ejecutando = 1;
