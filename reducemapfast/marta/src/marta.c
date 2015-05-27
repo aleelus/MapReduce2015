@@ -590,7 +590,7 @@ void ObtenerInfoDeNodos(int id){
 		nodo=DigitosNombreArchivo(rafaga2Fs,&posActual);
 
 		for(j=0;j<list_size(lista_nodos);j++){
-
+			el_nodo=list_get(lista_archivos,j);
 			bool _true(void *elem){
 				return ( !strcmp(((t_nodo*) elem)->nombreNodo,nodo) );
 			}
