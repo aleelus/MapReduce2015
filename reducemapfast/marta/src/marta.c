@@ -18,20 +18,6 @@ int main(int argv, char** argc) {
 	lista_nodos = list_create();
 	lista_archivos=list_create();
 
-	list_add(lista_nodos,nodo_create("NodoA","192.168.0.1",3000));
-	list_add(lista_nodos,nodo_create("NodoB","192.168.0.2",35000));
-	list_add(lista_nodos,nodo_create("NodoC","192.168.0.3",3200));
-	list_add(lista_nodos,nodo_create("NodoD","192.168.0.4",3600));
-	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050));
-
-	t_nodo *el_nodo;
-	int socket_fs;
-	int i=0;
-	while(i<list_size(lista_nodos)){
-		el_nodo = list_get(lista_nodos, i);
-		printf("Nodo: %s \t IP: %s \t Puerto: %d\n",el_nodo->nombreNodo,el_nodo->ipNodo,el_nodo->puertoNodo);
-		i++;
-	}
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,8 +403,7 @@ void conectarAFileSystem() {
 		hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
 		hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
 
-		printf("IP de FS:%s\n",g_Ip_Fs);
-		printf("Puerto de FS:%s\n",g_Puerto_Fs);
+
 		if (getaddrinfo(g_Ip_Fs, g_Puerto_Fs, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
 			log_info(logger,
 					"ERROR: cargando datos de conexion socket_fs");
@@ -506,10 +491,9 @@ void ObtenerInfoDeNodos(int id){
 	//Me conecto con el FS
 	conectarAFileSystem();
 
-	int desconexionCliente=0;
 	int bytesRecibidos=0;
 	int tamanio=10,cantRafaga=1;
-	int cantidadRafagaFs=0;
+
 	char *buffer=string_new();
 	char *rafaga1Fs=string_new(),*rafaga2Fs=string_new();
 
@@ -518,9 +502,11 @@ void ObtenerInfoDeNodos(int id){
 
 	//Recibo el Ok
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+	cantRafaga=1;
 
 	//Envio la Segunda Rafaga
 	EnviarDatos(socket_fs, bufferDos,strlen(bufferDos));
+
 
 	//Recibo la primera rafaga de FS
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
@@ -534,6 +520,101 @@ void ObtenerInfoDeNodos(int id){
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 	rafaga2Fs= buffer;
 	printf("Rafaga2FS=%s\n",rafaga2Fs);
+
+
+	//BUFFER RECIBIDO = 1212220temperatura-2012.txt1215NODOA18Bloque3015NODOB15NODOF17Bloque8
+	//												 15NODOA18Bloque1315NODOB15NODOF17Bloque7
+	//					    220temperatura-2013.txt1215NODOA18Bloque3015NODOB15NODOF17Bloque8
+	//												 15NODOA18Bloque1315NODOB15NODOF17Bloque7
+	//					1215NODOA19127.0.0.114600015NODOB19127.0.0.1146000
+
+
+	int x=0,cantArch=0,digCantArch=0,posActual=0,j=0,c=0;
+	int digCantBloq=0,cantBloq=0;
+	char *nomArch;
+	char *bloque=string_new();
+	char *nodo=string_new();
+	char *ip=string_new();
+	char *puerto=string_new();
+	char *aux=string_new();
+	int contador=0;
+	int cantNodo=0, digCantNodo=0;
+
+
+	t_array_copias array[3];
+
+	string_append(&aux,"Bloque");
+
+	digCantArch=PosicionDeBufferAInt(rafaga2Fs,2);
+	cantArch=ObtenerTamanio(rafaga2Fs,3,digCantArch);
+	posActual=3+digCantArch;
+
+	for(x=0;x<cantArch;x++){
+		j=0;
+		nomArch=DigitosNombreArchivo(rafaga2Fs,&posActual);
+		while(j<list_size(lista_archivos)){
+			el_archivo=list_get(lista_archivos,j);
+			if(el_archivo->idJob==id && strcmp(el_archivo->nombreArchivo,nomArch)==0){
+				j=list_size(lista_archivos);
+			}
+			j++;
+		}
+		//Cantidad de Bloques
+		digCantBloq=PosicionDeBufferAInt(rafaga2Fs,posActual);
+		cantBloq=ObtenerTamanio(rafaga2Fs,posActual+1,digCantBloq);
+		posActual=posActual+1+digCantBloq;
+		for(c=0;c<cantBloq;c++){
+			nodo=DigitosNombreArchivo(rafaga2Fs,&posActual);
+			bloque=DigitosNombreArchivo(rafaga2Fs,&posActual);
+			array[c].nodo=nodo;
+			array[c].bloque=bloque;
+			array[c].estado=0;
+			string_append(&aux,string_itoa(contador));
+			contador++;
+			aux=string_new();
+			string_append(&aux,"Bloque");
+			list_add(el_archivo->listaBloques,bloque_create(aux,array));
+
+		}
+		contador=0;
+		FuncionMagica(el_archivo->listaBloques);
+		el_archivo->array_de_listas=array_listas;
+	}
+	//Cantidada de Nodos
+	digCantNodo=PosicionDeBufferAInt(rafaga2Fs,posActual);
+	cantNodo=ObtenerTamanio(rafaga2Fs,posActual+1,digCantNodo);
+	posActual=posActual+1+digCantNodo;
+	t_nodo *el_nodo=NULL;
+
+	for(c=0;c<cantNodo;c++){
+		nodo=DigitosNombreArchivo(rafaga2Fs,&posActual);
+
+		for(j=0;j<list_size(lista_nodos);j++){
+
+			bool _true(void *elem){
+				return ( !strcmp(((t_nodo*) elem)->nombreNodo,nodo) );
+			}
+
+			el_nodo = list_find(lista_nodos, _true);
+			if(el_nodo != NULL){
+				j=list_size(lista_nodos);
+			}
+		}
+		if(el_nodo != NULL){
+
+			//No hago nada por ahora
+
+		}else{
+
+			ip=DigitosNombreArchivo(rafaga2Fs,&posActual);
+			puerto=DigitosNombreArchivo(rafaga2Fs,&posActual);
+			list_add(lista_nodos,nodo_create(nodo,ip,puerto));
+		}
+	}
+
+
+
+
 	CerrarSocket(socket_fs);
 
 }
@@ -597,7 +678,7 @@ void FuncionMagica(t_list* listaBloques){
 
 void Planificar(int id){
 	printf("laalala ESTOY PLANIFICANDO\n");
-	t_archivo *el_archivo;
+/*	t_archivo *el_archivo;
 
 	int i=0;
 
@@ -611,24 +692,22 @@ void Planificar(int id){
 		i++;
 	}
 
-
-	//array[0] = nodoA, NodoB
-	//array[1] = NodoC, NodoA
+*/
 }
 
 void enviarPlanificacionAJob (int id,int socket){
 
-	t_nodo *el_nodo;
+
 	char *mensaje;
 	mensaje=string_new();
 	//En la lista de archivos en el array esta la planificacion
 	//busco en base a la id y envio planificacion de cada archivo y de cada nodo.
-	el_nodo=list_get(lista_nodos,0);
+
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
-	string_append(&mensaje,el_nodo->nombreNodo);
-	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"127.0.0.1");
+	string_append(&mensaje,"NodoA");
+	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"192.168.1.21");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");

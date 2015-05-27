@@ -272,16 +272,17 @@ int EnviarInfoMarta(int socket) {
 	if ((bytecount = send(socket, bufferE, strlen(bufferE), 0)) == -1)
 		Error("No puedo enviar información al cliente. Socket: %d", socket);
 
+
 	bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-		(char*) buffer);
+		(char*) bufferE);
 
 	if(!strcmp(bufferR,"Ok")){
 		Error("Marta tuvo algun problema con la rafaga 1. Socket: %d", socket);
 		return 0;
 	} else {
 		//Segunda Rafaga para Marta
-		if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
+		if ((bytecount = send(socket, buffer, strlen(buffer), 0)) == -1)
 			Error("No puedo enviar información al cliente. Socket: %d", socket);
 		bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,

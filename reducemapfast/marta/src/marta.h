@@ -93,6 +93,7 @@ void HiloOrquestadorDeConexiones();
 
 char* obtenerSubBuffer(char *);
 void conectarAFileSystem();
+void FuncionMagica(t_list* );
 
 // - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
 int g_Ejecutando = 1;
@@ -126,23 +127,22 @@ static t_dato *dato_create(char *dato) {
 typedef struct{
     char *nodo;
     char *bloque;
+    int estado;
 }t_array_copias;
 
 //Estructura Lista de Bloques
 typedef struct{
     char *bloque;
     t_array_copias array[3];
-    struct t_bloque *next;
+
 }t_bloque;
 
 static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->bloque = strdup(bloque);
-	//new->estado = "procesado";
 	new->array[0] = array[0];
 	new->array[1] = array[1];
 	new->array[2] = array[2];
-	new->next=NULL;
 	return new;
 }
 
@@ -185,18 +185,18 @@ typedef struct {
 	//Estructura Lista de Nodos
 	    char *nombreNodo;
 	    char *ipNodo;
-	    int puertoNodo;
+	    char *puertoNodo;
 	    int estado;
 	    t_list *listaBloqueArchivo;
 	    char *tarea;
 
 } t_nodo;
 
-static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, int puertoNodo) {
+static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo) {
 	t_nodo *new = malloc(sizeof(t_nodo));
 	new->nombreNodo = strdup(nombreNodo);
 	new->ipNodo = strdup(ipNodo);
-	new->puertoNodo = puertoNodo;
+	new->puertoNodo = strdup(puertoNodo);
 	new->estado = 1;
 	new->listaBloqueArchivo= list_create();
 	new->tarea = "";
