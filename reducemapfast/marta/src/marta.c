@@ -25,6 +25,7 @@ int main(int argv, char** argc) {
 	list_add(lista_nodos,nodo_create("NodoE","192.168.0.5",5050));
 
 	t_nodo *el_nodo;
+	int socket_fs;
 	int i=0;
 	while(i<list_size(lista_nodos)){
 		el_nodo = list_get(lista_nodos, i);
@@ -77,6 +78,15 @@ void LevantarConfig() {
 			g_Puerto = config_get_int_value(config, "PUERTO");
 		} else
 			Error("No se pudo leer el parametro PUERTO");
+		if (config_has_property(config, "IP_FS")) {
+			g_Ip_Fs = config_get_int_value(config, "PUERTO");
+		} else
+			Error("No se pudo leer el parametro PUERTO");
+		if (config_has_property(config, "PUERTO_FS")) {
+			g_Puerto_Fs = config_get_int_value(config, "PUERTO");
+		} else
+			Error("No se pudo leer el parametro PUERTO");
+
 	} else {
 		//ErrorFatal("No se pudo abrir el archivo de configuracion");
 	}
@@ -168,6 +178,18 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+		}
+	}else{
+
+		if(*cantRafaga==3){
+
+			bufferAux = realloc(bufferAux,100* sizeof(char));
+			memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con ceros.
+
+			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 100, 0)) == -1) {
+				Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+			}
+			*cantRafaga=1;
 		}
 	}
 
@@ -363,65 +385,165 @@ void RecorrerListaBloques(){
 
 }
 
+char* obtenerSubBuffer(char *nombre){
+	// Esta funcion recibe un nombre y devuelve ese nombre de acuerdo al protocolo. Ej: carlos ------> 16carlos
+	char *aux=string_new();
+	int tamanioNombre=0;
+	float tam=0;
+	int cont=0;
+
+	tamanioNombre=strlen(nombre);
+	tam=tamanioNombre;
+	while(tam>1){
+		tam=tam/10;
+		cont++;
+	}
+	string_append(&aux,string_itoa(cont));
+	string_append(&aux,string_itoa(tamanioNombre));
+	string_append(&aux,nombre);
+
+	return aux;
+}
+
+int conectarAFileSystem(int socket_fs) {
+
+	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON UN NODO
+		log_info(logger, "Intentando conectar a FS\n");
+
+		struct addrinfo hints;
+		struct addrinfo *serverInfo;
+
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
+		hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
+
+
+		if (getaddrinfo(g_Ip_Fs, g_Puerto_Fs, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
+			log_info(logger,
+					"ERROR: cargando datos de conexion socket_fs");
+		}
+
+		if ((socket_fs = socket(serverInfo->ai_family, serverInfo->ai_socktype,
+				serverInfo->ai_protocol)) < 0) {
+			log_info(logger, "ERROR: crear socket_fs");
+		}
+		if (connect(socket_fs, serverInfo->ai_addr, serverInfo->ai_addrlen)
+				< 0) {
+			log_info(logger, "ERROR: conectar socket_fs");
+		}
+		freeaddrinfo(serverInfo);	// No lo necesitamos mas
+
+		return socket_fs;
+}
+
+
 void ObtenerInfoDeNodos(int id){
 
+
+	//BUFFER RECIBIDO = 4284 (EJEMPLO)
+	//BUFFER RECIBIDO = 4112237/user/juan/datos/temperatura-2012.txt237/user/juan/datos/temperatura-2013.txt
+
 	t_archivo * el_archivo;
-	t_array_copias array[3];
 	t_bloque * el_bloque;
+	char *bufferUno=string_new();
+	char *bufferDos=string_new();
+	int socket;
 
 	//Se carga la informacion de los bloques del archivo
-	int i=0;
+	int i=0,contArchivos=0;
+	//Para el FS
+	string_append(&bufferDos,"41");
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
 		if (el_archivo->idJob == id) {
-			//preguntar a FS por Archivo
-			//el_archivo->nombreArchivo";
-			array[0].bloque = "Bloque30";
-			array[0].nodo = "NodoA";
-			array[1].bloque = "Bloque30";
-			array[1].nodo = "NodoB";
-			array[2].bloque = "Bloque30";
-			array[2].nodo = "NodoD";
-			list_add(el_archivo->listaBloques,bloque_create("Bloque0",array));
-			array[0].bloque = "Bloque10";
-			array[0].nodo = "NodoB";
-			array[1].bloque = "Bloque50";
-			array[1].nodo = "NodoE";
-			array[2].bloque = "Bloque40";
-			array[2].nodo = "NodoA";
-			list_add(el_archivo->listaBloques,bloque_create("Bloque1",array));
-			array[0].bloque = "Bloque30";
-			array[0].nodo = "NodoG";
-			array[1].bloque = "Bloque50";
-			array[1].nodo = "NodoB";
-			array[2].bloque = "Bloque40";
-			array[2].nodo = "NodoJ";
-			list_add(el_archivo->listaBloques,bloque_create("Bloque2",array));
-			array[0].bloque = "Bloque30";
-			array[0].nodo = "NodoA";
-			array[1].bloque = "Bloque30";
-			array[1].nodo = "NodoB";
-			array[2].bloque = "Bloque30";
-			array[2].nodo = "NodoD";
-			list_add(el_archivo->listaBloques,bloque_create("Bloque3",array));
-			array[0].bloque = "Bloque30";
-			array[0].nodo = "NodoA";
-			array[1].bloque = "Bloque30";
-			array[1].nodo = "NodoB";
-			array[2].bloque = "Bloque30";
-			array[2].nodo = "NodoD";
-			list_add(el_archivo->listaBloques,bloque_create("Bloque4",array));
-			array[0].bloque = "Bloque30";
-			array[0].nodo = "NodoA";
-			array[1].bloque = "Bloque30";
-			array[1].nodo = "NodoB";
-			array[2].bloque = "Bloque30";
-			array[2].nodo = "NodoD";
-			list_add(el_archivo->listaBloques,bloque_create("Bloque5",array));
+			contArchivos++;
 		}
 		i++;
 	}
-	printf("EL TAMAÑO:%d\n",list_size(el_archivo->listaBloques));
+
+	//cuento los digitos
+	float tam=contArchivos;
+	int cont=0;
+	while(tam>1){
+			tam=tam/10;
+			cont++;
+	}
+	if(cont==0)
+		cont=1;
+
+	string_append(&bufferDos,string_itoa(cont));
+	string_append(&bufferDos,string_itoa(contArchivos));
+	i=0;
+	while(i<list_size(lista_archivos)){
+			el_archivo = list_get(lista_archivos, i);
+			if (el_archivo->idJob == id) {
+				cont=0;
+				tam=strlen(el_archivo->nombreArchivo);
+				while(tam>1){
+					tam=tam/10;
+					cont++;
+				}
+				string_append(&bufferDos,string_itoa(cont));
+				string_append(&bufferDos,string_itoa(strlen(el_archivo->nombreArchivo)));
+				string_append(&bufferDos,el_archivo->nombreArchivo);
+
+			}
+			i++;
+	}
+	tam=strlen(bufferDos);
+	cont=0;
+	string_append(&bufferUno,"4");
+	while(tam>1){
+		tam=tam/10;
+		cont++;
+	}
+	string_append(&bufferUno,string_itoa(cont));
+	string_append(&bufferUno,string_itoa(strlen(bufferDos)));
+
+
+	printf("****** BUFFER'S A ENVIAR: \n");
+	printf("****** %s\n",bufferUno);
+	printf("****** %s\n",bufferDos);
+
+	//Me conecto con el FS
+	socket_fs=conectarAFileSystem(socket_fs);
+
+	int desconexionCliente=0;
+	int bytesRecibidos=0;
+	int tamanio=10,cantRafaga=1;
+	int cantidadRafagaFs=0;
+	char *buffer=string_new();
+
+	EnviarDatos(socket_fs, bufferUno,strlen(bufferUno));
+	cantidadRafagaFs=2;
+
+	while ((!desconexionCliente) & g_Ejecutando) {
+
+		if (buffer != NULL )
+			free(buffer);
+		buffer = string_new();
+
+		//Recibimos los datos del FS
+		buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+
+		printf("BytesRecibidos:%d\n",bytesRecibidos);
+		if (bytesRecibidos>0) {
+
+			if(cantidadRafagaFs==2){
+				//Envio segunda rafaga a FS
+				EnviarDatos(socket_fs, bufferDos,strlen(bufferDos));
+				cantidadRafagaFs=3;
+				cantRafaga=1;
+			}
+
+
+		} else{
+			desconexionCliente = 1;
+			free(buffer);
+		}
+	}
+
+		CerrarSocket(socket_fs);
 
 }
 

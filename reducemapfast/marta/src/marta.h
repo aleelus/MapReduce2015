@@ -18,6 +18,7 @@
 #include <commons/collections/list.h>
 #include <commons/log.h>
 #include <semaphore.h>
+#include <netdb.h>
 
 #define COLOR_VERDE   "\x1b[32m"
 #define DEFAULT   "\x1b[0m"
@@ -37,11 +38,16 @@
 //Tamaño del buffer
 #define BUFFERSIZE 10
 
+int socket_fs;
+
 //Puerto de escucha del filesystem
 int g_Puerto;
 
 //Ip del filesystem
 char * g_Ip_Fs;
+
+//Puerto Fs
+char * g_Puerto_Fs;
 
 //Archivo con los bloques
 char* g_Archivo_Bin;
@@ -84,6 +90,9 @@ pthread_t hOrquestadorConexiones, hConsola;
 
 //METODOS MANEJO SOCKETS
 void HiloOrquestadorDeConexiones();
+
+char* obtenerSubBuffer(char *);
+int conectarAFileSystem(int );
 
 // - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
 int g_Ejecutando = 1;
