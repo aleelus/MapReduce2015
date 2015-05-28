@@ -758,8 +758,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
 	string_append(&mensaje,"NodoA");
-	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"127.0.0.1");
+	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"192.168.1.21");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");
@@ -771,6 +771,19 @@ void enviarPlanificacionAJob (int id,int socket){
 	EnviarDatos(socket, mensaje,strlen(mensaje));
 
 }
+
+void reciboOk(char *buffer){
+
+	//2318Bloque3015NodoA
+	char *bloque=string_new();
+	char *nodo=string_new();
+	int pos=2;
+	bloque=DigitosNombreArchivo(buffer,&pos);
+	nodo=DigitosNombreArchivo(buffer,&pos);
+	printf("Recibo OK del Job:   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
+
+}
+
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
@@ -791,6 +804,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 		case NOTIFICACION_NODO:
 			break;
 		case RECIBIDO_OK:
+			reciboOk(buffer);
 			break;
 		default:
 			break;

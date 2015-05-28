@@ -171,6 +171,10 @@ int AtiendeCliente(void * arg) {
 // La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
 	int desconexionCliente = 0;
 
+	char *bufferAMartaUno=string_new();
+	char *bufferAMartaDos=string_new();
+
+
 	while ((!desconexionCliente) & g_Ejecutando) {
 
 		if (buffer != NULL )
@@ -182,6 +186,38 @@ int AtiendeCliente(void * arg) {
 
 
 		if (bytesRecibidos > 0) {
+
+			if(strcmp(buffer,"31")==0){
+				//Envio el a MaRTA 2518Bloque3015NODOA    El 3 es de que hizo bien la tarea.
+
+				printf(COLOR_VERDE"RECIBO OK DEL NODO\n"DEFAULT);
+				string_append(&bufferAMartaDos,"23");
+				string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
+				string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+
+				string_append(&bufferAMartaUno,"2");
+				string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+				string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+
+
+				//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
+
+				//RAFAGA 1
+				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
+				//Recibo Ok
+				//bufferR=RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+
+				//RAFAGA 2
+				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+				/*
+				if(strcmp(bufferR,"Ok")==0){
+					//RAFAGA 2
+					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+				}else
+					printf("ERRORRRRRRRRRRRRRR\n");
+					*/
+			}
 
 
 		} else{

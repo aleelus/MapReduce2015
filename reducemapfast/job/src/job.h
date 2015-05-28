@@ -22,6 +22,8 @@
 
 // CONSTANTES //
 //Ruta del config
+#define COLOR_VERDE   "\x1b[32m"
+#define DEFAULT   "\x1b[0m"
 #define PATH_CONFIG "config.cfg"
 #define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "msp.log"
