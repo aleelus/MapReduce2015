@@ -758,8 +758,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
 	string_append(&mensaje,"NodoA");
-	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"192.168.1.21");
+	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"127.0.0.1");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");

@@ -484,8 +484,8 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//semaforo
 	estado = 1;
 	char *nArchivoSH;
-	int digitosCantDeDigitos=0,tamanioSH=0,digitosCantDeDigitosSH,digitosTamanioBloque;
-	int numeroBloque;
+	int digitosCantDeDigitos=0,tamanioSH,digitosCantDeDigitosSH;
+	char * el_Bloque;
 	int posActual=0;
 	char * fileSH,*nArchivoResultado;
 
@@ -502,17 +502,19 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//printf("Nombre Archivo SH:%s\n",nArchivoSH);
 
 	//printf("Posicion Actual:%d\n",posActual);
-	digitosTamanioBloque=PosicionDeBufferAInt(buffer,posActual);
 	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
-	numeroBloque=ObtenerTamanio(buffer,posActual+1,digitosTamanioBloque);
-	//printf("Numero de bloque: %d\n",numeroBloque);
+	el_Bloque=DigitosNombreArchivo(buffer,&posActual);
+	printf("bloque: %s\n",el_Bloque);
 
-	posActual = posActual + digitosTamanioBloque;
 	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
 	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
 
-	*job = job_create(nArchivoSH,fileSH,numeroBloque,nArchivoResultado);
+	*job = job_create(nArchivoSH,fileSH,el_Bloque,nArchivoResultado);
 	*cantRafaga=1;
+}
+
+int procesarRutina(t_job * job){
+	return 1;
 }
 
 
@@ -526,22 +528,19 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			AtiendeJob(&job,buffer,cantRafaga);
 			printf("Nombre de SH:%s\n",job->nombreSH);
 			printf("Contenido de SH:%s\n",job->contenidoSH);
-			printf("Numero de bloque:%d\n",job->numeroBloque);
+			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
-			*cantRafaga=0;
-			//ObtenerInfoDeNodos(*id);
-			//Planificar(*id);
-			//EnviarPlanificacionAJob(id);
-			*cantRafaga=1;
-			break;
-		case NOTIFICACION_NODO:
-			break;
-		case RECIBIDO_OK:
+			if(procesarRutina(job)){ //Faltar armar esta funcion
+				//Pudo hacerla
+				*mensaje = "31";
+			} else {
+				//No pudo hacerla
+				*mensaje = "30";
+			}
 			break;
 		default:
 			break;
 		}
-		*mensaje = "Ok";
 	} else {
 		if (*cantRafaga==1) {
 			*mensaje = "Ok";

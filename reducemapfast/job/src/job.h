@@ -50,11 +50,11 @@ typedef struct {
 	char *puerto;
 	char *bloque;
 	char *archResultado;
-
+	char * buffer;
 }t_job_a_nodo;
 
 int conectarNodo(t_job_a_nodo , int );
-t_job_a_nodo procesoJob (char *);
+t_job_a_nodo *procesoJob (char *);
 
 char * bufferANodo;
 //Ip de Marta

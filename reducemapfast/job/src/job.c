@@ -38,8 +38,7 @@ int main(int argv, char** argc) {
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
 	char *aux=string_new();
-	t_job_a_nodo el_job;
-	int socket_nodo;
+	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
 
 
 	// Levantamos el archivo de configuracion.
@@ -92,17 +91,17 @@ int main(int argv, char** argc) {
 					aux=obtenerSubBuffer(g_Mapper);
 					string_append(&bufferANodo,aux);
 					free(aux);
-					aux=obtenerSubBuffer(el_job.archResultado);
+					aux = obtenerSubBuffer(el_job->bloque);
 					string_append(&bufferANodo,aux);
 					free(aux);
-
-					//Me conecto con el Nodo
-					socket_nodo=conectarNodo(el_job,socket_nodo);
+					aux=obtenerSubBuffer(el_job->archResultado);
+					string_append(&bufferANodo,aux);
+					free(aux);
+					el_job->buffer = bufferANodo;
 
 					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
 					pthread_t hNuevoCliente;
-					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
-										(void *) socket_nodo);
+					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,(void *) el_job);
 
 
 
@@ -123,35 +122,55 @@ int main(int argv, char** argc) {
 			}
 		}
 
-		CerrarSocket(socket_nodo);
 
 	//	return code;
 
 	return 0;
 }
 
+int cuentaDigitos(int valor){
+	int cont = 0;
+	float tamDigArch=valor;
+	while(tamDigArch>1){
+		tamDigArch=tamDigArch/10;
+		cont++;
+	}
+	return cont;
+}
+
+
 int AtiendeCliente(void * arg) {
-	int socket_nodo = (int) arg;
-	int longitudBuffer;
+	t_job_a_nodo *el_job = (t_job_a_nodo*) arg;
+	int socket_nodo;
+	char * bufferANodo = el_job->buffer;
+	char * bufferEnvia = string_new();
+	char * bufferR = string_new();
+	int bytesRecibidos, cantRafaga=1, tamanio=10;
+	//Me conecto con el Nodo
+	socket_nodo=conectarNodo(*el_job,socket_nodo);
+
+	//Primera Rafaga
+	string_append(&bufferEnvia,"2");
+	string_append(&bufferEnvia,string_itoa(cuentaDigitos(strlen(bufferANodo))));
+	string_append(&bufferEnvia,string_itoa(strlen(bufferANodo)));
+	printf("BUFFER ENVIA:%s\n",bufferEnvia);
+	EnviarDatos(socket_nodo,bufferEnvia, strlen(bufferEnvia));
+
+	bufferR = RecibirDatos(socket_nodo, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
 	//Le envio Nodo
 	EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
 
-	int emisor = 0;
 	int code=0;
 
 // Dentro del buffer se guarda el mensaje recibido por el nodo.
 	char* buffer;
 	buffer = malloc(BUFFERSIZE * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 
-// Cantidad de bytes recibidos.
-	int bytesRecibidos;
 
 // La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
 	int desconexionCliente = 0;
 
-	int cantRafaga=1,tamanio=0;
-	char * mensaje;
 	while ((!desconexionCliente) & g_Ejecutando) {
 
 		if (buffer != NULL )
@@ -217,19 +236,19 @@ int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 	return socket_nodo;
 }
 
-t_job_a_nodo procesoJob (char *buffer){
+t_job_a_nodo *procesoJob (char *buffer){
 
 	//415 NodoA   19 127.0.0.1    14 6000      18 Bloque30      213 resultado.txt
 
-	t_job_a_nodo el_job;
+	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
 	int pos=1;
 
 
-	el_job.nodo=DigitosNombreArchivo(buffer,&pos);
-	el_job.ip=DigitosNombreArchivo(buffer,&pos);
-	el_job.puerto=DigitosNombreArchivo(buffer,&pos);
-	el_job.bloque=DigitosNombreArchivo(buffer,&pos);
-	el_job.archResultado=DigitosNombreArchivo(buffer,&pos);
+	el_job->nodo=DigitosNombreArchivo(buffer,&pos);
+	el_job->ip=DigitosNombreArchivo(buffer,&pos);
+	el_job->puerto=DigitosNombreArchivo(buffer,&pos);
+	el_job->bloque=DigitosNombreArchivo(buffer,&pos);
+	el_job->archResultado=DigitosNombreArchivo(buffer,&pos);
 
 	return el_job;
 }
@@ -266,8 +285,8 @@ char* abrir_Mapper(char *aux){
 	fseek(f,0,SEEK_END);
 	tamanioArchivo=ftell(f);
 	rewind(f);
-	aux2=(char*)malloc(sizeof(char)*tamanioArchivo);
-	memset(aux2, 0, tamanioArchivo * sizeof(char));
+	aux2=malloc(tamanioArchivo+1);
+	memset(aux2, 0, tamanioArchivo+1);
 	fread(aux2,1,tamanioArchivo,f);
 
 	tam=tamanioArchivo;

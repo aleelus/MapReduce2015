@@ -135,15 +135,15 @@ char * getFileContent(char* nombre);
 typedef struct{
     char *nombreSH;
     char *contenidoSH;
-    int numeroBloque;
+    char *bloque;
     char *nombreResultado;
 }t_job;
 
-static t_job *job_create(char *nSH, char* contenidoSH, int numeroBloque, char * nResultado) {
+static t_job *job_create(char *nSH, char* contenidoSH, char* el_Bloque, char * nResultado) {
 	t_job *new = malloc(sizeof(t_job));
 	new->nombreSH = strdup(nSH);
 	new->contenidoSH = strdup(contenidoSH);
-	new->numeroBloque = numeroBloque;
+	new->bloque = strdup(el_Bloque);
 	new->nombreResultado = strdup(nResultado);
 	return new;
 }
