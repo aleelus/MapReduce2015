@@ -138,6 +138,9 @@ typedef struct{
 
 }t_bloque;
 
+
+t_bloque* buscarNodoYBloque (char * , char *,int*);
+
 static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->bloque = strdup(bloque);

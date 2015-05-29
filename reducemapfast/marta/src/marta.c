@@ -772,16 +772,56 @@ void enviarPlanificacionAJob (int id,int socket){
 
 }
 
+t_bloque* buscarNodoYBloque (char * nodo, char * bloque,int *numCopia){
+
+	t_archivo *el_archivo;
+	t_bloque *el_bloque;
+	int i=0,j=0,c=0;
+
+
+	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+		j=0;
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque=list_get(el_archivo->listaBloques,j);
+
+			for(c=0;c<3;c++){
+
+				if(strcmp(el_bloque->array[c].nodo,nodo)==0 && strcmp(el_bloque->array[c].bloque,bloque)==0){
+					*numCopia=c;
+					return el_bloque;
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+	return NULL;
+
+}
+
 void reciboOk(char *buffer){
 
 	//2318Bloque3015NodoA
+	t_bloque *el_bloque;
 	char *bloque=string_new();
 	char *nodo=string_new();
 	int pos=2;
+	int i=0;
 	bloque=DigitosNombreArchivo(buffer,&pos);
 	nodo=DigitosNombreArchivo(buffer,&pos);
 	printf("Recibo OK del Job:   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
 
+	int numCopia=0;
+	el_bloque=buscarNodoYBloque(nodo,bloque,&numCopia);
+
+	// EJEMPLO DE LO QUE PODRIA HACER
+	if(el_bloque!=NULL){
+		el_bloque->array[numCopia].estado=1;
+		printf("Bloque: "COLOR_VERDE"%s\n"DEFAULT,el_bloque->bloque);
+		for(i=0;i<3;i++)
+			printf("Array[%d]: "COLOR_VERDE"%s::%s::%d\n"DEFAULT,i,el_bloque->array[i].nodo,el_bloque->array[i].bloque,el_bloque->array[i].estado);
+	}
 }
 
 
