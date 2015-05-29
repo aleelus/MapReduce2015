@@ -23,6 +23,11 @@
 #include <sys/stat.h>
 #include <arpa/inet.h>
 
+
+#define COLOR_VERDE   "\x1b[32m"
+#define DEFAULT   "\x1b[0m"
+
+#define CONEXION				1
 #define PATH_CONFIG 			"config.cfg"	//Ruta del config
 #define NOMBRE_ARCHIVO_CONSOLA  "Consola_fs.txt"
 #define NOMBRE_ARCHIVO_LOG 		"fs.log"
@@ -78,7 +83,7 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int
 	new->nombre = strdup(nombreNodo);
 	new->ip = strdup(ipNodo);
 	new->puerto = puertoNodo;
-	new->estado = 1;
+	new->estado = activo;
 	return new;
 }
 
@@ -135,6 +140,8 @@ char* RecibirDatos(int,char*,int*,int*,int*);
 int iniciarMongo();
 int leerMongo();
 int eliminarMongo();
+int atiendeNodo(char*,int*);
+
 // Logger del commons
 t_log* logger;
 

@@ -55,7 +55,7 @@
 #define COMANDOBLOQUES 9
 
 //Puerto de escucha del filesystem
-int g_Puerto_Fs;
+char * g_Puerto_Fs;
 
 //Ip del filesystem
 char * g_Ip_Fs;
@@ -74,6 +74,9 @@ char* g_Nodo_Nuevo;
 
 //Ip del Nodo
 char* g_Ip_Nodo;
+
+//Socket de FS
+int socket_Fs;
 
 //Puerto Escucha del Nodo
 int g_Puerto_Nodo;
@@ -110,7 +113,10 @@ FILE * archivoEspacioDatos;
 //FUNCIONES //
 void GrabarBloque();
 void mapeo();
-
+int conectarFS(int*_Fs,char*,char*);
+void conexionAFs();
+char* RecibirDatos(int, char *, int *,int *,int *);
+int EnviarDatos(int , char *, int);
 
 // METODOS CONFIGURACION //
 void LevantarConfig();

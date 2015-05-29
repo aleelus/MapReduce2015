@@ -239,6 +239,43 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
+int AtiendeNodo(char* buffer,int*cantRafaga){
+
+	char *la_Ip,*el_Puerto;
+	int digitosCantNumIp=0,tamanioDeIp;
+	int posActual=0;
+	t_nodo * el_nodo;
+
+	//BUFFER RECIBIDO = 3220 (EJEMPLO)
+	//BUFFER RECIBIDO = 3119127.0.0.1246000
+	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
+
+	digitosCantNumIp=PosicionDeBufferAInt(buffer,2);
+	printf("Cantidad de digitos de Tamanio de Ip:%d\n",digitosCantNumIp);
+	tamanioDeIp=ObtenerTamanio(buffer,3,digitosCantNumIp);
+	printf("Tamaño de IP:%d\n",tamanioDeIp);
+	posActual=1+digitosCantNumIp;
+	la_Ip=DigitosNombreArchivo(buffer,&posActual);
+	printf("Ip:%s\n",la_Ip);
+	el_Puerto=DigitosNombreArchivo(buffer,&posActual);
+	printf("Puerto:%s\n",el_Puerto);
+	free(nombre);
+	nombre = string_new();
+	if(letra>'B'){
+		letra = 'A';
+		string_append(&nombre,"NodoA");
+	} else {
+		string_append(&nombre,"Nodo");
+	}
+	string_append(&nombre,&letra);
+	letra++;
+	el_nodo = nodo_create(nombre,la_Ip,el_Puerto,0);
+	list_add(lista_nodos,el_nodo);
+
+	return 1;
+}
+
+
 void AtiendeMarta(char* buffer,int*cantRafaga){
 
 	char *nArchivo;
@@ -291,6 +328,7 @@ int ObtenerComandoMSJ(char* buffer) {
 //El comando está dado por el primer caracter, que tiene que ser un número.
 	return PosicionDeBufferAInt(buffer, 0);
 }
+
 int cuentaDigitos(int valor){
 	int cont = 0;
 	float tamDigArch=valor;
@@ -392,6 +430,35 @@ void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int
 	}
 }
 
+void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
+
+	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
+	printf("RAFAGA:%d\n",tipo_mensaje);
+	if(*cantRafaga == 2){
+		switch(tipo_mensaje){
+		case CONEXION:
+			if(AtiendeNodo(buffer,cantRafaga)){
+				*mensaje = "Ok";
+			} else {
+				*mensaje = "No";
+			}
+			*cantRafaga=1;
+			break;
+		default:
+			break;
+		}
+		//*mensaje = "Ok";
+	} else {
+		if (*cantRafaga==1) {
+			*mensaje = "Ok";
+			*cantRafaga = 2;
+		} else {
+			*mensaje = "No";
+		}
+	}
+}
+
+
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
 	char *bufferAux= malloc(1);
@@ -455,6 +522,21 @@ void CerrarSocket(int socket) {
 	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
 
+void RecorrerNodos(){
+	t_nodo * el_nodo;
+
+	int i=0;
+	while(i<list_size(lista_nodos)){
+		el_nodo = list_get(lista_nodos, i);
+		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
+		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
+		i++;
+	}
+}
+
+
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
 	int id=-1;
@@ -499,11 +581,11 @@ int AtiendeCliente(void * arg) {
 				break;
 			case ES_NODO:
 				printf("implementar atiendeNodo\n");
-				//implementoNodo(buffer,&cantRafaga,&mensaje);
+				implementoNodo(buffer,&cantRafaga,&mensaje,socket);
 				break;
 			case COMANDO:
-				printf("Muestre toda la lista de Archivos:\n");
-				//RecorrerArchivos();
+				printf("Muestre toda la lista de Nodos:\n");
+				RecorrerNodos();
 				mensaje = "Ok";
 				break;
 			case COMANDOBLOQUES:
