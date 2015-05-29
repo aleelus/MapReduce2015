@@ -206,6 +206,7 @@ int AtiendeCliente(void * arg) {
 				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
 				//Recibo Ok
+				//printf("BufferR:%s cantRafaga=%d\n",bufferR,cantRafaga);
 				//bufferR=RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
 				//RAFAGA 2
