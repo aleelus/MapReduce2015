@@ -212,20 +212,17 @@ int AtiendeCliente(void * arg) {
 				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 				log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferAMartaUno, strlen(bufferAMartaUno));
 
-				//Recibo Ok
-				//printf("BufferR:%s cantRafaga=%d\n",bufferR,cantRafaga);
-				//bufferR=RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+				//Recibo el Ok
+				printf("BufferR:%s cantRafaga=%d\n",bufferR,cantRafaga);
+				bufferR=RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
 				//RAFAGA 2
-				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
-				log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferAMartaDos, strlen(bufferAMartaDos));
-				/*
+				//Recibo el Ok del Nodo y le aviso a Marta
 				if(strcmp(bufferR,"Ok")==0){
-					//RAFAGA 2
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+					log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferAMartaDos, strlen(bufferAMartaDos));
 				}else
-					printf("ERRORRRRRRRRRRRRRR\n");
-					*/
+					printf("ERROR: No se recibió la confirmación del trabajo desde el nodo\n");
 			}
 
 
