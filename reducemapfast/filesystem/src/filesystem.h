@@ -142,20 +142,6 @@ int atiendeNodo(char*,int*);						//Atiende un nodo
 //static t_archivo *archivo_create(char *nombreArchivo);					//Crear archivo
 
 
-//Variables globales
-/*********************/
-t_log* logger;								// Logger del commons
-FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
-char* g_MensajeError;						//Mensaje de error global.
-pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
-int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
-t_list *lista_nodos;						//Lista de Nodos
-t_list *lista_archivos;						//Lista de Archivos
-t_list *lista_estructura;					//Lista para la estructura del filesystem
-
-char letra = 'A'; 							//Variable global para sufijo de nombre de nodo, hay que ponerle semaforo
-char * nombre;
-
 static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->bloque = strdup(bloque);

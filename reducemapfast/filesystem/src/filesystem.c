@@ -12,6 +12,21 @@
 #include "filesystem.h"
 #include "mongodev.h"
 
+//Variables globales
+/*********************/
+t_log* logger;								// Logger del commons
+FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
+char* g_MensajeError;						//Mensaje de error global.
+pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
+int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
+t_list *lista_nodos;						//Lista de Nodos
+t_list *lista_archivos;						//Lista de Archivos
+t_list *lista_estructura;					//Lista para la estructura del filesystem
+
+char letra = 'A'; 							//Variable global para sufijo de nombre de nodo, hay que ponerle semaforo
+char * nombre;
+
+
 int main(int argv, char** argc) {
 
 	leer_config();						// Abrir Archivo de Configuracion
@@ -47,6 +62,9 @@ int main(int argv, char** argc) {
 
 
 	//}
+
+
+
 	//Archivo de Log
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "fs", true, LOG_LEVEL_TRACE);
 
@@ -113,6 +131,7 @@ int ChartToInt(char x) {
 		free(aux);
 	return numero;
 }
+
 
 
 int PosicionDeBufferAInt(char* buffer, int posicion) {
