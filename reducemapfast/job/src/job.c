@@ -65,6 +65,7 @@ int main(int argv, char** argc) {
 
 	conectarMarta();
 	EnviarDatos(socket_Marta,bufferRafaga_Uno, strlen(bufferRafaga_Uno));
+	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
 
 	while ((!desconexionCliente) & g_Ejecutando) {
@@ -75,6 +76,7 @@ int main(int argv, char** argc) {
 
 			//Recibimos los datos del cliente
 			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+			log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, buffer, tamanio);
 
 			printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
@@ -102,7 +104,8 @@ int main(int argv, char** argc) {
 					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
 					pthread_t hNuevoCliente;
 					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,(void *) el_job);
-
+					printf("Creación de hilo para atención del nodo. BUFFER: %s", bufferANodo);
+					log_trace(logger, "CREACIÓN DE HILO PARA ATENCIÓN DEL NODO. BUFFER: (%s).", bufferANodo);
 
 
 
@@ -110,6 +113,7 @@ int main(int argv, char** argc) {
 				}
 				else if(cantidadRafagaMarta==2){
 					EnviarDatos(socket_Marta,bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+					log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Dos, strlen(bufferRafaga_Dos));
 					cantidadRafagaMarta=3;
 					cantRafaga=3;
 
@@ -122,8 +126,6 @@ int main(int argv, char** argc) {
 			}
 		}
 
-
-	//	return code;
 
 	return 0;
 }
@@ -155,20 +157,23 @@ int AtiendeCliente(void * arg) {
 	string_append(&bufferEnvia,string_itoa(strlen(bufferANodo)));
 	printf("BUFFER ENVIA:%s\n",bufferEnvia);
 	EnviarDatos(socket_nodo,bufferEnvia, strlen(bufferEnvia));
+	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferEnvia, strlen(bufferEnvia));
 
 	bufferR = RecibirDatos(socket_nodo, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferR, strlen(bufferR));
 
-	//Le envio Nodo
+	//Le envio el buffer al Nodo
 	EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
+	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferANodo, strlen(bufferANodo));
 
 	int code=0;
 
-// Dentro del buffer se guarda el mensaje recibido por el nodo.
+	// Dentro del buffer se guarda el mensaje recibido por el nodo.
 	char* buffer;
 	buffer = malloc(BUFFERSIZE * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 
 
-// La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
+	// La variable fin se usa cuando el cliente quiere cerrar la conexion: chau chau!
 	int desconexionCliente = 0;
 
 	char *bufferAMartaUno=string_new();
@@ -183,6 +188,7 @@ int AtiendeCliente(void * arg) {
 
 		//Recibimos los datos del nodo
 		buffer = RecibirDatos(socket_nodo, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, buffer, tamanio);
 
 
 		if (bytesRecibidos > 0) {
@@ -204,6 +210,7 @@ int AtiendeCliente(void * arg) {
 
 				//RAFAGA 1
 				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+				log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferAMartaUno, strlen(bufferAMartaUno));
 
 				//Recibo Ok
 				//printf("BufferR:%s cantRafaga=%d\n",bufferR,cantRafaga);
@@ -211,6 +218,7 @@ int AtiendeCliente(void * arg) {
 
 				//RAFAGA 2
 				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+				log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferAMartaDos, strlen(bufferAMartaDos));
 				/*
 				if(strcmp(bufferR,"Ok")==0){
 					//RAFAGA 2
@@ -256,17 +264,17 @@ int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 
 
 	if (getaddrinfo(el_job.ip, el_job.puerto, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
-		log_info(logger,
-				"ERROR: cargando datos de conexion socket_nodo");
+		log_error(logger,
+				"Error de carga de datos de conexion en socket_nodo");
 	}
 
 	if ((socket_nodo = socket(serverInfo->ai_family, serverInfo->ai_socktype,
 			serverInfo->ai_protocol)) < 0) {
-		log_info(logger, "ERROR: crear socket_nodo");
+		log_error(logger, "Error al crear socket_nodo");
 	}
 	if (connect(socket_nodo, serverInfo->ai_addr, serverInfo->ai_addrlen)
 			< 0) {
-		log_info(logger, "ERROR: conectar socket_nodo");
+		log_error(logger, "Error al conectar con socket_nodo");
 	}
 	freeaddrinfo(serverInfo);	// No lo necesitamos mas
 
@@ -601,17 +609,17 @@ void conectarMarta() {
 
 
 	if (getaddrinfo(g_Ip_Marta, g_Puerto_Marta, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
-		log_info(logger,
-				"ERROR: cargando datos de conexion socket_Marta");
+		log_error(logger,
+				"Error de carga de datos de conexion en socket_Marta");
 	}
 
 	if ((socket_Marta = socket(serverInfo->ai_family, serverInfo->ai_socktype,
 			serverInfo->ai_protocol)) < 0) {
-		log_info(logger, "ERROR: crear socket_Marta");
+		log_error(logger, "Error en la creación del socket_Marta");
 	}
 	if (connect(socket_Marta, serverInfo->ai_addr, serverInfo->ai_addrlen)
 			< 0) {
-		log_info(logger, "ERROR: conectar socket_Marta");
+		log_error(logger, "Error al conectar con socket_Marta");
 	}
 	freeaddrinfo(serverInfo);	// No lo necesitamos mas
 
