@@ -521,7 +521,7 @@ int EnviarDatos(int socket,char *buffer, int cantidadDeBytesAEnviar) {
 	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
-		Error("No puedo enviar información a al clientes. Socket: %d", socket);
+		Error("No puedo enviar información a los clientes. Socket: %d", socket);
 
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
 			(char*) buffer);
