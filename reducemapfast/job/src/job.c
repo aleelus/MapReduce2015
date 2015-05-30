@@ -143,7 +143,7 @@ int cuentaDigitos(int valor){
 
 int AtiendeCliente(void * arg) {
 	t_job_a_nodo *el_job = (t_job_a_nodo*) arg;
-	int socket_nodo;
+	int socket_nodo=0;
 	char * bufferANodo = el_job->buffer;
 	char * bufferEnvia = string_new();
 	char * bufferR = string_new();
