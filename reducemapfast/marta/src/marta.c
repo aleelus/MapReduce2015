@@ -758,8 +758,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
 	string_append(&mensaje,"NodoA");
-	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"192.168.1.21");
+	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"127.0.0.1");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");
@@ -771,6 +771,59 @@ void enviarPlanificacionAJob (int id,int socket){
 	EnviarDatos(socket, mensaje,strlen(mensaje));
 
 }
+
+t_bloque* buscarNodoYBloque (char * nodo, char * bloque,int *numCopia){
+
+	t_archivo *el_archivo;
+	t_bloque *el_bloque;
+	int i=0,j=0,c=0;
+
+
+	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+		j=0;
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque=list_get(el_archivo->listaBloques,j);
+
+			for(c=0;c<3;c++){
+
+				if(strcmp(el_bloque->array[c].nodo,nodo)==0 && strcmp(el_bloque->array[c].bloque,bloque)==0){
+					*numCopia=c;
+					return el_bloque;
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+	return NULL;
+
+}
+
+void reciboOk(char *buffer){
+
+	//2318Bloque3015NodoA
+	t_bloque *el_bloque;
+	char *bloque=string_new();
+	char *nodo=string_new();
+	int pos=2;
+	int i=0;
+	bloque=DigitosNombreArchivo(buffer,&pos);
+	nodo=DigitosNombreArchivo(buffer,&pos);
+	printf("Recibo OK del Job:   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
+
+	int numCopia=0;
+	el_bloque=buscarNodoYBloque(nodo,bloque,&numCopia);
+
+	// EJEMPLO DE LO QUE PODRIA HACER
+	if(el_bloque!=NULL){
+		el_bloque->array[numCopia].estado=1;
+		printf("Bloque: "COLOR_VERDE"%s\n"DEFAULT,el_bloque->bloque);
+		for(i=0;i<3;i++)
+			printf("Array[%d]: "COLOR_VERDE"%s::%s::%d\n"DEFAULT,i,el_bloque->array[i].nodo,el_bloque->array[i].bloque,el_bloque->array[i].estado);
+	}
+}
+
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
@@ -791,6 +844,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 		case NOTIFICACION_NODO:
 			break;
 		case RECIBIDO_OK:
+			reciboOk(buffer);
 			break;
 		default:
 			break;

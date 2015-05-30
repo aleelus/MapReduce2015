@@ -10,8 +10,6 @@
  */
 
 #include "nodo.h"
-int socket_fsystem;
-
 
 // Crear el archivo de espacio de datos datos.bin con "truncate -s 1G datos.bin"
 int main(int argv, char** argc) {
@@ -19,7 +17,7 @@ int main(int argv, char** argc) {
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "nodo", true, LOG_LEVEL_TRACE);
 
 	// Levantamos el archivo de configuracion.
-		LevantarConfig();
+	LevantarConfig();
 
 	//Abro el archivo de espacio de datos donde voy a leer y escribir bloques
 	if(( archivoEspacioDatos = fopen(g_Archivo_Bin, "r+b") ) == NULL){
@@ -31,6 +29,7 @@ int main(int argv, char** argc) {
 	//Prueba getFileContent
 	//char* temp_file = getFileContent("temporalPrueba.tmp");
 
+	conexionAFs();
 
 	//Socket para escuchar al Job, FS y otros Nodos
 	//Hilo orquestador conexiones
@@ -64,6 +63,109 @@ int main(int argv, char** argc) {
 	printf("Ok\n");
 	fclose(archivoEspacioDatos);
 	return 0;
+}
+
+char* obtenerSubBuffer(char *nombre){
+	// Esta funcion recibe un nombre y devuelve ese nombre de acuerdo al protocolo. Ej: carlos ------> 16carlos
+	char *aux=string_new();
+	int tamanioNombre=0;
+	float tam=0;
+	int cont=0;
+
+	tamanioNombre=strlen(nombre);
+	tam=tamanioNombre;
+	while(tam>1){
+		tam=tam/10;
+		cont++;
+	}
+	string_append(&aux,string_itoa(cont));
+	string_append(&aux,string_itoa(tamanioNombre));
+	string_append(&aux,nombre);
+
+	return aux;
+}
+
+int cuentaDigitos(int valor){
+	int cont = 0;
+	float tamDigArch=valor;
+	while(tamDigArch>1){
+		tamDigArch=tamDigArch/10;
+		cont++;
+	}
+	return cont;
+}
+
+void conexionAFs(){
+	int cont;
+	int bytesRecibidos,cantRafaga=1,tamanio;
+	char*buffer = string_new();
+	char*bufferR = string_new();
+	char*bufferE = string_new();
+	char*aux;
+
+	if(conectarFS(&socket_Fs,g_Ip_Fs,g_Puerto_Fs)){
+		//ENVIO a FILESYSTEM(la segunda rafaga)
+		//31210127.0.0.1143000
+		string_append(&buffer,"31");
+		aux=obtenerSubBuffer(g_Ip_Fs);
+		string_append(&buffer,aux);
+		aux=obtenerSubBuffer(g_Puerto_Fs);
+		string_append(&buffer,aux);
+
+		string_append(&bufferE,"3");
+		cont = cuentaDigitos(strlen(buffer));
+		string_append(&bufferE,string_itoa(cont));
+		string_append(&bufferE,string_itoa(strlen(buffer)));
+
+		//Primera Rafaga
+		EnviarDatos(socket_Fs,bufferE, strlen(bufferE));
+
+		bufferR = RecibirDatos(socket_Fs,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+		//Recibo respuesta de FS
+		if(bufferR!=NULL){
+			//Segunda Rafaga
+			EnviarDatos(socket_Fs,buffer, strlen(buffer));
+			bufferR = RecibirDatos(socket_Fs,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+			printf("\nNodo Conectado al Fs!");
+		} else {
+			printf("No se pudo conectar al FS\n");
+		}
+	}
+}
+
+
+
+int conectarFS(int * socket_Fs, char* ipFs, char* puertoFs) {
+
+	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON NODO
+	log_info(logger, "Intentando conectar a nodo\n");
+	//conectar con Nodo
+	struct addrinfo hints;
+	struct addrinfo *serverInfo;
+	int conexionOk = 0;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
+	hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
+
+
+	if (getaddrinfo(ipFs, puertoFs, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
+		log_info(logger,
+				"ERROR: cargando datos de conexion socket_FS");
+	}
+
+	if ((*socket_Fs = socket(serverInfo->ai_family, serverInfo->ai_socktype,
+			serverInfo->ai_protocol)) < 0) {
+		log_info(logger, "ERROR: crear socket_FS");
+	}
+	if (connect(*socket_Fs, serverInfo->ai_addr, serverInfo->ai_addrlen)
+			< 0) {
+		log_info(logger, "ERROR: conectar socket_FS");
+	} else {
+		conexionOk = 1;
+	}
+	freeaddrinfo(serverInfo);	// No lo necesitamos mas
+	return conexionOk;
 }
 
 
@@ -251,7 +353,7 @@ void LevantarConfig() {
 
 		// Preguntamos y obtenemos el puerto donde esta escuchando el filesystem
 		if (config_has_property(config, "PUERTO_FS")) {
-			g_Puerto_Fs = config_get_int_value(config, "PUERTO_FS");
+			g_Puerto_Fs = config_get_string_value(config, "PUERTO_FS");
 		} else {
 			Error("No se pudo leer el parametro PUERTO_FS");
 		}
@@ -484,8 +586,8 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//semaforo
 	estado = 1;
 	char *nArchivoSH;
-	int digitosCantDeDigitos=0,tamanioSH=0,digitosCantDeDigitosSH,digitosTamanioBloque;
-	int numeroBloque;
+	int digitosCantDeDigitos=0,tamanioSH,digitosCantDeDigitosSH;
+	char * el_Bloque;
 	int posActual=0;
 	char * fileSH,*nArchivoResultado;
 
@@ -502,17 +604,19 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//printf("Nombre Archivo SH:%s\n",nArchivoSH);
 
 	//printf("Posicion Actual:%d\n",posActual);
-	digitosTamanioBloque=PosicionDeBufferAInt(buffer,posActual);
 	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
-	numeroBloque=ObtenerTamanio(buffer,posActual+1,digitosTamanioBloque);
-	//printf("Numero de bloque: %d\n",numeroBloque);
+	el_Bloque=DigitosNombreArchivo(buffer,&posActual);
+	printf("bloque: %s\n",el_Bloque);
 
-	posActual = posActual + digitosTamanioBloque;
 	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
 	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
 
-	*job = job_create(nArchivoSH,fileSH,numeroBloque,nArchivoResultado);
+	*job = job_create(nArchivoSH,fileSH,el_Bloque,nArchivoResultado);
 	*cantRafaga=1;
+}
+
+int procesarRutina(t_job * job){
+	return 1;
 }
 
 
@@ -526,22 +630,19 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			AtiendeJob(&job,buffer,cantRafaga);
 			printf("Nombre de SH:%s\n",job->nombreSH);
 			printf("Contenido de SH:%s\n",job->contenidoSH);
-			printf("Numero de bloque:%d\n",job->numeroBloque);
+			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
-			*cantRafaga=0;
-			//ObtenerInfoDeNodos(*id);
-			//Planificar(*id);
-			//EnviarPlanificacionAJob(id);
-			*cantRafaga=1;
-			break;
-		case NOTIFICACION_NODO:
-			break;
-		case RECIBIDO_OK:
+			if(procesarRutina(job)){ //Faltar armar esta funcion
+				//Pudo hacerla
+				*mensaje = "31";
+			} else {
+				//No pudo hacerla
+				*mensaje = "30";
+			}
 			break;
 		default:
 			break;
 		}
-		*mensaje = "Ok";
 	} else {
 		if (*cantRafaga==1) {
 			*mensaje = "Ok";

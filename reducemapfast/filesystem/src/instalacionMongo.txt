@@ -21,3 +21,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 -lmongoc-1.0
 -lbson-1.0
 
+#si mongo llega a tirar errores
+ejemplo de error: couldn't connect to server 127.0.0.1:27017 at src/mongo/shell/mongo.js:145
+ejecutar: sudo rm /var/lib/mongodb/mongod.lock

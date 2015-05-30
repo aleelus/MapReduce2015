@@ -55,7 +55,7 @@
 #define COMANDOBLOQUES 9
 
 //Puerto de escucha del filesystem
-int g_Puerto_Fs;
+char * g_Puerto_Fs;
 
 //Ip del filesystem
 char * g_Ip_Fs;
@@ -74,6 +74,9 @@ char* g_Nodo_Nuevo;
 
 //Ip del Nodo
 char* g_Ip_Nodo;
+
+//Socket de FS
+int socket_Fs;
 
 //Puerto Escucha del Nodo
 int g_Puerto_Nodo;
@@ -110,7 +113,10 @@ FILE * archivoEspacioDatos;
 //FUNCIONES //
 void GrabarBloque();
 void mapeo();
-
+int conectarFS(int*_Fs,char*,char*);
+void conexionAFs();
+char* RecibirDatos(int, char *, int *,int *,int *);
+int EnviarDatos(int , char *, int);
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
@@ -135,15 +141,15 @@ char * getFileContent(char* nombre);
 typedef struct{
     char *nombreSH;
     char *contenidoSH;
-    int numeroBloque;
+    char *bloque;
     char *nombreResultado;
 }t_job;
 
-static t_job *job_create(char *nSH, char* contenidoSH, int numeroBloque, char * nResultado) {
+static t_job *job_create(char *nSH, char* contenidoSH, char* el_Bloque, char * nResultado) {
 	t_job *new = malloc(sizeof(t_job));
 	new->nombreSH = strdup(nSH);
 	new->contenidoSH = strdup(contenidoSH);
-	new->numeroBloque = numeroBloque;
+	new->bloque = strdup(el_Bloque);
 	new->nombreResultado = strdup(nResultado);
 	return new;
 }

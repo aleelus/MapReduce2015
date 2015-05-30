@@ -24,11 +24,10 @@
 #include <arpa/inet.h>
 
 
+#define COLOR_VERDE   "\x1b[32m"
+#define DEFAULT   "\x1b[0m"
 
-//#define IP 						"127.0.0.1"
-//#define PUERTO					"6667"
-//#define PACKAGESIZE				1024
-//#define CANTMAX					1			//Cantidad maxima para seleccionar un comando
+#define CONEXION				1
 #define PATH_CONFIG 			"config.cfg"	//Ruta del config
 #define NOMBRE_ARCHIVO_CONSOLA  "Consola_fs.txt"
 #define NOMBRE_ARCHIVO_LOG 		"fs.log"
@@ -68,6 +67,9 @@ t_list *lista_nodos;
 //Lista de Archivos
 t_list *lista_archivos;
 
+//Lista para la estructura del filesystem
+t_list *lista_estructura;
+
 // TIPOS //
 typedef struct {
 	char * nombre;
@@ -81,7 +83,7 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int
 	new->nombre = strdup(nombreNodo);
 	new->ip = strdup(ipNodo);
 	new->puerto = puertoNodo;
-	new->estado = 1;
+	new->estado = activo;
 	return new;
 }
 
@@ -136,6 +138,10 @@ int ObtenerComandoMSJ(char*);							//Obtiene el tipo del comando del emisor
 void Error(const char* mensaje, ...);
 char* RecibirDatos(int,char*,int*,int*,int*);
 int iniciarMongo();
+int leerMongo();
+int eliminarMongo();
+int atiendeNodo(char*,int*);
+
 // Logger del commons
 t_log* logger;
 

@@ -53,7 +53,9 @@ int main(int argv, char** argc) {
 	//Archivo de Log
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "fs", true, LOG_LEVEL_TRACE);
 
-	iniciarMongo();
+	//iniciarMongo();
+	leerMongo();
+	//eliminarMongo();
 
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
 	g_ArchivoConsola = fopen(NOMBRE_ARCHIVO_CONSOLA, "wb");
@@ -86,32 +88,99 @@ int main(int argv, char** argc) {
 
 }
 
+int eliminarMongo(){
+	mongoc_client_t *client;
+	mongoc_collection_t *collection;
+	bson_error_t error;
+	bson_oid_t oid;
+	bson_t *doc;
+
+	mongoc_init ();
+
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	collection = mongoc_client_get_collection (client, "test", "archivos");
+
+	doc = bson_new ();
+	bson_oid_init (&oid, NULL);
+	BSON_APPEND_OID (doc, "_id", &oid);
+	BSON_APPEND_UTF8 (doc, "hello", "world");
+
+	if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, doc, NULL, &error)) {
+		printf ("Insert failed: %s\n", error.message);
+	}
+
+	bson_destroy (doc);
+
+	doc = bson_new ();
+	BSON_APPEND_OID (doc, "_id", &oid);
+
+	if (!mongoc_collection_remove (collection, MONGOC_DELETE_SINGLE_REMOVE, doc, NULL, &error)) {
+		printf ("Delete failed: %s\n", error.message);
+	}
+
+	bson_destroy (doc);
+	mongoc_collection_destroy (collection);
+	mongoc_client_destroy (client);
+
+	return 0;
+}
+
+int leerMongo(){
+	mongoc_client_t *client;
+	mongoc_collection_t *collection;
+	mongoc_cursor_t *cursor;
+	const bson_t *doc;
+	bson_t *query;
+	char *str;
+
+	mongoc_init ();
+
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	collection = mongoc_client_get_collection (client, "test", "archivos");
+
+	query = bson_new ();
+	cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+	while (mongoc_cursor_next (cursor, &doc)) {
+		str = bson_as_json (doc, NULL);
+	    printf ("ACA:%s\n", str);
+	    bson_free (str);
+	}
+
+	bson_destroy (query);
+	mongoc_cursor_destroy (cursor);
+	mongoc_collection_destroy (collection);
+	mongoc_client_destroy (client);
+
+	return 0;
+}
+
 int iniciarMongo(){
 
-    mongoc_client_t *client;
-    mongoc_collection_t *collection;
-    mongoc_cursor_t *cursor;
-    const bson_t *doc;
-    bson_t *query;
-    char *str;
+	mongoc_client_t *client;
+	mongoc_collection_t *collection;
+	bson_error_t error;
+	bson_oid_t oid;
+	bson_t *doc;
 
-    mongoc_init ();
+	mongoc_init ();
 
-    client = mongoc_client_new ("mongodb://localhost:27017/");
-    collection = mongoc_client_get_collection (client, "test", "archivos");
-    query = bson_new ();
-    cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	collection = mongoc_client_get_collection (client, "test", "archivos");
 
-    while (mongoc_cursor_next (cursor, &doc)) {
-        str = bson_as_json (doc, NULL);
-        printf ("%s\n", str);
-        bson_free (str);
-    }
+	doc = bson_new ();
+	bson_oid_init (&oid, NULL);
+	BSON_APPEND_OID (doc, "_id", &oid);
+	BSON_APPEND_UTF8 (doc, "hello", "world");
 
-    bson_destroy (query);
-    mongoc_cursor_destroy (cursor);
-    mongoc_collection_destroy (collection);
-    mongoc_client_destroy (client);
+	if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, doc, NULL, &error)) {
+		printf ("%s\n", error.message);
+	}
+
+	bson_destroy (doc);
+	mongoc_collection_destroy (collection);
+	mongoc_client_destroy (client);
+
+
 
     return 0;
 
@@ -170,6 +239,43 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
+int AtiendeNodo(char* buffer,int*cantRafaga){
+
+	char *la_Ip,*el_Puerto;
+	int digitosCantNumIp=0,tamanioDeIp;
+	int posActual=0;
+	t_nodo * el_nodo;
+
+	//BUFFER RECIBIDO = 3220 (EJEMPLO)
+	//BUFFER RECIBIDO = 3119127.0.0.1246000
+	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
+
+	digitosCantNumIp=PosicionDeBufferAInt(buffer,2);
+	printf("Cantidad de digitos de Tamanio de Ip:%d\n",digitosCantNumIp);
+	tamanioDeIp=ObtenerTamanio(buffer,3,digitosCantNumIp);
+	printf("Tamaño de IP:%d\n",tamanioDeIp);
+	posActual=1+digitosCantNumIp;
+	la_Ip=DigitosNombreArchivo(buffer,&posActual);
+	printf("Ip:%s\n",la_Ip);
+	el_Puerto=DigitosNombreArchivo(buffer,&posActual);
+	printf("Puerto:%s\n",el_Puerto);
+	free(nombre);
+	nombre = string_new();
+	if(letra>'B'){
+		letra = 'A';
+		string_append(&nombre,"NodoA");
+	} else {
+		string_append(&nombre,"Nodo");
+	}
+	string_append(&nombre,&letra);
+	letra++;
+	el_nodo = nodo_create(nombre,la_Ip,el_Puerto,0);
+	list_add(lista_nodos,el_nodo);
+
+	return 1;
+}
+
+
 void AtiendeMarta(char* buffer,int*cantRafaga){
 
 	char *nArchivo;
@@ -222,6 +328,7 @@ int ObtenerComandoMSJ(char* buffer) {
 //El comando está dado por el primer caracter, que tiene que ser un número.
 	return PosicionDeBufferAInt(buffer, 0);
 }
+
 int cuentaDigitos(int valor){
 	int cont = 0;
 	float tamDigArch=valor;
@@ -235,9 +342,8 @@ int cuentaDigitos(int valor){
 int EnviarInfoMarta(int socket) {
 // Retardo antes de contestar una solicitud
 	//sleep(g_Retardo / 1000);
-	int i=0,cant,contArch,tamDigArch,cont,cantidadDeBytesAEnviar;
+	int cont,cantidadDeBytesAEnviar;
 	int bytecount,bytesRecibidos,cantRafaga=1,tamanio;
-	t_archivo * el_archivo;
 	char*buffer = string_new();
 	char*bufferR = string_new();
 	char*bufferE = string_new();
@@ -268,7 +374,7 @@ int EnviarInfoMarta(int socket) {
 
 
 	buffer=string_new();
-	string_append(&buffer,"1212237/user/juan/datos/temperatura-2012.txt1215NODOA18Bloque3015NODOB18Bloque3715NODOF17Bloque815NODOE18Bloque1315NODOA18Bloque3815NODOC17Bloque7237/user/juan/datos/temperatura-2013.txt1215NODOP18Bloque3115NODOF18Bloque4215NODOH17Bloque915NODOK18Bloque1115NODOB18Bloque5515NODOF17Bloque31815NODOA19127.0.0.114600015NODOB19127.0.0.114600015NODOC19127.0.0.114600015NODOE19127.0.0.114600015NODOF19127.0.0.114600015NODOH19127.0.0.114600015NODOK19127.0.0.114600015NODOP19127.0.0.1146000");
+	string_append(&buffer,"1212237/user/juan/datos/temperatura-2012.txt1215NodoA18Bloque3015NodoB18Bloque3715NodoF17Bloque815NodoE18Bloque1315NodoA18Bloque3815NodoC17Bloque7237/user/juan/datos/temperatura-2013.txt1215NodoP18Bloque3115NodoF18Bloque4215NodoH17Bloque915NodoK18Bloque1115NodoB18Bloque5515NodoF17Bloque31815NodoA19127.0.0.114600015NodoB19127.0.0.114600015NodoC19127.0.0.114600015NodoE19127.0.0.114600015NodoF19127.0.0.114600015NodoH19127.0.0.114600015NodoK19127.0.0.114600015NodoP19127.0.0.1146000");
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
@@ -323,6 +429,35 @@ void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int
 		}
 	}
 }
+
+void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
+
+	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
+	printf("RAFAGA:%d\n",tipo_mensaje);
+	if(*cantRafaga == 2){
+		switch(tipo_mensaje){
+		case CONEXION:
+			if(AtiendeNodo(buffer,cantRafaga)){
+				*mensaje = "Ok";
+			} else {
+				*mensaje = "No";
+			}
+			*cantRafaga=1;
+			break;
+		default:
+			break;
+		}
+		//*mensaje = "Ok";
+	} else {
+		if (*cantRafaga==1) {
+			*mensaje = "Ok";
+			*cantRafaga = 2;
+		} else {
+			*mensaje = "No";
+		}
+	}
+}
+
 
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
@@ -387,6 +522,21 @@ void CerrarSocket(int socket) {
 	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
 
+void RecorrerNodos(){
+	t_nodo * el_nodo;
+
+	int i=0;
+	while(i<list_size(lista_nodos)){
+		el_nodo = list_get(lista_nodos, i);
+		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
+		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
+		i++;
+	}
+}
+
+
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
 	int id=-1;
@@ -431,11 +581,11 @@ int AtiendeCliente(void * arg) {
 				break;
 			case ES_NODO:
 				printf("implementar atiendeNodo\n");
-				//implementoNodo(buffer,&cantRafaga,&mensaje);
+				implementoNodo(buffer,&cantRafaga,&mensaje,socket);
 				break;
 			case COMANDO:
-				printf("Muestre toda la lista de Archivos:\n");
-				//RecorrerArchivos();
+				printf("Muestre toda la lista de Nodos:\n");
+				RecorrerNodos();
 				mensaje = "Ok";
 				break;
 			case COMANDOBLOQUES:

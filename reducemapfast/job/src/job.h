@@ -22,6 +22,8 @@
 
 // CONSTANTES //
 //Ruta del config
+#define COLOR_VERDE   "\x1b[32m"
+#define DEFAULT   "\x1b[0m"
 #define PATH_CONFIG "config.cfg"
 #define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "msp.log"
@@ -50,11 +52,11 @@ typedef struct {
 	char *puerto;
 	char *bloque;
 	char *archResultado;
-
+	char * buffer;
 }t_job_a_nodo;
 
 int conectarNodo(t_job_a_nodo , int );
-t_job_a_nodo procesoJob (char *);
+t_job_a_nodo *procesoJob (char *);
 
 char * bufferANodo;
 //Ip de Marta
