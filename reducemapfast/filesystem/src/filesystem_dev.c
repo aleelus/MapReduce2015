@@ -248,3 +248,6 @@ void iniciar_mongo(){
 	
 }
 */
+
+
+

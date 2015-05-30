@@ -5,7 +5,8 @@
  *      Author: gabriel
  */
 
-#include <mongoc.h>
+#include "mongodev.h"
+
 
 int iniciarMongo(){
 
@@ -32,8 +33,6 @@ int iniciarMongo(){
 	bson_destroy (doc);
 	mongoc_collection_destroy (collection);
 	mongoc_client_destroy (client);
-
-
 
     return 0;
 

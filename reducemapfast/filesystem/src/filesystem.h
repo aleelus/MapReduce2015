@@ -24,92 +24,90 @@
 #include <arpa/inet.h>
 
 
-#define COLOR_VERDE   "\x1b[32m"
-#define DEFAULT   "\x1b[0m"
-
+#define COLOR_VERDE   			"\x1b[32m"
+#define DEFAULT   				"\x1b[0m"
 #define CONEXION				1
-#define PATH_CONFIG 			"config.cfg"	//Ruta del config
-#define NOMBRE_ARCHIVO_CONSOLA  "Consola_fs.txt"
-#define NOMBRE_ARCHIVO_LOG 		"fs.log"
-#define MAXLINEA				4096			//Maximo de linea de configuracion
-#define MAXNODOS				5				//Tamanio maximo del nombre de nodo
-#define TAMANIO_BLOQUE			20480			//Tamanio maximo de bloque
-#define MAXDIRECTORIOS			1024			//Cantidad maxima de directorios
-#define TAMANIO_IP				16				//un string ejempl 192.168.001.123
-#define	ES_MARTA				4				//emisor de mensaje Marta
-#define ES_NODO					3				//emisor de mensaje Nodo
-#define COMANDO					8				//comando(extra) para ver algo por pantalla
-#define COMANDOBLOQUES			9				//idem el de arriba
-#define CONSULTA_ARCHIVO		1				//marta consulta por un archivo
-
-//Tamaño del buffer
-#define BUFFERSIZE 10
+#define PATH_CONFIG 			"config.cfg"		//Ruta del config
+#define NOMBRE_ARCHIVO_CONSOLA  "Consola_fs.txt"	//Nombre de archivo de consola
+#define NOMBRE_ARCHIVO_LOG 		"fs.log"			//Nombre de archivo de log
+#define MAXLINEA				4096				//Maximo de linea de configuracion
+#define MAXNODOS				5					//Tamanio maximo del nombre de nodo
+#define TAMANIO_BLOQUE			20480				//Tamanio maximo de bloque
+#define MAXDIRECTORIOS			1024				//Cantidad maxima de directorios
+#define TAMANIO_IP				16					//un string ejempl 192.168.001.123
+#define	ES_MARTA				4					//emisor de mensaje Marta
+#define ES_NODO					3					//emisor de mensaje Nodo
+#define COMANDO					8					//comando(extra) para ver algo por pantalla
+#define COMANDOBLOQUES			9					//idem el de arriba
+#define CONSULTA_ARCHIVO		1					//marta consulta por un archivo
+#define BUFFERSIZE 				10					//Tamaño del buffer
 
 
-//Variable global para sufijo de nombre de nodo
-char letra = 'A'; //hay que ponerle semaforo
-char * nombre;
-
+// TIPOS //
 typedef enum {
 	CantidadArgumentosIncorrecta,
-	//NoEsUnVolumen,
 	NoSePudoAbrirConfig,
 	NoSePuedeObtenerPuerto,
 	NoSePuedeObtenerNodos,
-	//ErrorEnLectura,
-	//ErrorEnEscritura,
+	NosePuedeCrearHilo,
 	OtroError,
-} error;
+} error;							//Tipo error
 
-//Lista de Nodos
-t_list *lista_nodos;
 
-//Lista de Archivos
-t_list *lista_archivos;
-
-//Lista para la estructura del filesystem
-t_list *lista_estructura;
-
-// TIPOS //
 typedef struct {
 	char * nombre;
 	char * ip;
 	char * puerto;
 	int estado;
-} t_nodo;
+} t_nodo;							//Tipo nodo
 
-static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int activo) {
-	t_nodo *new = malloc(sizeof(t_nodo));
-	new->nombre = strdup(nombreNodo);
-	new->ip = strdup(ipNodo);
-	new->puerto = puertoNodo;
-	new->estado = activo;
-	return new;
-}
 
 struct configuracion {
 	int puerto_listen;
 	int cantidadNodos;
-};
+};									//Tipo configuracion
+
+
+typedef struct{
+    char *nodo;
+    char *bloque;
+}t_array_copias;					//Tipo Array Copias
+
+
+typedef struct{
+    char *bloque;
+    t_array_copias array[3];
+    struct t_bloque *next;
+}t_bloque;							//Tipo Lista de Bloques
+
 
 typedef struct {
 	char nodo[80];
 	int  nro_bloque;	
-} t_block;
+} t_block;							//Tipo Bloque
+
 
 typedef struct {
 	t_block bloques[3];
-} t_bloques;
+} t_bloques;						//Tipo Bloques
+
 
 struct t_archivo {
 	char nombre_archivo[255];	//Nombre del archivo
 	int padre;					//Directorio Padre
-	int estado;
-	t_bloques *bloques;
-};
+	int estado;					//Estado
+	t_bloques *bloques;			//Bloques
+};									//Tipo Archivo
 
-struct configuracion configuracion;				//Datos de configuracion
 
+typedef struct{
+    char *nombreArchivo;
+    t_list *listaBloques;
+}t_archivo;						//Tipo Lista de Archivos
+
+
+//FUNCIONES
+struct configuracion configuracion;					//Datos de configuracion
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(error unError);					//Mostrar error
 void ejecutarComando(int);							//Ejecutar un comando
@@ -133,42 +131,30 @@ int conectarNodo(int*,char*,char*);					//Conexion de Nodo
 void HiloOrquestadorDeConexiones();					// maneja las conexiones entrantes
 void implementoMarta(int*,char*,int*,char**,int);   //maneja las peticiones de Marta
 void AtiendeMarta(char*,int*);						//maneja la consulta de archivos de marta
-int ObtenerComandoMSJ(char*);							//Obtiene el tipo del comando del emisor
-// METODOS MANEJO DE ERRORES //
-void Error(const char* mensaje, ...);
-char* RecibirDatos(int,char*,int*,int*,int*);
-int iniciarMongo();
-int leerMongo();
-int eliminarMongo();
-int atiendeNodo(char*,int*);
+int ObtenerComandoMSJ(char*);						//Obtiene el tipo del comando del emisor
 
-// Logger del commons
-t_log* logger;
 
-// Archivo donde descargar info impresa por consola
-FILE * g_ArchivoConsola;
+void Error(const char* mensaje, ...);				//Generar error
+char* RecibirDatos(int,char*,int*,int*,int*);		//Recibir datos
+int atiendeNodo(char*,int*);						//Atiende un nodo
 
-//Mensaje de error global.
-char* g_MensajeError;
+//static t_bloque  *bloque_create(char *bloque, t_array_copias *array);	//Crear bloque
+//static t_archivo *archivo_create(char *nombreArchivo);					//Crear archivo
 
-// Definimos los hilos principales
-pthread_t hOrquestadorConexiones, hConsola;
 
-// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
-int g_Ejecutando = 1;
+//Variables globales
+/*********************/
+t_log* logger;								// Logger del commons
+FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
+char* g_MensajeError;						//Mensaje de error global.
+pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
+int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
+t_list *lista_nodos;						//Lista de Nodos
+t_list *lista_archivos;						//Lista de Archivos
+t_list *lista_estructura;					//Lista para la estructura del filesystem
 
-//Estructura de Array Copias
-typedef struct{
-    char *nodo;
-    char *bloque;
-}t_array_copias;
-
-//Estructura Lista de Bloques
-typedef struct{
-    char *bloque;
-    t_array_copias array[3];
-    struct t_bloque *next;
-}t_bloque;
+char letra = 'A'; 							//Variable global para sufijo de nombre de nodo, hay que ponerle semaforo
+char * nombre;
 
 static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
@@ -181,15 +167,23 @@ static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	return new;
 }
 
-//Estructura Lista de Archivos
-typedef struct{
-    char *nombreArchivo;
-    t_list *listaBloques;
-}t_archivo;
 
 static t_archivo *archivo_create(char *nombreArchivo) {
 	t_archivo *new = malloc(sizeof(t_archivo));
-	new->nombreArchivo = strdup(nombreArchivo);
-	new->listaBloques= list_create();
+    new->nombreArchivo = strdup(nombreArchivo);
+    new->listaBloques= list_create();
+    return new;
+}
+
+static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int activo) {
+	t_nodo *new = malloc(sizeof(t_nodo));
+	new->nombre = strdup(nombreNodo);
+	new->ip = strdup(ipNodo);
+	new->puerto = puertoNodo;
+	new->estado = activo;
 	return new;
 }
+
+
+
+

@@ -10,22 +10,18 @@
  */
 
 #include "filesystem.h"
-#include "mongodev.c"
-
+#include "mongodev.h"
 
 int main(int argv, char** argc) {
 
-	// Abrir Archivo de Configuracion
-	leer_config();
+	leer_config();						// Abrir Archivo de Configuracion
 
-	//Variable del nombre de los nodos
-	 nombre = string_new();
+	nombre = string_new();				//Variable del nombre de los nodos
 
-	//Lista de nodos
-	lista_nodos = list_create();
-
-	//Lista de archivos
-	lista_archivos = list_create();
+	lista_nodos    = list_create();		//Lista de nodos
+	lista_archivos = list_create();		//Lista de archivos
+	int iThreadConsola;					//Hilo de consola
+	int iThreadOrquestador;				//Hilo orquestador
 
 	// Abrir conexiones de nodos
 	//conectar_nodos();
@@ -60,27 +56,41 @@ int main(int argv, char** argc) {
 
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
 	g_ArchivoConsola = fopen(NOMBRE_ARCHIVO_CONSOLA, "wb");
-	g_MensajeError = malloc(1 * sizeof(char));
+	g_MensajeError   = malloc(1 * sizeof(char));
 
 	//Este hilo es el que maneja la consola
-	int iThreadConsola = pthread_create(&hConsola, NULL, (void*) Comenzar_Consola,
-				NULL );
-	if (iThreadConsola) {
-		fprintf(stderr,
-				"Error al crear hilo - pthread_create() return code: %d\n",
-				iThreadConsola);
+//	int iThreadConsola = pthread_create(&hConsola, NULL, (void*) Comenzar_Consola, NULL);
+
+
+
+//	if (iThreadConsola) {
+//		fprintf(stderr,
+//				"Error al crear hilo - pthread_create() return code: %d\n",
+//				iThreadConsola);
+//		exit(EXIT_FAILURE);
+//	}
+
+//		int iThreadOrquestador = pthread_create(&hOrquestadorConexiones, NULL,
+//				(void*) HiloOrquestadorDeConexiones, NULL );
+//		if (iThreadOrquestador) {
+//			fprintf(stderr,
+//				"Error al crear hilo - pthread_create() return code: %d\n",
+//				iThreadOrquestador);
+//			exit(EXIT_FAILURE);
+//		}
+
+
+	//Este hilo es el que maneja la consola
+	if ((iThreadConsola = pthread_create(&hConsola, NULL, (void*) Comenzar_Consola, NULL)) != 0){
+		fprintf(stderr, (char *)NosePuedeCrearHilo, iThreadConsola);
 		exit(EXIT_FAILURE);
-	}
+	};
 
 	//Hilo orquestador conexiones para escuchar a Marta o a Nodos
-		int iThreadOrquestador = pthread_create(&hOrquestadorConexiones, NULL,
-				(void*) HiloOrquestadorDeConexiones, NULL );
-		if (iThreadOrquestador) {
-			fprintf(stderr,
-				"Error al crear hilo - pthread_create() return code: %d\n",
-				iThreadOrquestador);
-			exit(EXIT_FAILURE);
-		}
+	if ((iThreadOrquestador = pthread_create(&hOrquestadorConexiones, NULL, (void*) HiloOrquestadorDeConexiones, NULL )) != 0){
+		fprintf(stderr, (char *)NosePuedeCrearHilo, iThreadOrquestador);
+		exit(EXIT_FAILURE);
+	}
 
 	pthread_join(hOrquestadorConexiones, NULL );
 	pthread_join(hConsola, NULL );
@@ -790,6 +800,7 @@ void mostrarError(error unError){
 		case NoSePudoAbrirConfig:		   puts("No se pudo abrir configuracion");break;
 		case NoSePuedeObtenerPuerto:	   puts("No se pudo obtener puerto");break;
 		case NoSePuedeObtenerNodos:		   puts("No se pudo obtener nodos");break;
+		case NosePuedeCrearHilo:		   puts("Error al crear hilo - pthread_create() return code: %d\n"); break;
 		case OtroError:	 				   puts("OtroError.");break;
 	};
 }
