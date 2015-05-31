@@ -128,14 +128,14 @@ void AtiendeMarta(char* buffer,int*cantRafaga){
 			//printf("PosicionActual:%d",posActual);
 			nArchivo=DigitosNombreArchivo(buffer,&posActual);
 			//printf("NOMBRE:%s\n",nArchivo);
-			el_archivo = archivo_create(nArchivo);
-			bloque->array[0].nodo = "NodoA";
-			bloque->array[0].bloque = "Bloque30";
-			bloque->array[1].nodo = "NodoD";
-			bloque->array[1].bloque = "Bloque22";
-			bloque->array[2].nodo = "NodoE";
-			bloque->array[2].bloque = "Bloque11";
-			bloque->bloque = "Bloque0";
+			el_archivo = archivo_create(nArchivo,"1000",0,1);
+			bloque->array[0].nombreNodo = "NodoA";
+			bloque->array[0].nro_bloque = 30;
+			bloque->array[1].nombreNodo = "NodoD";
+			bloque->array[1].nro_bloque = 22;
+			bloque->array[2].nombreNodo = "NodoE";
+			bloque->array[2].nro_bloque = 11;
+			bloque->bloque = 0;
 			list_add(el_archivo->listaBloques,bloque);
 			list_add(lista_archivos,el_archivo);
 			//free(nArchivo);
@@ -205,7 +205,16 @@ int EnviarInfoMarta(int socket) {
 
 
 	buffer=string_new();
-	string_append(&buffer,"1212237/user/juan/datos/temperatura-2012.txt1215NodoA18Bloque3015NodoB18Bloque3715NodoF17Bloque815NodoE18Bloque1315NodoA18Bloque3815NodoC17Bloque7237/user/juan/datos/temperatura-2013.txt1215NodoP18Bloque3115NodoF18Bloque4215NodoH17Bloque915NodoK18Bloque1115NodoB18Bloque5515NodoF17Bloque31815NodoA19127.0.0.114600015NodoB19127.0.0.114600015NodoC19127.0.0.114600015NodoE19127.0.0.114600015NodoF19127.0.0.114600015NodoH19127.0.0.114600015NodoK19127.0.0.114600015NodoP19127.0.0.1146000");
+	string_append(&buffer,"1212237/user/juan/datos/temperatura-2012.txt");
+	string_append(&buffer,"13");
+	string_append(&buffer,"15NodoA18Bloque3015NodoB18Bloque3715NodoF17Bloque8");
+	string_append(&buffer,"15NodoE18Bloque1315NodoA18Bloque3815NodoC17Bloque7");
+	string_append(&buffer,"15NodoA18Bloque4315NodoC18Bloque8815NodoB17Bloque2");
+	string_append(&buffer,"237/user/juan/datos/temperatura-2013.txt");
+	string_append(&buffer,"12");
+	string_append(&buffer,"15NodoP18Bloque3115NodoF18Bloque4215NodoH17Bloque9");
+	string_append(&buffer,"15NodoK18Bloque1115NodoB18Bloque5515NodoF17Bloque3");
+	string_append(&buffer,"1815NodoA19127.0.0.114600015NodoB19127.0.0.114600015NodoC19127.0.0.114600015NodoE19127.0.0.114600015NodoF19127.0.0.114600015NodoH19127.0.0.114600015NodoK19127.0.0.114600015NodoP19127.0.0.1146000");
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
@@ -366,6 +375,32 @@ void RecorrerNodos(){
 	}
 }
 
+void recursiva(int padre){
+	t_list* lista;
+	int i=0;
+	bool _true(void *elem){
+		return ((t_filesystem*) elem)->padre==padre;
+	}
+	lista = list_filter(lista_filesystem,_true);
+	if(lista!=NULL){
+		while(i<list_size(lista)){
+			t_filesystem * fs = list_get(lista,i);
+			printf("//%s\n",fs->directorio);
+			recursiva(fs->index);
+			i++;
+		}
+	}
+}
+
+void mostrarFilesystem(){
+	int i=0,tamanio;
+	printf("Raiz(//)\n");
+	tamanio=list_size(lista_filesystem);
+	while(i<tamanio){
+		recursiva(i++);
+	}
+}
+
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
 	int id=-1;
@@ -417,10 +452,10 @@ int AtiendeCliente(void * arg) {
 				RecorrerNodos();
 				mensaje = "Ok";
 				break;
-			case COMANDOBLOQUES:
+			case COMANDOFILESYSTEM:
 				printf("Muestre toda la lista de Bloques:\n");
-				//RecorrerListaBloques();
-				mensaje = "Ok";
+				//mostrarFilesystem();
+				string_append(&mensaje,"Ok");
 				break;
 			default:
 				break;
@@ -614,14 +649,7 @@ int agregarNodo(){
 
 
 	t_nodo *el_nodo;
-	free(nombre);
-	nombre = string_new();
-	if(letra>'B'){
-		letra = 'A';
-		string_append(&nombre,"NodoA");
-	} else {
-		string_append(&nombre,"Nodo");
-	}
+
 	printf("Ingrese la ip del nodo: ");
 	scanf("%s",ipNodo);
 	fflush(stdin);
@@ -638,6 +666,22 @@ int agregarNodo(){
 		printf("\nNo se pudo habilitar el nodo porque no existe\n");
 		return 0;
 	}
+}
+
+int subirArchivo(){
+
+	char* nombreArchivo;
+	char* directorio;
+
+	printf("Ingrese el nombre del archivo para subir: ");
+	scanf("%s",nombreArchivo);
+	fflush(stdin);
+
+	printf("Ingrese en el directorio que quiere subirlo: ");
+	scanf("%s",directorio);
+	fflush(stdin);
+
+	return 1;
 }
 
 int operaciones_consola() {
@@ -674,7 +718,11 @@ int operaciones_consola() {
 		log_info(logger, "Se realizo Crear/Eliminar/Renombrar/Mover Directorios\n");
 		break;
 	case 4:
-		log_info(logger, "Se realizo Copiar un archivo local al MDFS\n");
+		if(subirArchivo()){
+			log_info(logger, "Se realizo Copiar un archivo local al MDFS\n");
+		} else {
+			log_info(logger, "No se realizo Copiar un archivo local al MDFS\n");
+		}
 		break;
 	case 5:
 		log_info(logger, "Se realizo Copiar un archivo del MDFS al filesystem local\n");
@@ -749,25 +797,34 @@ int leer_config(){
 }
 
 
-t_bloque *bloque_create(char *bloque, t_array_copias *array) {
+t_bloque *bloque_create(int bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
-	new->bloque   = strdup(bloque);
-	//new->estado = "procesado";
+	new->bloque   = bloque;
 	new->array[0] = array[0];
 	new->array[1] = array[1];
 	new->array[2] = array[2];
-	new->next=NULL;
 	return new;
 }
 
 
-t_archivo *archivo_create(char *nombreArchivo) {
+t_archivo *archivo_create(char *nombreArchivo,char* tamanio,int padre, int estado) {
 	t_archivo *new     = malloc(sizeof(t_archivo));
     new->nombreArchivo = strdup(nombreArchivo);
+    new->padre = padre;
+    new->tamanio = tamanio;
+    new->estado = estado;
     new->listaBloques  = list_create();
     return new;
 }
 
+
+t_filesystem* filesystem_create(int index, char* directorio, int padre){
+	t_filesystem * new=malloc(sizeof(t_filesystem));
+	new->index = index;
+	new->directorio = strdup(directorio);
+	new->padre = padre;
+	return new;
+}
 
 t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo) {
 	t_nodo *new = malloc(sizeof(t_nodo));

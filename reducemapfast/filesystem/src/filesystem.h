@@ -38,7 +38,7 @@
 #define	ES_MARTA				4					//emisor de mensaje Marta
 #define ES_NODO					3					//emisor de mensaje Nodo
 #define COMANDO					8					//comando(extra) para ver algo por pantalla
-#define COMANDOBLOQUES			9					//idem el de arriba
+#define COMANDOFILESYSTEM		11					//idem el de arriba
 #define CONSULTA_ARCHIVO		1					//marta consulta por un archivo
 #define BUFFERSIZE 				10					//Tamaño del buffer
 
@@ -68,42 +68,34 @@ struct configuracion {
 };									//Tipo configuracion
 
 
-typedef struct{
-    char *nodo;
-    char *bloque;
-}t_array_copias;					//Tipo Array Copias
-
-
-typedef struct{
-    char *bloque;
-    t_array_copias array[3];
-    struct t_bloque *next;
-}t_bloque;							//Tipo Lista de Bloques
 
 
 typedef struct {
-	char nodo[80];
+	char *nombreNodo;
 	int  nro_bloque;	
-} t_block;							//Tipo Bloque
+} t_array_copias;							//Tipo Bloque
 
 
 typedef struct {
-	t_block bloques[3];
-} t_bloques;						//Tipo Bloques
-
-
-struct t_archivo {
-	char nombre_archivo[255];	//Nombre del archivo
-	int padre;					//Directorio Padre
-	int estado;					//Estado
-	t_bloques *bloques;			//Bloques
-};									//Tipo Archivo
-
+	int bloque;
+	t_array_copias array[3];
+} t_bloque;						//Tipo Bloques
 
 typedef struct{
     char *nombreArchivo;
+    int padre;			//directorio padre
+    char *tamanio;
+    int estado; 			//0: no disponible 1: disponible
     t_list *listaBloques;
-}t_archivo;						//Tipo Lista de Archivos
+}t_archivo;						//Tipo Archivo
+
+typedef struct{
+    int index;
+    char *directorio;
+    int padre;
+}t_filesystem;						//Tipo de estructura de File System
+
+
 
 
 //Variables globales
@@ -115,7 +107,7 @@ t_list *lista_archivos;						//Lista de Archivos
 FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
 char* g_MensajeError;						//Mensaje de error global.
 pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
-t_list *lista_estructura;					//Lista para la estructura del filesystem
+t_list *lista_filesystem;					//Lista para la estructura del filesystem
 
 
 //FUNCIONES
@@ -175,8 +167,8 @@ void  Comenzar_Consola() ;
 void  Error(const char* mensaje, ...);
 void  RecorrerListaNodos();
 int   operaciones_consola();
-t_bloque *bloque_create(char *bloque, t_array_copias *array);
-t_archivo *archivo_create(char *nombreArchivo);
+t_bloque *bloque_create(int bloque, t_array_copias *array);
+t_archivo *archivo_create(char*,char*,int,int);
 t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo);
 t_nodo* buscarNodo(char*,char*);
 
