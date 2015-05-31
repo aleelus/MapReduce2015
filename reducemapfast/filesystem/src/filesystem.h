@@ -38,7 +38,7 @@
 #define	ES_MARTA				4					//emisor de mensaje Marta
 #define ES_NODO					3					//emisor de mensaje Nodo
 #define COMANDO					8					//comando(extra) para ver algo por pantalla
-#define COMANDOFILESYSTEM		11					//idem el de arriba
+#define COMANDOFILESYSTEM		9					//idem el de arriba
 #define CONSULTA_ARCHIVO		1					//marta consulta por un archivo
 #define BUFFERSIZE 				10					//Tamaño del buffer
 
@@ -109,7 +109,6 @@ char* g_MensajeError;						//Mensaje de error global.
 pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
 t_list *lista_filesystem;					//Lista para la estructura del filesystem
 
-
 //FUNCIONES
 struct configuracion configuracion;					//Datos de configuracion
 void mostrarAyuda();								//Mostrar ayuda
@@ -171,5 +170,8 @@ t_bloque *bloque_create(int bloque, t_array_copias *array);
 t_archivo *archivo_create(char*,char*,int,int);
 t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo);
 t_nodo* buscarNodo(char*,char*);
-
+t_filesystem* filesystem_create(int,char*,int);
+void bloque_destroy(t_bloque*);
+void filesystem_destroy(t_filesystem*);
+void archivo_destroy(t_archivo*);
 

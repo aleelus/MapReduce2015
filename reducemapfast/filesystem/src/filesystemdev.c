@@ -9,6 +9,7 @@
 
 char letra = 'A';
 int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
+int impre=0;
 
 int ChartToInt(char x) {
 	int numero = 0;
@@ -377,28 +378,46 @@ void RecorrerNodos(){
 
 void recursiva(int padre){
 	t_list* lista;
+	char caracter[1024];
+	memset (caracter,' ',impre);
 	int i=0;
 	bool _true(void *elem){
 		return ((t_filesystem*) elem)->padre==padre;
 	}
 	lista = list_filter(lista_filesystem,_true);
+//	printf("Cantidad:%d\n",list_size(lista));
 	if(lista!=NULL){
+		impre++;
 		while(i<list_size(lista)){
 			t_filesystem * fs = list_get(lista,i);
-			printf("//%s\n",fs->directorio);
+			printf("%s/%s\n",caracter,fs->directorio);
 			recursiva(fs->index);
 			i++;
 		}
+	} else {
+		impre--;
 	}
 }
 
 void mostrarFilesystem(){
-	int i=0,tamanio;
-	printf("Raiz(//)\n");
-	tamanio=list_size(lista_filesystem);
-	while(i<tamanio){
-		recursiva(i++);
-	}
+	printf("Raiz(/)\n");
+	recursiva(0);
+}
+
+void cargarFilesystem(){
+	t_filesystem* el_fs;
+	el_fs = filesystem_create(1,"etc",0);
+	list_add(lista_filesystem,el_fs);
+	el_fs = filesystem_create(2,"home",0);
+	list_add(lista_filesystem,el_fs);
+	el_fs = filesystem_create(3,"utnso",2);
+	list_add(lista_filesystem,el_fs);
+	el_fs = filesystem_create(4,"tp",3);
+	list_add(lista_filesystem,el_fs);
+	el_fs = filesystem_create(5,"tp-2015",4);
+	list_add(lista_filesystem,el_fs);
+	el_fs = filesystem_create(6,"var",0);
+	list_add(lista_filesystem,el_fs);
 }
 
 int AtiendeCliente(void * arg) {
@@ -453,9 +472,10 @@ int AtiendeCliente(void * arg) {
 				mensaje = "Ok";
 				break;
 			case COMANDOFILESYSTEM:
-				printf("Muestre toda la lista de Bloques:\n");
-				//mostrarFilesystem();
-				string_append(&mensaje,"Ok");
+				printf("Muestre la estructura de file system:\n");
+				cargarFilesystem();
+				mostrarFilesystem();
+				mensaje ="Ok";
 				break;
 			default:
 				break;
@@ -677,11 +697,27 @@ int subirArchivo(){
 	scanf("%s",nombreArchivo);
 	fflush(stdin);
 
-	printf("Ingrese en el directorio que quiere subirlo: ");
+	printf("Ingrese el path de directorios donde quiere subirlo: ");
 	scanf("%s",directorio);
 	fflush(stdin);
 
 	return 1;
+}
+
+void eliminarFilesystem(){
+	int i = 0;
+	while(i<list_size(lista_filesystem)){
+		list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
+	}
+	free(lista_filesystem);
+}
+
+void eliminarArchivos(){
+	int i = 0;
+	while(i<list_size(lista_archivos)){
+		list_remove_and_destroy_element(lista_archivos,i++,(void*)archivo_destroy);
+	}
+	free(lista_archivos);
 }
 
 int operaciones_consola() {
@@ -709,6 +745,10 @@ int operaciones_consola() {
 		return 0;
 		break;
 	case 1:
+		eliminarFilesystem();
+		printf("Se elimino el filesystem\n");
+		eliminarArchivos();
+		printf("Se elimino los archivos\n");
 		log_info(logger, "Ejecutando Formatear MDFS...\n");
 		break;
 	case 2:
@@ -806,6 +846,18 @@ t_bloque *bloque_create(int bloque, t_array_copias *array) {
 	return new;
 }
 
+void archivo_destroy(t_archivo* self) {
+	int i = 0;
+	while(i<list_size(self->listaBloques)){
+		list_remove_and_destroy_element(self->listaBloques,i++,(void*)bloque_destroy);
+	}
+	free(self->listaBloques);
+	free(self);
+}
+
+void bloque_destroy(t_bloque* self) {
+	free(self);
+}
 
 t_archivo *archivo_create(char *nombreArchivo,char* tamanio,int padre, int estado) {
 	t_archivo *new     = malloc(sizeof(t_archivo));
@@ -817,6 +869,9 @@ t_archivo *archivo_create(char *nombreArchivo,char* tamanio,int padre, int estad
     return new;
 }
 
+void filesystem_destroy(t_filesystem* self) {
+	free(self);
+}
 
 t_filesystem* filesystem_create(int index, char* directorio, int padre){
 	t_filesystem * new=malloc(sizeof(t_filesystem));
@@ -834,4 +889,8 @@ t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tama
 	new->tamanio = tamanio;
 	new->estado = activo;
 	return new;
+}
+
+void nodo_destroy(t_nodo* self) {
+	free(self);
 }
