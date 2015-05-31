@@ -112,7 +112,6 @@ t_log* logger;								// Logger del commons
 t_list *lista_nodos;						//Lista de Nodos
 char * nombre;
 t_list *lista_archivos;						//Lista de Archivos
-//int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
 FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
 char* g_MensajeError;						//Mensaje de error global.
 pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
@@ -151,10 +150,6 @@ void  Error(const char* mensaje, ...);				//Generar error
 char* RecibirDatos(int,char*,int*,int*,int*);		//Recibir datos
 int   atiendeNodo(char*,int*);						//Atiende un nodo
 
-//static t_bloque  *bloque_create(char *bloque, t_array_copias *array);	//Crear bloque
-//static t_archivo *archivo_create(char *nombreArchivo);					//Crear archivo
-
-
 
 int   ChartToInt(char x);
 int   PosicionDeBufferAInt(char* buffer, int posicion);
@@ -180,35 +175,9 @@ void  Comenzar_Consola() ;
 void  Error(const char* mensaje, ...);
 void  RecorrerListaNodos();
 int   operaciones_consola();
-
-static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
-	t_bloque *new = malloc(sizeof(t_bloque));
-	new->bloque   = strdup(bloque);
-	//new->estado = "procesado";
-	new->array[0] = array[0];
-	new->array[1] = array[1];
-	new->array[2] = array[2];
-	new->next=NULL;
-	return new;
-}
-
-
-static t_archivo *archivo_create(char *nombreArchivo) {
-	t_archivo *new     = malloc(sizeof(t_archivo));
-    new->nombreArchivo = strdup(nombreArchivo);
-    new->listaBloques  = list_create();
-    return new;
-}
-
-static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int activo) {
-	t_nodo *new = malloc(sizeof(t_nodo));
-	new->nombre = strdup(nombreNodo);
-	new->ip     = strdup(ipNodo);
-	new->puerto = puertoNodo;
-	new->estado = activo;
-	return new;
-}
-
+t_bloque *bloque_create(char *bloque, t_array_copias *array);
+t_archivo *archivo_create(char *nombreArchivo);
+t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int activo);
 
 
 
