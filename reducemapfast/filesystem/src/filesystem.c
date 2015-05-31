@@ -12,19 +12,6 @@
 #include "filesystem.h"
 #include "mongodev.h"
 
-//Variables globales
-/*********************/
-t_log* logger;								// Logger del commons
-FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
-char* g_MensajeError;						//Mensaje de error global.
-pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
-int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
-t_list *lista_nodos;						//Lista de Nodos
-t_list *lista_archivos;						//Lista de Archivos
-t_list *lista_estructura;					//Lista para la estructura del filesystem
-
-char letra = 'A'; 							//Variable global para sufijo de nombre de nodo, hay que ponerle semaforo
-char * nombre;
 
 
 int main(int argv, char** argc) {
@@ -118,7 +105,7 @@ int main(int argv, char** argc) {
 }
 
 
-
+/*
 int ChartToInt(char x) {
 	int numero = 0;
 	char * aux = string_new();
@@ -144,6 +131,8 @@ int PosicionDeBufferAInt(char* buffer, int posicion) {
 		return ChartToInt(buffer[posicion]);
 }
 
+
+
 int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 	int x,digito,aux=0;
 	for(x=0;x<dig_tamanio;x++){
@@ -152,6 +141,7 @@ int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 	}
 	return aux;
 }
+
 
 char* DigitosNombreArchivo(char *buffer,int *posicion){
 
@@ -172,6 +162,8 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 	*posicion=*posicion+i+aux;
 	return nombreArch;
 }
+
+
 
 int AtiendeNodo(char* buffer,int*cantRafaga){
 
@@ -208,6 +200,7 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 
 	return 1;
 }
+
 
 
 void AtiendeMarta(char* buffer,int*cantRafaga){
@@ -257,11 +250,15 @@ void AtiendeMarta(char* buffer,int*cantRafaga){
 		//*cantRafaga=1;
 }
 
+
+
 int ObtenerComandoMSJ(char* buffer) {
 //Hay que obtener el comando dado el buffer.
 //El comando está dado por el primer caracter, que tiene que ser un número.
 	return PosicionDeBufferAInt(buffer, 0);
 }
+
+
 
 int cuentaDigitos(int valor){
 	int cont = 0;
@@ -272,6 +269,7 @@ int cuentaDigitos(int valor){
 	}
 	return cont;
 }
+
 
 int EnviarInfoMarta(int socket) {
 // Retardo antes de contestar una solicitud
@@ -339,6 +337,9 @@ int EnviarInfoMarta(int socket) {
 }
 
 
+
+
+
 void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
@@ -363,6 +364,8 @@ void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int
 		}
 	}
 }
+
+
 
 void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
@@ -391,6 +394,7 @@ void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
 		}
 	}
 }
+
 
 
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
@@ -427,6 +431,8 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
 
+
+
 int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 // Retardo antes de contestar una solicitud
 	//sleep(g_Retardo / 1000);
@@ -455,6 +461,10 @@ void CerrarSocket(int socket) {
 	//Traza("SOCKET SE CIERRA: (%d).", socket);
 	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
+
+
+
+
 
 void RecorrerNodos(){
 	t_nodo * el_nodo;
@@ -544,6 +554,8 @@ int AtiendeCliente(void * arg) {
 	return code;
 }
 
+
+
 void ErrorFatal(const char* mensaje, ...) {
 	char* nuevo;
 	va_list arguments;
@@ -562,6 +574,7 @@ void ErrorFatal(const char* mensaje, ...) {
 		free(nuevo);
 	exit(EXIT_FAILURE);
 }
+
 
 void HiloOrquestadorDeConexiones() {
 
@@ -655,6 +668,7 @@ int conectarNodo(int * socket_Nodo, char* ipNodo, char* puertoNodo) {
 }
 
 
+
 int corte_consola() {
 	int corte;
 	printf(
@@ -663,6 +677,7 @@ int corte_consola() {
 	scanf("%d", &corte);
 	return corte;
 }
+
 
 void Comenzar_Consola() {
 
@@ -674,6 +689,7 @@ void Comenzar_Consola() {
 	printf("Se termino la ejecucion de la consola del filesystem\n");
 	//free(puntero_inicial);
 }
+
 
 #if 1 // METODOS MANEJO DE ERRORES //
 void Error(const char* mensaje, ...) {
@@ -691,9 +707,12 @@ void Error(const char* mensaje, ...) {
 }
 #endif
 
+
+
 int agregarNodo(){
 	char * ipNodo = malloc(TAMANIO_IP);
 	char * puertoNodo = malloc(sizeof(int));
+
 	int socket_Nodo;
 	t_nodo *nodo;
 	free(nombre);
@@ -725,6 +744,8 @@ int agregarNodo(){
 		return 0;
 	}
 }
+
+
 
 void RecorrerListaNodos(){
 	t_nodo * el_nodo;
@@ -812,6 +833,7 @@ int operaciones_consola() {
 }
 
 
+
 //Mostrar Error
 void mostrarError(error unError){
 	switch(unError){
@@ -823,6 +845,7 @@ void mostrarError(error unError){
 		case OtroError:	 				   puts("OtroError.");break;
 	};
 }
+
 
 int leer_config(){
 
@@ -853,3 +876,4 @@ int leer_config(){
 	return EXIT_SUCCESS;
 }
 
+*/
