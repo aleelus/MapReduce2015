@@ -116,11 +116,13 @@ int id_job=0;
 //Estructura de array para funcion magica
 typedef struct{
 	char*dato;
+	int peso;
 }t_dato;
 
 static t_dato *dato_create(char *dato) {
 	t_dato *new = malloc(sizeof(t_dato));
 	new->dato = strdup(dato);
+	new->peso=0;
 	return new;
 }
 
@@ -192,6 +194,7 @@ typedef struct {
 	    char *puertoNodo;
 	    int estado;
 	    t_list *listaBloqueArchivo;
+	    int cantTareasPendientes;
 	    char *tarea;
 
 } t_nodo;
@@ -203,6 +206,7 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo) {
 	new->puertoNodo = strdup(puertoNodo);
 	new->estado = 1;
 	new->listaBloqueArchivo= list_create();
+	new->cantTareasPendientes=0;
 	new->tarea = "";
 
 	return new;

@@ -325,7 +325,7 @@ void RecorrerArrayListas(t_archivo *el_archivo){
 		while(j<list_size(el_archivo->array_de_listas[i])){
 			el_dato = list_get(el_archivo->array_de_listas[i],j);
 			if(j==0){
-				printf("%s :::: ",el_dato->dato);
+				printf("%s ::%d:: ",el_dato->dato,el_dato->peso);
 			} else {
 				printf("%s--",el_dato->dato);
 			}
@@ -728,24 +728,159 @@ void FuncionMagica(t_list* listaBloques){
 	}
 }
 
-void Planificar(int id){
-	printf("laalala ESTOY PLANIFICANDO\n");
-/*	t_archivo *el_archivo;
 
+int obtenerPesoMax(){
+
+
+
+	t_archivo *el_archivo;
+
+	int cantNodo=0,total=0,cantBloquesPor3=0;
 	int i=0;
 
 	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+		cantBloquesPor3= cantBloquesPor3 + list_size(el_archivo->listaBloques)*3;
+		i++;
+
+	}
+	cantNodo=list_size(lista_nodos);
+
+	total=cantNodo*cantBloquesPor3;
+
+	return total;
+
+}
+
+t_nodo* buscarNodo(char * nodo){
+
+	t_nodo *el_nodo;
+	int i=0;
+
+
+	while(i<list_size(lista_nodos)){
+		el_nodo=list_get(lista_nodos,i);
+		if(strcmp(el_nodo->nombreNodo,nodo)==0){
+			return el_nodo;
+		}
+
+		i++;
+	}
+	return NULL;
+
+}
+
+void Planificar(int id){
+	printf("laalala ESTOY PLANIFICANDO\n");
+
+	t_archivo *el_archivo;
+	t_nodo *el_nodo;
+	t_dato *el_dato,*el_dato_dos;
+
+	t_list **aux;
+	aux=(t_list**)malloc(sizeof(t_list));
+
+	int pesoMax=0;
+	int i=0,cantBloques=0,c=0,k=0;
+
+	pesoMax=obtenerPesoMax();//
+
+	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+		//SIN COMBINER
+		if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
+			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+				if(list_size(el_archivo->array_de_listas[c])>0){
+					cantBloques=list_size(el_archivo->array_de_listas[c])-1;
+					el_dato=list_get(el_archivo->array_de_listas[c],0);
+					el_nodo=buscarNodo(el_dato->dato);
+					if(el_nodo!=NULL){
+						el_dato->peso=(cantBloques*pesoMax-el_nodo->cantTareasPendientes)*el_nodo->estado;
+					}
+				}
+			}
+		}else{
+		//CON COMBINER
+			if(el_archivo->idJob==id && el_archivo->tieneCombiner==1){
+				for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+					if(list_size(el_archivo->array_de_listas[c])>0){
+						cantBloques=list_size(el_archivo->array_de_listas[c])-1;
+						el_dato=list_get(el_archivo->array_de_listas[c],0);
+						el_nodo=buscarNodo(el_dato->dato);
+						if(el_nodo!=NULL){
+							el_dato->peso=(pesoMax-el_nodo->cantTareasPendientes)*el_nodo->estado;
+						}
+					}
+				}
+			}
+
+		}
+		i++;
+	}
+	i=0;
+	while(i<list_size(lista_archivos)){
+			el_archivo=list_get(lista_archivos,i);
+			//SIN COMBINER
+			if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
+				for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+					if(list_size(el_archivo->array_de_listas[c])>0){
+						el_dato=list_get(el_archivo->array_de_listas[c],0);
+						for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
+							if(list_size(el_archivo->array_de_listas[k])>0){
+								el_dato_dos=list_get(el_archivo->array_de_listas[k],0);
+								if(el_dato->peso>el_dato_dos->peso){
+
+									aux= el_archivo->array_de_listas[c];
+									el_archivo->array_de_listas[c]=el_archivo->array_de_listas[k];
+									el_archivo->array_de_listas[k]=aux;
+								}
+
+							}
+						}
+
+					}
+				}
+			}else{
+				//CON COMBINER
+				if(el_archivo->idJob==id && el_archivo->tieneCombiner==1){
+					for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+						if(list_size(el_archivo->array_de_listas[c])>0){
+							el_dato=list_get(el_archivo->array_de_listas[c],0);
+							for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
+								if(list_size(el_archivo->array_de_listas[k])>0){
+									el_dato_dos=list_get(el_archivo->array_de_listas[k],0);
+									if(el_dato->peso<el_dato_dos->peso){
+
+										aux= el_archivo->array_de_listas[c];
+										el_archivo->array_de_listas[c]=el_archivo->array_de_listas[k];
+										el_archivo->array_de_listas[k]=aux;
+									}
+
+								}
+							}
+
+						}
+					}
+				}
+			}
+			i++;
+		}
+
+
+
+	//MUESTRO POR PANTALLA
+	i=0;
+	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
 		if(el_archivo->idJob == id){
-			FuncionMagica(el_archivo->listaBloques);//cargo array_listas
-			el_archivo->array_de_listas=array_listas;
 			RecorrerArrayListas(el_archivo);
 		}
 		i++;
 	}
 
-*/
+
 }
+
 
 void enviarPlanificacionAJob (int id,int socket){
 
@@ -758,8 +893,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	string_append(&mensaje,"4");//Viene de MarTA
 	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
 	string_append(&mensaje,"NodoA");
-	string_append(&mensaje,"19");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"127.0.0.1");
+	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
+	string_append(&mensaje,"192.168.1.26");
 	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
 	string_append(&mensaje,"18");
 	string_append(&mensaje,"Bloque30");
