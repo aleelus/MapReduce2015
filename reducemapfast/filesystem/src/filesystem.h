@@ -58,9 +58,9 @@ typedef struct {
 	char * nombre;
 	char * ip;
 	char * puerto;
+	char * tamanio;
 	int estado;
 } t_nodo;							//Tipo nodo
-
 
 struct configuracion {
 	int puerto_listen;
@@ -177,7 +177,7 @@ void  RecorrerListaNodos();
 int   operaciones_consola();
 t_bloque *bloque_create(char *bloque, t_array_copias *array);
 t_archivo *archivo_create(char *nombreArchivo);
-t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int activo);
+t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo);
 
 
 

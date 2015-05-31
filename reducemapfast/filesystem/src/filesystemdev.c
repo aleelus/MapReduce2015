@@ -64,13 +64,14 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 
 int AtiendeNodo(char* buffer,int*cantRafaga){
 
-	char *la_Ip,*el_Puerto;
+	char *la_Ip,*el_Puerto,*tamanioDatos;
 	int digitosCantNumIp=0,tamanioDeIp;
 	int posActual=0;
-	t_nodo * el_nodo;
+	t_nodo * el_nodo = malloc(sizeof(t_nodo));
 
 	//BUFFER RECIBIDO = 3220 (EJEMPLO)
-	//BUFFER RECIBIDO = 3119127.0.0.1246000
+	//BUFFER RECIBIDO = 3119127.0.0.12460002101000000000
+	//3: es nodo 119127.0.0.1: la ip 246000: el puerto 2101000000000: el tamaño del espacio de datos del nodo
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
 
 	digitosCantNumIp=PosicionDeBufferAInt(buffer,2);
@@ -82,6 +83,8 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	printf("Ip:%s\n",la_Ip);
 	el_Puerto=DigitosNombreArchivo(buffer,&posActual);
 	printf("Puerto:%s\n",el_Puerto);
+	tamanioDatos=DigitosNombreArchivo(buffer,&posActual);
+	printf("Tamaño:%s\n",tamanioDatos);
 	free(nombre);
 	nombre = string_new();
 	if(letra>'B'){
@@ -92,7 +95,7 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	}
 	string_append(&nombre,&letra);
 	letra++;
-	el_nodo = nodo_create(nombre,la_Ip,el_Puerto,0);
+	el_nodo = nodo_create(nombre,la_Ip,el_Puerto,tamanioDatos,0);
 	list_add(lista_nodos,el_nodo);
 
 	return 1;
@@ -589,12 +592,22 @@ void RecorrerListaNodos(){
 
 }
 
+t_nodo * buscarNodo(char* ipNodo,char* puertoNodo){
+	t_nodo* el_nodo = malloc(sizeof(t_nodo));
+	bool _true(void *elem){
+		return ((!strcmp(((t_nodo*) elem)->ip,ipNodo)) && (!strcmp(((t_nodo*) elem)->puerto,puertoNodo)));
+	}
+	el_nodo = list_find(lista_nodos, _true);
+	return el_nodo;
+}
+
+
 int agregarNodo(){
 	char * ipNodo = malloc(TAMANIO_IP);
 	char * puertoNodo = malloc(sizeof(int));
 
-	int socket_Nodo;
-	t_nodo *nodo;
+
+	t_nodo *el_nodo;
 	free(nombre);
 	nombre = string_new();
 	if(letra>'B'){
@@ -609,18 +622,14 @@ int agregarNodo(){
 	printf("Ingrese el puerto de escucha del nodo: ");
 	scanf("%s",puertoNodo);
 	fflush(stdin);
-	if(conectarNodo(&socket_Nodo,ipNodo,puertoNodo)!=0){
-		EnviarDatos(socket_Nodo,"110", strlen("110"));
-		printf("\nNodo Conectado!");
-		//Agregar Mutex
-		string_append(&nombre,&letra);
-		nodo = nodo_create(nombre,ipNodo,puertoNodo,1);
-		list_add(lista_nodos,nodo);
-		//MUTEX
-		letra++;
+	el_nodo = buscarNodo(ipNodo,puertoNodo);
+
+	if(el_nodo!=NULL){
+		printf("\nNodo %s Habilitado!\n",el_nodo->nombre);
+		el_nodo->estado = 1;
 		return 1;
 	} else {
-		printf("\nNo se pudo conectar el nodo porque no esta implementado");
+		printf("\nNo se pudo habilitar el nodo porque no existe\n");
 		return 0;
 	}
 }
@@ -733,6 +742,7 @@ int leer_config(){
 	return EXIT_SUCCESS;
 }
 
+
 t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->bloque   = strdup(bloque);
@@ -753,11 +763,12 @@ t_archivo *archivo_create(char *nombreArchivo) {
 }
 
 
-t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, int activo) {
+t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo) {
 	t_nodo *new = malloc(sizeof(t_nodo));
 	new->nombre = strdup(nombreNodo);
-	new->ip     = strdup(ipNodo);
+	new->ip = strdup(ipNodo);
 	new->puerto = puertoNodo;
+	new->tamanio = tamanio;
 	new->estado = activo;
 	return new;
 }
