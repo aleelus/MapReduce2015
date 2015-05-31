@@ -67,7 +67,7 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	char *la_Ip,*el_Puerto,*tamanioDatos;
 	int digitosCantNumIp=0,tamanioDeIp;
 	int posActual=0;
-	t_nodo * el_nodo = malloc(sizeof(t_nodo));
+	t_nodo * el_nodo;
 
 	//BUFFER RECIBIDO = 3220 (EJEMPLO)
 	//BUFFER RECIBIDO = 3119127.0.0.12460002101000000000
@@ -85,18 +85,23 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	printf("Puerto:%s\n",el_Puerto);
 	tamanioDatos=DigitosNombreArchivo(buffer,&posActual);
 	printf("Tamaño:%s\n",tamanioDatos);
-	free(nombre);
-	nombre = string_new();
-	if(letra>'B'){
-		letra = 'A';
-		string_append(&nombre,"NodoA");
-	} else {
-		string_append(&nombre,"Nodo");
+
+	el_nodo = buscarNodo(la_Ip,el_Puerto);
+
+	if(el_nodo==NULL){
+		free(nombre);
+		nombre = string_new();
+		if(letra>'B'){
+			letra = 'A';
+			string_append(&nombre,"NodoA");
+		} else {
+			string_append(&nombre,"Nodo");
+		}
+		string_append(&nombre,&letra);
+		letra++;
+		el_nodo = nodo_create(nombre,la_Ip,el_Puerto,tamanioDatos,0);
+		list_add(lista_nodos,el_nodo);
 	}
-	string_append(&nombre,&letra);
-	letra++;
-	el_nodo = nodo_create(nombre,la_Ip,el_Puerto,tamanioDatos,0);
-	list_add(lista_nodos,el_nodo);
 
 	return 1;
 }
@@ -355,6 +360,7 @@ void RecorrerNodos(){
 		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
 		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
 		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
+		printf("El tamaño:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->tamanio);
 		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
 		i++;
 	}

@@ -26,6 +26,9 @@ int main(int argv, char** argc) {
 		abort();
 			}
 
+	fseek(archivoEspacioDatos, 0L, SEEK_END);
+
+	printf("Tamaño de Archivo de Datos:%lu\n",ftell(archivoEspacioDatos));
 	//Prueba getFileContent
 	//char* temp_file = getFileContent("temporalPrueba.tmp");
 
@@ -74,7 +77,7 @@ char* obtenerSubBuffer(char *nombre){
 
 	tamanioNombre=strlen(nombre);
 	tam=tamanioNombre;
-	while(tam>1){
+	while(tam>=1){
 		tam=tam/10;
 		cont++;
 	}
@@ -110,6 +113,8 @@ void conexionAFs(){
 		aux=obtenerSubBuffer(g_Ip_Nodo);
 		string_append(&buffer,aux);
 		aux=obtenerSubBuffer(string_itoa(g_Puerto_Nodo));
+		string_append(&buffer,aux);
+		aux=obtenerSubBuffer(string_itoa(ftell(archivoEspacioDatos)));
 		string_append(&buffer,aux);
 
 		string_append(&bufferE,"3");

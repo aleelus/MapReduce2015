@@ -178,6 +178,6 @@ int   operaciones_consola();
 t_bloque *bloque_create(char *bloque, t_array_copias *array);
 t_archivo *archivo_create(char *nombreArchivo);
 t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo);
-
+t_nodo* buscarNodo(char*,char*);
 
 
