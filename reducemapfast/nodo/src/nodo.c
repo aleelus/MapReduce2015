@@ -107,9 +107,9 @@ void conexionAFs(){
 		//ENVIO a FILESYSTEM(la segunda rafaga)
 		//31210127.0.0.1143000
 		string_append(&buffer,"31");
-		aux=obtenerSubBuffer(g_Ip_Fs);
+		aux=obtenerSubBuffer(g_Ip_Nodo);
 		string_append(&buffer,aux);
-		aux=obtenerSubBuffer(g_Puerto_Fs);
+		aux=obtenerSubBuffer(string_itoa(g_Puerto_Nodo));
 		string_append(&buffer,aux);
 
 		string_append(&bufferE,"3");
