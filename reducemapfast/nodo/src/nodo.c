@@ -174,15 +174,17 @@ int conectarFS(int * socket_Fs, char* ipFs, char* puertoFs) {
 }
 
 
-void grabarBloque(){
-		int tamanio = TAMANIO_BLOQUE; //*1024*1024; //Tamanio del bloque 20mb
-		char*txtBloq = malloc(tamanio);//*1024*1024);
-		memset(txtBloq, '0', tamanio * sizeof(char));
-		//Rellena de 0 el txtBloq que se va a grabar
-		fwrite(txtBloq, sizeof(char), tamanio, archivoEspacioDatos);
+void grabarScript(char* nombreScript, char* codigoScript){
+		int tamanio = strlen(codigoScript)+1;
+		//Tamanio del codigo que se quiere grabar en el script
+		FILE* archivoScript = fopen(nombreScript, "w");
+		//Creo el script con el nombre especificado
+		fwrite(codigoScript, sizeof(char), tamanio, archivoScript);
 		//Grabo en el archivo el bloque
-		free(txtBloq);
+		free(codigoScript);
 		//Libero el puntero
+		fclose(archivoScript);
+		//Cierro el script
 }
 
 int tamanio_archivo(char* nomArch){
