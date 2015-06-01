@@ -1,0 +1,6 @@
+[INFO] 12:38:26:13 nodo/(4037:4037): Archivo de configuración: config.cfg
+[INFO] 12:38:43:170 nodo/(4045:4045): Archivo de configuración: config.cfg
+[INFO] 12:38:43:182 nodo/(4045:4045): Intentando conectar a nodo
+
+[INFO] 12:38:44:325 nodo/(4045:4045): ERROR: conectar socket_FS
+[TRACE] 12:38:44:328 nodo/(4045:4046): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000

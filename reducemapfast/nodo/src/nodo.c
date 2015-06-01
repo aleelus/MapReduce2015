@@ -174,15 +174,17 @@ int conectarFS(int * socket_Fs, char* ipFs, char* puertoFs) {
 }
 
 
-void grabarBloque(){
-		int tamanio = TAMANIO_BLOQUE; //*1024*1024; //Tamanio del bloque 20mb
-		char*txtBloq = malloc(tamanio);//*1024*1024);
-		memset(txtBloq, '0', tamanio * sizeof(char));
-		//Rellena de 0 el txtBloq que se va a grabar
-		fwrite(txtBloq, sizeof(char), tamanio, archivoEspacioDatos);
+void grabarScript(char* nombreScript, char* codigoScript){
+		int tamanio = strlen(codigoScript)+1;
+		//Tamanio del codigo que se quiere grabar en el script
+		FILE* archivoScript = fopen(nombreScript, "w");
+		//Creo el script con el nombre especificado
+		fwrite(codigoScript, sizeof(char), tamanio, archivoScript);
 		//Grabo en el archivo el bloque
-		free(txtBloq);
+		free(codigoScript);
 		//Libero el puntero
+		fclose(archivoScript);
+		//Cierro el script
 }
 
 int tamanio_archivo(char* nomArch){
@@ -286,6 +288,39 @@ char * getFileContent(char* nombre){
 	printf("Filename is %s\n", fname);
 	printf("Received string: %s", contenido);
 	return contenido;
+}
+
+void ejecutarScript (char* scriptName,char* outputFilename,char* input)
+{
+FILE *stdin;
+char *comandoScript = string_new();
+char *cambioModo = string_new();
+string_append(&comandoScript, "./");
+string_append(&comandoScript, scriptName);
+string_append(&comandoScript, " | sort");
+string_append(&comandoScript, " >");
+string_append(&comandoScript, outputFilename);
+string_append(&cambioModo, "chmod u+x ");
+string_append(&cambioModo, scriptName);
+//chmod u+x script.sh
+//doy permisos de ejecucion al script
+system(cambioModo);
+//si es modo w devuelve stdin si es r devuelve stdout uno u otro
+stdin = popen (comandoScript, "w");
+if (!stdin)
+{
+fprintf (stderr,
+"incorrect parameters or too many files.\n");
+//return EXIT_FAILURE;
+}
+fprintf(stdin, "%s\n",input);
+if (pclose (stdin) != 0)
+{
+fprintf (stderr,
+"Could not run more or other error.\n");
+}
+free(comandoScript);
+free(cambioModo);
 }
 
 int enviarDatos(int socket, void *buffer) {
