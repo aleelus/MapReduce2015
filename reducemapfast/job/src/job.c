@@ -113,7 +113,7 @@ int main(int argv, char** argc) {
 				}
 				else if(cantidadRafagaMarta==2){
 					EnviarDatos(socket_Marta,bufferRafaga_Dos, strlen(bufferRafaga_Dos));
-					log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+					//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Dos, strlen(bufferRafaga_Dos));
 					cantidadRafagaMarta=3;
 					cantRafaga=3;
 
@@ -157,14 +157,14 @@ int AtiendeCliente(void * arg) {
 	string_append(&bufferEnvia,string_itoa(strlen(bufferANodo)));
 	printf("BUFFER ENVIA:%s\n",bufferEnvia);
 	EnviarDatos(socket_nodo,bufferEnvia, strlen(bufferEnvia));
-	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferEnvia, strlen(bufferEnvia));
+	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferEnvia, strlen(bufferEnvia));
 
 	bufferR = RecibirDatos(socket_nodo, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferR, strlen(bufferR));
+	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferR, strlen(bufferR));
 
 	//Le envio el buffer al Nodo
 	EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
-	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferANodo, strlen(bufferANodo));
+	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferANodo, strlen(bufferANodo));
 
 	int code=0;
 
@@ -180,6 +180,7 @@ int AtiendeCliente(void * arg) {
 	char *bufferAMartaDos=string_new();
 
 
+
 	while ((!desconexionCliente) & g_Ejecutando) {
 
 		if (buffer != NULL )
@@ -188,7 +189,7 @@ int AtiendeCliente(void * arg) {
 
 		//Recibimos los datos del nodo
 		buffer = RecibirDatos(socket_nodo, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
-		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, buffer, tamanio);
+		//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, buffer, tamanio);
 
 
 		if (bytesRecibidos > 0) {
@@ -209,13 +210,17 @@ int AtiendeCliente(void * arg) {
 				//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
 
 				//RAFAGA 1
+				printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
 
 				//RAFAGA 2
-
+				printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
+				bufferAMartaUno=string_new();
+				bufferAMartaDos=string_new();
+				buffer=string_new();
 			}
 
 
