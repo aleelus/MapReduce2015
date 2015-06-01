@@ -288,6 +288,39 @@ char * getFileContent(char* nombre){
 	return contenido;
 }
 
+void ejecutarScript (char* scriptName,char* outputFilename,char* input)
+{
+FILE *stdin;
+char *comandoScript = string_new();
+char *cambioModo = string_new();
+string_append(&comandoScript, "./");
+string_append(&comandoScript, scriptName);
+string_append(&comandoScript, " | sort");
+string_append(&comandoScript, " >");
+string_append(&comandoScript, outputFilename);
+string_append(&cambioModo, "chmod u+x ");
+string_append(&cambioModo, scriptName);
+//chmod u+x script.sh
+//doy permisos de ejecucion al script
+system(cambioModo);
+//si es modo w devuelve stdin si es r devuelve stdout uno u otro
+stdin = popen (comandoScript, "w");
+if (!stdin)
+{
+fprintf (stderr,
+"incorrect parameters or too many files.\n");
+//return EXIT_FAILURE;
+}
+fprintf(stdin, "%s\n",input);
+if (pclose (stdin) != 0)
+{
+fprintf (stderr,
+"Could not run more or other error.\n");
+}
+free(comandoScript);
+free(cambioModo);
+}
+
 int enviarDatos(int socket, void *buffer) {
 	int bytecount;
 
