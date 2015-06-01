@@ -73,6 +73,7 @@ int main(int argv, char** argc) {
 			if (buffer != NULL )
 				free(buffer);
 			buffer = string_new();
+			bufferANodo=string_new();
 
 			//Recibimos los datos del cliente
 			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
@@ -82,9 +83,10 @@ int main(int argv, char** argc) {
 			if (bytesRecibidos>0) {
 
 				//printf("--------El BUFFER:%s\n",buffer);
-				if(cantidadRafagaMarta==3){
+				if(cantidadRafagaMarta==3 && strcmp(buffer,"Ok")!=0){
 					printf("Recibe Planificacion de Marta: %s\n",buffer);
 
+					aux=string_new();
 					el_job=procesoJob(buffer);
 					string_append(&bufferANodo,"21");
 					aux=abrir_Mapper(aux);
@@ -101,15 +103,13 @@ int main(int argv, char** argc) {
 					free(aux);
 					el_job->buffer = bufferANodo;
 
+
 					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
 					pthread_t hNuevoCliente;
 					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,(void *) el_job);
-					printf("Creación de hilo para atención del nodo. BUFFER: %s", bufferANodo);
-					log_trace(logger, "CREACIÓN DE HILO PARA ATENCIÓN DEL NODO. BUFFER: (%s).", bufferANodo);
 
-
-
-					cantidadRafagaMarta=1;
+					cantRafaga=3;
+					//cantidadRafagaMarta=1;
 				}
 				else if(cantidadRafagaMarta==2){
 					EnviarDatos(socket_Marta,bufferRafaga_Dos, strlen(bufferRafaga_Dos));
@@ -210,10 +210,10 @@ int AtiendeCliente(void * arg) {
 
 				//RAFAGA 1
 				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-				log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferAMartaUno, strlen(bufferAMartaUno));
 
 
 				//RAFAGA 2
+
 				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
 			}
@@ -556,7 +556,7 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 100, 0)) == -1) {
 				Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 			}
-			*cantRafaga=1;
+
 		}
 	}
 

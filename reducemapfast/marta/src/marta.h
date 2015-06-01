@@ -116,12 +116,14 @@ int id_job=0;
 //Estructura de array para funcion magica
 typedef struct{
 	char*dato;
+	char*bloqueDelNodo;
 	int peso;
 }t_dato;
 
-static t_dato *dato_create(char *dato) {
+static t_dato *dato_create(char *dato, char*bloqueDelNodo) {
 	t_dato *new = malloc(sizeof(t_dato));
 	new->dato = strdup(dato);
+	new->bloqueDelNodo= strdup(bloqueDelNodo);
 	new->peso=0;
 	return new;
 }
@@ -141,7 +143,6 @@ typedef struct{
 }t_bloque;
 
 
-t_bloque* buscarNodoYBloque (char * , char *,int*);
 
 static t_bloque *bloque_create(char *bloque, t_array_copias *array) {
 	t_bloque *new = malloc(sizeof(t_bloque));
@@ -161,6 +162,9 @@ typedef struct{
     t_list *listaBloques;
     t_list **array_de_listas;
 }t_archivo;
+
+
+t_bloque* buscarNodoYBloque (char * , char *,int*,t_archivo **);
 
 static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	t_archivo *new = malloc(sizeof(t_archivo));
@@ -182,7 +186,7 @@ static t_bloqueArchivo *bloqueArchivo_create(char *bloque, char *archivo, int pr
 	t_bloqueArchivo *new = malloc(sizeof(t_bloqueArchivo));
 	new->bloque = strdup(bloque);
 	new->archivo = strdup(archivo);
-	new->procesando= strdup(procesando);
+	new->procesando= procesando;
 	return new;
 }
 

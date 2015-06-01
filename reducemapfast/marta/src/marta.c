@@ -374,7 +374,8 @@ void RecorrerListaBloques(){
 void RecorrerListaNodos(){
 
 	t_nodo *el_nodo;
-	int i=0;
+	t_bloqueArchivo *el_bloqueArchivo;
+	int i=0,j=0;
 
 	while(i<list_size(lista_nodos)){
 		el_nodo=list_get(lista_nodos,i);
@@ -382,6 +383,16 @@ void RecorrerListaNodos(){
 		printf("Nombre: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->nombreNodo);
 		printf("IP: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->ipNodo);
 		printf("Puerto: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->puertoNodo);
+		printf("ListaBloqueArchivo: ");
+		j=0;
+		while(j<list_size(el_nodo->listaBloqueArchivo)){
+			el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,j);
+			printf(COLOR_VERDE"  %s"DEFAULT"::::"COLOR_VERDE"%s"DEFAULT,el_bloqueArchivo->bloque,el_bloqueArchivo->archivo);
+			j++;
+			if(j==list_size(el_nodo->listaBloqueArchivo))
+				printf("\n");
+
+		}
 		i++;
 	}
 	printf("************************************************\n");
@@ -711,7 +722,7 @@ void FuncionMagica(t_list* listaBloques){
 
 			if(el_dato != NULL){
 
-				list_add(array_listas[posicion],dato_create(el_bloque->bloque));
+				list_add(array_listas[posicion],dato_create(el_bloque->bloque,el_bloque->array[j].bloque));
 
 			}else{
 
@@ -720,8 +731,8 @@ void FuncionMagica(t_list* listaBloques){
 					h++;
 				}
 
-				list_add(array_listas[h],dato_create(el_bloque->array[j].nodo));
-				list_add(array_listas[h],dato_create(el_bloque->bloque));
+				list_add(array_listas[h],dato_create(el_bloque->array[j].nodo,""));
+				list_add(array_listas[h],dato_create(el_bloque->bloque,el_bloque->array[j].bloque));
 
 			}
 		}
@@ -755,9 +766,10 @@ int obtenerPesoMax(){
 t_nodo* buscarNodo(char * nodo){
 
 	t_nodo *el_nodo;
-	int i=0;
+	int i;
 
 
+	i=0;
 	while(i<list_size(lista_nodos)){
 		el_nodo=list_get(lista_nodos,i);
 		if(strcmp(el_nodo->nombreNodo,nodo)==0){
@@ -777,13 +789,16 @@ void Planificar(int id){
 	t_nodo *el_nodo;
 	t_dato *el_dato,*el_dato_dos;
 
-	t_list **aux;
-	aux=(t_list**)malloc(sizeof(t_list));
+	t_list *aux;
+	aux=(t_list*)malloc(sizeof(t_dato));
 
 	int pesoMax=0;
 	int i=0,cantBloques=0,c=0,k=0;
 
+
 	pesoMax=obtenerPesoMax();//
+
+
 
 	while(i<list_size(lista_archivos)){
 		el_archivo=list_get(lista_archivos,i);
@@ -795,7 +810,10 @@ void Planificar(int id){
 					el_dato=list_get(el_archivo->array_de_listas[c],0);
 					el_nodo=buscarNodo(el_dato->dato);
 					if(el_nodo!=NULL){
-						el_dato->peso=(cantBloques*pesoMax-el_nodo->cantTareasPendientes)*el_nodo->estado;
+						if(cantBloques!=0)
+							el_dato->peso=(cantBloques*pesoMax-el_nodo->cantTareasPendientes)*el_nodo->estado;
+						else
+							el_dato->peso=0;
 					}
 				}
 			}
@@ -808,7 +826,10 @@ void Planificar(int id){
 						el_dato=list_get(el_archivo->array_de_listas[c],0);
 						el_nodo=buscarNodo(el_dato->dato);
 						if(el_nodo!=NULL){
-							el_dato->peso=(pesoMax-el_nodo->cantTareasPendientes)*el_nodo->estado;
+							if(cantBloques!=0)
+								el_dato->peso=(pesoMax-el_nodo->cantTareasPendientes)*el_nodo->estado;
+							else
+								el_dato->peso=0;
 						}
 					}
 				}
@@ -820,15 +841,15 @@ void Planificar(int id){
 	i=0;
 	while(i<list_size(lista_archivos)){
 			el_archivo=list_get(lista_archivos,i);
-			//SIN COMBINER
-			if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
+			//SIN COMBINER y CON COMBINER ==> Ordeno el Array de punteros a listas
+			if(el_archivo->idJob==id){
 				for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
 					if(list_size(el_archivo->array_de_listas[c])>0){
 						el_dato=list_get(el_archivo->array_de_listas[c],0);
 						for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
 							if(list_size(el_archivo->array_de_listas[k])>0){
 								el_dato_dos=list_get(el_archivo->array_de_listas[k],0);
-								if(el_dato->peso>el_dato_dos->peso){
+								if(el_dato->peso>=el_dato_dos->peso){
 
 									aux= el_archivo->array_de_listas[c];
 									el_archivo->array_de_listas[c]=el_archivo->array_de_listas[k];
@@ -838,28 +859,6 @@ void Planificar(int id){
 							}
 						}
 
-					}
-				}
-			}else{
-				//CON COMBINER
-				if(el_archivo->idJob==id && el_archivo->tieneCombiner==1){
-					for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
-						if(list_size(el_archivo->array_de_listas[c])>0){
-							el_dato=list_get(el_archivo->array_de_listas[c],0);
-							for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
-								if(list_size(el_archivo->array_de_listas[k])>0){
-									el_dato_dos=list_get(el_archivo->array_de_listas[k],0);
-									if(el_dato->peso<el_dato_dos->peso){
-
-										aux= el_archivo->array_de_listas[c];
-										el_archivo->array_de_listas[c]=el_archivo->array_de_listas[k];
-										el_archivo->array_de_listas[k]=aux;
-									}
-
-								}
-							}
-
-						}
 					}
 				}
 			}
@@ -881,11 +880,132 @@ void Planificar(int id){
 
 }
 
+void marcarBloquesEnArray(t_archivo *el_archivo,char *bloque){
+
+	int i=0;
+	int k=0;
+	int c=0;
+	t_dato *el_dato;
+
+
+	for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
+
+		if(list_size(el_archivo->array_de_listas[k])>0){
+			c=0;
+			while(c<list_size(el_archivo->array_de_listas[k])){
+				el_dato=list_get(el_archivo->array_de_listas[k],c);
+				if(strcmp(el_dato->dato,bloque)==0){
+					el_dato->peso=(-10);
+				}
+
+				c++;
+			}
+		}
+	}
+
+
+}
+
+
+
 
 void enviarPlanificacionAJob (int id,int socket){
 
+	//415NodoA212192.168.1.2614600018Bloque30213resultado.txt
+	t_archivo *el_archivo;
+	t_nodo *el_nodo;
+	t_dato *el_dato;
+	t_bloque *el_bloque;
+	int i=0,c=0,contadorBloques=0;
+	char* nodo;
+	char* ipNodo;
+	char* puertoNodo;
+	char *bloque;
+	char *resultado;
+	int pos=0;
 
-	char *mensaje;
+	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+		//SIN COMBINER
+		if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
+			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+				if(list_size(el_archivo->array_de_listas[c])>0){
+					contadorBloques=0;
+					el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
+					el_nodo=buscarNodo(el_dato->dato);
+
+					for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
+						el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
+
+						if(el_dato->peso==0){
+							//Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
+							list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
+							el_nodo->cantTareasPendientes++;
+							//Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
+							marcarBloquesEnArray(el_archivo,el_dato->dato);
+						}
+					}
+
+				}
+			}
+
+		}
+		i++;
+	}
+
+	i=0;
+	t_bloqueArchivo *el_bloqueArchivo;
+	char* buffer=string_new();
+
+
+	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+
+		if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
+			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+				if(list_size(el_archivo->array_de_listas[c])>0){
+					el_dato=list_get(el_archivo->array_de_listas[c],0);
+					el_nodo=buscarNodo(el_dato->dato);
+
+					nodo=el_nodo->nombreNodo;
+					ipNodo=el_nodo->ipNodo;
+					puertoNodo=el_nodo->puertoNodo;
+					el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
+					bloque=el_bloqueArchivo->bloque;
+
+					nodo=obtenerSubBuffer(nodo);
+					ipNodo=obtenerSubBuffer(ipNodo);
+					puertoNodo=obtenerSubBuffer(puertoNodo);
+					bloque=obtenerSubBuffer(bloque);
+					resultado=obtenerSubBuffer(el_archivo->nombreArchivoResultado);
+					string_append(&buffer,"4");
+					string_append(&buffer,nodo);
+					string_append(&buffer,ipNodo);
+					string_append(&buffer,puertoNodo);
+					string_append(&buffer,bloque);
+					string_append(&buffer,resultado);
+					el_nodo->cantTareasPendientes--;
+
+
+					c=list_size(el_archivo->listaBloques)*3;
+					i=list_size(lista_archivos);
+				}
+			}
+
+		}
+		i++;
+	}
+
+
+
+	EnviarDatos(socket, buffer,strlen(buffer));
+
+
+
+
+
+
+/*	char *mensaje;
 	mensaje=string_new();
 	//En la lista de archivos en el array esta la planificacion
 	//busco en base a la id y envio planificacion de cada archivo y de cada nodo.
@@ -903,11 +1023,11 @@ void enviarPlanificacionAJob (int id,int socket){
 
 
 	string_append(&mensaje,"\0");
-	EnviarDatos(socket, mensaje,strlen(mensaje));
+	EnviarDatos(socket, mensaje,strlen(mensaje));*/
 
 }
 
-t_bloque* buscarNodoYBloque (char * nodo, char * bloque,int *numCopia){
+t_bloque* buscarNodoYBloque (char * nodo, char * bloque,int *numCopia,t_archivo **archivo){
 
 	t_archivo *el_archivo;
 	t_bloque *el_bloque;
@@ -924,6 +1044,7 @@ t_bloque* buscarNodoYBloque (char * nodo, char * bloque,int *numCopia){
 
 				if(strcmp(el_bloque->array[c].nodo,nodo)==0 && strcmp(el_bloque->array[c].bloque,bloque)==0){
 					*numCopia=c;
+					*archivo=el_archivo;
 					return el_bloque;
 				}
 			}
@@ -935,27 +1056,206 @@ t_bloque* buscarNodoYBloque (char * nodo, char * bloque,int *numCopia){
 
 }
 
-void reciboOk(char *buffer){
+void eliminarBloquesDelArchivoEnArray(t_archivo *el_archivo, char* bloque){
+
+	int k=0,c=0;
+	t_dato *aux;
+
+	for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+		if(list_size(el_archivo->array_de_listas[c])>0){
+			for(k=0;k<list_size(el_archivo->array_de_listas[c]);k++){
+				aux=list_get(el_archivo->array_de_listas[c],k);
+
+				if(strcmp(aux->dato,bloque)==0){
+					list_remove(el_archivo->array_de_listas[c],k);
+				}
+			}
+		}
+	}
+}
+
+int tareasRestantes(int estadoAEvaluar){
+	t_archivo *el_archivo;
+	int i=0,c=0,j=0;
+	int contTareas=0;
+	t_bloque *el_bloque;
+
+	while(i<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,i);
+		contTareas=contTareas+list_size(el_archivo->listaBloques);
+		i++;
+	}
+
+
+
+	while(j<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,j);
+		i=0;
+		while(i<list_size(el_archivo->listaBloques)){
+			el_bloque=list_get(el_archivo->listaBloques,i);
+
+			for(c=0;c<3;c++){
+
+				if(el_bloque->array[c].estado==estadoAEvaluar){
+					contTareas--;
+					c=3;
+				}
+			}
+			i++;
+		}
+		j++;
+	}
+	return contTareas;
+
+}
+
+char* buscarProximaTarea(t_archivo **archivo,int estado){
+
+	int i=0,k=0,j=0;
+	t_archivo *el_archivo;
+	t_bloque *el_bloque;
+
+	while(j<list_size(lista_archivos)){
+		el_archivo=list_get(lista_archivos,j);
+		i=0;
+		while(i<list_size(el_archivo->listaBloques)){
+			el_bloque=list_get(el_archivo->listaBloques,i);
+			for(k=0;k<3;k++){
+
+				if(el_bloque->array[k].estado==estado){
+					k=3;
+				}else{
+					if(k+1==3){
+						*archivo=el_archivo;
+						return el_bloque->bloque;
+					}
+				}
+			}
+			i++;
+		}
+		j++;
+	}
+
+	return NULL;
+
+}
+
+char* buscarProximaTareaEnArray(t_archivo *el_archivo,char *bloque){
+
+	int i=0,k=0;
+	t_dato *el_dato;
+
+	for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
+
+		if(list_size(el_archivo->array_de_listas[k])>0){
+			i=0;
+			while(i<list_size(el_archivo->array_de_listas[k])){
+				el_dato=list_get(el_archivo->array_de_listas[k],i);
+
+				if(strcmp(el_dato->dato,bloque)==0){
+					el_dato=list_get(el_archivo->array_de_listas[k],0);
+					return el_dato->dato;
+
+				}
+
+				i++;
+			}
+
+		}
+
+	}
+
+	return NULL;
+
+}
+
+
+void reciboOk(char *buffer,int socket){
 
 	//2318Bloque3015NodoA
 	t_bloque *el_bloque;
+	t_nodo *el_nodo;
 	char *bloque=string_new();
 	char *nodo=string_new();
 	int pos=2;
 	int i=0;
+	t_archivo *el_archivo;
 	bloque=DigitosNombreArchivo(buffer,&pos);
 	nodo=DigitosNombreArchivo(buffer,&pos);
 	printf("Recibo OK del Job:   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
 
 	int numCopia=0;
-	el_bloque=buscarNodoYBloque(nodo,bloque,&numCopia);
+	int contTareas=0;
+	el_bloque=buscarNodoYBloque(nodo,bloque,&numCopia,&el_archivo);
 
-	// EJEMPLO DE LO QUE PODRIA HACER
+	char *proxTareaBloq=string_new();
+	char *proxTareaNodo=string_new();
+
+
+
 	if(el_bloque!=NULL){
+
+
+		//Cambio el estado
 		el_bloque->array[numCopia].estado=1;
-		printf("Bloque: "COLOR_VERDE"%s\n"DEFAULT,el_bloque->bloque);
-		for(i=0;i<3;i++)
-			printf("Array[%d]: "COLOR_VERDE"%s::%s::%d\n"DEFAULT,i,el_bloque->array[i].nodo,el_bloque->array[i].bloque,el_bloque->array[i].estado);
+		//Busco el nodo en la Lista de Nodos y elimino el bloque ya que recibi el OK del job que lo termino
+		el_nodo=buscarNodo(el_bloque->array[numCopia].nodo);
+
+		if(el_nodo!=NULL){
+			list_remove(el_nodo->listaBloqueArchivo,0);
+		}
+
+		//Elimino del Array del Archivo el bloque que ya termino
+		eliminarBloquesDelArchivoEnArray(el_archivo,el_bloque->bloque);
+
+		//Cuento Tareas Pendientes del Archivo
+		contTareas=tareasRestantes(1);
+
+		printf(COLOR_VERDE"Tareas Restantes: %d\n"DEFAULT,contTareas);
+
+		if(contTareas>0){
+
+
+
+			proxTareaBloq=buscarProximaTarea(&el_archivo,1);
+			proxTareaNodo=buscarProximaTareaEnArray(el_archivo,proxTareaBloq);
+
+			el_nodo=buscarNodo(proxTareaNodo);
+
+			char *buffer=string_new();
+			char *ipNodo,*puertoNodo,*resultado;
+			t_bloqueArchivo *el_bloqueArchivo;
+
+
+			nodo=el_nodo->nombreNodo;
+			ipNodo=el_nodo->ipNodo;
+			puertoNodo=el_nodo->puertoNodo;
+			el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
+			bloque=el_bloqueArchivo->bloque;
+
+			nodo=obtenerSubBuffer(nodo);
+			ipNodo=obtenerSubBuffer(ipNodo);
+			puertoNodo=obtenerSubBuffer(puertoNodo);
+			bloque=obtenerSubBuffer(bloque);
+			resultado=obtenerSubBuffer(el_archivo->nombreArchivoResultado);
+			string_append(&buffer,"4");
+			string_append(&buffer,nodo);
+			string_append(&buffer,ipNodo);
+			string_append(&buffer,puertoNodo);
+			string_append(&buffer,bloque);
+			string_append(&buffer,resultado);
+			el_nodo->cantTareasPendientes--;
+
+			EnviarDatos(socket,buffer,strlen(buffer));
+
+
+
+		}else{
+
+			printf(COLOR_VERDE"****** TODOS LOS MAP's FUERON HECHOS! ******\n"DEFAULT);
+
+		}
+
 	}
 }
 
@@ -979,7 +1279,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 		case NOTIFICACION_NODO:
 			break;
 		case RECIBIDO_OK:
-			reciboOk(buffer);
+			reciboOk(buffer,socket);
 			break;
 		default:
 			break;
@@ -1069,9 +1369,8 @@ int AtiendeCliente(void * arg) {
 				break;
 			}
 			longitudBuffer=strlen(mensaje);
-			//printf("\nRespuesta: %s\n",buffer);
-			// Enviamos datos al cliente.
 			EnviarDatos(socket, mensaje,longitudBuffer);
+			mensaje=string_new();
 		} else
 			desconexionCliente = 1;
 
