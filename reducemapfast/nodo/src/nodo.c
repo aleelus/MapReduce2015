@@ -61,7 +61,7 @@ int main(int argv, char** argc) {
 	char * bloqueSolicitado;
 		bloqueSolicitado = getBloque(numero);
 		printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloqueSolicitado);
-		munmap( bloqueSolicitado, TAMANIO_BLOQUE ); //Desmapeo el bloque obternido, IMPORTANTE!
+		munmap( bloqueSolicitado, TAMANIO_BLOQUE ); //Desmapeo el bloque obtenido, IMPORTANTE!
 
 	printf("Ok\n");
 	fclose(archivoEspacioDatos);
@@ -233,6 +233,28 @@ char* getBloque(int numero){
 
 	return bloque;
 }
+
+void setBloque(int numero, char*datos){
+	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
+			//Si no se pudo abrir, imprimir el error y abortar;
+			printf("El bloque no existe en el archivo. \n");
+			abort();
+		}
+	char* bloque;
+	int fd= fileno(archivoEspacioDatos);
+	int offset = numero*(TAMANIO_BLOQUE/pagina);
+	if( (bloque = mmap( NULL, TAMANIO_BLOQUE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offset*pagina)) == MAP_FAILED){
+				//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
+				fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
+				abort();
+	}
+	memcpy(bloque, datos, strlen(datos)+1);
+ //Copia los datos a grabar en el bloque auxiliar
+	printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
+
+
+}
+
 /* char* getBloque(int numero){
 	char* bloque = malloc(TAMANIO_BLOQUE);
 	long int offset=numero*TAMANIO_BLOQUE;
@@ -242,7 +264,7 @@ char* getBloque(int numero){
 }*/
 
 
-void setBloque(int numero, char*datos){
+/* void setBloque(int numero, char*datos){
 	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
 			//Si no se pudo abrir, imprimir el error y abortar;
 			printf("El bloque no existe en el archivo. \n");
@@ -264,7 +286,7 @@ void setBloque(int numero, char*datos){
 	//Libero el puntero
 
 
-}
+} */
 
 
 char * getFileContent(char* nombre){
@@ -298,7 +320,8 @@ char *cambioModo = string_new();
 string_append(&comandoScript, "./");
 string_append(&comandoScript, scriptName);
 string_append(&comandoScript, " | sort");
-string_append(&comandoScript, " >");
+string_append(&comandoScript, " > ");
+string_append(&comandoScript, "/tmp/");
 string_append(&comandoScript, outputFilename);
 string_append(&cambioModo, "chmod u+x ");
 string_append(&cambioModo, scriptName);
