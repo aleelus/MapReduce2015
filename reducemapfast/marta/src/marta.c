@@ -17,6 +17,7 @@ int main(int argv, char** argc) {
 
 	lista_nodos = list_create();
 	lista_archivos=list_create();
+	lista_job_enviado=list_create();
 
 
 
@@ -915,6 +916,7 @@ void enviarPlanificacionAJob (int id,int socket){
 	t_archivo *el_archivo;
 	t_nodo *el_nodo;
 	t_dato *el_dato;
+	t_dato *el_dato_aux;
 	t_bloque *el_bloque;
 	int i=0,c=0,contadorBloques=0;
 	char* nodo;
@@ -931,8 +933,8 @@ void enviarPlanificacionAJob (int id,int socket){
 			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
 				if(list_size(el_archivo->array_de_listas[c])>0){
 					contadorBloques=0;
-					el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
-					el_nodo=buscarNodo(el_dato->dato);
+					el_dato_aux=list_get(el_archivo->array_de_listas[c],contadorBloques);
+					el_nodo=buscarNodo(el_dato_aux->dato);
 
 					for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
 						el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
@@ -941,6 +943,8 @@ void enviarPlanificacionAJob (int id,int socket){
 							//Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
 							list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
 							el_nodo->cantTareasPendientes++;
+							//Agrego a la lista de job's a enviar (ESTA LISTA ME VA A QUEDAR, NO LA VOY A ELIMINAR)
+							list_add(lista_job_enviado,job_enviado_create(el_dato_aux->dato,el_dato->bloqueDelNodo,el_archivo->nombreArchivo));
 							//Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
 							marcarBloquesEnArray(el_archivo,el_dato->dato);
 						}
@@ -953,31 +957,36 @@ void enviarPlanificacionAJob (int id,int socket){
 		i++;
 	}
 
-	i=0;
+
 	t_bloqueArchivo *el_bloqueArchivo;
+	t_job_enviado *el_job_enviado;
+	int x=0;
 	char* buffer=string_new();
 
+	i=0;
+	while(i<list_size(lista_nodos)){
+		el_nodo=list_get(lista_nodos,i);
 
-	while(i<list_size(lista_archivos)){
-		el_archivo=list_get(lista_archivos,i);
 
-		if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
-			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
-				if(list_size(el_archivo->array_de_listas[c])>0){
-					el_dato=list_get(el_archivo->array_de_listas[c],0);
-					el_nodo=buscarNodo(el_dato->dato);
+		nodo=el_nodo->nombreNodo;
+		ipNodo=el_nodo->ipNodo;
+		puertoNodo=el_nodo->puertoNodo;
+		el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
+		if(el_bloqueArchivo!=NULL){
+			bloque=el_bloqueArchivo->bloque;
 
-					nodo=el_nodo->nombreNodo;
-					ipNodo=el_nodo->ipNodo;
-					puertoNodo=el_nodo->puertoNodo;
-					el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
-					bloque=el_bloqueArchivo->bloque;
+			x=0;
+			while(x<list_size(lista_job_enviado)){
+				el_job_enviado=list_get(lista_job_enviado,x);
+				if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0){
+					el_job_enviado->estado=1;
 
 					nodo=obtenerSubBuffer(nodo);
 					ipNodo=obtenerSubBuffer(ipNodo);
 					puertoNodo=obtenerSubBuffer(puertoNodo);
 					bloque=obtenerSubBuffer(bloque);
 					resultado=obtenerSubBuffer(el_archivo->nombreArchivoResultado);
+
 					string_append(&buffer,"4");
 					string_append(&buffer,nodo);
 					string_append(&buffer,ipNodo);
@@ -987,9 +996,16 @@ void enviarPlanificacionAJob (int id,int socket){
 					el_nodo->cantTareasPendientes--;
 
 
-					c=list_size(el_archivo->listaBloques)*3;
-					i=list_size(lista_archivos);
+					EnviarDatos(socket, buffer,strlen(buffer));
+					buffer=string_new();
+					nodo=string_new();
+					ipNodo=string_new();
+					puertoNodo=string_new();
+					bloque=string_new();
+					resultado=string_new();
+
 				}
+				x++;
 			}
 
 		}
@@ -998,7 +1014,8 @@ void enviarPlanificacionAJob (int id,int socket){
 
 
 
-	EnviarDatos(socket, buffer,strlen(buffer));
+
+
 
 
 
@@ -1201,7 +1218,7 @@ void reciboOk(char *buffer,int socket){
 		//Busco el nodo en la Lista de Nodos y elimino el bloque ya que recibi el OK del job que lo termino
 		el_nodo=buscarNodo(el_bloque->array[numCopia].nodo);
 
-		if(el_nodo!=NULL){
+		if(el_nodo!=NULL && list_size(el_nodo->listaBloqueArchivo)>0){
 			list_remove(el_nodo->listaBloqueArchivo,0);
 		}
 
@@ -1213,8 +1230,10 @@ void reciboOk(char *buffer,int socket){
 
 		printf(COLOR_VERDE"Tareas Restantes: %d\n"DEFAULT,contTareas);
 
-		if(contTareas>0){
+		t_job_enviado *el_job_enviado;
+		int x=0;
 
+		if(contTareas>0){
 
 
 			proxTareaBloq=buscarProximaTarea(&el_archivo,1);
@@ -1222,32 +1241,43 @@ void reciboOk(char *buffer,int socket){
 
 			el_nodo=buscarNodo(proxTareaNodo);
 
-			char *buffer=string_new();
-			char *ipNodo,*puertoNodo,*resultado;
-			t_bloqueArchivo *el_bloqueArchivo;
+			if(list_size(el_nodo->listaBloqueArchivo)>0){
+				char *buffer=string_new();
+				char *ipNodo,*puertoNodo,*resultado;
+				t_bloqueArchivo *el_bloqueArchivo;
 
 
-			nodo=el_nodo->nombreNodo;
-			ipNodo=el_nodo->ipNodo;
-			puertoNodo=el_nodo->puertoNodo;
-			el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
-			bloque=el_bloqueArchivo->bloque;
+				nodo=el_nodo->nombreNodo;
+				ipNodo=el_nodo->ipNodo;
+				puertoNodo=el_nodo->puertoNodo;
+				el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
+				bloque=el_bloqueArchivo->bloque;
 
-			nodo=obtenerSubBuffer(nodo);
-			ipNodo=obtenerSubBuffer(ipNodo);
-			puertoNodo=obtenerSubBuffer(puertoNodo);
-			bloque=obtenerSubBuffer(bloque);
-			resultado=obtenerSubBuffer(el_archivo->nombreArchivoResultado);
-			string_append(&buffer,"4");
-			string_append(&buffer,nodo);
-			string_append(&buffer,ipNodo);
-			string_append(&buffer,puertoNodo);
-			string_append(&buffer,bloque);
-			string_append(&buffer,resultado);
-			el_nodo->cantTareasPendientes--;
+				x=0;
+				while(x<list_size(lista_job_enviado)){
+					el_job_enviado=list_get(lista_job_enviado,x);
+					if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0){
+						el_job_enviado->estado=1;
 
-			EnviarDatos(socket,buffer,strlen(buffer));
+						nodo=obtenerSubBuffer(nodo);
+						ipNodo=obtenerSubBuffer(ipNodo);
+						puertoNodo=obtenerSubBuffer(puertoNodo);
+						bloque=obtenerSubBuffer(bloque);
+						resultado=obtenerSubBuffer(el_archivo->nombreArchivoResultado);
+						string_append(&buffer,"4");
+						string_append(&buffer,nodo);
+						string_append(&buffer,ipNodo);
+						string_append(&buffer,puertoNodo);
+						string_append(&buffer,bloque);
+						string_append(&buffer,resultado);
+						el_nodo->cantTareasPendientes--;
 
+						EnviarDatos(socket,buffer,strlen(buffer));
+
+					}
+					x++;
+				}
+			}
 
 
 		}else{
@@ -1280,6 +1310,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 			break;
 		case RECIBIDO_OK:
 			reciboOk(buffer,socket);
+			*cantRafaga=1;
 			break;
 		default:
 			break;

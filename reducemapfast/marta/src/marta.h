@@ -113,6 +113,25 @@ int id_job=0;
 #define COMANDONODOS 7
 
 //ESTRUCTURAS//
+typedef struct{
+	char*nodo;
+	char*bloque;
+	char *archivo;
+	int estado;
+}t_job_enviado;
+
+t_list *lista_job_enviado;
+
+
+static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo) {
+	t_job_enviado *new = malloc(sizeof(t_job_enviado));
+	new->nodo=strdup(nodo);
+	new->bloque=strdup(bloque);
+	new->archivo=strdup(archivo);
+	new->estado=0;
+	return new;
+}
+
 //Estructura de array para funcion magica
 typedef struct{
 	char*dato;
