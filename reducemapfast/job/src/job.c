@@ -68,7 +68,7 @@ int main(int argv, char** argc) {
 	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
 
-	while ((!desconexionCliente) & g_Ejecutando) {
+	while ((!desconexionCliente) && g_Ejecutando) {
 			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 			if (buffer != NULL )
 				free(buffer);
@@ -181,7 +181,7 @@ int AtiendeCliente(void * arg) {
 
 
 
-	while ((!desconexionCliente) & g_Ejecutando) {
+	while ((!desconexionCliente) && g_Ejecutando) {
 
 		if (buffer != NULL )
 			free(buffer);
@@ -212,6 +212,7 @@ int AtiendeCliente(void * arg) {
 				//RAFAGA 1
 				printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
 
 
 				//RAFAGA 2

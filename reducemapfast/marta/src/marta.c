@@ -840,26 +840,26 @@ void Planificar(int id){
 		i++;
 	}
 	i=0;
+	int ordenado =0;
 	while(i<list_size(lista_archivos)){
 			el_archivo=list_get(lista_archivos,i);
 			//SIN COMBINER y CON COMBINER ==> Ordeno el Array de punteros a listas
 			if(el_archivo->idJob==id){
-				for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
-					if(list_size(el_archivo->array_de_listas[c])>0){
-						el_dato=list_get(el_archivo->array_de_listas[c],0);
-						for(k=0;k<list_size(el_archivo->listaBloques)*3;k++){
-							if(list_size(el_archivo->array_de_listas[k])>0){
-								el_dato_dos=list_get(el_archivo->array_de_listas[k],0);
-								if(el_dato->peso>=el_dato_dos->peso){
+				ordenado=0;
+				while(ordenado==0){
+					ordenado=1;
+					for(k=1;k<list_size(el_archivo->listaBloques)*3;k++){
+						if(list_size(el_archivo->array_de_listas[k])>0){
+							el_dato=list_get(el_archivo->array_de_listas[k-1],0);
+							el_dato_dos=list_get(el_archivo->array_de_listas[k],0);
+							if(el_dato->peso<el_dato_dos->peso){
 
-									aux= el_archivo->array_de_listas[c];
-									el_archivo->array_de_listas[c]=el_archivo->array_de_listas[k];
-									el_archivo->array_de_listas[k]=aux;
-								}
-
+								aux= el_archivo->array_de_listas[k-1];
+								el_archivo->array_de_listas[k-1]=el_archivo->array_de_listas[k];
+								el_archivo->array_de_listas[k]=aux;
+								ordenado=0;
 							}
 						}
-
 					}
 				}
 			}
@@ -954,6 +954,33 @@ void enviarPlanificacionAJob (int id,int socket){
 			}
 
 		}
+		// CON COMBINER
+		if(el_archivo->idJob==id && el_archivo->tieneCombiner==1){
+			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+				if(list_size(el_archivo->array_de_listas[c])>0){
+					contadorBloques=0;
+					el_dato_aux=list_get(el_archivo->array_de_listas[c],contadorBloques);
+					el_nodo=buscarNodo(el_dato_aux->dato);
+
+					for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
+						el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
+
+						if(el_dato->peso==0){
+							//Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
+							list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
+							el_nodo->cantTareasPendientes++;
+							//Agrego a la lista de job's a enviar (ESTA LISTA ME VA A QUEDAR, NO LA VOY A ELIMINAR)
+							list_add(lista_job_enviado,job_enviado_create(el_dato_aux->dato,el_dato->bloqueDelNodo,el_archivo->nombreArchivo));
+							//Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
+							marcarBloquesEnArray(el_archivo,el_dato->dato);
+
+						}
+					}
+
+				}
+			}
+
+		}
 		i++;
 	}
 
@@ -962,6 +989,7 @@ void enviarPlanificacionAJob (int id,int socket){
 	t_job_enviado *el_job_enviado;
 	int x=0;
 	char* buffer=string_new();
+
 
 	i=0;
 	while(i<list_size(lista_nodos)){
@@ -996,7 +1024,10 @@ void enviarPlanificacionAJob (int id,int socket){
 					el_nodo->cantTareasPendientes--;
 
 
+					printf(COLOR_VERDE"----%s---\n"DEFAULT,buffer);
+
 					EnviarDatos(socket, buffer,strlen(buffer));
+
 					buffer=string_new();
 					nodo=string_new();
 					ipNodo=string_new();
@@ -1014,7 +1045,14 @@ void enviarPlanificacionAJob (int id,int socket){
 
 
 
+	i=0;
+	while(i<list_size(lista_job_enviado)){
+		el_job_enviado=list_get(lista_job_enviado,i);
 
+		printf("Archivo: %s \nNodo: %s \nBloque: %s \nEstado: %d\n",el_job_enviado->archivo,el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->estado);
+
+		i++;
+	}
 
 
 
@@ -1195,7 +1233,6 @@ void reciboOk(char *buffer,int socket){
 	char *bloque=string_new();
 	char *nodo=string_new();
 	int pos=2;
-	int i=0;
 	t_archivo *el_archivo;
 	bloque=DigitosNombreArchivo(buffer,&pos);
 	nodo=DigitosNombreArchivo(buffer,&pos);
@@ -1273,6 +1310,7 @@ void reciboOk(char *buffer,int socket){
 						el_nodo->cantTareasPendientes--;
 
 						EnviarDatos(socket,buffer,strlen(buffer));
+
 
 					}
 					x++;
@@ -1357,7 +1395,7 @@ int AtiendeCliente(void * arg) {
 	int code = 0;
 	int cantRafaga=1,tamanio=0;
 	char * mensaje;
-	while ((!desconexionCliente) & g_Ejecutando) {
+	while ((!desconexionCliente) && g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
 			free(buffer);
