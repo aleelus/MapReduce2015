@@ -24,6 +24,7 @@
 #define DEFAULT   "\x1b[0m"
 
 
+
 // CONSTANTES //
 //Ruta del config
 #define PATH_CONFIG "config.cfg"

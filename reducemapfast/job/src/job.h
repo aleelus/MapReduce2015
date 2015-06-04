@@ -20,6 +20,8 @@
 #include <semaphore.h>
 #include <netdb.h>
 
+
+
 // CONSTANTES //
 //Ruta del config
 #define COLOR_VERDE   "\x1b[32m"
@@ -45,6 +47,7 @@ char* DigitosNombreArchivo(char *,int *);
 int AtiendeCliente(void *);
 void CerrarSocket(int);
 
+sem_t semaforo;
 
 typedef struct {
 	char *nodo;

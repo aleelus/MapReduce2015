@@ -15,9 +15,11 @@
 
 int main(int argv, char** argc) {
 	//inicializamos los semaforos
-	//sem_init(&semaforoAccesoMemoria, 0, 1);
-	//sem_init(&semaforoMarcosLibres, 0, 0);
 
+
+	//sem_init(&semaforoMarcosLibres, 0, 0);
+	//sem_init(&semaforo,1,0);
+	//sem_init(&semaforoJob,1,0);
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
 	//g_ArchivoConsola = fopen(NOMBRE_ARCHIVO_CONSOLA, "wb");
 	//g_MensajeError = malloc(1 * sizeof(char));
@@ -37,7 +39,7 @@ int main(int argv, char** argc) {
 
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
-	char *aux=string_new();
+
 	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
 
 
@@ -76,6 +78,7 @@ int main(int argv, char** argc) {
 			bufferANodo=string_new();
 
 			//Recibimos los datos del cliente
+
 			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 			log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, buffer, tamanio);
 
@@ -84,31 +87,21 @@ int main(int argv, char** argc) {
 
 				//printf("--------El BUFFER:%s\n",buffer);
 				if(cantidadRafagaMarta==3 && strcmp(buffer,"Ok")!=0){
+
 					printf("Recibe Planificacion de Marta: %s\n",buffer);
 
-					aux=string_new();
-					el_job=procesoJob(buffer);
-					string_append(&bufferANodo,"21");
-					aux=abrir_Mapper(aux);
-					string_append(&bufferANodo,aux);
-					free(aux);
-					aux=obtenerSubBuffer(g_Mapper);
-					string_append(&bufferANodo,aux);
-					free(aux);
-					aux = obtenerSubBuffer(el_job->bloque);
-					string_append(&bufferANodo,aux);
-					free(aux);
-					aux=obtenerSubBuffer(el_job->archResultado);
-					string_append(&bufferANodo,aux);
-					free(aux);
-					el_job->buffer = bufferANodo;
+					el_job->buffer=string_new();
+					string_append(&el_job->buffer,buffer);
 
 
 					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
 					pthread_t hNuevoCliente;
 					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,(void *) el_job);
 
+
 					cantRafaga=3;
+
+
 					//cantidadRafagaMarta=1;
 				}
 				else if(cantidadRafagaMarta==2){
@@ -143,8 +136,27 @@ int cuentaDigitos(int valor){
 
 int AtiendeCliente(void * arg) {
 	t_job_a_nodo *el_job = (t_job_a_nodo*) arg;
+	char *buff=el_job->buffer;
+	char *aux;
+	char * bufferANodo=string_new();
+
+	aux=string_new();
+	el_job=procesoJob(buff);
+	string_append(&bufferANodo,"21");
+	aux=abrir_Mapper(aux);
+	string_append(&bufferANodo,aux);
+	free(aux);
+	aux=obtenerSubBuffer(g_Mapper);
+	string_append(&bufferANodo,aux);
+	free(aux);
+	aux = obtenerSubBuffer(el_job->bloque);
+	string_append(&bufferANodo,aux);
+	free(aux);
+	aux=obtenerSubBuffer(el_job->archResultado);
+	string_append(&bufferANodo,aux);
+	free(aux);
+
 	int socket_nodo=0;
-	char * bufferANodo = el_job->buffer;
 	char * bufferEnvia = string_new();
 	char * bufferR = string_new();
 	int bytesRecibidos, cantRafaga=1, tamanio=10;

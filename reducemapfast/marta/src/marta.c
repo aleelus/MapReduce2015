@@ -20,7 +20,8 @@ int main(int argv, char** argc) {
 	lista_job_enviado=list_create();
 
 
-
+	//sem_init(&semaforo, 1, 1);
+	//sem_init(&semaforoJob,1,0);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//inicializamos los semaforos
 	//sem_init(&semaforoAccesoMemoria, 0, 1);
@@ -917,14 +918,14 @@ void enviarPlanificacionAJob (int id,int socket){
 	t_nodo *el_nodo;
 	t_dato *el_dato;
 	t_dato *el_dato_aux;
-	t_bloque *el_bloque;
+
 	int i=0,c=0,contadorBloques=0;
 	char* nodo;
 	char* ipNodo;
 	char* puertoNodo;
 	char *bloque;
 	char *resultado;
-	int pos=0;
+
 
 	while(i<list_size(lista_archivos)){
 		el_archivo=list_get(lista_archivos,i);
@@ -991,6 +992,8 @@ void enviarPlanificacionAJob (int id,int socket){
 	char* buffer=string_new();
 
 
+
+
 	i=0;
 	while(i<list_size(lista_nodos)){
 		el_nodo=list_get(lista_nodos,i);
@@ -1027,6 +1030,7 @@ void enviarPlanificacionAJob (int id,int socket){
 					printf(COLOR_VERDE"----%s---\n"DEFAULT,buffer);
 
 					EnviarDatos(socket, buffer,strlen(buffer));
+
 
 					buffer=string_new();
 					nodo=string_new();
