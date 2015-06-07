@@ -139,22 +139,50 @@ int AtiendeCliente(void * arg) {
 	char *buff=el_job->buffer;
 	char *aux;
 	char * bufferANodo=string_new();
+	int emisor=0;
 
-	aux=string_new();
-	el_job=procesoJob(buff);
-	string_append(&bufferANodo,"21");
-	aux=abrir_Mapper(aux);
-	string_append(&bufferANodo,aux);
-	free(aux);
-	aux=obtenerSubBuffer(g_Mapper);
-	string_append(&bufferANodo,aux);
-	free(aux);
-	aux = obtenerSubBuffer(el_job->bloque);
-	string_append(&bufferANodo,aux);
-	free(aux);
-	aux=obtenerSubBuffer(el_job->archResultado);
-	string_append(&bufferANodo,aux);
-	free(aux);
+
+	emisor=ObtenerComandoMSJ(buff+1);
+	// 1: Aplicar Map ............... 2: Aplicar Reduce Local Con combiner............3: Aplicar Reduces Sin combiner
+	if(emisor==1){
+		aux=string_new();
+		el_job=procesoJob(buff);
+		string_append(&bufferANodo,"21");
+		aux=abrir_Mapper(aux,g_Mapper);
+		string_append(&bufferANodo,aux);
+		free(aux);
+		aux=obtenerSubBuffer(g_Mapper);
+		string_append(&bufferANodo,aux);
+		free(aux);
+		aux = obtenerSubBuffer(el_job->bloque);
+		string_append(&bufferANodo,aux);
+		free(aux);
+		aux=obtenerSubBuffer(el_job->archResultado);
+		string_append(&bufferANodo,aux);
+		free(aux);
+	}else if (emisor==2){
+		aux=string_new();
+		el_job=procesoJob(buff);
+		string_append(&bufferANodo,"21");
+		aux=abrir_Mapper(aux,g_Reduce);
+		string_append(&bufferANodo,aux);
+		free(aux);
+		aux=obtenerSubBuffer(g_Reduce);
+		string_append(&bufferANodo,aux);
+		free(aux);
+		aux = obtenerSubBuffer(el_job->bloque);
+		string_append(&bufferANodo,aux);
+		free(aux);
+		aux=obtenerSubBuffer(el_job->archResultado);
+		string_append(&bufferANodo,aux);
+		free(aux);
+	}else if(emisor==3){
+
+
+		string_append(&bufferANodo,"23");
+
+	}
+
 
 	int socket_nodo=0;
 	char * bufferEnvia = string_new();
@@ -291,10 +319,11 @@ int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 
 t_job_a_nodo *procesoJob (char *buffer){
 
-	//415 NodoA   19 127.0.0.1    14 6000      18 Bloque30      213 resultado.txt
+	//41 15 NodoA   19 127.0.0.1    14 6000      18 Bloque30      213 resultado.txt
+	//42
 
 	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
-	int pos=1;
+	int pos=2;
 
 
 	el_job->nodo=DigitosNombreArchivo(buffer,&pos);
@@ -326,7 +355,7 @@ char* obtenerSubBuffer(char *nombre){
 	return aux;
 }
 
-char* abrir_Mapper(char *aux){
+char* abrir_Mapper(char *aux, char *nombreScript){
 
 	FILE *f;
 	int tamanioArchivo=0;
@@ -334,7 +363,7 @@ char* abrir_Mapper(char *aux){
 	int cont=0;
 	char *aux2=string_new();
 
-	f= fopen(g_Mapper,"rb");
+	f= fopen(nombreScript,"rb");
 	fseek(f,0,SEEK_END);
 	tamanioArchivo=ftell(f);
 	rewind(f);

@@ -41,7 +41,7 @@ char* obtenerRafaga_Uno(char *,char*);
 int PosicionDeBufferAInt(char* , int );
 int ChartToInt(char );
 int ObtenerTamanio (char * , int );
-char* abrir_Mapper(char *);
+char* abrir_Mapper(char *,char *);
 char* obtenerSubBuffer(char *);
 char* DigitosNombreArchivo(char *,int *);
 int AtiendeCliente(void *);

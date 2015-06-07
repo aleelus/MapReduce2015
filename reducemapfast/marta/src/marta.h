@@ -95,6 +95,7 @@ void HiloOrquestadorDeConexiones();
 char* obtenerSubBuffer(char *);
 void conectarAFileSystem();
 void FuncionMagica(t_list* );
+int cuentaDigitos(int );
 
 // - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
 int g_Ejecutando = 1;
@@ -115,10 +116,22 @@ int id_job=0;
 
 //ESTRUCTURAS//
 typedef struct{
+	char *bloque;
+}t_job_enviado_bloque;
+
+static t_job_enviado_bloque *job_enviado_bloque_create(char *bloque) {
+	t_job_enviado_bloque *new = malloc(sizeof(t_job_enviado_bloque));
+	new->bloque=strdup(bloque);
+	return new;
+}
+
+
+typedef struct{
 	char*nodo;
 	char*bloque;
 	char *archivo;
 	int estado;
+	t_list *listaBloques;
 }t_job_enviado;
 
 t_list *lista_job_enviado;
@@ -130,6 +143,7 @@ static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo)
 	new->bloque=strdup(bloque);
 	new->archivo=strdup(archivo);
 	new->estado=0;
+	new->listaBloques=list_create();
 	return new;
 }
 
@@ -179,12 +193,13 @@ typedef struct{
     char *nombreArchivoResultado;
     int tieneCombiner;
     int idJob;
+    int contTareas;
     t_list *listaBloques;
     t_list **array_de_listas;
 }t_archivo;
 
 
-t_bloque* buscarNodoYBloque (char * , char *,int*,t_archivo **);
+t_bloque* buscarNodoYBloque (char * , char *,int*,t_archivo **,int *);
 
 static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	t_archivo *new = malloc(sizeof(t_archivo));
@@ -192,6 +207,7 @@ static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	new->nombreArchivo = strdup(nombreArchivo);
 	new->nombreArchivoResultado="";
 	new->tieneCombiner=0;
+	new->contTareas=0;
 	new->listaBloques= list_create();
 	return new;
 }
