@@ -796,7 +796,7 @@ int operaciones_consola() {
 }
 
 //Mostrar Error
-void mostrarError(error unError){
+void mostrarError(t_error unError){
 	switch(unError){
 		case CantidadArgumentosIncorrecta: puts("CantidadArgumentosIncorrecta.");break;
 		case NoSePudoAbrirConfig:		   puts("No se pudo abrir configuracion");break;
