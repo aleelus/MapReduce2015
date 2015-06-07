@@ -215,7 +215,7 @@ int EnviarInfoMarta(int socket) {
 	string_append(&buffer,"12");
 	string_append(&buffer,"15NodoP18Bloque3115NodoF18Bloque4215NodoH17Bloque9");
 	string_append(&buffer,"15NodoK18Bloque1115NodoB18Bloque5515NodoF17Bloque3");
-	string_append(&buffer,"1815NodoA212192.168.1.2614600015NodoB212192.168.1.2614600015NodoC212192.168.1.2614600015NodoE212192.168.1.2614600015NodoF212192.168.1.2614600015NodoH212192.168.1.2614600015NodoK212192.168.1.2614600015NodoP212192.168.1.26146000");
+	string_append(&buffer,"1815NodoA212192.168.1.2514600015NodoB212192.168.1.2514600015NodoC212192.168.1.2514600015NodoE212192.168.1.2514600015NodoF212192.168.1.2514600015NodoH212192.168.1.2514600015NodoK212192.168.1.2514600015NodoP212192.168.1.25146000");
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
