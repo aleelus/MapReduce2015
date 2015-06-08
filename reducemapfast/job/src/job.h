@@ -40,7 +40,7 @@ char * procesarArchivos (char *,int);
 char* obtenerRafaga_Uno(char *,char*);
 int PosicionDeBufferAInt(char* , int );
 int ChartToInt(char );
-int ObtenerTamanio (char * , int );
+int ObtenerTamanio (char * ,int, int );
 char* abrir_Mapper(char *,char *);
 char* obtenerSubBuffer(char *);
 char* DigitosNombreArchivo(char *,int *);

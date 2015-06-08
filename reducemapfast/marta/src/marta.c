@@ -1362,7 +1362,7 @@ void reciboOk(char *buffer,int socket){
 
 
 				//---------------HAY QUE VER BIEN EL PROTOCOLO------------------------
-				// 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000
+				// 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000 230/user/juan/datos/resultado.txt
 				string_append(&bufferAJob_Reduce,"43");
 				string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(contarNodos)));
 				string_append(&bufferAJob_Reduce,string_itoa(contarNodos));
@@ -1391,7 +1391,7 @@ void reciboOk(char *buffer,int socket){
 				string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_archivo->nombreArchivoResultado));
 
 
-				//EnviarDatos(socket,bufferANodo_Reduce,strlen(bufferANodo_Reduce));
+				EnviarDatos(socket,bufferAJob_Reduce,strlen(bufferAJob_Reduce));
 
 				printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
 

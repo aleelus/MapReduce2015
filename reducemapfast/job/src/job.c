@@ -137,12 +137,13 @@ int cuentaDigitos(int valor){
 int AtiendeCliente(void * arg) {
 	t_job_a_nodo *el_job = (t_job_a_nodo*) arg;
 	char *buff=el_job->buffer;
-	char *aux;
+	char *aux=string_new();
 	char * bufferANodo=string_new();
 	int emisor=0;
 
 
-	emisor=ObtenerComandoMSJ(buff+1);
+	emisor=PosicionDeBufferAInt(buff,1);
+
 	// 1: Aplicar Map ............... 2: Aplicar Reduce Local Con combiner............3: Aplicar Reduces Sin combiner
 	if(emisor==1){
 		aux=string_new();
@@ -177,9 +178,66 @@ int AtiendeCliente(void * arg) {
 		string_append(&bufferANodo,aux);
 		free(aux);
 	}else if(emisor==3){
-
+		// DE MARTA => 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000   230/user/juan/datos/resultado.txt
+		// A NODO => 2311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000   230/user/juan/datos/resultado.txt
+		int cantNodos=0,cantDigNodos=0,cantBloques=0,cantDigBloques=0,posicion=0,x=0,y=0;
 
 		string_append(&bufferANodo,"23");
+		cantDigNodos=PosicionDeBufferAInt(buff,2);
+		cantNodos=ObtenerTamanio(buff,3,cantDigNodos);
+		posicion=3+cantDigNodos;
+		string_append(&bufferANodo,string_itoa(cantDigNodos));
+		string_append(&bufferANodo,string_itoa(cantNodos));
+		for(y=0;y<cantNodos;y++){
+
+
+			if(y==0)
+				el_job->nodo=DigitosNombreArchivo(buff,&posicion);
+
+			string_append(&bufferANodo,obtenerSubBuffer(el_job->nodo));
+			cantDigBloques=PosicionDeBufferAInt(buff,posicion);
+			cantBloques=ObtenerTamanio(buff,posicion+1,cantDigBloques);
+			posicion=posicion+1+cantDigBloques;
+
+			string_append(&bufferANodo,string_itoa(cantDigBloques));
+			string_append(&bufferANodo,string_itoa(cantBloques));
+
+
+			for(x=0;x<cantBloques;x++){
+				aux=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(aux));
+				aux=string_new();
+			}
+
+			if(y==0){
+				el_job->nodo=string_new();
+				el_job->ip=string_new();
+				el_job->puerto=string_new();
+				el_job->nodo=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(el_job->nodo));
+				el_job->ip=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(el_job->ip));
+				el_job->puerto=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(el_job->puerto));
+			}else{
+				aux=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(aux));
+				aux=string_new();
+				aux=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(aux));
+				aux=string_new();
+				aux=DigitosNombreArchivo(buff,&posicion);
+				string_append(&bufferANodo,obtenerSubBuffer(aux));
+				aux=string_new();
+			}
+
+		}
+		aux=DigitosNombreArchivo(buff,&posicion);
+		string_append(&bufferANodo,aux);
+
+		printf(COLOR_VERDE"%s \t %s \t%s \n"DEFAULT,el_job->nodo,el_job->ip,el_job->puerto);
+		printf(COLOR_VERDE" %s \n"DEFAULT,bufferANodo);
+
 
 	}
 
@@ -555,10 +613,10 @@ void obtenerArrayArchivos(int *contadorArchivos){
 
 
 
-int ObtenerTamanio (char *buffer , int dig_tamanio){
+int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 	int x,digito,aux=0;
 	for(x=0;x<dig_tamanio;x++){
-		digito=PosicionDeBufferAInt(buffer,2+x);
+		digito=PosicionDeBufferAInt(buffer,posicion+x);
 		aux=aux*10+digito;
 	}
 	return aux;
@@ -581,7 +639,7 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 		}
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
-		*tamanio=ObtenerTamanio(bufferAux,digTamanio);
+		*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
 
 
 
@@ -597,10 +655,10 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 
 		if(*cantRafaga==3){
 
-			bufferAux = realloc(bufferAux,100* sizeof(char));
-			memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con ceros.
+			bufferAux = realloc(bufferAux,200* sizeof(char));
+			memset(bufferAux, 0, 200 * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
-			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 100, 0)) == -1) {
+			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 200, 0)) == -1) {
 				Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 			}
 
