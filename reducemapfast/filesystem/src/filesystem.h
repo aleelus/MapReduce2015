@@ -51,7 +51,7 @@ typedef enum {
 	NoSePuedeObtenerNodos,
 	NosePuedeCrearHilo,
 	OtroError,
-} error;							//Tipo error
+} t_error;							//Tipo error
 
 
 typedef struct {
@@ -112,7 +112,7 @@ t_list *lista_filesystem;					//Lista para la estructura del filesystem
 //FUNCIONES
 struct configuracion configuracion;					//Datos de configuracion
 void mostrarAyuda();								//Mostrar ayuda
-void mostrarError(error unError);					//Mostrar error
+void mostrarError(t_error unError);					//Mostrar error
 void ejecutarComando(int);							//Ejecutar un comando
 void formatearMDFS();								//Formatear el MDFS
 void procesarArchivo();								//Procesar archivo
