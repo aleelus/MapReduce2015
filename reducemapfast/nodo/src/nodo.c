@@ -193,33 +193,6 @@ int tamanio_archivo(char* nomArch){
 	return buf.st_size;
 }
 
-void mapeo(){
-
-	char* mapeo;
-	//int tamanio;
-
-	//char* nombre_archivo = "arch.dat";
-
-	if(( archivoEspacioDatos = fopen (g_Archivo_Bin, "rb") ) == NULL){
-		//Si no se pudo abrir, imprimir el error y abortar;
-		fprintf(stderr, "Error al abrir el archivo '%s': %s\n", g_Archivo_Bin, strerror(errno));
-		abort();
-	}
-	int mapper= fileno(archivoEspacioDatos);
-	//tamanio = tamanio_archivo(mapper);
-	if( (mapeo = mmap( NULL, TAMANIO_BLOQUE, PROT_READ, MAP_SHARED, mapper, 0 )) == MAP_FAILED){
-		//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
-		fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
-		abort();
-	}
-	printf ("Tamaño leido: %d\nContenido:'%s'\n", TAMANIO_BLOQUE, mapeo);
-
-	//Seamos prolijos
-	munmap( mapeo, TAMANIO_BLOQUE );
-	//fclose(mapper);
-	//Libero lo mapeado y no cierro el archivo aca xq lo cierro en el main.
-	}
-
 char* getBloque(int numero){
 	char* bloque;
 	int fd= fileno(archivoEspacioDatos);
@@ -288,23 +261,30 @@ void setBloque(int numero, char*datos){
 
 } */
 
+char * armarRutaTemporal( char *nombre){
+		//static char ruta[] = g_Dir_Temp;
+		char* nombreT = string_new();
+		//string_append(&nombreT,ruta);
+		string_append(&nombreT,g_Dir_Temp);
+		string_append(&nombreT,"/");
+		string_append(&nombreT,nombre);
+		char fname[PATH_MAX];
+		strcpy(fname,nombreT);
+		return fname;
+}
+
 
 char * getFileContent(char* nombre){
 	FILE* archivoTemporal;
-	static char ruta[] = "/tmp";
-	char* nombreT = string_new();
-	string_append(&nombreT,ruta);
-	string_append(&nombreT,"/");
-	string_append(&nombreT,nombre);
-	char fname[PATH_MAX];
-	strcpy(fname,nombreT);
+
+	char* fname = armarRutaTemporal(nombre);
 	printf("%s \n",fname);
 	char* contenido= malloc(tamanio_archivo(fname));
 	//Busca el archivo temporal nombre y devuelve su contenido
 	if(( archivoTemporal = fopen(fname, "r+b") ) == NULL){
 			//Si no se pudo abrir, imprimir el error y abortar;
 			fprintf(stderr, "Error al abrir el archivo '%s': %s\n", fname, strerror(errno));
-			abort();
+			return NULL;
 		}
 	fread(contenido, sizeof(char),tamanio_archivo(fname),archivoTemporal);
 	printf("Filename is %s\n", fname);
@@ -696,7 +676,43 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	*cantRafaga=1;
 }
 
-int procesarRutina(t_job * job){
+void AtiendeJobSinCombiner (t_job ** job,char *buffer, int *cantRafaga){
+	//Cadena recibida del Job
+	// A NODO => 2312 15NodoA  13 215resultado00.txt     215resultado01.txt    1215resultado02.txt     15NodoA212192.168.1.27146000
+	//         15NodoC  11 215resultado03.txt     15NodoC212192.168.1.27146000
+	//semaforo
+	estado = 1;
+	char *nArchivoSH;
+	int digitosCantDeDigitos=0,tamanioSH,digitosCantDeDigitosSH;
+	char * el_Bloque;
+	int posActual=0;
+	char * fileSH,*nArchivoResultado;
+
+	digitosCantDeDigitosSH=PosicionDeBufferAInt(buffer,2);
+	//printf("Cantidad Digitos de tamaño de contenido SH:%d\n",digitosCantDeDigitosSH);
+	tamanioSH=ObtenerTamanio(buffer,3,digitosCantDeDigitosSH);
+	//printf("Tamanio del SH: %d\n",tamanioSH);
+	posActual=2+digitosCantDeDigitos;
+
+	fileSH=DigitosNombreArchivo(buffer,&posActual);
+	//printf("Contenido de archivo SH:%s\n",fileSH);
+
+	nArchivoSH=DigitosNombreArchivo(buffer,&posActual);
+	//printf("Nombre Archivo SH:%s\n",nArchivoSH);
+
+	//printf("Posicion Actual:%d\n",posActual);
+	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
+	el_Bloque=DigitosNombreArchivo(buffer,&posActual);
+	printf("bloque: %s\n",el_Bloque);
+
+	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
+	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
+
+	*job = job_create(nArchivoSH,fileSH,el_Bloque,nArchivoResultado);
+	*cantRafaga=1;
+}
+
+int procesarRutinaMap(t_job * job){
 	grabarScript(job->nombreSH,job->contenidoSH);
 	//Creo el script y grabo el contenido.
 
@@ -722,20 +738,54 @@ int procesarRutina(t_job * job){
 
 }
 
+int procesarRutinaReduceCombiner(t_job * job){
+	grabarScript(job->nombreSH,job->contenidoSH);
+	//Creo el script y grabo el contenido.
+
+	permisosScript(job->nombreSH);
+		//Doy permisos de ejecucion al script
+
+	char* contenidoArchivo = getFileContent(job->bloque);
+	if (contenidoArchivo == NULL){
+		//Error al traer el contenido del archivo
+		return 0;
+	}
+	//Obtengo el contendio del archivo temporal solicitado.
+
+	//Ejecuto el script sobre el contenido del archivo temporal
+	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoArchivo)){
+		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
+		if (contenidoArchivo != NULL){
+			free(contenidoArchivo);
+		}
+		return 1;
+	} else {
+		//Si algo fallo devuelvo 0
+		return 0;
+	}
+
+}
+
+
+int procesarRutinaReduceSinCombiner(t_jobComb * job){
+	//Falta implementar
+	return 1;
+}
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	t_job * job;
+	t_jobComb * jobC;
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 	printf("RAFAGA:%d\n",tipo_mensaje);
 	if(*cantRafaga == 2){
 		switch(tipo_mensaje){
-		case RECIBIR_TRABAJO:
+		case MAPPING:
 			AtiendeJob(&job,buffer,cantRafaga);
 			printf("Nombre de SH:%s\n",job->nombreSH);
 			printf("Contenido de SH:%s\n",job->contenidoSH);
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
-			if(procesarRutina(job)){ //Proceso la rutina, falta diferenciar map y reduce.
+			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
 				*mensaje = "31";
 			} else {
@@ -743,6 +793,35 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				*mensaje = "30";
 			}
 			break;
+		case REDUCE_COMBINER:
+					AtiendeJob(&job,buffer,cantRafaga);
+					printf("Nombre de SH:%s\n",job->nombreSH);
+					printf("Contenido de SH:%s\n",job->contenidoSH);
+					printf("Archivo:%s\n",job->bloque);
+					printf("Nombre de Resultado:%s\n",job->nombreResultado);
+					if(procesarRutinaReduceCombiner(job)){ //Proceso la rutina de reduce con combiner.
+						//Pudo hacerla
+						*mensaje = "31";
+					} else {
+						//No pudo hacerla
+						*mensaje = "30";
+					}
+					break;
+
+		case REDUCE_SIN_COMBINER:
+							AtiendeJobSinCombiner(&job,buffer,cantRafaga);
+							printf("Nombre de SH:%s\n",job->nombreSH);
+							printf("Contenido de SH:%s\n",job->contenidoSH);
+							printf("Archivo:%s\n",job->bloque);
+							printf("Nombre de Resultado:%s\n",job->nombreResultado);
+							if(procesarRutinaReduceSinCombiner(jobC)){ //Proceso la rutina, reduce sin combiner.
+								//Pudo hacerla
+								*mensaje = "31";
+							} else {
+								//No pudo hacerla
+								*mensaje = "30";
+							}
+							break;
 		default:
 			break;
 		}

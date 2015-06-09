@@ -44,7 +44,10 @@
 #define ES_NODO 3
 
 //Tipos de Mensajes del Job
-#define RECIBIR_TRABAJO 1
+#define MAPPING 1
+#define REDUCE_COMBINER 2
+#define REDUCE_SIN_COMBINER 3
+
 #define NOTIFICACION_NODO 2
 #define RECIBIDO_OK 3
 
@@ -107,39 +110,9 @@ void HiloOrquestadorDeConexiones();
 #define MSJ_ESCRIBIR_BLOQUE      2
 #define MSJ_GET_TEMP             3
 
-// Archivo para Espacio de Datos
-FILE * archivoEspacioDatos;
-
-//FUNCIONES //
-void GrabarBloque();
-void mapeo();
-int conectarFS(int*_Fs,char*,char*);
-void conexionAFs();
-char* RecibirDatos(int, char *, int *,int *,int *);
-int EnviarDatos(int , char *, int);
-int runScriptFile(char* script,char* archNom, char* input);
-void grabarScript(char* nombreScript, char* codigoScript);
-
-// METODOS CONFIGURACION //
-void LevantarConfig();
-
-// METODOS MANEJO DE ERRORES //
-void Error(const char* mensaje, ...);
-
-//Mensaje de error global.
-char* g_MensajeError;
-
-// Logger del commons
-t_log* logger;
-
-int pagina;  //Tamanio paginas Mapeo
-
-//Funciones interfaz FileSystem
-char* getBloque(int numero);
-void setBloque(int numero, char*datos);
-char * getFileContent(char* nombre);
-
 //Estructura Datos del Job
+
+//Para mapping y reduce con combiner
 typedef struct{
     char *nombreSH;
     char *contenidoSH;
@@ -155,6 +128,103 @@ static t_job *job_create(char *nSH, char* contenidoSH, char* el_Bloque, char * n
 	new->nombreResultado = strdup(nResultado);
 	return new;
 }
+
+//Para reduce sin combiner
+typedef struct{
+    char *nombreSH;
+    char *contenidoSH;
+    t_list *listaArchivos;
+    char *nombreResultado;
+}t_jobComb;
+
+static t_jobComb *jobComb_create(char *nSH, char* contenidoSH, t_list* listaNodoArch, char * nResultado) {
+	t_jobComb *new = malloc(sizeof(t_jobComb));
+	new->nombreSH = strdup(nSH);
+	new->contenidoSH = strdup(contenidoSH);
+	new->listaArchivos = listaNodoArch;
+	new->nombreResultado = strdup(nResultado);
+	return new;
+}
+
+typedef struct {
+	char* nomNodo;
+	char* nomArchT;
+} t_NodoArch;
+
+static t_NodoArch *nodoArch_create(char* nodo, char* archivo){
+	t_NodoArch *new = malloc(sizeof(t_NodoArch));
+	new->nomNodo = strdup(nodo);
+	new->nomArchT = strdup(archivo);
+	return new;
+}
+
+static t_list *crear_lista_nodoArch(){
+	t_list *lista = list_create();
+	return lista;
+}
+
+static t_list *agregar_nodoArch(t_list* lista, char* nNodo, char* nArchivo){
+		list_add(lista,nodoArch_create(nNodo, nArchivo));
+	return lista;
+}
+
+
+
+// Archivo para Espacio de Datos
+FILE * archivoEspacioDatos;
+
+//FUNCIONES //
+char* obtenerSubBuffer(char *nombre);
+int cuentaDigitos(int valor);
+int tamanio_archivo(char* nomArch);
+void permisosScript(char * nombre);
+int enviarDatos(int socket, void *buffer); //Hay dos enviar?
+
+int conectarFS(int*_Fs,char*,char*);
+void conexionAFs();
+char* RecibirDatos(int, char *, int *,int *,int *);
+int EnviarDatos(int , char *, int);
+void CerrarSocket(int socket);
+int ObtenerComandoMSJ(char* buffer);
+char* DigitosNombreArchivo(char *buffer,int *posicion);
+void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga);
+int runScriptFile(char* script,char* archNom, char* input);
+void grabarScript(char* nombreScript, char* codigoScript);
+char * armarRutaTemporal( char *nombre);
+int procesarRutinaMap(t_job * job);
+int procesarRutinaReduceCombiner(t_job * job);
+int procesarRutinaReduceSinCombiner(t_jobComb * job);
+void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje);
+void implementoFS(char * buffer,int *cantRafaga,char** mensaje);
+int AtiendeCliente(void * arg);
+int ChartToInt(char x);
+int PosicionDeBufferAInt(char* buffer, int posicion);
+int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio);
+
+
+
+
+
+// METODOS CONFIGURACION //
+void LevantarConfig();
+
+// METODOS MANEJO DE ERRORES //
+void Error(const char* mensaje, ...);
+void SetearErrorGlobal(const char* mensaje, ...);
+void ErrorFatal(const char* mensaje, ...);
+
+//Mensaje de error global.
+char* g_MensajeError;
+
+// Logger del commons
+t_log* logger;
+
+int pagina;  //Tamanio paginas Mapeo
+
+//Funciones interfaz FileSystem
+char* getBloque(int numero);
+void setBloque(int numero, char*datos);
+char * getFileContent(char* nombre);
 
 //Defines de los pipes
 /* since pipes are unidirectional, we need two pipes.
