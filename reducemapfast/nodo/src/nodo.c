@@ -312,7 +312,7 @@ char * getFileContent(char* nombre){
 	return contenido;
 }
 
-void ejecutarScript (char* scriptName,char* outputFilename,char* input)
+/* void ejecutarScript (char* scriptName,char* outputFilename,char* input)
 {
 FILE *stdin;
 char *comandoScript = string_new();
@@ -345,6 +345,16 @@ fprintf (stderr,
 free(comandoScript);
 free(cambioModo);
 }
+*/
+
+void permisosScript(char * nombre){
+	char *cambioModo = string_new();
+	string_append(&cambioModo, "chmod u+x ");
+	string_append(&cambioModo, nombre);
+	//chmod u+x script.sh
+	//doy permisos de ejecucion al script
+	system(cambioModo);
+}
 
 int enviarDatos(int socket, void *buffer) {
 	int bytecount;
@@ -359,53 +369,61 @@ int enviarDatos(int socket, void *buffer) {
 	return (bytecount);
 }
 
-int pipesPrueba(void)
+int runScriptFile(char* script,char* archNom, char* input)
 {
-        int fd[2], nbytes, temp;
-        pid_t   childpid;
-        char*    string = "Hello, world!\nBomba la loca \nAloha manola\n";
-        char    readbuffer[80];
-        static char template[] = "/tmp/mytemporalXXXXXX";
-        char fname[PATH_MAX];
+    int outfd[2];
+    int infd[2];
 
-        pipe(fd);
+    // pipes for parent to write and read
+    pipe(pipes[PARENT_READ_PIPE]);
+    pipe(pipes[PARENT_WRITE_PIPE]);
 
-        if((childpid = fork()) == -1)
-        {
-                perror("fork");
-                exit(1);
+    if(!fork()) {
+
+
+        dup2(CHILD_READ_FD, STDIN_FILENO);
+        dup2(CHILD_WRITE_FD, STDOUT_FILENO);
+
+        /* Close fds not required by child. Also, we don't
+           want the exec'ed program to know these existed */
+        close(CHILD_READ_FD);
+        close(CHILD_WRITE_FD);
+        close(PARENT_READ_FD);
+        close(PARENT_WRITE_FD);
+        execl(script, script, (char*) 0);
+    } else {
+        char* buffer= malloc(50); //definir el tamanio de este buffer
+        int count;
+
+        /* close fds not required by parent */
+        close(CHILD_READ_FD);
+        close(CHILD_WRITE_FD);
+        //printf("lo que se va a escribir es %s y la longitud es %d\n", input, strlen(input));
+        // Write to child’s stdin
+
+        if (write(PARENT_WRITE_FD, input, (strlen(input)+1)) == -1){
+        	return 0;
         }
 
-        if(childpid == 0)
-        {
-                /* Proceso hijo cierra la entrada del pipe */
-                close(fd[0]);
-
-                /* Manda 'string' por la salida del pipe*/
-                write(fd[1], string, (strlen(string)+1));
-
-
-
-                close(fd);				/* Cierro el temporal */
+        close(PARENT_WRITE_FD);
+        count = 1;
+        FILE* archSalida = fopen(archNom, "w");
+        while(count != 0){
+        	// Read from child’s stdout
+        	        count = read(PARENT_READ_FD, buffer, sizeof(buffer)-1);
+        	        if (count >= 0) {
+        	            buffer[count] = 0;
+        	            fwrite(buffer,sizeof(char),strlen(buffer),archSalida);
+        	            //printf("lo que se grabo %s\n", buffer);
+        	        } else {
+        	            printf("IO Error\n");
+        	            return 0;
+        	        }
         }
-        else
-        {
-                /* Proceso padre cierra la salida del pipe */
-                close(fd[1]);
-                /* Leo un string por el pipe */
-                nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
-                /* Creo un archivo temporal a donde voy a hacer sort*/
-                strcpy(fname,template);
-                temp =  mkstemp(fname);
-                write(temp, string, (strlen(string)+1));
-                printf("Filename is %s\n", fname);
-                printf("Received string: %s", readbuffer);
-                /* Ejecuto sort sobre el archivo temporal*/
-                execlp("sort","sort",fname,NULL);
-        }
-        return(0);
+
+    }
+    return 1;
 }
-
 
 #if 1 // METODOS CONFIGURACION //
 void LevantarConfig() {
@@ -679,7 +697,29 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 }
 
 int procesarRutina(t_job * job){
-	return 1;
+	grabarScript(job->nombreSH,job->contenidoSH);
+	//Creo el script y grabo el contenido.
+
+	int numBloque = ChartToInt(job->bloque);
+	char* contenidoBloque = malloc(TAMANIO_BLOQUE);
+	contenidoBloque= getBloque(numBloque);
+	//Obtengo el contendio del numero de bloque solicitado.
+
+	permisosScript(job->nombreSH);
+	//Doy permisos de ejecucion al script
+
+	//Ejecuto el script sobre el bloque
+	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoBloque)){
+		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
+		if (contenidoBloque != NULL){
+			free(contenidoBloque);
+		}
+		return 1;
+	} else {
+		//Si algo fallo devuelvo 0
+		return 0;
+	}
+
 }
 
 
@@ -695,7 +735,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			printf("Contenido de SH:%s\n",job->contenidoSH);
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
-			if(procesarRutina(job)){ //Faltar armar esta funcion
+			if(procesarRutina(job)){ //Proceso la rutina, falta diferenciar map y reduce.
 				//Pudo hacerla
 				*mensaje = "31";
 			} else {

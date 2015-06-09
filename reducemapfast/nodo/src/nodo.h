@@ -117,6 +117,8 @@ int conectarFS(int*_Fs,char*,char*);
 void conexionAFs();
 char* RecibirDatos(int, char *, int *,int *,int *);
 int EnviarDatos(int , char *, int);
+int runScriptFile(char* script,char* archNom, char* input);
+void grabarScript(char* nombreScript, char* codigoScript);
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
@@ -154,3 +156,22 @@ static t_job *job_create(char *nSH, char* contenidoSH, char* el_Bloque, char * n
 	return new;
 }
 
+//Defines de los pipes
+/* since pipes are unidirectional, we need two pipes.
+   one for data to flow from parent's stdout to child's
+   stdin and the other for child's stdout to flow to
+   parent's stdin */
+
+#define NUM_PIPES          2
+#define PARENT_WRITE_PIPE  0
+#define PARENT_READ_PIPE   1
+int pipes[NUM_PIPES][2];
+
+/* always in a pipe[], pipe[0] is for read and
+   pipe[1] is for write */
+#define READ_FD  0
+#define WRITE_FD 1
+#define PARENT_READ_FD  ( pipes[PARENT_READ_PIPE][READ_FD]   )
+#define PARENT_WRITE_FD ( pipes[PARENT_WRITE_PIPE][WRITE_FD] )
+#define CHILD_READ_FD   ( pipes[PARENT_WRITE_PIPE][READ_FD]  )
+#define CHILD_WRITE_FD  ( pipes[PARENT_READ_PIPE][WRITE_FD]  )
