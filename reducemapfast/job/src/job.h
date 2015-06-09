@@ -89,6 +89,7 @@ char * g_Resultado;
 //Array de nombres de archivos
 char **array_archivos;
 
+//Flag de ejecución
 int g_Ejecutando = 1;
 
 // METODOS CONFIGURACION //

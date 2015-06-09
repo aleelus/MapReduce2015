@@ -25,31 +25,35 @@ int main(int argv, char** argc) {
 	//g_MensajeError = malloc(1 * sizeof(char));
 	//char* temp_file = tmpnam(NULL);
 
+	//Log de trabajo
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "job", true, LOG_LEVEL_TRACE);
+
+	//Buffers
 	char * buffer= string_new();
 	char *bufferRafaga_Dos=string_new();
 	char *bufferRafaga_Uno=string_new();
 	bufferANodo=string_new();
-	int cantidadRafagaMarta=1;
 
-
-	int tamanio=10,cantRafaga=1;
-	int bytesRecibidos;
-	int j=0,contadorArchivos=0;
-
+	//Flags
+	int cantidadRafagaMarta=1, cantRafaga=1;
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
 
-	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
+	//Tamaños iniciales y contadores
+	int tamanio=10;
+	int bytesRecibidos;
+	int j=0,contadorArchivos=0;
 
+	//Estructura para pasarle al nodo
+	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
 
+	// Contamos y separamos los archivos
 	obtenerArrayArchivos(&contadorArchivos);
-	//Agrego el nombre de Resultado al final de array_archivos
-	array_archivos[contadorArchivos]=g_Resultado;
-	//Muestro los archivos por pantalla
+
+	// Muestro los archivos por pantalla
 	printf("***********************\n");
 	for(j=0;j<contadorArchivos;j++){
 		printf("Archivo %d: %s\n",j,array_archivos[j]);
@@ -57,42 +61,51 @@ int main(int argv, char** argc) {
 	printf("Resultado: %s\n",array_archivos[contadorArchivos]);
 	printf("***********************\n");
 
-
+	// Creación de Buffer de archivos (2° ráfaga)
 	bufferRafaga_Dos=procesarArchivos(bufferRafaga_Dos,contadorArchivos);
+	
+	// Creación de Buffer de datos del buffer (1° ráfaga)
 	bufferRafaga_Uno=obtenerRafaga_Uno(bufferRafaga_Uno,bufferRafaga_Dos);
-
+	
+	// Muestro los buffers por pantalla
 	printf("=======> Buffer a Enviar a MaRTA RAFAGA 1=======> %s \n",bufferRafaga_Uno);
 	printf("=======> Buffer a Enviar a MaRTA RAFAGA 2=======> %s \n",bufferRafaga_Dos);
 
-
+	// Conexión con proceso Marta
 	conectarMarta();
+	
+	// Envío la primer ráfaga
 	EnviarDatos(socket_Marta,bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
 
+	// Escucho posibles entradas
 	while ((!desconexionCliente) && g_Ejecutando) {
 			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
+
+			// Buffers de envío y recepción
 			if (buffer != NULL )
 				free(buffer);
 			buffer = string_new();
 			bufferANodo=string_new();
 
-			//Recibimos los datos del cliente
-
+			// Recibimos los datos del cliente
 			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 			log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, buffer, tamanio);
 
+			// Control de recepción no vacía
 			printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
 
-				//printf("--------El BUFFER:%s\n",buffer);
+				//printf("--------El BUFFER:%s\n", buffer);
+				// Si el flag es correcto y Marta devolvió el Ok
 				if(cantidadRafagaMarta==3 && strcmp(buffer,"Ok")!=0){
 
 					printf("Recibe Planificacion de Marta: %s\n",buffer);
 
+					// Buffer para los nodos
 					el_job->buffer=string_new();
 					string_append(&el_job->buffer,buffer);
-
 
 					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
 					pthread_t hNuevoCliente;
@@ -105,8 +118,11 @@ int main(int argv, char** argc) {
 					//cantidadRafagaMarta=1;
 				}
 				else if(cantidadRafagaMarta==2){
+					// Envío la segunda ráfaga
 					EnviarDatos(socket_Marta,bufferRafaga_Dos, strlen(bufferRafaga_Dos));
 					//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Dos, strlen(bufferRafaga_Dos));
+
+					// Cambio de flags
 					cantidadRafagaMarta=3;
 					cantRafaga=3;
 
@@ -605,6 +621,7 @@ void obtenerArrayArchivos(int *contadorArchivos){
 				}
 				cont++;
 		}
+		array_archivos[*contadorArchivos]=g_Resultado;
 		free(aux);
 		free(array);
 
@@ -640,8 +657,6 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
 		*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
-
-
 
 	}else if(*cantRafaga==2){
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
@@ -694,29 +709,29 @@ void conectarMarta() {
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON MARTA
 	log_info(logger, "Intentando conectar a Marta\n");
 	//char * puerto = "7000";
-	//conectar con Marta
-	struct addrinfo hints;
-	struct addrinfo *serverInfo;
+	
+	struct addrinfo infoLocal;
+	struct addrinfo *infoMarta;
 
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
-	hints.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
+	memset(&infoLocal, 0, sizeof(infoLocal));
+	infoLocal.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
+	infoLocal.ai_socktype = SOCK_STREAM;	// Indica que usaremos el protocolo TCP
 
 
-	if (getaddrinfo(g_Ip_Marta, g_Puerto_Marta, &hints, &serverInfo) != 0) {// Carga en serverInfo los datos de la conexion
+	if (getaddrinfo(g_Ip_Marta, g_Puerto_Marta, &infoLocal, &infoMarta) != 0) {// Carga en serverInfo los datos de la conexion
 		log_error(logger,
 				"Error de carga de datos de conexion en socket_Marta");
 	}
 
-	if ((socket_Marta = socket(serverInfo->ai_family, serverInfo->ai_socktype,
-			serverInfo->ai_protocol)) < 0) {
+	if ((socket_Marta = socket(infoMarta->ai_family, infoMarta->ai_socktype,
+			infoMarta->ai_protocol)) < 0) {
 		log_error(logger, "Error en la creación del socket_Marta");
 	}
-	if (connect(socket_Marta, serverInfo->ai_addr, serverInfo->ai_addrlen)
+	if (connect(socket_Marta, infoMarta->ai_addr, infoMarta->ai_addrlen)
 			< 0) {
 		log_error(logger, "Error al conectar con socket_Marta");
 	}
-	freeaddrinfo(serverInfo);	// No lo necesitamos mas
+	freeaddrinfo(infoMarta);	// No lo necesitamos mas
 
 }
 
@@ -731,14 +746,12 @@ void LevantarConfig() {
 		// Obtenemos la ip de Marta
 		if (config_has_property(config, "IP_MARTA")) {
 			g_Ip_Marta = config_get_string_value(config, "IP_MARTA");
-			//printf("IP:%s",g_Ip_Marta);
 		} else
 			Error("No se pudo leer el parametro IP_MARTA");
 
 		// Obtenemos el puerto de escucha de Marta
 		if (config_has_property(config, "PUERTO_MARTA")) {
 			g_Puerto_Marta = config_get_string_value(config,"PUERTO_MARTA");
-			//printf("IP:%d",g_Puerto_Marta);
 		} else
 			Error("No se pudo leer el parametro PUERTO_MARTA");
 
