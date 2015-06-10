@@ -16,7 +16,8 @@
 
 int main(int argv, char** argc) {
 
-	leer_config();						// Abrir Archivo de Configuracion
+	levantarConfig();
+	nroBloque=0;
 
 	nombre = string_new();				//Variable del nombre de los nodos
 

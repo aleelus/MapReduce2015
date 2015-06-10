@@ -53,6 +53,14 @@ typedef enum {
 	OtroError,
 } t_error;							//Tipo error
 
+typedef struct {
+
+ char *nombre;
+ char *bloqueArchivo;
+ char *nombreArchivo;
+ int padre;
+
+}t_array_nodo;
 
 typedef struct {
 	char * nombre;
@@ -60,15 +68,12 @@ typedef struct {
 	char * puerto;
 	char * tamanio;
 	int estado;
+	t_list* bloquesDisponibles;
 } t_nodo;							//Tipo nodo
 
-struct configuracion {
-	int puerto_listen;
-	int cantidadNodos;
-};									//Tipo configuracion
-
-
-
+typedef struct {
+	int bloque;
+}t_bloque_disponible;
 
 typedef struct {
 	char *nombreNodo;
@@ -84,10 +89,11 @@ typedef struct {
 typedef struct{
     char *nombreArchivo;
     int padre;			//directorio padre
-    char *tamanio;
+    long unsigned tamanio;
     int estado; 			//0: no disponible 1: disponible
     t_list *listaBloques;
 }t_archivo;						//Tipo Archivo
+
 
 typedef struct{
     int index;
@@ -95,7 +101,12 @@ typedef struct{
     int padre;
 }t_filesystem;						//Tipo de estructura de File System
 
-
+typedef struct{
+	char* buffer;
+	char* ip;
+	char* puerto;
+	int bloque;
+} t_envio_nodo;
 
 
 //Variables globales
@@ -106,16 +117,20 @@ char * nombre;
 t_list *lista_archivos;						//Lista de Archivos
 FILE* g_ArchivoConsola;						// Archivo donde descargar info impresa por consola
 char* g_MensajeError;						//Mensaje de error global.
-pthread_t hOrquestadorConexiones, hConsola;	// Definimos los hilos principales
+pthread_t hOrquestadorConexiones, hConsola, hNodos;	// Definimos los hilos principales
 t_list *lista_filesystem;					//Lista para la estructura del filesystem
+int fs_Puerto;
+int fs_CantidadNodos;
+t_archivo * archivo;
+int nroBloque;
+t_list ** arrayNodos;
 
 //FUNCIONES
-struct configuracion configuracion;					//Datos de configuracion
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(t_error unError);					//Mostrar error
 void ejecutarComando(int);							//Ejecutar un comando
 void formatearMDFS();								//Formatear el MDFS
-void procesarArchivo();								//Procesar archivo
+int procesarArchivo();								//Procesar archivo
 void procesarDirectorio();							//Procesar directorio
 void copiarLocalAlMFDS(); 							//Copiar archivo local al MDFS
 void copiarMDFSalFilesystem();						//Copiar archivo del MDFS al Filesystem
@@ -125,7 +140,7 @@ int  agregarNodo();									//Agregar un nodo
 void eliminarNodo();								//Eliminar un nodo
 void comandoDesconocido(); 							//Comando desconocido
 
-int  leer_config();									//Leer archivo de configuracion
+void levantarConfig();									//Leer archivo de configuracion
 int  conectar_marta();								//Conectar a marta
 int  operaciones_consola();							//Operaciones de la consola
 void iniciar_mongo();								//Inicar Mongo DB		
@@ -166,12 +181,14 @@ void  Comenzar_Consola() ;
 void  Error(const char* mensaje, ...);
 void  RecorrerListaNodos();
 int   operaciones_consola();
-t_bloque *bloque_create(int bloque, t_array_copias *array);
-t_archivo *archivo_create(char*,char*,int,int);
+t_bloque *bloque_create(int bloque);
+t_archivo *archivo_create(char*,long unsigned,int,int);
 t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tamanio, int activo);
 t_nodo* buscarNodo(char*,char*);
 t_filesystem* filesystem_create(int,char*,int);
 void bloque_destroy(t_bloque*);
 void filesystem_destroy(t_filesystem*);
 void archivo_destroy(t_archivo*);
-
+t_array_nodo *array_nodo_create(char *);
+t_envio_nodo *envio_nodo_create(char *,char*,char*,int);
+t_array_copias* array_copias_create(char* nombre, int bloque);
