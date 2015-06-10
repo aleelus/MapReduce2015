@@ -117,11 +117,13 @@ int id_job=0;
 //ESTRUCTURAS//
 typedef struct{
 	char *bloque;
+	char *resultadoParcial;
 }t_job_enviado_bloque;
 
-static t_job_enviado_bloque *job_enviado_bloque_create(char *bloque) {
+static t_job_enviado_bloque *job_enviado_bloque_create(char *bloque,char* res) {
 	t_job_enviado_bloque *new = malloc(sizeof(t_job_enviado_bloque));
 	new->bloque=strdup(bloque);
+	new->resultadoParcial=strdup(res);
 	return new;
 }
 
@@ -131,18 +133,20 @@ typedef struct{
 	char*bloque;
 	char *archivo;
 	int estado;
+	char *resultadoParcial;
 	t_list *listaBloques;
 }t_job_enviado;
 
 t_list *lista_job_enviado;
 
 
-static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo) {
+static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo,char* res) {
 	t_job_enviado *new = malloc(sizeof(t_job_enviado));
 	new->nodo=strdup(nodo);
 	new->bloque=strdup(bloque);
 	new->archivo=strdup(archivo);
 	new->estado=0;
+	new->resultadoParcial=strdup(res);
 	new->listaBloques=list_create();
 	return new;
 }
