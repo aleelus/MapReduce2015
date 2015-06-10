@@ -32,7 +32,7 @@
 #define NOMBRE_ARCHIVO_LOG 		"fs.log"			//Nombre de archivo de log
 #define MAXLINEA				4096				//Maximo de linea de configuracion
 #define MAXNODOS				5					//Tamanio maximo del nombre de nodo
-#define TAMANIO_BLOQUE			20480				//Tamanio maximo de bloque
+#define TAMANIO_BLOQUE			20971520			//Tamanio maximo de bloque
 #define MAXDIRECTORIOS			1024				//Cantidad maxima de directorios
 #define TAMANIO_IP				16					//un string ejempl 192.168.001.123
 #define	ES_MARTA				4					//emisor de mensaje Marta
@@ -192,3 +192,4 @@ void archivo_destroy(t_archivo*);
 t_array_nodo *array_nodo_create(char *);
 t_envio_nodo *envio_nodo_create(char *,char*,char*,int);
 t_array_copias* array_copias_create(char* nombre, int bloque);
+t_bloque_disponible *bloque_disponible_create(int);

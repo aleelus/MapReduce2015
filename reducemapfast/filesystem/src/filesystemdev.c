@@ -349,8 +349,11 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
 
 	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) buffer);
+	if(strlen(buffer)<50){
+		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
+	} else {
+		printf("Buffer muy grande\n");
+	}
 
 	return bytecount;
 }
@@ -663,6 +666,15 @@ t_nodo * buscarNodo(char* ipNodo,char* puertoNodo){
 	return el_nodo;
 }
 
+void cargarListaBloquesDisponibles(t_nodo* nodo){
+	int i,cantBloques = atoi(nodo->tamanio)/TAMANIO_BLOQUE;//controla que sea entero
+	printf("Cantidad Bloques:%d",cantBloques);
+	t_bloque_disponible * bloque;
+	for(i=0;i<cantBloques;i++){
+		bloque = bloque_disponible_create(i);
+		list_add(nodo->bloquesDisponibles,bloque);
+	}
+}
 
 int agregarNodo(){
 	char * ipNodo = malloc(TAMANIO_IP);
@@ -680,8 +692,14 @@ int agregarNodo(){
 	el_nodo = buscarNodo(ipNodo,puertoNodo);
 
 	if(el_nodo!=NULL){
-		printf("\nNodo %s Habilitado!\n",el_nodo->nombre);
-		el_nodo->estado = 1;
+		if(el_nodo->estado==-1){
+			printf("\nVolvio a habilitarse el %s !\n",el_nodo->nombre);
+			el_nodo->estado = 1;
+		} else {
+			printf("\n%s Habilitado!\n",el_nodo->nombre);
+			el_nodo->estado = 1;
+			cargarListaBloquesDisponibles(el_nodo);
+		}
 		return 1;
 	} else {
 		printf("\nNo se pudo habilitar el nodo porque no existe\n");
@@ -843,6 +861,12 @@ void llenarArrayDeNodos (){
         }
 
     }
+    for(i=0;i<list_size(lista_nodos);i++){
+    	if(list_size(arrayNodos[i])>0){
+    		el_array_nodo = list_get(arrayNodos[i],0);
+    		printf("%s\n",el_array_nodo->nombre);
+    	}
+    }
 }
 
 void ordenarArrayNodos(){
@@ -887,24 +911,40 @@ void eliminarNodo (){
 
     t_nodo *el_nodo;
     int i=0,eleccion=0;
+    int bandera=0;
 
     while(i<list_size(lista_nodos)){
         el_nodo=list_get(lista_nodos,i);
-
-        printf("Nro (%d)",i);
-        printf("Nodo%s\n",el_nodo->nombre);
-        printf("IP: %s\n",el_nodo->ip);
-        printf("Puerto: %s\n",el_nodo->puerto);
+        if(el_nodo->estado==1){
+			printf("Nro (%d)\n",i);
+			printf("%s\n",el_nodo->nombre);
+			printf("IP: %s\n",el_nodo->ip);
+			printf("Puerto: %s\n",el_nodo->puerto);
+			bandera=1;
+        }
+		i++;
+    }
+    if(bandera==1){
+    	printf("Elija el Nro de nodo a eliminar: ");
+    	scanf("%d",&eleccion);
+    	if(eleccion>=0 && eleccion<i){
+    		el_nodo=list_get(lista_nodos,eleccion);
+    		el_nodo->estado=-1;
+    	}
+    } else {
+    	printf("No hay nodos disponibles para eliminar\n");
+    }
+    i=0;
+    while(i<list_size(lista_nodos)){
+    	el_nodo=list_get(lista_nodos,i);
+    	if(el_nodo->estado==1){
+			printf("Nro (%d)\n",i);
+			printf("%s\n",el_nodo->nombre);
+			printf("IP: %s\n",el_nodo->ip);
+			printf("Puerto: %s\n",el_nodo->puerto);
+    	}
         i++;
     }
-
-    printf("Elija el Nro de nodo a eliminar: ");
-    scanf("%d",&eleccion);
-    if(eleccion>0 && eleccion<i){
-        el_nodo=list_get(lista_nodos,eleccion);
-        el_nodo->estado=0;
-    }
-
 
 }
 
@@ -919,10 +959,12 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	string_append(&buffer2,"13");
 	string_append(&buffer2,obtenerSubBuffer(string_itoa(envio_nodo->bloque)));
 	string_append(&buffer2,obtenerSubBuffer(envio_nodo->buffer));
+	//printf("SEGUNDA RAFAGA:%s\n",buffer2);
 	//Primer Rafaga
 	string_append(&buffer1,"1");
-	string_append(&buffer1,string_itoa(cuentaDigitos(strlen(envio_nodo->buffer))));
-	string_append(&buffer1,string_itoa(strlen(envio_nodo->buffer)));
+	string_append(&buffer1,string_itoa(cuentaDigitos(strlen(buffer2))));
+	string_append(&buffer1,string_itoa(strlen(buffer2)));
+	//printf("PRIMERA RAFAGA:%s\n",buffer1);
 	EnviarDatos(socket,buffer1,strlen(buffer1));
 	RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	EnviarDatos(socket,buffer2,strlen(buffer2));
@@ -1257,7 +1299,7 @@ t_array_nodo *array_nodo_create(char *nombre) {
 
 t_envio_nodo *envio_nodo_create(char *buffer, char* ip, char* puerto, int bloque) {
     t_envio_nodo *new = malloc(sizeof(t_envio_nodo));
-    new->buffer=strdup(nombre);
+    new->buffer=strdup(buffer);
     new->ip=strdup(ip);
     new->puerto=strdup(puerto);
     new->bloque = bloque;

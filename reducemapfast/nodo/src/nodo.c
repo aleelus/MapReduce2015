@@ -841,15 +841,6 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje){
 		if(*cantRafaga == 2){
 			switch(tipo_mensaje){
 			case GET_BLOQUE:
-			//	AtiendeJob(&job,buffer,cantRafaga);
-			//	printf("Nombre de SH:%s\n",job->nombreSH);
-			//	printf("Contenido de SH:%s\n",job->contenidoSH);
-			//	printf("Numero de bloque:%d\n",job->numeroBloque);
-			//	printf("Nombre de Resultado:%s\n",job->nombreResultado);
-			//	*cantRafaga=0;
-				//ObtenerInfoDeNodos(*id);
-				//Planificar(*id);
-				//EnviarPlanificacionAJob(id);
 				*cantRafaga=1;
 				break;
 			case SOLICITUD_DE_CONEXION:
@@ -859,6 +850,8 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje){
 				}
 				break;
 			case SET_BLOQUE:
+				printf("Proceso Bloque\n");
+				*cantRafaga=1;
 				break;
 			default:
 				break;
