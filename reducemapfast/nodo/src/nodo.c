@@ -268,7 +268,7 @@ char * armarRutaTemporal( char *nombre){
 		string_append(&nombreT,g_Dir_Temp);
 		string_append(&nombreT,"/");
 		string_append(&nombreT,nombre);
-		char fname[PATH_MAX];
+		char* fname= malloc(PATH_MAX);
 		strcpy(fname,nombreT);
 		return fname;
 }
@@ -639,6 +639,37 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 	return nombreArch;
 }
 
+void AtiendeFS (t_bloque ** bloque,char *buffer){
+	//SET_BLOQUE
+	//BUFFER RECIBIDO = 13210820971520
+	//--- 1: soy FS 3: quiero un set bloque 2:cant digitos numero bloque 10:numero de bloque a grabar
+	// 8: cant de dig de tamanio de lo que necesitamos que grabe 20971520: tamaño en bytes
+		//semaforo
+		estado = 1;
+		char *contenidoBloq;
+		int digitosCantDeDigitos=0,numeroBloq,digitosCantDeDigitosBloque;
+		int digitosCantDeDigitosTamanioBloq,tamanioBloque;
+		int posActual=0;
+
+
+		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,2);
+		//printf("Cantidad Digitos del numero de bloque:%d\n",digitosCantDeDigitosBloque);
+		numeroBloq=ObtenerTamanio(buffer,3,digitosCantDeDigitosBloque);
+		//printf("Numero de bloque: %d\n",numeroBloque);
+		posActual=2+digitosCantDeDigitosBloque;
+
+		digitosCantDeDigitosTamanioBloq = PosicionDeBufferAInt(buffer,posActual);
+		//printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
+		tamanioBloque= ObtenerTamanio(buffer,3,digitosCantDeDigitosTamanioBloq);
+		//printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
+		posActual=2+digitosCantDeDigitosTamanioBloq;
+
+		contenidoBloq=DigitosNombreArchivo(buffer,&posActual);
+		//printf("Contenido del bloque:%s\n",contenidoBloq);
+
+		*bloque = bloque_create(numeroBloq,contenidoBloq);
+
+}
 
 void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//Cadena recibida del Job
@@ -731,7 +762,7 @@ int procesarRutinaMap(t_job * job){
 	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoBloque)){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
 		if (contenidoBloque != NULL){
-			free(contenidoBloque);
+			//free(contenidoBloque); //rompe si dejo el free.
 		}
 		return 1;
 	} else {
@@ -759,7 +790,7 @@ int procesarRutinaReduceCombiner(t_job * job){
 	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoArchivo)){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
 		if (contenidoArchivo != NULL){
-			free(contenidoArchivo);
+			//free(contenidoArchivo); //rompe si dejo el free.
 		}
 		return 1;
 	} else {
@@ -841,14 +872,49 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	}
 }
 
+
+int obtenerNumBloque (char* buffer){
+	//Buffer reci 12 210
+	//semaforo
+		estado = 1;
+		int numeroBloque,digitosCantDeDigitosNumBloq;
+
+		digitosCantDeDigitosNumBloq=PosicionDeBufferAInt(buffer,2);
+		//printf("Cantidad Digitos de tamaño de contenido SH:%d\n",digitosCantDeDigitosSH);
+		numeroBloque=ObtenerTamanio(buffer,3,digitosCantDeDigitosNumBloq);
+		//printf("Tamanio del SH: %d\n",tamanioSH);
+
+		printf("bloque numero: %d\n",numeroBloque);
+
+	return numeroBloque;
+}
+
+
 void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
+	t_bloque* bloqueSet;
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 		//printf("RAFAGA:%d\n",tipo_mensaje);
 		printf("LA RAFAGA:%d\n",*cantRafaga);
 		if(*cantRafaga == 2){
 			switch(tipo_mensaje){
+						//GET_BLOQUE
+						//BUFFER RECIBIDO = 12210 1: soy FS 2: quiero un get bloque 3:cant de dig de numero de bloque
+						//						  10: numero de bloque que necesito recibir
+						//BUFFER ENVIADO = 32820971520 3: soy nodo 2: va un get bloque 8: cant de dig de tamanio de
+						//								bloque solicitado 20971520: tamanio de bloque
 			case GET_BLOQUE:
 				*cantRafaga=1;
+				char* contenidoBloque, bloqueMsj;
+				int numBloq = obtenerNumBloque(buffer);
+				contenidoBloque = getBloque(numBloq);
+				bloqueMsj = obtenerSubBuffer(contenidoBloque);
+				if(contenidoBloque !=NULL){
+					//Obtuvo el bloque
+					*mensaje="32";
+					string_append(*mensaje,bloqueMsj);
+				}else{
+					*mensaje="320"; //Ver como le aviso que fallo?
+				}
 				break;
 			case SOLICITUD_DE_CONEXION:
 				if(conectado == 0){
@@ -856,15 +922,28 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 					conectado = 1;
 				}
 				break;
+
+				//SET_BLOQUE
+				//BUFFER RECIBIDO = 13210820971520  --- 1: soy FS 3: quiero un set bloque 2:cant digitos numero bloque 10:numero de bloque a grabar 8: cant de dig de tamanio
+				//								    de lo que necesitamos que grabe 20971520: tamaño en bytes
+				//BUFFER ENVIADO = Ok
 			case SET_BLOQUE:
+				AtiendeFS(&bloqueSet,buffer);
+				setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
+
+				if(1){ //Hacer que setBloque devuelva algo para saber si fallo
+					*mensaje = "Ok!"; //Se grabo correctamente
+				}else{
+					*mensaje = "Error!"; //Algo fallo
+				}
 				printf("-----------\n");
-
-
-
 
 
 				*cantRafaga=1;
 				break;
+			case GET_FILE_CONTENT:
+							*cantRafaga=1;
+							break;
 			default:
 				break;
 			}
@@ -938,7 +1017,6 @@ int AtiendeCliente(void * arg) {
 			case ES_FS:
 				printf("implementar atiendeFS\n");
 				implementoFS(buffer,&cantRafaga,&mensaje,socket);
-
 
 				int trabajo=0;
 				//13xxxxxxxxxxxs
