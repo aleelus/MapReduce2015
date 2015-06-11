@@ -135,6 +135,9 @@ void conexionAFs(){
 		} else {
 			printf("No se pudo conectar al FS\n");
 		}
+		free(buffer);
+		free(bufferR);
+		free(bufferE);
 	}
 }
 
@@ -556,6 +559,7 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 	}
 
 	if(*cantRafaga==1){
+
 		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
 		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
 
@@ -568,6 +572,7 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 
 
 	}else if(*cantRafaga==2){
+
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
 		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
 
@@ -980,6 +985,7 @@ int AtiendeCliente(void * arg) {
 	char* buffer;
 	buffer = malloc(BUFFERSIZE * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 
+
 // Cantidad de bytes recibidos.
 	int bytesRecibidos;
 
@@ -990,11 +996,11 @@ int AtiendeCliente(void * arg) {
 	int code = 0;
 	int cantRafaga=1,tamanio=0;
 	char * mensaje;
-	while ((!desconexionCliente) & g_Ejecutando) {
+	while ((!desconexionCliente) && g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
 			free(buffer);
-		buffer = string_new();
+		buffer=string_new();
 
 		//Recibimos los datos del cliente
 		buffer = RecibirDatos(socket, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
@@ -1046,7 +1052,7 @@ int AtiendeCliente(void * arg) {
 						strcat(bloque,recibido);
 						free(recibido);
 						recibido=string_new();
-						printf("------ %d -----\n",strlen(bloque));
+						//printf("------ %d -----\n",strlen(bloque));
 						memset(aux, 0, tamanio+1);
 
 					}while (numBytesRecv <tamanio);
@@ -1102,6 +1108,7 @@ int AtiendeCliente(void * arg) {
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
 			EnviarDatos(socket, mensaje,longitudBuffer);
+
 		} else
 			desconexionCliente = 1;
 

@@ -901,7 +901,7 @@ void ordenarArrayNodos(){
 		}
 	}
 	imprimirArrayNodos();
-	sleep(5);
+	//sleep(5);
 }
 
 char* obtenerSubBuffer(char *nombre){
@@ -972,16 +972,29 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	buffer1=string_new();
 	buffer2=string_new();
 	bufferR=string_new();
+	char *aux=string_new();
 	conectarNodo(&socket,envio_nodo->ip,envio_nodo->puerto);
 	//Segunda Rafaga
 	string_append(&buffer2,"13");
-	string_append(&buffer2,obtenerSubBuffer(string_itoa(envio_nodo->bloque)));
-	string_append(&buffer2,obtenerSubBuffer(envio_nodo->buffer));
-	printf("SEGUNDA RAFAGA:%s\n",buffer2);
+	aux=obtenerSubBuffer(string_itoa(envio_nodo->bloque));
+	string_append(&buffer2,aux);
+	free(aux);
+	aux=string_new();
+	aux=obtenerSubBuffer(envio_nodo->buffer);
+	string_append(&buffer2,aux);
+	free(aux);
+	aux=string_new();
+
 	//Primer Rafaga
 	string_append(&buffer1,"13");
-	string_append(&buffer1,string_itoa(cuentaDigitos(strlen(buffer2))));
-	string_append(&buffer1,string_itoa(strlen(buffer2)));
+	aux=string_itoa(cuentaDigitos(strlen(buffer2)));
+	string_append(&buffer1,aux);
+	free(aux);
+	aux=string_new();
+	aux=string_itoa(strlen(buffer2));
+	string_append(&buffer1,aux);
+	free(aux);
+	aux=string_new();
 	//printf("PRIMERA RAFAGA:%s\n",buffer1);
 	EnviarDatos(socket,buffer1,strlen(buffer1));
 	bufferR=RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
