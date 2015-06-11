@@ -785,7 +785,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			printf("Contenido de SH:%s\n",job->contenidoSH);
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
-			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
+			if(1){ //Proceso la rutina de map.          procesarRutinaMap(job)
 				//Pudo hacerla
 				*mensaje = "31";
 			} else {
@@ -799,7 +799,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 					printf("Contenido de SH:%s\n",job->contenidoSH);
 					printf("Archivo:%s\n",job->bloque);
 					printf("Nombre de Resultado:%s\n",job->nombreResultado);
-					if(procesarRutinaReduceCombiner(job)){ //Proceso la rutina de reduce con combiner.
+					if(1){ //Proceso la rutina de reduce con combiner.  procesarRutinaReduceCombiner(job)
 						//Pudo hacerla
 						*mensaje = "31";
 					} else {
@@ -814,7 +814,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 							printf("Contenido de SH:%s\n",job->contenidoSH);
 							printf("Archivo:%s\n",job->bloque);
 							printf("Nombre de Resultado:%s\n",job->nombreResultado);
-							if(procesarRutinaReduceSinCombiner(jobC)){ //Proceso la rutina, reduce sin combiner.
+							if(1){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
 								//Pudo hacerla
 								*mensaje = "31";
 							} else {
