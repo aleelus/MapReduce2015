@@ -576,8 +576,11 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 		}
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
-			(char*) bufferAux, strlen(bufferAux));
+	if(strlen(bufferAux)<50){
+		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
+	} else {
+		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,"soy grande", strlen(bufferAux));
+	}
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
 
@@ -837,7 +840,8 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 
 void implementoFS(char * buffer,int *cantRafaga,char** mensaje){
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
-		printf("RAFAGA:%d\n",tipo_mensaje);
+		//printf("RAFAGA:%d\n",tipo_mensaje);
+		printf("LA RAFAGA:%d\n",*cantRafaga);
 		if(*cantRafaga == 2){
 			switch(tipo_mensaje){
 			case GET_BLOQUE:

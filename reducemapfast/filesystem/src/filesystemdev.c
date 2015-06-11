@@ -300,7 +300,8 @@ void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
-	char *bufferAux= malloc(1);
+	char *bufferAux = malloc(1);
+	memset(bufferAux,0,1);
 	int digTamanio;
 	if (buffer != NULL ) {
 		free(buffer);
@@ -338,11 +339,11 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+	//printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
-
+	printf("Cuanto Envie:%d\n",bytecount);
 	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
 
 	//char * bufferLogueo = malloc(5);
@@ -352,7 +353,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	if(strlen(buffer)<50){
 		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 	} else {
-		printf("Buffer muy grande\n");
+		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%d ",socket,strlen(buffer));
 	}
 
 	return bytecount;
@@ -756,8 +757,6 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 	if(!tamanio){
 		printf("No se pudo abrir correctamente el archivo:%s\n",nombreArchivo);
 	}
-	archivo = archivo_create(nombreArchivo,*tamanio,0,1);
-
 
 	int j=0,padre=0,k;
 	while(!correcto){
@@ -786,9 +785,12 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 			}
 		} else {
 			correcto = 1;
+			padre = 0;
 		}
 		system("clear");
 	}
+	archivo = archivo_create(nombreArchivo,*tamanio,padre,1);
+	list_add(lista_archivos,archivo);
 	return 1;
 }
 
@@ -960,6 +962,7 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	char* buffer1,*buffer2,*bufferR;
 	buffer1=string_new();
 	buffer2=string_new();
+	bufferR=string_new();
 	conectarNodo(&socket,envio_nodo->ip,envio_nodo->puerto);
 	//Segunda Rafaga
 	string_append(&buffer2,"13");
@@ -972,8 +975,9 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	string_append(&buffer1,string_itoa(strlen(buffer2)));
 	//printf("PRIMERA RAFAGA:%s\n",buffer1);
 	EnviarDatos(socket,buffer1,strlen(buffer1));
-	RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+	//RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	EnviarDatos(socket,buffer2,strlen(buffer2));
+	pthread_exit(NULL);
 }
 
 t_nodo* buscarNodoPorNombre(char* nombre){
@@ -1037,6 +1041,7 @@ void enviarBloque(char *bufferAux){
 void recorrerArchivo(FILE *fArchivo){
 	char * buffer,*bufferAux;
 	buffer = malloc(TAMANIO_BLOQUE+1);
+	memset(buffer,0,TAMANIO_BLOQUE+1);
 	//memset(&buffer,0,TAMANIO_BLOQUE+1);
 	long unsigned tamanio,tamanioA;
 	fseek(fArchivo,0L,SEEK_END);
@@ -1046,9 +1051,11 @@ void recorrerArchivo(FILE *fArchivo){
 	llenarArrayDeNodos();
 	while(!feof(fArchivo)){
 		fread(buffer,1,TAMANIO_BLOQUE,fArchivo);
+		//printf("STRLEN BUFFER:%lu\n",strlen(buffer));
 		for(j=0;j<TAMANIO_BLOQUE;j++){
 			if(buffer[TAMANIO_BLOQUE-j]=='\n'){
 				bufferAux = malloc(TAMANIO_BLOQUE-j+1);
+				memset(bufferAux,0,TAMANIO_BLOQUE-j+1);
 				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j);
 				enviarBloque(bufferAux);
 				i++; //Contador de Bloques
@@ -1119,7 +1126,7 @@ void eliminarArchivos(){
 }
 
 int operaciones_consola() {
-	//system("clear");
+	system("clear");
 	printf("Comandos posibles: \n");
 	printf("1 - Formatear MDFS\n");
 	printf("2 - Eliminar/Renombrar/Mover Archivos\n");
