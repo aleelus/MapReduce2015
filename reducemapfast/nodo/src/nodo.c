@@ -576,7 +576,7 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 		}
 	}
 
-	if(strlen(bufferAux)<50){
+	if(strlen(bufferAux)<10){
 		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
 	} else {
 		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,"soy grande", strlen(bufferAux));
@@ -968,13 +968,14 @@ int AtiendeCliente(void * arg) {
 						strcat(bloque,recibido);
 						free(recibido);
 						recibido=string_new();
-						//printf("------ %d -----\n",strlen(bloque));
+						printf("------ %d -----\n",strlen(bloque));
 						memset(aux, 0, tamanio+1);
 
 					}while (numBytesRecv <tamanio);
 
 					free(aux);
 					free(bloque);
+					close(socket);
 
 
 				}

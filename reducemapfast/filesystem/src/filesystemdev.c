@@ -92,7 +92,7 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	if(el_nodo==NULL){
 		free(nombre);
 		nombre = string_new();
-		if(letra>'B'){
+		if(letra>'Z'){
 			letra = 'A';
 			string_append(&nombre,"NodoA");
 		} else {
@@ -823,6 +823,18 @@ int buscarNodoEnArray (){
 
 }
 
+void imprimirArrayNodos(){
+	int i=0;
+	t_array_nodo *el_array_nodo;
+
+	for(i=0;i<list_size(lista_nodos);i++){
+    	if(list_size(arrayNodos[i])>0){
+    		el_array_nodo = list_get(arrayNodos[i],0);
+    		printf("%s\n",el_array_nodo->nombre);
+    	}
+    }
+}
+
 void llenarArrayDeNodos (){
 
     arrayNodos=(t_list**)malloc(list_size(lista_nodos)*sizeof(t_array_nodo));
@@ -869,12 +881,7 @@ void llenarArrayDeNodos (){
         }
 
     }
-    for(i=0;i<list_size(lista_nodos);i++){
-    	if(list_size(arrayNodos[i])>0){
-    		el_array_nodo = list_get(arrayNodos[i],0);
-    		printf("%s\n",el_array_nodo->nombre);
-    	}
-    }
+    imprimirArrayNodos();
 }
 
 void ordenarArrayNodos(){
@@ -893,6 +900,8 @@ void ordenarArrayNodos(){
 			}
 		}
 	}
+	imprimirArrayNodos();
+	sleep(5);
 }
 
 char* obtenerSubBuffer(char *nombre){
@@ -968,7 +977,7 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	string_append(&buffer2,"13");
 	string_append(&buffer2,obtenerSubBuffer(string_itoa(envio_nodo->bloque)));
 	string_append(&buffer2,obtenerSubBuffer(envio_nodo->buffer));
-	//printf("SEGUNDA RAFAGA:%s\n",buffer2);
+	printf("SEGUNDA RAFAGA:%s\n",buffer2);
 	//Primer Rafaga
 	string_append(&buffer1,"13");
 	string_append(&buffer1,string_itoa(cuentaDigitos(strlen(buffer2))));
@@ -988,6 +997,7 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	free(buffer2);
 	free(buffer1);
 	free(envio_nodo->buffer);
+	close(socket);
 	//pthread_exit(NULL);
 }
 
@@ -1010,6 +1020,20 @@ int buscarBloqueDisponible(t_nodo*nodo){
 	}
 }
 
+void agregarBloqueEnArrayNodos(int nroNodo, int bloqueDisponible,int bloque){
+	t_array_nodo* nodo = malloc(sizeof(t_array_nodo));
+	char * nombre = string_new();
+	string_append(&nombre,"bloque");
+	string_append(&nombre,string_itoa(bloqueDisponible));
+
+	nodo->nombre = nombre;
+	nodo->nombreArchivo = archivo->nombreArchivo;
+	nodo->bloqueArchivo = string_itoa(bloque);
+	nodo->padre = archivo->padre;
+
+	list_add(arrayNodos[nroNodo],nodo);
+}
+
 t_array_copias *funcionLoca(char* buffer,t_bloque ** bloque,int j){
 	int nroNodo,bloqueDisponible;
 	t_nodo* el_nodo;
@@ -1021,6 +1045,9 @@ t_array_copias *funcionLoca(char* buffer,t_bloque ** bloque,int j){
 	el_nodo=buscarNodoPorNombre(nodo->nombre);
 	bloqueDisponible = buscarBloqueDisponible(el_nodo);
 	envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
+	agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
+	printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
+
 	int iThreadHilo = pthread_create(&hNodos, NULL,
 			(void*) enviarBufferANodo, (void*) envio_nodo );
 	if (iThreadHilo) {
