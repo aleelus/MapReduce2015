@@ -110,6 +110,23 @@ void HiloOrquestadorDeConexiones();
 #define MSJ_ESCRIBIR_BLOQUE      2
 #define MSJ_GET_TEMP             3
 
+//Estructura Datos del FS
+
+//Para setBloque
+typedef struct{
+    int numeroBloque;
+    char *contenidoBloque;
+}t_bloque;
+
+static t_bloque *bloque_create(int numeroB, char* contenidoB) {
+	t_bloque *new = malloc(sizeof(t_bloque));
+	new->numeroBloque = numeroB;
+	new->contenidoBloque = strdup(contenidoB);
+	return new;
+}
+
+
+
 //Estructura Datos del Job
 
 //Para mapping y reduce con combiner
@@ -200,9 +217,8 @@ int AtiendeCliente(void * arg);
 int ChartToInt(char x);
 int PosicionDeBufferAInt(char* buffer, int posicion);
 int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio);
-
-
-
+int obtenerNumBloque (char* buffer);
+void AtiendeFS (t_bloque ** bloque,char *buffer);
 
 
 // METODOS CONFIGURACION //
