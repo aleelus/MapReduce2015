@@ -195,7 +195,7 @@ int procesarRutinaMap(t_job * job);
 int procesarRutinaReduceCombiner(t_job * job);
 int procesarRutinaReduceSinCombiner(t_jobComb * job);
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje);
-void implementoFS(char * buffer,int *cantRafaga,char** mensaje);
+void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket);
 int AtiendeCliente(void * arg);
 int ChartToInt(char x);
 int PosicionDeBufferAInt(char* buffer, int posicion);

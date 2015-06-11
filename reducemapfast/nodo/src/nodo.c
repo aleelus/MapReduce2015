@@ -788,6 +788,9 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			printf("Contenido de SH:%s\n",job->contenidoSH);
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
+
+			// Juan, te comente los if de abajo xq me tiraba error y no podia checkiar bien job y marta.    Ale.
+
 			if(1){ //Proceso la rutina de map.          procesarRutinaMap(job)
 				//Pudo hacerla
 				*mensaje = "31";
@@ -797,34 +800,34 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			}
 			break;
 		case REDUCE_COMBINER:
-					AtiendeJob(&job,buffer,cantRafaga);
-					printf("Nombre de SH:%s\n",job->nombreSH);
-					printf("Contenido de SH:%s\n",job->contenidoSH);
-					printf("Archivo:%s\n",job->bloque);
-					printf("Nombre de Resultado:%s\n",job->nombreResultado);
-					if(1){ //Proceso la rutina de reduce con combiner.  procesarRutinaReduceCombiner(job)
-						//Pudo hacerla
-						*mensaje = "31";
-					} else {
-						//No pudo hacerla
-						*mensaje = "30";
-					}
-					break;
+				AtiendeJob(&job,buffer,cantRafaga);
+				printf("Nombre de SH:%s\n",job->nombreSH);
+				printf("Contenido de SH:%s\n",job->contenidoSH);
+				printf("Archivo:%s\n",job->bloque);
+				printf("Nombre de Resultado:%s\n",job->nombreResultado);
+				if(1){ //Proceso la rutina de reduce con combiner.  procesarRutinaReduceCombiner(job)
+					//Pudo hacerla
+					*mensaje = "31";
+				} else {
+					//No pudo hacerla
+					*mensaje = "30";
+				}
+				break;
 
 		case REDUCE_SIN_COMBINER:
-							AtiendeJobSinCombiner(&job,buffer,cantRafaga);
-							printf("Nombre de SH:%s\n",job->nombreSH);
-							printf("Contenido de SH:%s\n",job->contenidoSH);
-							printf("Archivo:%s\n",job->bloque);
-							printf("Nombre de Resultado:%s\n",job->nombreResultado);
-							if(1){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
-								//Pudo hacerla
-								*mensaje = "31";
-							} else {
-								//No pudo hacerla
-								*mensaje = "30";
-							}
-							break;
+				AtiendeJobSinCombiner(&job,buffer,cantRafaga);
+				printf("Nombre de SH:%s\n",job->nombreSH);
+				printf("Contenido de SH:%s\n",job->contenidoSH);
+				printf("Archivo:%s\n",job->bloque);
+				printf("Nombre de Resultado:%s\n",job->nombreResultado);
+				if(1){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
+					//Pudo hacerla
+					*mensaje = "31";
+				} else {
+					//No pudo hacerla
+					*mensaje = "30";
+				}
+				break;
 		default:
 			break;
 		}
@@ -838,7 +841,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	}
 }
 
-void implementoFS(char * buffer,int *cantRafaga,char** mensaje){
+void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 		//printf("RAFAGA:%d\n",tipo_mensaje);
 		printf("LA RAFAGA:%d\n",*cantRafaga);
@@ -854,7 +857,12 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje){
 				}
 				break;
 			case SET_BLOQUE:
-				printf("Proceso Bloque\n");
+				printf("-----------\n");
+
+
+
+
+
 				*cantRafaga=1;
 				break;
 			default:
@@ -929,7 +937,47 @@ int AtiendeCliente(void * arg) {
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");
-				implementoFS(buffer,&cantRafaga,&mensaje);
+				implementoFS(buffer,&cantRafaga,&mensaje,socket);
+
+
+				int trabajo=0;
+				//13xxxxxxxxxxxs
+				trabajo=ObtenerComandoMSJ(buffer+1);
+
+				if(trabajo==3){
+					printf("Proceso BLOQUE!!\n");
+					int digTamanio=0,tamanio=0;
+					digTamanio=PosicionDeBufferAInt(buffer,2);
+					tamanio=ObtenerTamanio(buffer,3,digTamanio);
+
+					mensaje=string_new();
+					string_append(&mensaje,"Hola");
+					EnviarDatos(socket, mensaje,strlen(mensaje));
+					char *aux=malloc(tamanio+1);
+					char *bloque=malloc(tamanio+1);
+					memset(bloque,0,tamanio+1);
+					char *recibido=string_new();
+					memset(aux,0,tamanio+1);
+					ssize_t numBytesRecv = 0;
+					do{
+						numBytesRecv = numBytesRecv + recv(socket, aux, tamanio, 0);
+						if ( numBytesRecv < 0)
+							printf("ERROR\n");
+						//printf("%s\n", aux);
+						string_append(&recibido,aux);
+						strcat(bloque,recibido);
+						free(recibido);
+						recibido=string_new();
+						//printf("------ %d -----\n",strlen(bloque));
+						memset(aux, 0, tamanio+1);
+
+					}while (numBytesRecv <tamanio);
+
+					free(aux);
+					free(bloque);
+
+
+				}
 				//Esto va en nodo.h y son define
 				//PRIMERA_CONEXION 1
 				//GET_BLOQUE 2

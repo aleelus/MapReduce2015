@@ -215,7 +215,7 @@ int EnviarInfoMarta(int socket) {
 	string_append(&buffer,"12");
 	string_append(&buffer,"15NodoP18Bloque3115NodoF18Bloque4215NodoH17Bloque9");
 	string_append(&buffer,"15NodoK18Bloque1115NodoB18Bloque5515NodoF17Bloque3");
-	string_append(&buffer,"1815NodoA212192.168.1.2614600015NodoB212192.168.1.2614600015NodoC212192.168.1.2614600015NodoE212192.168.1.2614600015NodoF212192.168.1.2614600015NodoH212192.168.1.2614600015NodoK212192.168.1.2614600015NodoP212192.168.1.26146000");
+	string_append(&buffer,"1815NodoA19127.0.0.114600015NodoB19127.0.0.114600015NodoC19127.0.0.114600015NodoE19127.0.0.114600015NodoF19127.0.0.114600015NodoH19127.0.0.114600015NodoK19127.0.0.114600015NodoP19127.0.0.1146000");
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
@@ -353,7 +353,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	if(strlen(buffer)<50){
 		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 	} else {
-		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%d ",socket,strlen(buffer));
+		log_info(logger, "ENVIO DATOS. socket: %d. Tamanio:%d ",socket,strlen(buffer));
 	}
 
 	return bytecount;
@@ -970,14 +970,25 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	string_append(&buffer2,obtenerSubBuffer(envio_nodo->buffer));
 	//printf("SEGUNDA RAFAGA:%s\n",buffer2);
 	//Primer Rafaga
-	string_append(&buffer1,"1");
+	string_append(&buffer1,"13");
 	string_append(&buffer1,string_itoa(cuentaDigitos(strlen(buffer2))));
 	string_append(&buffer1,string_itoa(strlen(buffer2)));
 	//printf("PRIMERA RAFAGA:%s\n",buffer1);
 	EnviarDatos(socket,buffer1,strlen(buffer1));
-	//RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
-	EnviarDatos(socket,buffer2,strlen(buffer2));
-	pthread_exit(NULL);
+	bufferR=RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+	//EnviarDatos(socket,buffer2,strlen(buffer2));
+	if(strcmp(bufferR,"Hola")==0){
+		long unsigned len=0;
+		len=strlen(buffer2);
+		printf("LEN : %lu\n",len);
+		if (sendall(socket, buffer2, &len) == -1) {
+			printf("ERROR AL ENVIAR\n");
+		}
+	}
+	free(buffer2);
+	free(buffer1);
+	free(envio_nodo->buffer);
+	//pthread_exit(NULL);
 }
 
 t_nodo* buscarNodoPorNombre(char* nombre){
@@ -1019,7 +1030,9 @@ t_array_copias *funcionLoca(char* buffer,t_bloque ** bloque,int j){
 		exit(EXIT_FAILURE);
 	}
 
+
 	pthread_join(hNodos, NULL );
+
 	return array_copias_create(nodo->nombre,bloqueDisponible);
 }
 
@@ -1036,6 +1049,7 @@ void enviarBloque(char *bufferAux){
 	bloque = bloque_create(nroBloque++);
 	enviarCopias(bufferAux,&bloque);
 	list_add(archivo->listaBloques,bloque);
+
 }
 
 void recorrerArchivo(FILE *fArchivo){
@@ -1059,38 +1073,20 @@ void recorrerArchivo(FILE *fArchivo){
 				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j);
 				enviarBloque(bufferAux);
 				i++; //Contador de Bloques
-				printf("LA I:%d\n",i);
+				printf(COLOR_VERDE"Contador de Bloques:%d\n"DEFAULT,i);
 				printf("LA J:%d\n",j);
 				tamanio = ftell(fArchivo);
 				if(tamanio!=tamanioA){
 					fseek(fArchivo,-j,SEEK_CUR);
-					free(bufferAux);
 					printf("TAMANIO:%lu\n",tamanio);
 				}
+				free(bufferAux);
 				j=TAMANIO_BLOQUE;
-			}
-		}
 
-		/*if(c[0] == '\n'){
-			tamanio = strlen(bufferP);
-			//printf("|%lu|\n",tamanio);
-			if(tamanio<100000){
-				bufferAux = bufferP;
-				k=i;
-			} else {
-				//enviarBuffer(bufferAux);
-				bufferP = string_new();
-				fseek(fArchivo, k, SEEK_SET);
-				j++;
-				if((tamanioA-k)<100000){
-					j++;
-				}
 			}
 		}
-		string_append(&bufferP,c);
-		tamanio = strlen(bufferP);
-		//printf("BUFFER:%s\n",buffer);
-		i++;*/
+		memset(buffer,0,TAMANIO_BLOQUE+1);
+
 	}
 	printf("Cantidad Bloques:%d\n",i);
 	free(buffer);
@@ -1323,4 +1319,21 @@ t_bloque_disponible *bloque_disponible_create(int bloque) {
     t_bloque_disponible *new = malloc(sizeof(t_bloque_disponible));
     new->bloque = bloque;
     return new;
+}
+
+int sendall(int s, char *buf, long unsigned *len){
+	long unsigned total = 0; // cuántos bytes hemos enviado
+	long unsigned bytesleft = *len; // cuántos se han quedado pendientes
+	long unsigned n;
+	while(total < *len) {
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1){
+			break;
+		}
+		total += n;
+		bytesleft -= n;
+		printf("Cantidad Enviada :%lu\n",n);
+	}
+	*len = total; // devuelve aquí la cantidad enviada en realidad
+	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
 }

@@ -111,7 +111,7 @@ int main(int argv, char** argc) {
 					pthread_t hNuevoCliente;
 					pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,(void *) el_job);
 
-
+					//pthread_join(hNuevoCliente,NULL);
 					cantRafaga=3;
 
 
@@ -142,7 +142,7 @@ int main(int argv, char** argc) {
 int cuentaDigitos(int valor){
 	int cont = 0;
 	float tamDigArch=valor;
-	while(tamDigArch>1){
+	while(tamDigArch>=1){
 		tamDigArch=tamDigArch/10;
 		cont++;
 	}
@@ -249,7 +249,8 @@ int AtiendeCliente(void * arg) {
 
 		}
 		aux=DigitosNombreArchivo(buff,&posicion);
-		string_append(&bufferANodo,aux);
+		el_job->archResultado=aux;
+		string_append(&bufferANodo,obtenerSubBuffer(aux));
 
 		printf(COLOR_VERDE"%s \t %s \t%s \n"DEFAULT,el_job->nodo,el_job->ip,el_job->puerto);
 		printf(COLOR_VERDE" %s \n"DEFAULT,bufferANodo);
@@ -311,31 +312,61 @@ int AtiendeCliente(void * arg) {
 			if(strcmp(buffer,"31")==0){
 				//Envio el a MaRTA 2518Bloque3015NODOA    El 3 es de que hizo bien la tarea.
 
-				printf(COLOR_VERDE"RECIBO OK DEL NODO\n"DEFAULT);
-				string_append(&bufferAMartaDos,"23");
-				string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
-				string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+				if(emisor==3){
+					//24234/users/dasdas/resultado.txt
+					printf(COLOR_VERDE"SE HICERON TODOS LOS REDUCES==> Archivo final: %s\n"DEFAULT,el_job->archResultado);
 
-				string_append(&bufferAMartaUno,"2");
-				string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
-				string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+					string_append(&bufferAMartaDos,"24");
+					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->archResultado));
 
-
-				//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
-
-				//RAFAGA 1
-				printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
-				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+					string_append(&bufferAMartaUno,"2");
+					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
 
 
+					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
 
-				//RAFAGA 2
-				printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
-				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+					//RAFAGA 1
+					printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
+
+
+					//RAFAGA 2
+					printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+				}else{
+
+					printf(COLOR_VERDE"RECIBO OK DEL NODO\n"DEFAULT);
+					string_append(&bufferAMartaDos,"23");
+					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
+					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+
+					string_append(&bufferAMartaUno,"2");
+					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+
+
+					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
+
+					//RAFAGA 1
+					printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
+
+
+					//RAFAGA 2
+					printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+				}
 				bufferAMartaUno=string_new();
 				bufferAMartaDos=string_new();
 				buffer=string_new();
+
+				//pthread_exit(NULL);
+
 			}
 
 
@@ -418,7 +449,7 @@ char* obtenerSubBuffer(char *nombre){
 
 	tamanioNombre=strlen(nombre);
 	tam=tamanioNombre;
-	while(tam>1){
+	while(tam>=1){
 		tam=tam/10;
 		cont++;
 	}

@@ -193,3 +193,4 @@ t_array_nodo *array_nodo_create(char *);
 t_envio_nodo *envio_nodo_create(char *,char*,char*,int);
 t_array_copias* array_copias_create(char* nombre, int bloque);
 t_bloque_disponible *bloque_disponible_create(int);
+int sendall(int s, char *buf, long unsigned *len);

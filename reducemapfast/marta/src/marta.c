@@ -143,24 +143,26 @@ int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
 	*bytesRecibidos = 0;
 	char *bufferAux= malloc(1);
-	int digTamanio;
+	memset(bufferAux,0,1);
+	int digTamanio=0;
 	if (buffer != NULL ) {
 		free(buffer);
 	}
 
 	if(*cantRafaga==1){
-		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char));
-		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+		bufferAux = realloc(bufferAux,BUFFERSIZE * sizeof(char)+1);
+		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)+1); //-> llenamos el bufferAux con barras ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 		}
 
-		digTamanio=PosicionDeBufferAInt(bufferAux,1);
-		*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
+		if(strcmp(bufferAux,"Ok")!=0){
+			digTamanio=PosicionDeBufferAInt(bufferAux,1);
+			*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
+		}
 
-
-	}else if(*cantRafaga==2){
+	}else if(*cantRafaga==2 && *tamanio>0){
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char)+1);
 		memset(bufferAux, 0, *tamanio * sizeof(char)+1); //-> llenamos el bufferAux con barras ceros.
 
@@ -171,10 +173,10 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 
 		if(*cantRafaga==3){
 
-			bufferAux = realloc(bufferAux,100* sizeof(char));
-			memset(bufferAux, 0, 100 * sizeof(char)); //-> llenamos el bufferAux con ceros.
+			bufferAux = realloc(bufferAux,500* sizeof(char));
+			memset(bufferAux, 0, 500 * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
-			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 100, 0)) == -1) {
+			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 500, 0)) == -1) {
 				Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 			}
 			*cantRafaga=1;
