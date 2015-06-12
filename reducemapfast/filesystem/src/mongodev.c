@@ -4,30 +4,33 @@
  *  Created on: 30/5/2015
  *      Author: gabriel
  */
-
 #include "mongodev.h"
+#include <string.h>
+
+#define  MAXNOMBRE 20
+typedef struct {
+	char nombre[MAXNOMBRE];
+	long unsigned tamanio;
+	int directorio;
+	int bloques;
+	int estado;
+} t_archivo_json;
+
 
 
 int iniciarMongo(){
 
-	mongoc_client_t *client;
-	mongoc_collection_t *collection;
 	bson_error_t error;
 	bson_oid_t oid;
 	bson_t *doc;
 	bson_t *query;
 	mongoc_cursor_t *cursor;
 
-
-	mongoc_init ();
-
-	if ((client = mongoc_client_new ("mongodb://localhost:27017/")) == NULL)
-		return EXIT_FAILURE;
-
-	collection = mongoc_client_get_collection (client, "test", "MDFS");
+	mongo_db_open();
 
 	query = bson_new();
 	BSON_APPEND_UTF8(query, "Index", "0");
+
 	if((cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL)) == NULL){
 		//No existe el primer indice, entonces la coleccion esta vacia;
 		doc = bson_new ();
@@ -43,27 +46,23 @@ int iniciarMongo(){
 
 		bson_destroy (doc);
 		bson_destroy (query);
+
+		//Probablemente, lo mejor seria que cargue la estructura de directorios de una..
+
 	}
 
-
-	mongoc_collection_destroy (collection);
-	mongoc_client_destroy (client);
-
-    return 0;
+	mongo_db_close();
+	return 0;
 
 }
 
 int eliminarMongo(){
-	mongoc_client_t *client;
-	mongoc_collection_t *collection;
+
 	bson_error_t error;
 	bson_oid_t oid;
 	bson_t *doc;
 
-	mongoc_init ();
-
-	client = mongoc_client_new ("mongodb://localhost:27017/");
-	collection = mongoc_client_get_collection (client, "test", "archivos");
+	mongo_db_open();
 
 
 	doc = bson_new ();
@@ -85,24 +84,20 @@ int eliminarMongo(){
 	}
 
 	bson_destroy (doc);
-	mongoc_collection_destroy (collection);
-	mongoc_client_destroy (client);
 
+	mongo_db_close();
 	return 0;
 }
 
 int leerMongo(){
-	mongoc_client_t *client;
-	mongoc_collection_t *collection;
+
 	mongoc_cursor_t *cursor;
 	const bson_t *doc;
 	bson_t *query;
 	char *str;
 
-	mongoc_init ();
 
-	client = mongoc_client_new ("mongodb://localhost:27017/");
-	collection = mongoc_client_get_collection (client, "test", "MDFS");
+	mongo_db_open();
 
 	query  = bson_new ();
 	cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
@@ -114,10 +109,132 @@ int leerMongo(){
 
 	bson_destroy (query);
 	mongoc_cursor_destroy (cursor);
-	mongoc_collection_destroy (collection);
-	mongoc_client_destroy (client);
+
 
 	return 0;
+}
+
+
+int leerJSON(){
+	FILE *in;
+	bson_t *query;
+	mongoc_cursor_t *cursor;
+	char *cadena = malloc(100);
+	char *origen;
+	bson_oid_t oid;
+	bson_t *doc;
+	bson_error_t error;
+
+	char *campo = malloc(20);
+	char *valor = malloc(20);
+
+	t_archivo_json *archivo = malloc(sizeof (t_archivo_json));
+
+
+	mongo_db_archivos_open();
+
+	//mongoc_init ();
+
+	//client     = mongoc_client_new ("mongodb://localhost:27017/");
+	//collection = mongoc_client_get_collection (client, "test", "MDFS_ARCHIVOS");
+
+	if ((in = fopen(JSON_FILE,"rt")) == NULL ) {
+		return EXIT_FAILURE;
+		}
+
+	while(fgets(cadena, 100, in) != NULL){
+
+		doc = bson_new ();
+		bson_oid_init (&oid, NULL);
+
+		for(origen = strtok(cadena, "{,}"); origen;  origen = strtok(NULL, "{,}")){
+			if (origen[0] != '\n'){
+				printf("%s\n", origen);
+				obtenerCampoValor(origen, campo, valor, archivo);
+				};
+			};
+
+
+		BSON_APPEND_OID (doc, "_id", &oid);
+		BSON_APPEND_UTF8  (doc, "nombre", archivo->nombre);
+		BSON_APPEND_INT32 (doc, "directorio", archivo->directorio);
+		BSON_APPEND_INT32 (doc, "tamanio", archivo->tamanio);
+		BSON_APPEND_INT32 (doc, "bloques", archivo->bloques);
+		BSON_APPEND_INT32 (doc, "estado", archivo->estado);
+
+		if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, doc, NULL, &error)) {
+			printf ("%s\n", error.message);
+		}
+
+
+		bson_destroy (doc);
+	};
+
+//	free(cadena);
+	fclose(in);
+
+	mongo_db_close();
+
+	return EXIT_SUCCESS;
+}
+
+
+void obtenerCampoValor(const char *origen, char *campo, char *valor, t_archivo_json *archivo){
+
+	int i, j, k;
+
+
+	for(i = 0, j = 0; origen[i] && origen[i] != ':'; i++){
+		if (origen[i] != '\"')
+			campo[j++] = origen[i];
+	}
+
+	campo[j] = '\0';
+
+	for(i++, k = 0; origen[i]; i++){
+		if (origen[i] != '\"')
+			valor[k++] = origen[i];
+	};
+
+	valor[k] = '\0';
+
+	printf("%s %s\n", campo, valor);
+
+	if (strcmp(campo, "nombre") == 0)
+		memcpy(archivo->nombre, valor, k);
+
+	if (strcmp(campo, "directorio") == 0)
+		archivo->directorio = atoi(valor);
+
+	if (strcmp(campo, "tamanio") == 0)
+		archivo->tamanio = atoi(valor);
+
+	if (strcmp(campo, "bloques") == 0)
+		archivo->bloques = atoi(valor);
+
+	if (strcmp(campo, "estado") == 0)
+		archivo->estado = atoi(valor);
+
+//	free(campo);
+//	free(valor);
+
+}
+
+void mongo_db_open(){
+	mongoc_init ();
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	collection = mongoc_client_get_collection (client, "test", "MDFS");
+}
+
+void mongo_db_archivos_open(){
+	mongoc_init ();
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	collection = mongoc_client_get_collection (client, "test", "MDFS_ARCHIVOS");
+}
+
+void mongo_db_close(){
+	mongoc_collection_destroy (collection);
+	mongoc_client_destroy (client);
 }
 
 
