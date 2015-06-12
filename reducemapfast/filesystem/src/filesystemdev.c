@@ -365,6 +365,31 @@ void CerrarSocket(int socket) {
 	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
 
+void RecorrerNodosYBloques(){
+	t_nodo * el_nodo;
+	t_array_nodo* array;
+	int i=0,j,posicion;
+	while(i<list_size(lista_nodos)){
+		el_nodo = list_get(lista_nodos, i);
+		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
+		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
+		printf("El tamaño:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->tamanio);
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
+		posicion = buscarNodoEnArrayPorNombre(el_nodo->nombre);
+		j=1;
+		while(j<list_size(arrayNodos[posicion])){
+			array = list_get(arrayNodos[posicion],j);
+			printf("Bloque:"COLOR_VERDE "%s\n"DEFAULT,array->nombre);
+			printf("Nombre Archivo:"COLOR_VERDE "%s\n"DEFAULT,array->nombreArchivo);
+			printf("Bloque Archivo:"COLOR_VERDE "%s\n"DEFAULT,array->bloqueArchivo);
+			printf("Padre:"COLOR_VERDE "%d\n"DEFAULT,array->padre);
+			j++;
+		}
+		i++;
+	}
+}
+
 void RecorrerNodos(){
 	t_nodo * el_nodo;
 
@@ -481,6 +506,11 @@ int AtiendeCliente(void * arg) {
 				cargarFilesystem();
 				mostrarFilesystem();
 				mensaje ="Ok";
+				break;
+			case COMANDO2:
+				printf("Muestre toda la lista de Nodos y sus Bloques Ocupados:\n");
+				RecorrerNodosYBloques();
+				mensaje = "Ok";
 				break;
 			default:
 				break;
@@ -794,23 +824,47 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 	return 1;
 }
 
-int buscarNodoEnArray (){
+int buscarNodoEnArrayPorNombre (char* nombre){
 
-    int i=0,k=0,bandera=0;
+    int k=0;
     int cantNodos=list_size(lista_nodos);
     t_array_nodo *el_array_nodo;
 
     for(k=0;k<cantNodos;k++){
         if(list_size(arrayNodos[k])>0){
-            i=0;
+            el_array_nodo=list_get(arrayNodos[k],0);
+            if(strcmp(el_array_nodo->nombre,nombre)==0 ){
+            	return k;
+            }
+        }
+    }
+    return 0;
+}
+
+
+int buscarNodoEnArray (int bloque){
+
+    int i=0,k=0,bandera=0;
+    int cantNodos=list_size(lista_nodos);
+    t_array_nodo *el_array_nodo;
+
+    char *bloqueChar = string_new();
+    string_append(&bloqueChar,"bloque");
+    string_append(&bloqueChar,string_itoa(bloque));
+
+    for(k=0;k<cantNodos;k++){
+        if(list_size(arrayNodos[k])>0){
+            i=1;
             while(i<list_size(arrayNodos[k])){
                 el_array_nodo=list_get(arrayNodos[k],i);
-                if(strcmp(el_array_nodo->nombreArchivo,archivo->nombreArchivo)==0 && el_array_nodo->padre==archivo->padre){
+                printf("COMPARACION: Array:%s Parametro:%s\n",el_array_nodo->bloqueArchivo,bloqueChar);
+                if(strcmp(el_array_nodo->nombreArchivo,archivo->nombreArchivo)==0 && el_array_nodo->padre==archivo->padre
+                		&& strcmp(el_array_nodo->bloqueArchivo,bloqueChar)==0){
                     bandera=1;
+                    i=list_size(arrayNodos[k]);
                 }
                 i++;
             }
-
             if(bandera==0){
                 return k;
             }else{
@@ -818,9 +872,7 @@ int buscarNodoEnArray (){
             }
         }
     }
-
-    return 0;
-
+    return -1;
 }
 
 void imprimirArrayNodos(){
@@ -839,7 +891,7 @@ void llenarArrayDeNodos (){
 
     arrayNodos=(t_list**)malloc(list_size(lista_nodos)*sizeof(t_array_nodo));
 
-    int i=0,k=0,posicion=0;
+    int i=0,k=0;
     t_nodo *el_nodo;
     t_array_nodo *el_array_nodo;
 
@@ -856,12 +908,9 @@ void llenarArrayDeNodos (){
             bool _true(void *elem) {
                 return ( !strcmp(((t_array_nodo*) elem)->nombre,el_nodo->nombre) );
             }
-
-
             el_array_nodo = list_find(arrayNodos[k], _true);
 
             if(el_array_nodo != NULL){
-                posicion = k;
                 k=list_size(lista_nodos);
             }
 
@@ -1036,63 +1085,81 @@ int buscarBloqueDisponible(t_nodo*nodo){
 void agregarBloqueEnArrayNodos(int nroNodo, int bloqueDisponible,int bloque){
 	t_array_nodo* nodo = malloc(sizeof(t_array_nodo));
 	char * nombre = string_new();
+	char * bloqueChar = string_new();
 	string_append(&nombre,"bloque");
 	string_append(&nombre,string_itoa(bloqueDisponible));
+	string_append(&bloqueChar,"bloque");
+	string_append(&bloqueChar,string_itoa(bloque));
 
 	nodo->nombre = nombre;
 	nodo->nombreArchivo = archivo->nombreArchivo;
-	nodo->bloqueArchivo = string_itoa(bloque);
+	nodo->bloqueArchivo = bloqueChar;
 	nodo->padre = archivo->padre;
 
 	list_add(arrayNodos[nroNodo],nodo);
 }
 
-t_array_copias *funcionLoca(char* buffer,t_bloque ** bloque,int j){
+int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 	int nroNodo,bloqueDisponible;
 	t_nodo* el_nodo;
 	t_array_nodo* nodo;
 	t_envio_nodo* envio_nodo;
+	t_array_copias * aux;
 	ordenarArrayNodos();
-	nroNodo = buscarNodoEnArray();
-	nodo = list_get(arrayNodos[nroNodo],0);
-	el_nodo=buscarNodoPorNombre(nodo->nombre);
-	bloqueDisponible = buscarBloqueDisponible(el_nodo);
-	envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
-	agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
-	printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
+	nroNodo = buscarNodoEnArray((*bloque)->bloque);
+	if(nroNodo!=-1){
+		nodo = list_get(arrayNodos[nroNodo],0);
+		el_nodo=buscarNodoPorNombre(nodo->nombre);
+		printf("Nodo:%s BloqueArchivo:%d\n",nodo->nombre,(*bloque)->bloque);
+		bloqueDisponible = buscarBloqueDisponible(el_nodo);
+		envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
+		agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
+		printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
 
-	int iThreadHilo = pthread_create(&hNodos, NULL,
-			(void*) enviarBufferANodo, (void*) envio_nodo );
-	if (iThreadHilo) {
-		fprintf(stderr,
-			"Error al crear hilo - pthread_create() return code: %d\n",
-			iThreadHilo);
-		exit(EXIT_FAILURE);
+		int iThreadHilo = pthread_create(&hNodos, NULL,
+				(void*) enviarBufferANodo, (void*) envio_nodo );
+		if (iThreadHilo) {
+			fprintf(stderr,
+				"Error al crear hilo - pthread_create() return code: %d\n",
+				iThreadHilo);
+			exit(EXIT_FAILURE);
+		}
+
+
+		pthread_join(hNodos, NULL );
+
+		aux = (*bloque)->array;
+		aux = aux + j;
+		aux = array_copias_create(nodo->nombre,bloqueDisponible);
+		return 1;
+
 	}
-
-
-	pthread_join(hNodos, NULL );
-
-	return array_copias_create(nodo->nombre,bloqueDisponible);
+	log_info(logger, "No se pudo realizar la copia\n");
+	return -1;
 }
 
-void enviarCopias(char*bufferAux,t_bloque ** bloque){
+int enviarCopias(char*bufferAux,t_bloque ** bloque){
 	int j;
-	nroBloque++;
 	for(j=0;j<3;j++){
-		funcionLoca(bufferAux,bloque,j);
+		if(funcionLoca(bufferAux,bloque,j)!=1){
+			return -1;
+		}
 	}
+	return 1;
 }
 
-void enviarBloque(char *bufferAux){
+int enviarBloque(char *bufferAux){
 	t_bloque * bloque;
 	bloque = bloque_create(nroBloque++);
-	enviarCopias(bufferAux,&bloque);
-	list_add(archivo->listaBloques,bloque);
-
+	if(enviarCopias(bufferAux,&bloque)==1){
+		list_add(archivo->listaBloques,bloque);
+		return 1;
+	} else {
+		return -1;
+	}
 }
 
-void recorrerArchivo(FILE *fArchivo){
+int recorrerArchivo(FILE *fArchivo){
 	char * buffer,*bufferAux;
 	buffer = malloc(TAMANIO_BLOQUE+1);
 	memset(buffer,0,TAMANIO_BLOQUE+1);
@@ -1111,18 +1178,20 @@ void recorrerArchivo(FILE *fArchivo){
 				bufferAux = malloc(TAMANIO_BLOQUE-j+1);
 				memset(bufferAux,0,TAMANIO_BLOQUE-j+1);
 				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j);
-				enviarBloque(bufferAux);
-				i++; //Contador de Bloques
-				printf(COLOR_VERDE"Contador de Bloques:%d\n"DEFAULT,i);
-				printf("LA J:%d\n",j);
-				tamanio = ftell(fArchivo);
-				if(tamanio!=tamanioA){
-					fseek(fArchivo,-j,SEEK_CUR);
-					printf("TAMANIO:%lu\n",tamanio);
+				if(enviarBloque(bufferAux)){
+					i++; //Contador de Bloques
+					printf(COLOR_VERDE"Contador de Bloques:%d\n"DEFAULT,i);
+					printf("LA J:%d\n",j);
+					tamanio = ftell(fArchivo);
+					if(tamanio!=tamanioA){
+						fseek(fArchivo,-j,SEEK_CUR);
+						printf("TAMANIO:%lu\n",tamanio);
+					}
+					free(bufferAux);
+					j=TAMANIO_BLOQUE;
+				} else {
+					return -1;
 				}
-				free(bufferAux);
-				j=TAMANIO_BLOQUE;
-
 			}
 		}
 		memset(buffer,0,TAMANIO_BLOQUE+1);
@@ -1130,6 +1199,7 @@ void recorrerArchivo(FILE *fArchivo){
 	}
 	printf("Cantidad Bloques:%d\n",i);
 	free(buffer);
+	return 1;
 }
 
 int procesarArchivo(){
@@ -1138,8 +1208,11 @@ int procesarArchivo(){
 	//char * buffer = malloc(100);
 
 	if(subirArchivo(&tamanio,&fArchivo)){
-		recorrerArchivo(fArchivo);
-		return 1;
+		if(recorrerArchivo(fArchivo)){
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 		//printf("Buffer:%s\n",buffer);
 	return 1;
@@ -1199,7 +1272,7 @@ int operaciones_consola() {
 		log_info(logger, "Se realizo Crear/Eliminar/Renombrar/Mover Directorios\n");
 		break;
 	case 4:
-		if(procesarArchivo()){
+		if(procesarArchivo()==1){
 			log_info(logger, "Se realizo Copiar un archivo local al MDFS\n");
 		} else {
 			log_info(logger, "No se realizo Copiar un archivo local al MDFS\n");

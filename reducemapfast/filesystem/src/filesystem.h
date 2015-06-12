@@ -38,6 +38,7 @@
 #define	ES_MARTA				4					//emisor de mensaje Marta
 #define ES_NODO					3					//emisor de mensaje Nodo
 #define COMANDO					8					//comando(extra) para ver algo por pantalla
+#define COMANDO2				7
 #define COMANDOFILESYSTEM		9					//idem el de arriba
 #define CONSULTA_ARCHIVO		1					//marta consulta por un archivo
 #define BUFFERSIZE 				10					//Tamaño del buffer
@@ -194,3 +195,4 @@ t_envio_nodo *envio_nodo_create(char *,char*,char*,int);
 t_array_copias* array_copias_create(char* nombre, int bloque);
 t_bloque_disponible *bloque_disponible_create(int);
 int sendall(int s, char *buf, long unsigned *len);
+int buscarNodoEnArrayPorNombre(char *);
