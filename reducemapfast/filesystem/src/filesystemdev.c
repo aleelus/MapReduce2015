@@ -390,6 +390,38 @@ void RecorrerNodosYBloques(){
 	}
 }
 
+void RecorrerListaBloques(){
+	t_archivo * el_archivo;
+	t_bloque * el_bloque;
+
+	int i=0;
+	int j=0;
+
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos, i);
+		printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque = list_get(el_archivo->listaBloques, j);
+			printf("%d :: ",el_bloque->bloque);
+			//printf("Copia1:\n");
+			printf("%s--",el_bloque->array[0].nombreNodo);
+			printf("%s  ",el_bloque->array[0].nro_bloque);
+			//printf("Copia2:\n");
+			printf("%s--",el_bloque->array[1].nombreNodo);
+			printf("%s  ",el_bloque->array[1].nro_bloque);
+			//printf("Copia3:\n");
+			printf("%s--",el_bloque->array[2].nombreNodo);
+			printf("%s  \n",el_bloque->array[2].nro_bloque);
+			j++;
+		}
+		j=0;
+		i++;
+	}
+
+}
+
+
 void RecorrerNodos(){
 	t_nodo * el_nodo;
 
@@ -510,6 +542,10 @@ int AtiendeCliente(void * arg) {
 			case COMANDO2:
 				printf("Muestre toda la lista de Nodos y sus Bloques Ocupados:\n");
 				RecorrerNodosYBloques();
+				mensaje = "Ok";
+				break;
+			case 6:
+				RecorrerListaBloques();
 				mensaje = "Ok";
 				break;
 			default:
@@ -857,7 +893,7 @@ int buscarNodoEnArray (int bloque){
             i=1;
             while(i<list_size(arrayNodos[k])){
                 el_array_nodo=list_get(arrayNodos[k],i);
-                printf("COMPARACION: Array:%s Parametro:%s\n",el_array_nodo->bloqueArchivo,bloqueChar);
+                //printf("COMPARACION: Array:%s Parametro:%s\n",el_array_nodo->bloqueArchivo,bloqueChar);
                 if(strcmp(el_array_nodo->nombreArchivo,archivo->nombreArchivo)==0 && el_array_nodo->padre==archivo->padre
                 		&& strcmp(el_array_nodo->bloqueArchivo,bloqueChar)==0){
                     bandera=1;
@@ -1104,13 +1140,12 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 	t_nodo* el_nodo;
 	t_array_nodo* nodo;
 	t_envio_nodo* envio_nodo;
-	t_array_copias * aux;
 	ordenarArrayNodos();
 	nroNodo = buscarNodoEnArray((*bloque)->bloque);
 	if(nroNodo!=-1){
 		nodo = list_get(arrayNodos[nroNodo],0);
 		el_nodo=buscarNodoPorNombre(nodo->nombre);
-		printf("Nodo:%s BloqueArchivo:%d\n",nodo->nombre,(*bloque)->bloque);
+		//printf("Nodo:%s BloqueArchivo:%d\n",nodo->nombre,(*bloque)->bloque);
 		bloqueDisponible = buscarBloqueDisponible(el_nodo);
 		envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
 		agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
@@ -1128,9 +1163,16 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 
 		pthread_join(hNodos, NULL );
 
-		aux = (*bloque)->array;
-		aux = aux + j;
-		aux = array_copias_create(nodo->nombre,bloqueDisponible);
+		char *nombre = string_new();
+		string_append(&nombre,"bloque");
+		string_append(&nombre,string_itoa(bloqueDisponible));
+
+		(*bloque)->array[j].nombreNodo=nodo->nombre;
+		(*bloque)->array[j].nro_bloque=nombre;
+
+
+
+
 		return 1;
 
 	}
@@ -1141,7 +1183,7 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 int enviarCopias(char*bufferAux,t_bloque ** bloque){
 	int j;
 	for(j=0;j<3;j++){
-		if(funcionLoca(bufferAux,bloque,j)!=1){
+		if(funcionLoca(bufferAux,&*bloque,j)!=1){
 			return -1;
 		}
 	}

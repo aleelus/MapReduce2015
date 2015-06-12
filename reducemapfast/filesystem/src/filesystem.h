@@ -78,7 +78,7 @@ typedef struct {
 
 typedef struct {
 	char *nombreNodo;
-	int  nro_bloque;	
+	char *nro_bloque;
 } t_array_copias;							//Tipo Bloque
 
 
