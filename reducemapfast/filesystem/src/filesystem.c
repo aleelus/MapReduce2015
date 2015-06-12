@@ -28,39 +28,14 @@ int main(int argv, char** argc) {
 	int iThreadConsola;					//Hilo de consola
 	int iThreadOrquestador;				//Hilo orquestador
 
-	// Abrir conexiones de nodos
-	//conectar_nodos();
-
-	//if (configuracion.cantidadNodos == 4){ 		//cantidad minima de nodos a conectarse
-
-		//Iniciar Mongo
-		//iniciar_mongo();
-
-		// Conectar a Marta
-		//conectar_marta();		//deberia ir un mutex.. creo..
-
-		// Iniciar consola
-		//while(eleccion != 10){
-			// Solicitar opcion de comando
-			//printf("Ejecute una opcion: ");
-
-	//	if (fgets(input, CANTMAX, stdin) == 0)
-	//		printf("Error al seleccionar comando\n");
-		//	scanf("%d", &eleccion);
-		//	ejecutarComando(eleccion);
-		//}
-
-
-	//}
-
-
-
 	//Archivo de Log
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "fs", true, LOG_LEVEL_TRACE);
 
 	//iniciarMongo();
-	leerMongo();
+	//leerMongo();
 	//eliminarMongo();
+	leerJSON(SonArchivos);
+	leerJSON(SonDirectorios);
 
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
 	g_ArchivoConsola = fopen(NOMBRE_ARCHIVO_CONSOLA, "wb");
