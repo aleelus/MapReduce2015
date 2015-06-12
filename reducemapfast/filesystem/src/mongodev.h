@@ -16,6 +16,7 @@
 #define MAXNOMBREDIRECTORIO 20
 
 
+
 typedef enum {
 	SonDirectorios,
 	SonArchivos,
