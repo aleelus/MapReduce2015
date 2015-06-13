@@ -34,8 +34,10 @@ int main(int argv, char** argc) {
 	//iniciarMongo();
 	//leerMongo();
 	//eliminarMongo();
-	leerJSON(SonArchivos);
-	leerJSON(SonDirectorios);
+//	leerJSON(SonArchivos);
+//	leerJSON(SonDirectorios);
+//	leerArchivoMongo();
+//	eliminarArchivoMongo();
 
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
 	g_ArchivoConsola = fopen(NOMBRE_ARCHIVO_CONSOLA, "wb");

@@ -14,7 +14,9 @@
 #define JSON_FILE2	"/home/gabriel/workspace/sisop/tp-2015-1c-los-barderos/reducemapfast/filesystem/src/directorios.json"
 #define MAXNOMBREARCHIVO    20
 #define MAXNOMBREDIRECTORIO 20
-
+#define MAXJSON				100		//Largo de una cadena JSON
+#define MAXCAMPO			20		//Largo para un campo
+#define MAXVALOR			20		//Largo para un valor
 
 
 typedef enum {
@@ -24,7 +26,7 @@ typedef enum {
 
 typedef struct {
 	char nombre[MAXNOMBREARCHIVO];
-	long unsigned tamanio;
+	int tamanio;
 	int directorio;
 	int bloques;
 	int estado;
@@ -50,6 +52,9 @@ void mongo_db_archivos_open();
 void mongo_db_close();
 void obtenerCampoValor(const char *, t_archivo_json *, t_directorio_json *, t_tipoAcceso);
 void leerJSON(t_tipoAcceso);
-
+t_archivo_json *leerDirectorioMongo();
+t_archivo_json *leerArchivoMongo();
+void modificarIndice();
+void eliminarArchivoMongo();
 
 #endif /* MONGODEV_H_ */

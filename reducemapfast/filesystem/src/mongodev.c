@@ -81,32 +81,171 @@ int eliminarMongo(){
 	mongo_db_close();
 	return 0;
 }
+*/
+
+void eliminarArchivoMongo(){
+//void eliminarArchivoMongo(bson_t doc)
+
+	bson_error_t error;
+	bson_oid_t oid;
+	bson_t *doc;
+
+	mongo_db_archivos_open();
 
 
-int leerMongo(){
+
+	doc = bson_new ();
+	BSON_APPEND_UTF8 (doc, "nombre", "temperatura");
+
+	if (!mongoc_collection_remove (collection, MONGOC_DELETE_SINGLE_REMOVE, doc, NULL, &error)) {
+		printf ("Delete failed: %s\n", error.message);
+	}
+
+	bson_destroy (doc);
+
+	mongo_db_close();
+}
+
+void eliminarDirectorioMongo(){
+//void eliminarDirectorioMongo(bson_t doc)
+
+	bson_error_t error;
+	bson_oid_t oid;
+	bson_t *doc;
+
+	mongo_db_directorios_open();
+
+
+
+	doc = bson_new ();
+	BSON_APPEND_INT32 (doc, "Index", "2");
+
+	if (!mongoc_collection_remove (collection, MONGOC_DELETE_SINGLE_REMOVE, doc, NULL, &error)) {
+		printf ("Delete failed: %s\n", error.message);
+	}
+
+	bson_destroy (doc);
+
+	mongo_db_close();
+}
+
+t_archivo_json *leerArchivoMongo(){
+//t_archivo_json *leerArchivoMongo(bson_t *query)
 
 	mongoc_cursor_t *cursor;
 	const bson_t *doc;
 	bson_t *query;
 	char *str;
+	bson_iter_t iter;
+	int i;
+	t_archivo_json *archivo = malloc(sizeof (t_archivo_json));
 
-
-	mongo_db_open();
+	mongo_db_archivos_open();
 
 	query  = bson_new ();
+	BSON_APPEND_UTF8(query, "nombre", "temperatura");
+
 	cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
 	while (mongoc_cursor_next (cursor, &doc)) {
 		str = bson_as_json (doc, NULL);
-	    printf ("ACA:%s\n", str);
+		if(bson_iter_init(&iter,doc)){
+		    while(bson_iter_next(&iter)){
+		        if(bson_iter_find(&iter,"nombre")){
+		        	memset(archivo->nombre,'\0',sizeof(archivo->nombre));
+		        	for(i = 0; bson_iter_utf8(&iter,NULL)[i]; i++)
+		        		;
+		        	memcpy(archivo->nombre, bson_iter_utf8(&iter,NULL), i);
+		        	}
+		        if(bson_iter_find(&iter,"directorio"))
+		            archivo->directorio = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"tamanio"))
+		            archivo->tamanio = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"bloques"))
+		            archivo->bloques = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"estado"))
+		            archivo->estado = (int32_t)bson_iter_int32(&iter);
+
+//		        printf("%s\n", archivo->nombre);
+//		        printf("%d\n", (int)archivo->directorio);
+//		        printf("%d\n", (int)archivo->tamanio);
+//		        printf("%d\n", (int)archivo->bloques);
+//		        printf("%d\n", (int)archivo->estado);
+		    }
+		}
+	    printf ("%s\n", str);
 	    bson_free (str);
 	}
 
 	bson_destroy (query);
 	mongoc_cursor_destroy (cursor);
+	free(archivo);
+
+	return archivo;
+}
+
+t_archivo_json *leerDirectorioMongo(){
+//t_archivo_json *leerArchivoMongo(bson_t *query)
+
+	mongoc_cursor_t *cursor;
+	const bson_t *doc;
+	bson_t *query;
+	char *str;
+	bson_iter_t iter;
+	int i;
+	t_directorio_json *directorio = malloc(sizeof (t_directorio_json));
+
+	mongo_db_archivos_open();
+
+	query  = bson_new ();
+	BSON_APPEND_INT32(query, "Index", "1");
+
+	cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+	while (mongoc_cursor_next (cursor, &doc)) {
+		str = bson_as_json (doc, NULL);
+		if(bson_iter_init(&iter,doc)){
+		    while(bson_iter_next(&iter)){
+		        if(bson_iter_find(&iter,"Directorio")){
+		        	memset(directorio->directorio,'\0',sizeof(directorio->directorio));
+		        	for(i = 0; bson_iter_utf8(&iter,NULL)[i]; i++)
+		        		;
+		        	memcpy(directorio->directorio, bson_iter_utf8(&iter,NULL), i);
+		        	}
+		        if(bson_iter_find(&iter,"Index"))
+		            directorio->index = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"Padre"))
+		            directorio->directorio_padre = (int32_t)bson_iter_int32(&iter);
 
 
-	return 0;
-}*/
+//		        printf("%s\n", archivo->nombre);
+//		        printf("%d\n", (int)archivo->directorio);
+//		        printf("%d\n", (int)archivo->tamanio);
+//		        printf("%d\n", (int)archivo->bloques);
+//		        printf("%d\n", (int)archivo->estado);
+		    }
+		}
+	    printf ("%s\n", str);
+	    bson_free (str);
+	}
+
+	bson_destroy (query);
+	mongoc_cursor_destroy (cursor);
+	free(directorio);
+
+	return directorio;
+}
+
+void modificarIndice(){
+
+	bson_error_t *error;
+
+	mongo_db_archivos_open();
+	mongoc_collection_drop_index(collection, "Index", error);
+}
+
 
 
 void leerJSON(t_tipoAcceso tipoAcceso){
@@ -114,7 +253,7 @@ void leerJSON(t_tipoAcceso tipoAcceso){
 	FILE *in;
 	bson_t *query;
 	mongoc_cursor_t *cursor;
-	char *cadena = malloc(100);
+	char *cadena = malloc(MAXJSON);
 	char *origen;
 	bson_oid_t oid;
 	bson_t *doc;
@@ -132,7 +271,7 @@ void leerJSON(t_tipoAcceso tipoAcceso){
 				break;
 				}
 
-			while(fgets(cadena, 100, in) != NULL){
+			while(fgets(cadena, MAXJSON, in) != NULL){
 
 				for(origen = strtok(cadena, "{,}'\n'"); origen;  origen = strtok(NULL, "{,}'\n'"))
 					if (origen[0] != '\n'){
@@ -181,7 +320,7 @@ void leerJSON(t_tipoAcceso tipoAcceso){
 				break;
 				}
 
-			while(fgets(cadena, 100, in) != NULL){
+			while(fgets(cadena, MAXJSON, in) != NULL){
 
 				doc   = bson_new();
 				query = bson_new();
@@ -229,8 +368,8 @@ void leerJSON(t_tipoAcceso tipoAcceso){
 void obtenerCampoValor(const char *origen, t_archivo_json *archivo, t_directorio_json *directorio, t_tipoAcceso tipoAcceso){
 
 	int i, j, k;
-	char *campo = malloc(20);
-	char *valor = malloc(20);
+	char *campo = malloc(MAXCAMPO);
+	char *valor = malloc(MAXVALOR);
 
 	for(i = 0, j = 0; origen[i] && origen[i] != ':'; i++){
 		if (origen[i] != '\"')
