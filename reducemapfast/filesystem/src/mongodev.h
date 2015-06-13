@@ -42,8 +42,14 @@ mongoc_client_t *client;
 t_tipoAcceso tipoAcceso;
 
 int iniciarMongo();
-int eliminarMongo();
-int leerMongo();
+//int eliminarMongo();
+//int leerMongo();
+t_archivo_json mongo_get_archivo();
+void mongo_db_directorios_open();
+void mongo_db_archivos_open();
+void mongo_db_close();
+void obtenerCampoValor(const char *, t_archivo_json *, t_directorio_json *, t_tipoAcceso);
+void leerJSON(t_tipoAcceso);
 
 
 #endif /* MONGODEV_H_ */

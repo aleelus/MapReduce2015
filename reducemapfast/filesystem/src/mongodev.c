@@ -109,7 +109,7 @@ int leerMongo(){
 }*/
 
 
-int leerJSON(t_tipoAcceso tipoAcceso){
+void leerJSON(t_tipoAcceso tipoAcceso){
 
 	FILE *in;
 	bson_t *query;
@@ -129,13 +129,12 @@ int leerJSON(t_tipoAcceso tipoAcceso){
 			mongo_db_archivos_open();
 
 			if ((in = fopen(JSON_FILE,"rt")) == NULL ){
-				return EXIT_FAILURE;
 				break;
 				}
 
 			while(fgets(cadena, 100, in) != NULL){
 
-				for(origen = strtok(cadena, "{,}"); origen;  origen = strtok(NULL, "{,}"))
+				for(origen = strtok(cadena, "{,}'\n'"); origen;  origen = strtok(NULL, "{,}'\n'"))
 					if (origen[0] != '\n'){
 						printf("%s\n", origen);
 						obtenerCampoValor(origen, archivo, NULL, tipoAcceso);
@@ -171,10 +170,7 @@ int leerJSON(t_tipoAcceso tipoAcceso){
 			fclose(in);
 
 			mongo_db_close();
-
-			return EXIT_SUCCESS;
-
-
+			break;
 		}
 
 		case SonDirectorios: {
@@ -182,7 +178,6 @@ int leerJSON(t_tipoAcceso tipoAcceso){
 			mongo_db_directorios_open();
 
 			if ((in = fopen(JSON_FILE2,"rt")) == NULL ){
-				return EXIT_FAILURE;
 				break;
 				}
 
@@ -193,7 +188,7 @@ int leerJSON(t_tipoAcceso tipoAcceso){
 
 				bson_oid_init (&oid, NULL);
 
-				for(origen = strtok(cadena, "{,}"); origen;  origen = strtok(NULL, "{,}"))
+				for(origen = strtok(cadena, "{,}'\n'"); origen;  origen = strtok(NULL, "{,}'\n'"))
 					if (origen[0] != '\n'){
 						printf("%s\n", origen);
 						obtenerCampoValor(origen, NULL, directorio, tipoAcceso);
@@ -221,9 +216,7 @@ int leerJSON(t_tipoAcceso tipoAcceso){
 			fclose(in);
 
 			mongo_db_close();
-
-			return EXIT_SUCCESS;
-
+			break;
 		}
 	};
 
@@ -257,8 +250,11 @@ void obtenerCampoValor(const char *origen, t_archivo_json *archivo, t_directorio
 
 	switch(tipoAcceso){
 		case SonArchivos:{
-			if (strcmp(campo, "nombre") == 0)
+			if (strcmp(campo, "nombre") == 0){
+				memset(archivo->nombre, '\0', sizeof(archivo->nombre));
 				memcpy(archivo->nombre, valor, k);
+			}
+
 
 			if (strcmp(campo, "directorio") == 0)
 				archivo->directorio = atoi(valor);
@@ -278,8 +274,11 @@ void obtenerCampoValor(const char *origen, t_archivo_json *archivo, t_directorio
 
 		}
 		case SonDirectorios:{
-			if (strcmp(campo, "directorio") == 0)
+			if (strcmp(campo, "directorio") == 0){
+				memset(directorio->directorio, '\0', sizeof(directorio->directorio));
 				memcpy(directorio->directorio, valor, k);
+			}
+
 
 			if (strcmp(campo, "index") == 0)
 				directorio->index = atoi(valor);
@@ -297,6 +296,13 @@ void obtenerCampoValor(const char *origen, t_archivo_json *archivo, t_directorio
 
 
 }
+
+
+t_archivo_json mongo_get_archivo(){
+	t_archivo_json archivo;
+	return archivo;
+}
+
 
 void mongo_db_directorios_open(){
 	mongoc_init ();
