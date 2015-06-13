@@ -412,7 +412,7 @@ char* obtenerSubBuffer(char *nombre){
 
 	tamanioNombre=strlen(nombre);
 	tam=tamanioNombre;
-	while(tam>1){
+	while(tam>=1){
 		tam=tam/10;
 		cont++;
 	}

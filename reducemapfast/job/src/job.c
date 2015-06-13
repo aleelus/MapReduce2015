@@ -429,14 +429,18 @@ t_job_a_nodo *procesoJob (char *buffer){
 
 	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
 	int pos=2;
-
+	printf("BUFFER:%s\n",buffer);
 
 	el_job->nodo=DigitosNombreArchivo(buffer,&pos);
+	printf("Nodo:%s\n",el_job->nodo);
 	el_job->ip=DigitosNombreArchivo(buffer,&pos);
+	printf("IP:%s\n",el_job->ip);
 	el_job->puerto=DigitosNombreArchivo(buffer,&pos);
+	printf("Puerto:%s\n",el_job->puerto);
 	el_job->bloque=DigitosNombreArchivo(buffer,&pos);
+	printf("Bloque:%s\n",el_job->bloque);
 	el_job->archResultado=DigitosNombreArchivo(buffer,&pos);
-
+	printf("Resultado:%s\n",el_job->archResultado);
 	return el_job;
 }
 
@@ -525,7 +529,7 @@ int ObtenerComandoMSJ(char* buffer) {
 
 char* DigitosNombreArchivo(char *buffer,int *posicion){
 
-	char *nombreArch;
+	char *nombreArch = string_new();
 	int digito=0,i=0,j=0,algo=0,aux=0,x=0;
 
 	digito=PosicionDeBufferAInt(buffer,*posicion);
