@@ -76,16 +76,20 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
 
 	digitosCantNumIp=PosicionDeBufferAInt(buffer,2);
-	printf("Cantidad de digitos de Tamanio de Ip:%d\n",digitosCantNumIp);
+	//printf("Cantidad de digitos de Tamanio de Ip:%d\n",digitosCantNumIp);
 	tamanioDeIp=ObtenerTamanio(buffer,3,digitosCantNumIp);
-	printf("Tamaño de IP:%d\n",tamanioDeIp);
-	posActual=1+digitosCantNumIp;
+	//printf("Tamaño de IP:%d\n",tamanioDeIp);
+	if(tamanioDeIp>=10){
+		posActual=digitosCantNumIp;
+	} else {
+		posActual=1+digitosCantNumIp;
+	}
 	la_Ip=DigitosNombreArchivo(buffer,&posActual);
-	printf("Ip:%s\n",la_Ip);
+	//printf("Ip:%s\n",la_Ip);
 	el_Puerto=DigitosNombreArchivo(buffer,&posActual);
-	printf("Puerto:%s\n",el_Puerto);
+	//printf("Puerto:%s\n",el_Puerto);
 	tamanioDatos=DigitosNombreArchivo(buffer,&posActual);
-	printf("Tamaño:%s\n",tamanioDatos);
+	//printf("Tamaño:%s\n",tamanioDatos);
 
 	el_nodo = buscarNodo(la_Ip,el_Puerto);
 
@@ -320,8 +324,8 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 
 
 	}else if(*cantRafaga==2){
-		bufferAux = realloc(bufferAux,*tamanio * sizeof(char));
-		memset(bufferAux, 0, *tamanio * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
+		bufferAux = realloc(bufferAux,*tamanio * sizeof(char)+1);
+		memset(bufferAux, 0, *tamanio * sizeof(char)+1); //-> llenamos el bufferAux con barras ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
