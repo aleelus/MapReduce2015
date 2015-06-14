@@ -111,51 +111,85 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	return 1;
 }
 
-void AtiendeMarta(char* buffer,int*cantRafaga){
+int existeArchivo(char* nArchivo, t_archivo** archivo){
+
+	char** array;
+	array =(char**) malloc (strlen(nArchivo)+1);
+	array=string_split(nArchivo,"/");
+	*archivo = buscarArchivoPorNombre(array[0]);
+
+	if(*archivo==NULL){
+		return 0;
+	}
+	return 1;
+}
+
+int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 
 	char *nArchivo;
+	t_list * nodos = list_create();
 	int digitosCantDeArchivos=0,cantDeArchivos=0;
-	int x,posActual=0;
-	t_archivo * el_archivo;
-	t_bloque *bloque = malloc(sizeof(t_bloque));
+	int x,posActual=0,cont,i,k;
+	t_archivo * el_archivo = malloc(sizeof(t_archivo));
+	t_bloque * el_bloque = malloc(sizeof(t_bloque));
+	t_nodo * el_nodo = malloc(sizeof(t_nodo));
 
 	//BUFFER RECIBIDO = 4270 (EJEMPLO)
 	//BUFFER RECIBIDO = 4112220temperatura-2012.txt220temperatura-2013.txt
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
-
+	printf("BUFFER:%s\n",buffer);
 	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,2);
-	printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
+	//printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
 	cantDeArchivos=ObtenerTamanio(buffer,3,digitosCantDeArchivos);
-	printf("Cantidad de Archivos:%d\n",cantDeArchivos);
+	//printf("Cantidad de Archivos:%d\n",cantDeArchivos);
 	posActual=3+digitosCantDeArchivos;
 
-		for(x=0;x<cantDeArchivos;x++){
-			//printf("PosicionActual:%d",posActual);
-			nArchivo=DigitosNombreArchivo(buffer,&posActual);
-			//printf("NOMBRE:%s\n",nArchivo);
-			el_archivo = archivo_create(nArchivo,1000,0,1);
-			bloque->array[0].nombreNodo = "NodoA";
-			bloque->array[0].nro_bloque = 30;
-			bloque->array[1].nombreNodo = "NodoD";
-			bloque->array[1].nro_bloque = 22;
-			bloque->array[2].nombreNodo = "NodoE";
-			bloque->array[2].nro_bloque = 11;
-			bloque->bloque = 0;
-			list_add(el_archivo->listaBloques,bloque);
-			list_add(lista_archivos,el_archivo);
-			//free(nArchivo);
-			//ObtenerBloquesDeArchivo(nArchivo,);
-		}
-		//nResultado=DigitosNombreArchivo(buffer,&posActual);
+	string_append(&*bufferE,"12"); // 1 es FS y 2 es el tipo de mensaje
+	cont = cuentaDigitos(cantDeArchivos); //me cuenta los digitos que tiene la cantidad de Archivos
+	string_append(&*bufferE,string_itoa(cont)); //agrego la cantidad de digitos al buffer
+	string_append(&*bufferE,string_itoa(cantDeArchivos));//agrego la cantidad de archivos
 
-		//Muestro por pantalla los Archivos
-		int i=0;
-		while(i<list_size(lista_archivos)){
-			el_archivo = list_get(lista_archivos, i);
-			printf("El archivo:%s\n",el_archivo->nombreArchivo);
-			i++;
+	for(x=0;x<cantDeArchivos;x++){
+
+		nArchivo=DigitosNombreArchivo(buffer,&posActual);
+		printf("ARCHIVO:%s\n",nArchivo);
+
+		if(!existeArchivo(nArchivo,&el_archivo)){
+			return 0;
+		}else {
+			string_append(&*bufferE,obtenerSubBuffer(el_archivo->nombreArchivo));//aca va la ruta, ahora no lo hace
+			cont = cuentaDigitos(list_size(el_archivo->listaBloques));
+			string_append(&*bufferE,string_itoa(cont));
+			string_append(&*bufferE,string_itoa(list_size(el_archivo->listaBloques)));
+			for(i=0;i<list_size(el_archivo->listaBloques);i++){
+				el_bloque = list_get(el_archivo->listaBloques,i);
+				for(k=0;k<3;k++){
+					if((el_bloque->array+k)!=NULL){
+						string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nombreNodo));
+						bool _true(void *elem){
+							return (!strcmp((char*)elem,el_bloque->array[k].nombreNodo));
+						}
+						if(!list_any_satisfy(nodos,_true)){
+							list_add(nodos,el_bloque->array[k].nombreNodo);
+						}
+						string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nro_bloque));
+					}
+				}
+			}
+
 		}
-		//*cantRafaga=1;
+	}
+	cont = cuentaDigitos(list_size(nodos)); //me cuenta los digitos que tiene la cantidad de nodos
+	string_append(&*bufferE,string_itoa(cont)); //agrego la cantidad de digitos al buffer
+	string_append(&*bufferE,string_itoa(list_size(nodos)));//agrego la cantidad de nodos
+
+	for(i=0;i<list_size(nodos);i++){
+		el_nodo = buscarNodoPorNombre(list_get(nodos,i));
+		string_append(&*bufferE,obtenerSubBuffer(el_nodo->nombre));
+		string_append(&*bufferE,obtenerSubBuffer(el_nodo->ip));
+		string_append(&*bufferE,obtenerSubBuffer(el_nodo->puerto));
+	}
+	return 1;
 }
 
 int ObtenerComandoMSJ(char* buffer) {
@@ -168,58 +202,22 @@ int ObtenerComandoMSJ(char* buffer) {
 int cuentaDigitos(int valor){
 	int cont = 0;
 	float tamDigArch=valor;
-	while(tamDigArch>1){
+	while(tamDigArch>=1){
 		tamDigArch=tamDigArch/10;
 		cont++;
 	}
 	return cont;
 }
 
-int EnviarInfoMarta(int socket) {
+int EnviarInfoMarta(int socket,char * buffer) {
 // Retardo antes de contestar una solicitud
 	//sleep(g_Retardo / 1000);
 	int cont,cantidadDeBytesAEnviar;
 	int bytecount,bytesRecibidos,cantRafaga=1,tamanio;
-	char*buffer = string_new();
+
 	char*bufferR = string_new();
 	char*bufferE = string_new();
 
-	//VIEJO PROTOCOLO
-	//BUFFER RECIBIDO = 1212220temperatura-2012.txt121015NODOA23015NODOB22215NODOF18
-	//												 1115NODOE23015NODOJ22215NODOW18
-	//					    220temperatura-2013.txt121015NODOA23015NODOB22215NODOF23
-	//												 1115NODOE23015NODOJ22215NODOW18
-	//					15NODOA19127.0.0.114600015NODOB19127.0.0.1146000
-	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
-
-	//NUEVO PROTOCOLO
-	//BUFFER RECIBIDO = 1212237/user/juan/datos/temperatura-2012.txt1215NODOA18Bloque3015NODOB18Bloque3715NODOF17Bloque8
-		//											 				  15NODOE18Bloque1315NODOA18Bloque3815NODOC17Bloque7
-		//			        237/user/juan/datos/temperatura-2013.txt1215NODOP18Bloque3115NODOF18Bloque4215NODOH17Bloque9
-		//										     			      15NODOK18Bloque1115NODOB18Bloque5515NODOF17Bloque3
-		//				  1815NODOA19127.0.0.114600015NODOB19127.0.0.1146000
-//							15NODOC19127.0.0.114600015NODOE19127.0.0.1146000
-//							15NODOF19127.0.0.114600015NODOH19127.0.0.1146000
-//							15NODOK19127.0.0.114600015NODOP19127.0.0.1146000
-
-	//Bloque0 :: NODOA:Bloque30 NODOB:Bloque37 NODOF:Bloque8
-	//Bloque1 :: NODOE:Bloque13 NODOA:Bloque38 NODOC:Bloque7
-
-	//Bloque0 :: NODOP:Bloque21 NODOF:Bloque42 NODOH:Bloque9
-	//Bloque1 :: NODOK:Bloque11 NODOB:Bloque55 NODOF:Bloque3
-
-
-	buffer=string_new();
-	string_append(&buffer,"1212237/user/juan/datos/temperatura-2012.txt");
-	string_append(&buffer,"13");
-	string_append(&buffer,"15NodoA18Bloque3015NodoB18Bloque3715NodoF17Bloque8");
-	string_append(&buffer,"15NodoE18Bloque1315NodoA18Bloque3815NodoC17Bloque7");
-	string_append(&buffer,"15NodoA18Bloque4315NodoC18Bloque8815NodoB17Bloque2");
-	string_append(&buffer,"237/user/juan/datos/temperatura-2013.txt");
-	string_append(&buffer,"12");
-	string_append(&buffer,"15NodoP18Bloque3115NodoF18Bloque4215NodoH17Bloque9");
-	string_append(&buffer,"15NodoK18Bloque1115NodoB18Bloque5515NodoF17Bloque3");
-	string_append(&buffer,"1815NodoA21010.5.1.17214600015NodoB21010.5.1.17214600015NodoC21010.5.1.17214600015NodoE21010.5.1.17214600015NodoF21010.5.1.17214600015NodoH21010.5.1.17214600015NodoK21010.5.1.17214600015NodoP21010.5.1.172146000");
 	cantidadDeBytesAEnviar = strlen(buffer);
 	cont = cuentaDigitos(cantidadDeBytesAEnviar);
 	string_append(&bufferE,"1");
@@ -252,12 +250,16 @@ int EnviarInfoMarta(int socket) {
 void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
-	printf("RAFAGA:%d\n",tipo_mensaje);
+	//printf("RAFAGA:%d\n",tipo_mensaje);
+	char*bufferE=string_new();
 	if(*cantRafaga == 2){
 		switch(tipo_mensaje){
 		case CONSULTA_ARCHIVO:
-			AtiendeMarta(buffer,cantRafaga);
-			EnviarInfoMarta(socket);
+			if(AtiendeMarta(buffer,cantRafaga,&bufferE)){
+				EnviarInfoMarta(socket,bufferE);
+			} else {
+				EnviarInfoMarta(socket,"No");
+			}
 			*cantRafaga=1;
 			break;
 		default:
@@ -1112,6 +1114,16 @@ t_nodo* buscarNodoPorNombre(char* nombre){
 	return el_nodo;
 }
 
+t_archivo* buscarArchivoPorNombre(char* nombre){
+	t_archivo* el_archivo = malloc(sizeof(t_archivo));
+	bool _true(void *elem){
+		return ((!strcmp(((t_archivo*) elem)->nombreArchivo,nombre)));
+	}
+	el_archivo = list_find(lista_archivos, _true);
+	return el_archivo;
+}
+
+
 int buscarBloqueDisponible(t_nodo*nodo){
 	t_bloque_disponible* bloque;
 	bloque = list_remove(nodo->bloquesDisponibles,0);
@@ -1168,7 +1180,7 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 		pthread_join(hNodos, NULL );
 
 		char *nombre = string_new();
-		string_append(&nombre,"bloque");
+		string_append(&nombre,"Bloque");
 		string_append(&nombre,string_itoa(bloqueDisponible));
 
 		(*bloque)->array[j].nombreNodo=nodo->nombre;
@@ -1452,7 +1464,7 @@ void nodo_destroy(t_nodo* self) {
 t_array_copias* array_copias_create(char* nombre, int bloque){
 	t_array_copias* new = malloc(sizeof(t_array_copias));
 	new->nombreNodo = nombre;
-	new->nro_bloque = bloque;
+	new->nro_bloque = string_itoa(bloque);
 	return new;
 }
 

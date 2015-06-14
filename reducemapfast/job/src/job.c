@@ -571,7 +571,7 @@ char * procesarArchivos (char *bufferArch,int contArch){
 	float tam=0,tamDigArch=0;
 
 	tamDigArch=contArch;
-	while(tamDigArch>1){
+	while(tamDigArch>=1){
 		tamDigArch=tamDigArch/10;
 		cont++;
 	}
@@ -583,7 +583,7 @@ char * procesarArchivos (char *bufferArch,int contArch){
 	for(j=0;j<=contArch;j++){
 		tam=strlen(array_archivos[j]);
 		contDig=0;
-		while(tam>1){
+		while(tam>=1){
 			tam=tam/10;
 			contDig++;
 		}
@@ -623,17 +623,16 @@ void obtenerArrayArchivos(int *contadorArchivos){
 	char *aux=string_new();
 
 	array =(char**) malloc (strlen(g_Archivos));
-		array=string_split(g_Archivos,"/");
+	array=string_split(g_Archivos,"/");
 
-
-		while (array[cont]!=NULL){
-			for(j=0;j<strlen(array[cont]);j++){
-				if(array[cont][j]=='.'){
-					*contadorArchivos=*contadorArchivos+1;
-				}
+	while (array[cont]!=NULL){
+		for(j=0;j<strlen(array[cont]);j++){
+			if(array[cont][j]=='.'){
+				*contadorArchivos=*contadorArchivos+1;
 			}
-			cont++;
 		}
+		cont++;
+	}
 
 
 		array_archivos=(char**) malloc (*contadorArchivos*strlen(g_Archivos)+strlen(g_Resultado));

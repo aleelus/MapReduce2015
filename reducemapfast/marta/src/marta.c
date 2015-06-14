@@ -12,8 +12,6 @@
 #include "marta.h"
 
 int main(int argv, char** argc) {
-	//HARDCODEANDO
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	lista_nodos = list_create();
 	lista_archivos=list_create();
@@ -489,7 +487,7 @@ void ObtenerInfoDeNodos(int id){
 	//cuento los digitos
 	float tam=contArchivos;
 	int cont=0;
-	while(tam>1){
+	while(tam>=1){
 			tam=tam/10;
 			cont++;
 	}
@@ -504,7 +502,7 @@ void ObtenerInfoDeNodos(int id){
 			if (el_archivo->idJob == id) {
 				cont=0;
 				tam=strlen(el_archivo->nombreArchivo);
-				while(tam>1){
+				while(tam>=1){
 					tam=tam/10;
 					cont++;
 				}
@@ -518,7 +516,7 @@ void ObtenerInfoDeNodos(int id){
 	tam=strlen(bufferDos);
 	cont=0;
 	string_append(&bufferUno,"4");
-	while(tam>1){
+	while(tam>=1){
 		tam=tam/10;
 		cont++;
 	}
@@ -537,7 +535,7 @@ void ObtenerInfoDeNodos(int id){
 	int tamanio=10,cantRafaga=1;
 
 	char *buffer=string_new();
-	char *rafaga1Fs=string_new(),*rafaga2Fs=string_new();
+	char *rafaga2Fs=string_new();
 
 	//Envio Rafaga Uno a FS
 	EnviarDatos(socket_fs, bufferUno,strlen(bufferUno));
@@ -553,9 +551,6 @@ void ObtenerInfoDeNodos(int id){
 	//Recibo la primera rafaga de FS
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 	EnviarDatos(socket_fs, "Ok",strlen("Ok"));
-
-	rafaga1Fs= buffer;
-
 
 	cantRafaga=2;
 	//Recibo la segunda rafaga de Fs
@@ -617,6 +612,8 @@ void ObtenerInfoDeNodos(int id){
 		}
 
 		//Cantidad de Bloques
+		int digCantCopias,cantCopias;
+
 		digCantBloq=PosicionDeBufferAInt(rafaga2Fs,posActual);
 		cantBloq=ObtenerTamanio(rafaga2Fs,posActual+1,digCantBloq);
 		posActual=posActual+1+digCantBloq;
@@ -654,7 +651,7 @@ void ObtenerInfoDeNodos(int id){
 		i++;
 	}
 
-	//Cantidada de Nodos
+	//Cantidad de Nodos
 	digCantNodo=PosicionDeBufferAInt(rafaga2Fs,posActual);
 	cantNodo=ObtenerTamanio(rafaga2Fs,posActual+1,digCantNodo);
 	posActual=posActual+1+digCantNodo;
@@ -896,7 +893,6 @@ void Planificar(int id){
 
 void marcarBloquesEnArray(t_archivo *el_archivo,char *bloque){
 
-	int i=0;
 	int k=0;
 	int c=0;
 	t_dato *el_dato;
@@ -1333,7 +1329,7 @@ void reciboOk(char *buffer,int socket){
 	printf("Recibo OK del Job:   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
 
 	int numCopia=0,x=0,j=0;
-	int contTareasMap=-10,contTareasReduce=-10;
+	int contTareasMap=-10;//,contTareasReduce=-10;
 	int estado=0;
 	el_bloque=buscarNodoYBloque(nodo,bloque,&numCopia,&el_archivo,&estado);
 
@@ -1515,7 +1511,7 @@ void reciboOk(char *buffer,int socket){
 
 		//Cuento Tareas Pendientes del Archivo
 		contTareasMap=tareasRestantes(1);
-		contTareasReduce=tareasRestantes(2);
+		//contTareasReduce=tareasRestantes(2);
 
 		printf(COLOR_VERDE"Tareas Restantes de Map: %d\n"DEFAULT,contTareasMap);
 

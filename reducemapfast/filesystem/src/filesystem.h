@@ -149,7 +149,6 @@ void Comenzar_Consola();							//Manejo de la consola
 int  conectarNodo(int*,char*,char*);					//Conexion de Nodo
 void HiloOrquestadorDeConexiones();					// maneja las conexiones entrantes
 void implementoMarta(int*,char*,int*,char**,int);   //maneja las peticiones de Marta
-void AtiendeMarta(char*,int*);						//maneja la consulta de archivos de marta
 int  ObtenerComandoMSJ(char*);						//Obtiene el tipo del comando del emisor
 
 
@@ -164,10 +163,10 @@ int   ObtenerTamanio (char *buffer , int posicion, int dig_tamanio);
 char* DigitosNombreArchivo(char *buffer,int *posicion);
 int   AtiendeNodo(char* buffer,int*cantRafaga);
 int   agregarNodo();
-void  AtiendeMarta(char* buffer,int*cantRafaga);
+int  AtiendeMarta(char* buffer,int*cantRafaga,char**bufferE);
 int   ObtenerComandoMSJ(char* buffer);
 int   cuentaDigitos(int valor);
-int   EnviarInfoMarta(int socket);
+int   EnviarInfoMarta(int socket,char* buffer);
 void  implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket);
 void  implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket);
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio);
@@ -196,3 +195,6 @@ t_array_copias* array_copias_create(char* nombre, int bloque);
 t_bloque_disponible *bloque_disponible_create(int);
 int sendall(int s, char *buf, long unsigned *len);
 int buscarNodoEnArrayPorNombre(char *);
+char* obtenerSubBuffer(char*);
+t_nodo* buscarNodoPorNombre(char* nombre);
+t_archivo* buscarArchivoPorNombre(char* nombre);
