@@ -29,7 +29,7 @@
 #define PATH_CONFIG "config.cfg"
 #define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "msp.log"
-#define BUFFERSIZE 10
+#define BUFFERSIZE 50
 
 // METODOS SOCKET //
 void conectarMarta();

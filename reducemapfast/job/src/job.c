@@ -158,6 +158,7 @@ int AtiendeCliente(void * arg) {
 	int emisor=0;
 
 
+
 	emisor=PosicionDeBufferAInt(buff,1);
 
 	// 1: Aplicar Map ............... 2: Aplicar Reduce Local Con combiner............3: Aplicar Reduces Sin combiner
@@ -194,26 +195,40 @@ int AtiendeCliente(void * arg) {
 		string_append(&bufferANodo,aux);
 		free(aux);
 	}else if(emisor==3){
-		// DE MARTA => 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000   230/user/juan/datos/resultado.txt
+		// DE MARTA => 431215NodoB2202144resultado.txt2143resultado.txt2142resultado.txt2141resultado.txt2140resultado.txt21519resultado.txt21518resultado.txt21517resultado.txt21516resultado.txt21515resultado.txt21514resultado.txt21513resultado.txt21512resultado.txt21511resultado.txt21510resultado.txt2149resultado.txt2148resultado.txt2147resultado.txt2146resultado.txt2145resultado.txt15NodoB19127.0.0.1146001
+		//			       15NodoC1621525resultado.txt21524resultado.txt21523resultado.txt21522resultado.txt21521resultado.txt21520resultado.txt15NodoC19127.0.0.1146002
+		//				230/user/juan/datos/resultado.txt
+		//
+		//
+		//
+		//
 		// A NODO => 2311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000   230/user/juan/datos/resultado.txt
 		int cantNodos=0,cantDigNodos=0,cantBloques=0,cantDigBloques=0,posicion=0,x=0,y=0;
+
 
 		string_append(&bufferANodo,"23");
 		cantDigNodos=PosicionDeBufferAInt(buff,2);
 		cantNodos=ObtenerTamanio(buff,3,cantDigNodos);
 		posicion=3+cantDigNodos;
+
+		printf(":::: CANTIDAD DIG NODOS: %d\n",cantDigNodos);
+		printf(":::: CANTIDAD NODOS: %d\n",cantNodos);
+
 		string_append(&bufferANodo,string_itoa(cantDigNodos));
 		string_append(&bufferANodo,string_itoa(cantNodos));
 		for(y=0;y<cantNodos;y++){
 
+			aux=string_new();
+			aux=DigitosNombreArchivo(buff,&posicion);
+			string_append(&bufferANodo,obtenerSubBuffer(aux));
+			aux=string_new();
 
-			if(y==0)
-				el_job->nodo=DigitosNombreArchivo(buff,&posicion);
-
-			string_append(&bufferANodo,obtenerSubBuffer(el_job->nodo));
 			cantDigBloques=PosicionDeBufferAInt(buff,posicion);
 			cantBloques=ObtenerTamanio(buff,posicion+1,cantDigBloques);
 			posicion=posicion+1+cantDigBloques;
+
+			printf(":::: CANTIDAD DIG BLOQUES: %d\n",cantDigBloques);
+			printf(":::: CANTIDAD BLOQUES: %d\n",cantBloques);
 
 			string_append(&bufferANodo,string_itoa(cantDigBloques));
 			string_append(&bufferANodo,string_itoa(cantBloques));
@@ -248,9 +263,12 @@ int AtiendeCliente(void * arg) {
 			}
 
 		}
+		//aux=string_new();
 		aux=DigitosNombreArchivo(buff,&posicion);
 		el_job->archResultado=aux;
 		string_append(&bufferANodo,obtenerSubBuffer(aux));
+
+
 
 		printf(COLOR_VERDE"%s \t %s \t%s \n"DEFAULT,el_job->nodo,el_job->ip,el_job->puerto);
 		printf(COLOR_VERDE" %s \n"DEFAULT,bufferANodo);
@@ -704,10 +722,10 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 
 		if(*cantRafaga==3){
 
-			bufferAux = realloc(bufferAux,200* sizeof(char));
-			memset(bufferAux, 0, 200 * sizeof(char)); //-> llenamos el bufferAux con ceros.
+			bufferAux = realloc(bufferAux,10000* sizeof(char));
+			memset(bufferAux, 0, 10000 * sizeof(char)); //-> llenamos el bufferAux con ceros.
 
-			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 200, 0)) == -1) {
+			if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, 10000, 0)) == -1) {
 				Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 			}
 

@@ -37,7 +37,7 @@
 #define RECIBIDO_OK 3
 
 //Tamaño del buffer
-#define BUFFERSIZE 10
+#define BUFFERSIZE 50
 
 int socket_fs;
 

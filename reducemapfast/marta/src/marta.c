@@ -1444,6 +1444,7 @@ void reciboOk(char *buffer,int socket){
 					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado->nodo));
 					string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(list_size(el_job_enviado->listaBloques))));
 					string_append(&bufferAJob_Reduce,string_itoa(list_size(el_job_enviado->listaBloques)));
+					k=0;
 					while(k<list_size(el_job_enviado->listaBloques)){
 						el_job_enviado_bloque=list_get(el_job_enviado->listaBloques,k);
 						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado_bloque->resultadoParcial));
@@ -1547,7 +1548,7 @@ void reciboOk(char *buffer,int socket){
 						ipNodo=obtenerSubBuffer(ipNodo);
 						puertoNodo=obtenerSubBuffer(puertoNodo);
 						bloque=obtenerSubBuffer(bloque);
-						resultado=obtenerSubBuffer(el_archivo->nombreArchivoResultado);
+						resultado=obtenerSubBuffer(el_job_enviado->resultadoParcial);
 						string_append(&buffer,"4");
 						string_append(&buffer,"1");
 						string_append(&buffer,nodo);
