@@ -68,15 +68,15 @@ int main(int argv, char** argc) {
 	bufferRafaga_Uno=obtenerRafaga_Uno(bufferRafaga_Uno,bufferRafaga_Dos);
 	
 	// Muestro los buffers por pantalla
-	printf("=======> Buffer a Enviar a MaRTA RAFAGA 1=======> %s \n",bufferRafaga_Uno);
-	printf("=======> Buffer a Enviar a MaRTA RAFAGA 2=======> %s \n",bufferRafaga_Dos);
+	//printf("=======> Buffer a Enviar a MaRTA RAFAGA 1=======> %s \n",bufferRafaga_Uno);
+	//printf("=======> Buffer a Enviar a MaRTA RAFAGA 2=======> %s \n",bufferRafaga_Dos);
 
 	// Conexión con proceso Marta
 	conectarMarta();
 	
 	// Envío la primer ráfaga
 	EnviarDatos(socket_Marta,bufferRafaga_Uno, strlen(bufferRafaga_Uno));
-	log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Uno, strlen(bufferRafaga_Uno));
+	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
 
 	// Escucho posibles entradas
@@ -91,10 +91,10 @@ int main(int argv, char** argc) {
 
 			// Recibimos los datos del cliente
 			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
-			log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, buffer, tamanio);
+			//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, buffer, tamanio);
 
 			// Control de recepción no vacía
-			printf("BytesRecibidos:%d\n",bytesRecibidos);
+			//printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
 
 				//printf("--------El BUFFER:%s\n", buffer);
@@ -211,8 +211,6 @@ int AtiendeCliente(void * arg) {
 		cantNodos=ObtenerTamanio(buff,3,cantDigNodos);
 		posicion=3+cantDigNodos;
 
-		printf(":::: CANTIDAD DIG NODOS: %d\n",cantDigNodos);
-		printf(":::: CANTIDAD NODOS: %d\n",cantNodos);
 
 		string_append(&bufferANodo,string_itoa(cantDigNodos));
 		string_append(&bufferANodo,string_itoa(cantNodos));
@@ -227,8 +225,6 @@ int AtiendeCliente(void * arg) {
 			cantBloques=ObtenerTamanio(buff,posicion+1,cantDigBloques);
 			posicion=posicion+1+cantDigBloques;
 
-			printf(":::: CANTIDAD DIG BLOQUES: %d\n",cantDigBloques);
-			printf(":::: CANTIDAD BLOQUES: %d\n",cantBloques);
 
 			string_append(&bufferANodo,string_itoa(cantDigBloques));
 			string_append(&bufferANodo,string_itoa(cantBloques));
@@ -269,10 +265,10 @@ int AtiendeCliente(void * arg) {
 		string_append(&bufferANodo,obtenerSubBuffer(aux));
 
 
-
+/*
 		printf(COLOR_VERDE"%s \t %s \t%s \n"DEFAULT,el_job->nodo,el_job->ip,el_job->puerto);
 		printf(COLOR_VERDE" %s \n"DEFAULT,bufferANodo);
-
+*/
 
 	}
 
@@ -288,7 +284,7 @@ int AtiendeCliente(void * arg) {
 	string_append(&bufferEnvia,"2");
 	string_append(&bufferEnvia,string_itoa(cuentaDigitos(strlen(bufferANodo))));
 	string_append(&bufferEnvia,string_itoa(strlen(bufferANodo)));
-	printf("BUFFER ENVIA:%s\n",bufferEnvia);
+	//printf("BUFFER ENVIA:%s\n",bufferEnvia);
 	EnviarDatos(socket_nodo,bufferEnvia, strlen(bufferEnvia));
 	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferEnvia, strlen(bufferEnvia));
 
@@ -332,7 +328,7 @@ int AtiendeCliente(void * arg) {
 
 				if(emisor==3){
 					//24234/users/dasdas/resultado.txt
-					printf(COLOR_VERDE"SE HICERON TODOS LOS REDUCES==> Archivo final: %s\n"DEFAULT,el_job->archResultado);
+					printf("SE HICERON TODOS LOS REDUCES==>"COLOR_VERDE" Archivo final: %s\n"DEFAULT,el_job->archResultado);
 
 					string_append(&bufferAMartaDos,"24");
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->archResultado));
@@ -345,18 +341,18 @@ int AtiendeCliente(void * arg) {
 					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
 
 					//RAFAGA 1
-					printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
 
 
 					//RAFAGA 2
-					printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
 				}else{
 
-					printf(COLOR_VERDE"RECIBO OK DEL NODO\n"DEFAULT);
+					printf(COLOR_VERDE"RECIBO OK DEL NODO: %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
 					string_append(&bufferAMartaDos,"23");
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
@@ -369,13 +365,13 @@ int AtiendeCliente(void * arg) {
 					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
 
 					//RAFAGA 1
-					printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
 
 
 					//RAFAGA 2
-					printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
 				}
@@ -447,18 +443,18 @@ t_job_a_nodo *procesoJob (char *buffer){
 
 	t_job_a_nodo *el_job = malloc(sizeof(t_job_a_nodo));
 	int pos=2;
-	printf("BUFFER:%s\n",buffer);
+	//printf("BUFFER:%s\n",buffer);
 
 	el_job->nodo=DigitosNombreArchivo(buffer,&pos);
-	printf("Nodo:%s\n",el_job->nodo);
+	//printf("Nodo:%s\n",el_job->nodo);
 	el_job->ip=DigitosNombreArchivo(buffer,&pos);
-	printf("IP:%s\n",el_job->ip);
+	//printf("IP:%s\n",el_job->ip);
 	el_job->puerto=DigitosNombreArchivo(buffer,&pos);
-	printf("Puerto:%s\n",el_job->puerto);
+	//printf("Puerto:%s\n",el_job->puerto);
 	el_job->bloque=DigitosNombreArchivo(buffer,&pos);
-	printf("Bloque:%s\n",el_job->bloque);
+	//printf("Bloque:%s\n",el_job->bloque);
 	el_job->archResultado=DigitosNombreArchivo(buffer,&pos);
-	printf("Resultado:%s\n",el_job->archResultado);
+	//printf("Resultado:%s\n",el_job->archResultado);
 	return el_job;
 }
 
@@ -732,8 +728,7 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 		}
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
-			(char*) bufferAux, strlen(bufferAux));
+	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo.
 }
 
@@ -744,13 +739,12 @@ int EnviarDatos(int socket,char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+	//printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a los clientes. Socket: %d", socket);
 
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) buffer);
+	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 
 	return bytecount;
 }

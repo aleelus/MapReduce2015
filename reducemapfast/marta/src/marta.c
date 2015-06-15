@@ -181,8 +181,7 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 		}
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
-			(char*) bufferAux, strlen(bufferAux));
+	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
 
@@ -192,7 +191,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+	//printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
@@ -203,8 +202,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
 
 	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) buffer);
+	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 
 	return bytecount;
 }
@@ -277,9 +275,9 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 211
 
 	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,2);
-	printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
+	//printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
 	cantDeArchivos=ObtenerTamanio(buffer,3,digitosCantDeArchivos);
-	printf("Cantidad de Archivos: %d\n",cantDeArchivos);
+	//printf("Cantidad de Archivos: %d\n",cantDeArchivos);
 	posActual=3+digitosCantDeArchivos;
 
 	for(x=0;x<cantDeArchivos;x++){
@@ -290,7 +288,6 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	nResultado=DigitosNombreArchivo(buffer,&posActual);
 	tieneCombiner=PosicionDeBufferAInt(buffer,posActual); // CAMBIE strlen(buffer)-3 por posActual
 
-	//Muestro por pantalla los Archivos
 	int i=0;
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
@@ -523,11 +520,11 @@ void ObtenerInfoDeNodos(int id){
 	string_append(&bufferUno,string_itoa(cont));
 	string_append(&bufferUno,string_itoa(strlen(bufferDos)));
 
-
+/*
 	printf("****** BUFFER'S A ENVIAR: \n");
 	printf("****** %s\n",bufferUno);
 	printf("****** %s\n",bufferDos);
-
+*/
 	//Me conecto con el FS
 	conectarAFileSystem();
 
@@ -646,7 +643,7 @@ void ObtenerInfoDeNodos(int id){
 		if(el_archivo->idJob == id){
 			FuncionMagica(el_archivo->listaBloques);//cargo array_listas
 			el_archivo->array_de_listas=array_listas;
-			RecorrerArrayListas(el_archivo);
+			//RecorrerArrayListas(el_archivo);
 		}
 		i++;
 	}
@@ -1096,14 +1093,14 @@ void enviarPlanificacionAJob (int id,int socket){
 
 
 
-	i=0;
+/*	i=0;
 	while(i<list_size(lista_job_enviado)){
 		el_job_enviado=list_get(lista_job_enviado,i);
 
 		printf("Archivo: %s \nNodo: %s \nBloque: %s \nEstado: %d\n",el_job_enviado->archivo,el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->estado);
 
 		i++;
-	}
+	}*/
 
 
 
@@ -1111,25 +1108,6 @@ void enviarPlanificacionAJob (int id,int socket){
 
 
 
-/*	char *mensaje;
-	mensaje=string_new();
-	//En la lista de archivos en el array esta la planificacion
-	//busco en base a la id y envio planificacion de cada archivo y de cada nodo.
-
-	string_append(&mensaje,"4");//Viene de MarTA
-	string_append(&mensaje,"15");//1: cantidad de dig del nomb del nodo 5:cantidad del nomb del nodo
-	string_append(&mensaje,"NodoA");
-	string_append(&mensaje,"212");//1: cantidad de dig de la ip 9:cantidad de la ip
-	string_append(&mensaje,"192.168.1.26");
-	string_append(&mensaje,"146000");//1:cantidad de dig del puerto 4: cantidad del puerto 6000:cantidad del puerto
-	string_append(&mensaje,"18");
-	string_append(&mensaje,"Bloque30");
-	string_append(&mensaje,"213");
-	string_append(&mensaje,"resultado.txt");
-
-
-	string_append(&mensaje,"\0");
-	EnviarDatos(socket, mensaje,strlen(mensaje));*/
 
 }
 
@@ -1462,7 +1440,7 @@ void reciboOk(char *buffer,int socket){
 
 				EnviarDatos(socket,bufferAJob_Reduce,strlen(bufferAJob_Reduce));
 
-				printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
+				//printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
 
 			}
 
