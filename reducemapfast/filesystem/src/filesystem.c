@@ -18,6 +18,7 @@ int main(int argv, char** argc) {
 
 	levantarConfig();
 	nroBloque=0;
+	indexGlobal = 1;
 
 	nombre = string_new();				//Variable del nombre de los nodos
 

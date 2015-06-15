@@ -125,6 +125,7 @@ int fs_CantidadNodos;
 t_archivo * archivo;
 int nroBloque;
 t_list ** arrayNodos;
+int indexGlobal;
 
 //FUNCIONES
 void mostrarAyuda();								//Mostrar ayuda

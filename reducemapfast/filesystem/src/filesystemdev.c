@@ -137,7 +137,7 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 	//BUFFER RECIBIDO = 4270 (EJEMPLO)
 	//BUFFER RECIBIDO = 4112220temperatura-2012.txt220temperatura-2013.txt
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
-	printf("BUFFER:%s\n",buffer);
+	//printf("BUFFER:%s\n",buffer);
 	digitosCantDeArchivos=PosicionDeBufferAInt(buffer,2);
 	//printf("CANTIDAD DE DIGITOS:%d\n",digitosCantDeArchivos);
 	cantDeArchivos=ObtenerTamanio(buffer,3,digitosCantDeArchivos);
@@ -152,7 +152,7 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 	for(x=0;x<cantDeArchivos;x++){
 
 		nArchivo=DigitosNombreArchivo(buffer,&posActual);
-		printf("ARCHIVO:%s\n",nArchivo);
+		//printf("ARCHIVO:%s\n",nArchivo);
 
 		if(!existeArchivo(nArchivo,&el_archivo)){
 			return 0;
@@ -226,7 +226,7 @@ int EnviarInfoMarta(int socket,char * buffer) {
 
 	//Primera Rafaga para Marta
 	if ((bytecount = send(socket, bufferE, strlen(bufferE), 0)) == -1)
-		Error("No puedo enviar información al cliente. Socket: %d", socket);
+		log_info(logger,"No puedo enviar información al cliente. Socket: %d", socket);
 	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
 		(char*) bufferE);
 
@@ -235,13 +235,13 @@ int EnviarInfoMarta(int socket,char * buffer) {
 	if(strcmp(bufferR,"Ok")==0){
 		//Segunda Rafaga para Marta
 		if ((bytecount = send(socket, buffer, strlen(buffer), 0)) == -1)
-			Error("No puedo enviar información al cliente. Socket: %d", socket);
+			log_info(logger,"No puedo enviar información al cliente. Socket: %d", socket);
 		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
 			(char*) buffer);
 		bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
 	} else {
-		Error("Marta tuvo algun problema con la rafaga 1. Socket: %d", socket);
+		log_info(logger,"Marta tuvo algun problema con la rafaga 1. Socket: %d", socket);
 		return 0;
 	}
 	return bytecount;
@@ -279,7 +279,7 @@ void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int
 void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
-	printf("RAFAGA:%d\n",tipo_mensaje);
+	//printf("RAFAGA:%d\n",tipo_mensaje);
 	if(*cantRafaga == 2){
 		switch(tipo_mensaje){
 		case CONEXION:
@@ -318,7 +318,7 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 		memset(bufferAux, 0, BUFFERSIZE * sizeof(char)); //-> llenamos el bufferAux con barras ceros.
 
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, BUFFERSIZE, 0)) == -1) {
-			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
+			log_info(logger,"Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 		}
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
@@ -348,8 +348,8 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	//printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
-		Error("No puedo enviar información a al clientes. Socket: %d", socket);
-	printf("Cuanto Envie:%d\n",bytecount);
+		log_info(logger,"No puedo enviar información a al clientes. Socket: %d", socket);
+	//printf("Cuanto Envie:%d\n",bytecount);
 	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
 
 	//char * bufferLogueo = malloc(5);
@@ -377,19 +377,19 @@ void RecorrerNodosYBloques(){
 	int i=0,j,posicion;
 	while(i<list_size(lista_nodos)){
 		el_nodo = list_get(lista_nodos, i);
-		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		/*printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
 		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
 		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
 		printf("El tamaño:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->tamanio);
-		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);*/
 		posicion = buscarNodoEnArrayPorNombre(el_nodo->nombre);
 		j=1;
 		while(j<list_size(arrayNodos[posicion])){
 			array = list_get(arrayNodos[posicion],j);
-			printf("Bloque:"COLOR_VERDE "%s\n"DEFAULT,array->nombre);
+			/*printf("Bloque:"COLOR_VERDE "%s\n"DEFAULT,array->nombre);
 			printf("Nombre Archivo:"COLOR_VERDE "%s\n"DEFAULT,array->nombreArchivo);
 			printf("Bloque Archivo:"COLOR_VERDE "%s\n"DEFAULT,array->bloqueArchivo);
-			printf("Padre:"COLOR_VERDE "%d\n"DEFAULT,array->padre);
+			printf("Padre:"COLOR_VERDE "%d\n"DEFAULT,array->padre);*/
 			j++;
 		}
 		i++;
@@ -405,11 +405,11 @@ void RecorrerListaBloques(){
 
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+		//printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
 
 		while(j<list_size(el_archivo->listaBloques)){
 			el_bloque = list_get(el_archivo->listaBloques, j);
-			printf("%d :: ",el_bloque->bloque);
+			/*printf("%d :: ",el_bloque->bloque);
 			//printf("Copia1:\n");
 			printf("%s--",el_bloque->array[0].nombreNodo);
 			printf("%s  ",el_bloque->array[0].nro_bloque);
@@ -418,7 +418,7 @@ void RecorrerListaBloques(){
 			printf("%s  ",el_bloque->array[1].nro_bloque);
 			//printf("Copia3:\n");
 			printf("%s--",el_bloque->array[2].nombreNodo);
-			printf("%s  \n",el_bloque->array[2].nro_bloque);
+			printf("%s  \n",el_bloque->array[2].nro_bloque);*/
 			j++;
 		}
 		j=0;
@@ -434,30 +434,44 @@ void RecorrerNodos(){
 	int i=0;
 	while(i<list_size(lista_nodos)){
 		el_nodo = list_get(lista_nodos, i);
-		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		/*printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
 		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
 		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
 		printf("El tamaño:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->tamanio);
-		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);*/
 		i++;
 	}
 }
 
 void recursiva(int padre){
-	t_list* lista;
-	char caracter[1024];
-	memset (caracter,' ',impre);
-	int i=0;
+	t_list* lista,*listaArchivos;
+	t_filesystem * fs = malloc(sizeof(t_filesystem));
+	t_archivo* arch = malloc(sizeof(t_archivo));
+	int i=0,l;
 	bool _true(void *elem){
 		return ((t_filesystem*) elem)->padre==padre;
 	}
 	lista = list_filter(lista_filesystem,_true);
-//	printf("Cantidad:%d\n",list_size(lista));
-	if(lista!=NULL){
+	bool _true2(void *elem){
+			return ((t_archivo*) elem)->padre==padre;
+	}
+	listaArchivos = list_filter(lista_archivos,_true2);
+
+	if(list_size(lista)>0){
+		//printf("Index:%d Nombre:%s Padre:%d\n",fs->index,fs->directorio,fs->padre);
 		impre++;
 		while(i<list_size(lista)){
-			t_filesystem * fs = list_get(lista,i);
-			printf("%s/%s\n",caracter,fs->directorio);
+			fs = list_get(lista,i);
+			if(fs->padre==0){
+				printf("/%s\n",fs->directorio);
+			} else {
+				for(l=0;l<impre;l++) printf(" ");
+				printf("/%s\n",fs->directorio);
+			}
+			for(l=0;l<list_size(listaArchivos);l++){
+				arch = list_get(listaArchivos,l);
+				printf(" %s\n",arch->nombreArchivo);
+			}
 			recursiva(fs->index);
 			i++;
 		}
@@ -468,8 +482,10 @@ void recursiva(int padre){
 
 void mostrarFilesystem(){
 	printf("Raiz(/)\n");
-	recursiva(0);
-	impre=0;
+	if(list_size(lista_filesystem)>0){
+		recursiva(0);
+		impre=0;
+	}
 }
 
 void cargarFilesystem(){
@@ -531,7 +547,7 @@ int AtiendeCliente(void * arg) {
 				implementoMarta(&id,buffer,&cantRafaga,&mensaje,socket);
 				break;
 			case ES_NODO:
-				printf("implementar atiendeNodo\n");
+				//printf("implementar atiendeNodo\n");
 				implementoNodo(buffer,&cantRafaga,&mensaje,socket);
 				break;
 			case COMANDO:
@@ -581,12 +597,12 @@ void HiloOrquestadorDeConexiones() {
 
 	socket_host = socket(AF_INET, SOCK_STREAM, 0);
 	if (socket_host == -1)
-		ErrorFatal(
+		log_info(logger,
 				"No se pudo inicializar el socket que escucha a los clientes");
 
 	if (setsockopt(socket_host, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
 			== -1) {
-		ErrorFatal("Error al hacer el 'setsockopt'");
+		log_info(logger,"Error al hacer el 'setsockopt'");
 	}
 
 	my_addr.sin_family = AF_INET;
@@ -595,10 +611,10 @@ void HiloOrquestadorDeConexiones() {
 	memset(&(my_addr.sin_zero), '\0', 8 * sizeof(char));
 
 	if (bind(socket_host, (struct sockaddr*) &my_addr, sizeof(my_addr)) == -1)
-		ErrorFatal("Error al hacer el Bind. El puerto está en uso");
+		log_info(logger,"Error al hacer el Bind. El puerto está en uso");
 
 	if (listen(socket_host, 10) == -1) // el "10" es el tamaño de la cola de conexiones.
-		ErrorFatal(
+		log_info(logger,
 				"Error al hacer el Listen. No se pudo escuchar en el puerto especificado");
 
 	//Traza("El socket está listo para recibir conexiones. Numero de socket: %d, puerto: %d", socket_host, g_Puerto);
@@ -622,7 +638,7 @@ void HiloOrquestadorDeConexiones() {
 			pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
 					(void *) socket_client);
 		} else {
-			Error("ERROR AL ACEPTAR LA CONEXIÓN DE UN CLIENTE");
+			log_info(logger,"ERROR AL ACEPTAR LA CONEXIÓN DE UN CLIENTE");
 		}
 	}
 	CerrarSocket(socket_host);
@@ -741,7 +757,7 @@ t_nodo * buscarNodo(char* ipNodo,char* puertoNodo){
 
 void cargarListaBloquesDisponibles(t_nodo* nodo){
 	int i,cantBloques = atoi(nodo->tamanio)/TAMANIO_BLOQUE;//controla que sea entero
-	printf("Cantidad Bloques:%d",cantBloques);
+	//printf("Cantidad Bloques:%d",cantBloques);
 	t_bloque_disponible * bloque;
 	for(i=0;i<cantBloques;i++){
 		bloque = bloque_disponible_create(i);
@@ -750,8 +766,8 @@ void cargarListaBloquesDisponibles(t_nodo* nodo){
 }
 
 int agregarNodo(){
-	char * ipNodo = malloc(TAMANIO_IP);
-	char * puertoNodo = malloc(sizeof(int));
+	char ipNodo[TAMANIO_IP];
+	char puertoNodo[5];
 
 
 	t_nodo *el_nodo;
@@ -838,6 +854,7 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 		printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
 		scanf("%s",directorio);
 		fflush(stdin);
+		printf("PADRE INICIO:%d\n",padre);
 		if(strcmp(directorio,"1")){
 			if(!strcmp(directorio,"0")){
 					j=0;
@@ -857,10 +874,11 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 			}
 		} else {
 			correcto = 1;
-			padre = 0;
+			printf("PADRE FIN:%d\n",padre);
 		}
-		system("clear");
+		//system("clear");
 	}
+	printf("PADRE POSTA:%d\n",padre);
 	archivo = archivo_create(nombreArchivo,*tamanio,padre,1);
 	list_add(lista_archivos,archivo);
 	return 1;
@@ -1123,6 +1141,16 @@ t_archivo* buscarArchivoPorNombre(char* nombre){
 	return el_archivo;
 }
 
+t_archivo* buscarArchivoPorPadre(int padre){
+	t_archivo* el_archivo = malloc(sizeof(t_archivo));
+	bool _true(void *elem){
+		return (((t_archivo*) elem)->padre==padre);
+	}
+	el_archivo = list_find(lista_archivos, _true);
+	return el_archivo;
+}
+
+
 
 int buscarBloqueDisponible(t_nodo*nodo){
 	t_bloque_disponible* bloque;
@@ -1165,7 +1193,7 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 		bloqueDisponible = buscarBloqueDisponible(el_nodo);
 		envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
 		agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
-		printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
+		//printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
 
 		int iThreadHilo = pthread_create(&hNodos, NULL,
 				(void*) enviarBufferANodo, (void*) envio_nodo );
@@ -1238,12 +1266,12 @@ int recorrerArchivo(FILE *fArchivo){
 				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j);
 				if(enviarBloque(bufferAux)){
 					i++; //Contador de Bloques
-					printf(COLOR_VERDE"Contador de Bloques:%d\n"DEFAULT,i);
-					printf("LA J:%d\n",j);
+					//printf(COLOR_VERDE"Contador de Bloques:%d\n"DEFAULT,i);
+					//printf("LA J:%d\n",j);
 					tamanio = ftell(fArchivo);
 					if(tamanio!=tamanioA){
 						fseek(fArchivo,-j,SEEK_CUR);
-						printf("TAMANIO:%lu\n",tamanio);
+						//printf("TAMANIO:%lu\n",tamanio);
 					}
 					free(bufferAux);
 					j=TAMANIO_BLOQUE;
@@ -1255,7 +1283,7 @@ int recorrerArchivo(FILE *fArchivo){
 		memset(buffer,0,TAMANIO_BLOQUE+1);
 
 	}
-	printf("Cantidad Bloques:%d\n",i);
+	//printf("Cantidad Bloques:%d\n",i);
 	free(buffer);
 	return 1;
 }
@@ -1292,8 +1320,74 @@ void eliminarArchivos(){
 	free(lista_archivos);
 }
 
+int crearDirectorio(){
+	char directorio[20];
+	char * path = string_new();
+	int j=0,k,padre=0,correcto=0;
+	t_filesystem * filesystem;
+
+	while(!correcto){
+		printf("Ingrese un directorio: ejemplo: home\n");
+		printf("Path Ingresados:%s\n",path);
+		printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+		scanf("%s",directorio);
+		fflush(stdin);
+		if(strcmp(directorio,"1")){
+			if(!strcmp(directorio,"0")){
+				j=0;
+				path=string_new();
+			} else {
+				if(j==0){
+					k=validarDirectorio(directorio,0);
+				} else {
+					k=validarDirectorio(directorio,padre);
+				}
+				if(k!=0){
+					padre=k;
+					string_append(&path,"/");
+					string_append(&path,directorio);
+					j++;
+				}
+			}
+		} else {
+			correcto=1;
+		}
+	}
+	printf("Ingrese el nombre del directorio a crear\n");
+	scanf("%s", directorio);
+	filesystem = filesystem_create(indexGlobal++,directorio,padre);
+	list_add(lista_filesystem,filesystem);
+	mostrarFilesystem();
+	return 1;
+}
+
+int manejoDeDirectorios(){
+	int seleccion;
+	mostrarFilesystem();
+	printf("Ingrese un comando:\n");
+	printf("1: Crear 2: Eliminar 3: Renombrar 4: Mover\n");
+	scanf("%d", &seleccion);
+	switch(seleccion){
+		case 1: printf("Se eligio Crear\n");
+				return crearDirectorio();
+				break;
+		case 2: printf("Se eligio Eliminar\n");
+				//return eliminarDirectorio();
+				break;
+		case 3: printf("Se eligio Renombrar\n");
+				//return renombrarDirectorio();
+				break;
+		case 4: printf("Se eligio Mover\n");
+				//return moverDirectorio();
+				break;
+		default: printf("Se ha ingresado un comando incorrecto.\n");
+				break;
+	}
+	return 0;
+}
+
 int operaciones_consola() {
-	system("clear");
+	//system("clear");
 	printf("Comandos posibles: \n");
 	printf("1 - Formatear MDFS\n");
 	printf("2 - Eliminar/Renombrar/Mover Archivos\n");
@@ -1309,7 +1403,7 @@ int operaciones_consola() {
 	int variable_seleccion;
 	scanf("%d", &variable_seleccion);
 
-	system("clear");
+	//system("clear");
 	switch (variable_seleccion) {
 
 	case 0:
@@ -1327,7 +1421,11 @@ int operaciones_consola() {
 		log_info(logger, "Se realizo Eliminar/Renombrar/Mover Archivos\n");
 		break;
 	case 3:
-		log_info(logger, "Se realizo Crear/Eliminar/Renombrar/Mover Directorios\n");
+		if(manejoDeDirectorios()){
+			log_info(logger, "Se realizo Crear/Eliminar/Renombrar/Mover Directorios\n");
+		} else {
+			log_info(logger,"No se pudo realizar Crear/Eliminar/Renombrar/Mover Directorios\n");
+		}
 		break;
 	case 4:
 		if(procesarArchivo()==1){
@@ -1503,7 +1601,7 @@ int sendall(int s, char *buf, long unsigned *len){
 		}
 		total += n;
 		bytesleft -= n;
-		printf("Cantidad Enviada :%lu\n",n);
+		//printf("Cantidad Enviada :%lu\n",n);
 	}
 	*len = total; // devuelve aquí la cantidad enviada en realidad
 	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
