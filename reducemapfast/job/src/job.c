@@ -350,9 +350,33 @@ int AtiendeCliente(void * arg) {
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
-				}else{
+				}else if (emisor==1){
 
-					printf(COLOR_VERDE"RECIBO OK DEL NODO: %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+					printf(COLOR_VERDE"RECIBO OK DEL NODO (map): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+					string_append(&bufferAMartaDos,"23");
+					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
+					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+
+					string_append(&bufferAMartaUno,"2");
+					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+
+
+					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
+
+					//RAFAGA 1
+					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
+
+
+					//RAFAGA 2
+					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+				}else if(emisor == 2){
+
+					printf(COLOR_VERDE"RECIBO OK DEL NODO (reduce): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
 					string_append(&bufferAMartaDos,"23");
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
@@ -495,7 +519,7 @@ char* abrir_Mapper(char *aux, char *nombreScript){
 	fread(aux2,1,tamanioArchivo,f);
 
 	tam=tamanioArchivo;
-	while(tam>1){
+	while(tam>=1){
 		tam=tam/10;
 		cont++;
 	}
@@ -728,7 +752,7 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 		}
 	}
 
-	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
+	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo.
 }
 
@@ -744,7 +768,7 @@ int EnviarDatos(int socket,char *buffer, int cantidadDeBytesAEnviar) {
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a los clientes. Socket: %d", socket);
 
-	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
+	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 
 	return bytecount;
 }
