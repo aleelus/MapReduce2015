@@ -215,10 +215,18 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje);
 void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket);
 int AtiendeCliente(void * arg);
 int ChartToInt(char x);
+int CharAToInt(char* x);
 int PosicionDeBufferAInt(char* buffer, int posicion);
 int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio);
 int obtenerNumBloque (char* buffer);
 void AtiendeFS (t_bloque ** bloque,char *buffer);
+
+//Apareo
+#define BUFFERLINEA 50
+
+char *obtenerCodigo(char* buffer);
+void apareoArchivos(char* archivo1, char* archivo2);
+int esMayor(char* primero, char* segundo);
 
 
 // METODOS CONFIGURACION //
