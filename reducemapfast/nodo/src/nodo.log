@@ -6,3 +6,242 @@
 [TRACE] 12:38:44:328 nodo/(4045:4046): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
 [INFO] 19:35:10:533 nodo/(2616:2616): Archivo de configuración: config.cfg
 [INFO] 19:36:37:702 nodo/(2672:2672): Archivo de configuración: config.cfg
+[INFO] 13:15:05:942 nodo/(2547:2547): Archivo de configuración: config.cfg
+[INFO] 13:15:05:956 nodo/(2547:2547): Intentando conectar a nodo
+
+[INFO] 13:18:03:619 nodo/(2594:2594): Archivo de configuración: config.cfg
+[INFO] 13:18:03:625 nodo/(2594:2594): Intentando conectar a nodo
+
+[INFO] 13:18:03:715 nodo/(2594:2594): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 13:18:03:722 nodo/(2594:2594): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 13:18:03:728 nodo/(2594:2594): ENVIO DATOS. socket: 5. Buffer:311910.0.2.151460152101073741824 
+[TRACE] 13:18:03:746 nodo/(2594:2594): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 13:18:03:749 nodo/(2594:2595): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[INFO] 13:37:29:182 nodo/(2312:2312): Archivo de configuración: config.cfg
+[INFO] 13:37:29:202 nodo/(2312:2312): Intentando conectar a nodo
+
+[INFO] 13:37:29:286 nodo/(2312:2312): ENVIO DATOS. socket: 5. Buffer:3234 
+[TRACE] 13:37:29:321 nodo/(2312:2312): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 13:37:29:323 nodo/(2312:2312): ENVIO DATOS. socket: 5. Buffer:3121010.5.1.1721460152101073741824 
+[TRACE] 13:37:29:340 nodo/(2312:2312): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 13:37:29:344 nodo/(2312:2313): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 13:38:51:256 nodo/(2312:2313): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.4.232) por el puerto (22242). El número de socket del cliente es: 7
+[TRACE] 13:38:51:290 nodo/(2312:2350): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 13:38:51:299 nodo/(2312:2350): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 13:39:05:864 nodo/(2312:2350): No puedo enviar información a al clientes. Socket: 7
+[INFO] 13:39:05:866 nodo/(2312:2350): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 13:39:05:868 nodo/(2312:2350): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 13:39:05:869 nodo/(2312:2350): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 13:39:05:870 nodo/(2312:2350): SOCKET SE CIERRA: (7).
+[TRACE] 13:39:33:956 nodo/(2312:2313): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.4.232) por el puerto (22754). El número de socket del cliente es: 8
+[TRACE] 13:39:34:91 nodo/(2312:2370): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 13:39:34:98 nodo/(2312:2370): ENVIO DATOS. socket: 8. Buffer:Hola 
+[ERROR] 13:39:51:215 nodo/(2312:2370): No puedo enviar información a al clientes. Socket: 8
+[INFO] 13:39:51:216 nodo/(2312:2370): ENVIO DATOS. socket: 8. Buffer:Hola 
+[ERROR] 13:39:51:222 nodo/(2312:2370): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 13:39:51:226 nodo/(2312:2370): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 13:39:51:230 nodo/(2312:2370): SOCKET SE CIERRA: (8).
+[TRACE] 13:42:19:291 nodo/(2312:2313): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.4.232) por el puerto (25058). El número de socket del cliente es: 7
+[TRACE] 13:42:19:319 nodo/(2312:2427): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 13:42:19:331 nodo/(2312:2427): ENVIO DATOS. socket: 7. Buffer:Hola 
+[TRACE] 13:42:43:901 nodo/(2312:2313): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.4.232) por el puerto (25314). El número de socket del cliente es: 8
+[TRACE] 13:42:43:910 nodo/(2312:2432): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 13:42:43:920 nodo/(2312:2432): ENVIO DATOS. socket: 8. Buffer:Hola 
+[ERROR] 13:42:44:275 nodo/(2312:2427): No puedo enviar información a al clientes. Socket: 7
+[INFO] 13:42:44:282 nodo/(2312:2427): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 13:42:44:283 nodo/(2312:2427): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 13:42:44:283 nodo/(2312:2427): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 13:42:44:286 nodo/(2312:2427): SOCKET SE CIERRA: (7).
+[ERROR] 13:43:03:124 nodo/(2312:2432): No puedo enviar información a al clientes. Socket: 8
+[INFO] 13:43:03:126 nodo/(2312:2432): ENVIO DATOS. socket: 8. Buffer:Hola 
+[ERROR] 13:43:03:129 nodo/(2312:2432): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 13:43:03:130 nodo/(2312:2432): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 13:43:03:132 nodo/(2312:2432): SOCKET SE CIERRA: (8).
+[TRACE] 13:48:07:674 nodo/(2312:2313): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3207). El número de socket del cliente es: 9
+[TRACE] 13:48:26:724 nodo/(2312:2474): RECIBO DATOS. socket: 9. buffer: 1211
+ tamanio:6
+[INFO] 13:48:26:742 nodo/(2312:2474): ENVIO DATOS. socket: 9. Buffer:Ok!! 
+[TRACE] 13:48:45:399 nodo/(2312:2474): RECIBO DATOS. socket: 9. buffer: ���� tamanio:5
+[INFO] 13:48:45:400 nodo/(2312:2474): ENVIO DATOS. socket: 9. Buffer:Ok!! 
+[TRACE] 13:48:48:538 nodo/(2312:2474): RECIBO DATOS. socket: 9. buffer: ���� tamanio:5
+[INFO] 13:48:48:539 nodo/(2312:2474): ENVIO DATOS. socket: 9. Buffer:Ok!! 
+[INFO] 13:48:54:86 nodo/(2479:2479): Archivo de configuración: config.cfg
+[INFO] 13:48:54:99 nodo/(2479:2479): Intentando conectar a nodo
+
+[INFO] 13:48:54:117 nodo/(2479:2479): ENVIO DATOS. socket: 5. Buffer:3234 
+[TRACE] 13:48:54:128 nodo/(2479:2479): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 13:48:54:135 nodo/(2479:2479): ENVIO DATOS. socket: 5. Buffer:3121010.5.1.1721460152101073741824 
+[TRACE] 13:48:54:153 nodo/(2479:2479): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 13:48:54:155 nodo/(2479:2480): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 13:49:04:462 nodo/(2479:2480): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3975). El número de socket del cliente es: 7
+[INFO] 13:51:39:652 nodo/(2507:2507): Archivo de configuración: config.cfg
+[INFO] 13:51:39:669 nodo/(2507:2507): Intentando conectar a nodo
+
+[INFO] 13:51:39:689 nodo/(2507:2507): ENVIO DATOS. socket: 5. Buffer:3234 
+[TRACE] 13:51:39:698 nodo/(2507:2507): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 13:51:39:704 nodo/(2507:2507): ENVIO DATOS. socket: 5. Buffer:3121010.5.1.1721460152101073741824 
+[TRACE] 13:51:39:715 nodo/(2507:2507): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 13:51:39:718 nodo/(2507:2508): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 13:51:43:82 nodo/(2507:2508): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4487). El número de socket del cliente es: 7
+[TRACE] 13:53:16:199 nodo/(2507:2510): RECIBO DATOS. socket: 7. buffer: 113
+ tamanio:5
+[INFO] 13:53:16:213 nodo/(2507:2510): ENVIO DATOS. socket: 7. Buffer:Ok!! 
+[TRACE] 13:54:04:479 nodo/(2507:2510): RECIBO DATOS. socket: 7. buffer: 121�@ tamanio:5
+[INFO] 13:54:16:452 nodo/(2517:2517): Archivo de configuración: config.cfg
+[INFO] 13:54:16:464 nodo/(2517:2517): Intentando conectar a nodo
+
+[INFO] 13:54:16:482 nodo/(2517:2517): ERROR: conectar socket_FS
+[TRACE] 13:54:16:484 nodo/(2517:2518): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 13:54:18:800 nodo/(2517:2518): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4999). El número de socket del cliente es: 7
+[TRACE] 13:54:23:728 nodo/(2517:2520): RECIBO DATOS. socket: 7. buffer: 114
+ tamanio:5
+[INFO] 13:54:23:732 nodo/(2517:2520): ENVIO DATOS. socket: 7. Buffer:Ok!! 
+[TRACE] 13:54:27:215 nodo/(2517:2520): RECIBO DATOS. socket: 7. buffer: 1211@ tamanio:5
+[INFO] 13:54:56:490 nodo/(2524:2524): Archivo de configuración: config.cfg
+[INFO] 13:54:56:495 nodo/(2524:2524): Intentando conectar a nodo
+
+[INFO] 13:54:56:788 nodo/(2524:2524): ERROR: conectar socket_FS
+[TRACE] 13:54:56:799 nodo/(2524:2525): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 13:54:58:539 nodo/(2524:2525): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5511). El número de socket del cliente es: 7
+[TRACE] 13:56:44:572 nodo/(2524:2527): RECIBO DATOS. socket: 7. buffer: 1217
+ tamanio:6
+[INFO] 13:56:44:584 nodo/(2524:2527): ENVIO DATOS. socket: 7. Buffer:Ok!! 
+[TRACE] 13:56:54:774 nodo/(2524:2527): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:17
+[INFO] 13:56:54:777 nodo/(2524:2527): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 13:56:54:797 nodo/(2524:2527): No puedo enviar información a al clientes. Socket: 7
+[INFO] 13:56:54:806 nodo/(2524:2527): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 13:56:54:807 nodo/(2524:2527): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 13:56:54:807 nodo/(2524:2527): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 13:56:54:807 nodo/(2524:2527): SOCKET SE CIERRA: (7).
+[INFO] 13:58:16:603 nodo/(2554:2554): Archivo de configuración: config.cfg
+[INFO] 13:58:16:613 nodo/(2554:2554): Intentando conectar a nodo
+
+[INFO] 13:58:16:642 nodo/(2554:2554): ENVIO DATOS. socket: 5. Buffer:3234 
+[TRACE] 13:58:16:727 nodo/(2554:2554): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 13:58:16:727 nodo/(2554:2554): ENVIO DATOS. socket: 5. Buffer:3121010.5.1.1721460152101073741824 
+[TRACE] 13:58:16:748 nodo/(2554:2554): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 13:58:16:750 nodo/(2554:2555): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 13:59:44:980 nodo/(2554:2555): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6279). El número de socket del cliente es: 7
+[TRACE] 13:59:50:325 nodo/(2554:2561): RECIBO DATOS. socket: 7. buffer: 1217
+ tamanio:6
+[INFO] 13:59:50:347 nodo/(2554:2561): ENVIO DATOS. socket: 7. Buffer:Ok!! 
+[TRACE] 14:00:01:87 nodo/(2554:2561): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:17
+[INFO] 14:00:01:100 nodo/(2554:2561): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 14:00:01:129 nodo/(2554:2561): No puedo enviar información a al clientes. Socket: 7
+[INFO] 14:00:01:134 nodo/(2554:2561): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 14:00:01:142 nodo/(2554:2561): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 14:00:01:148 nodo/(2554:2561): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 14:00:01:154 nodo/(2554:2561): SOCKET SE CIERRA: (7).
+[INFO] 14:01:33:524 nodo/(2583:2583): Archivo de configuración: config.cfg
+[INFO] 14:01:33:534 nodo/(2583:2583): Intentando conectar a nodo
+
+[INFO] 14:01:33:575 nodo/(2583:2583): ENVIO DATOS. socket: 5. Buffer:3234 
+[TRACE] 14:01:33:583 nodo/(2583:2583): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 14:01:33:588 nodo/(2583:2583): ENVIO DATOS. socket: 5. Buffer:3121010.5.1.1721460152101073741824 
+[TRACE] 14:01:33:612 nodo/(2583:2583): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 14:01:33:614 nodo/(2583:2584): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[TRACE] 14:01:36:218 nodo/(2583:2584): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6791). El número de socket del cliente es: 7
+[TRACE] 14:01:45:72 nodo/(2583:2586): RECIBO DATOS. socket: 7. buffer: 1217
+ tamanio:6
+[INFO] 14:01:45:73 nodo/(2583:2586): ENVIO DATOS. socket: 7. Buffer:Ok!! 
+[TRACE] 14:01:53:559 nodo/(2583:2586): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:17
+[INFO] 14:01:53:560 nodo/(2583:2586): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 14:01:53:561 nodo/(2583:2586): No puedo enviar información a al clientes. Socket: 7
+[INFO] 14:01:53:561 nodo/(2583:2586): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 14:01:53:572 nodo/(2583:2586): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 14:01:53:572 nodo/(2583:2586): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 14:01:53:574 nodo/(2583:2586): SOCKET SE CIERRA: (7).
+[TRACE] 14:02:21:211 nodo/(2583:2584): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.4.232) por el puerto (44514). El número de socket del cliente es: 8
+[TRACE] 14:02:21:292 nodo/(2583:2591): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 14:02:21:306 nodo/(2583:2591): ENVIO DATOS. socket: 8. Buffer:Hola 
+[TRACE] 14:02:50:363 nodo/(2583:2584): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.4.232) por el puerto (45026). El número de socket del cliente es: 7
+[TRACE] 14:02:50:370 nodo/(2583:2599): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 14:02:50:388 nodo/(2583:2599): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 14:02:50:686 nodo/(2583:2591): No puedo enviar información a al clientes. Socket: 8
+[INFO] 14:02:50:686 nodo/(2583:2591): ENVIO DATOS. socket: 8. Buffer:Hola 
+[ERROR] 14:02:50:699 nodo/(2583:2591): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 14:02:50:699 nodo/(2583:2591): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 14:02:50:700 nodo/(2583:2591): SOCKET SE CIERRA: (8).
+[ERROR] 14:03:14:185 nodo/(2583:2599): No puedo enviar información a al clientes. Socket: 7
+[INFO] 14:03:14:188 nodo/(2583:2599): ENVIO DATOS. socket: 7. Buffer:Hola 
+[ERROR] 14:03:14:190 nodo/(2583:2599): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 14:03:14:191 nodo/(2583:2599): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 14:03:14:193 nodo/(2583:2599): SOCKET SE CIERRA: (7).
+[INFO] 15:11:31:76 nodo/(3103:3103): Archivo de configuración: config.cfg
+[INFO] 15:11:31:81 nodo/(3103:3103): Intentando conectar a nodo
+
+[INFO] 15:11:31:167 nodo/(3103:3103): ERROR: conectar socket_FS
+[TRACE] 15:11:31:169 nodo/(3103:3104): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6015
+[INFO] 16:16:13:381 nodo/(3885:3885): Archivo de configuración: config.cfg
+[INFO] 16:16:13:397 nodo/(3885:3885): Intentando conectar a nodo
+
+[INFO] 16:17:53:730 nodo/(3898:3898): Archivo de configuración: config.cfg
+[INFO] 16:17:53:751 nodo/(3898:3898): Intentando conectar a nodo
+
+[INFO] 16:17:56:756 nodo/(3898:3898): ERROR: conectar socket_FS
+[TRACE] 16:17:56:766 nodo/(3898:3899): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[INFO] 16:21:55:772 nodo/(3920:3920): Archivo de configuración: config.cfg
+[INFO] 16:21:55:779 nodo/(3920:3920): Intentando conectar a nodo
+
+[INFO] 16:21:58:792 nodo/(3920:3920): ERROR: conectar socket_FS
+[TRACE] 16:21:58:795 nodo/(3920:3921): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:29:54:181 nodo/(3920:3921): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (64997). El número de socket del cliente es: 7
+[TRACE] 16:29:54:183 nodo/(3920:3921): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (65253). El número de socket del cliente es: 8
+[TRACE] 16:29:54:189 nodo/(3920:3938): RECIBO DATOS. socket: 7. buffer: 23120 tamanio:5
+[INFO] 16:29:54:194 nodo/(3920:3938): ENVIO DATOS. socket: 7. Buffer:Ok 
+[TRACE] 16:29:54:197 nodo/(3920:3939): RECIBO DATOS. socket: 8. buffer: 23120 tamanio:5
+[INFO] 16:29:54:199 nodo/(3920:3939): ENVIO DATOS. socket: 8. Buffer:Ok 
+[TRACE] 16:29:54:207 nodo/(3920:3938): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:120
+[TRACE] 16:29:54:209 nodo/(3920:3939): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:126
+[INFO] 16:31:22:938 nodo/(3961:3961): Archivo de configuración: config.cfg
+[INFO] 16:31:22:953 nodo/(3961:3961): Intentando conectar a nodo
+
+[INFO] 16:31:25:958 nodo/(3961:3961): ERROR: conectar socket_FS
+[TRACE] 16:31:25:974 nodo/(3961:3963): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[INFO] 16:32:06:209 nodo/(3976:3976): Archivo de configuración: config.cfg
+[INFO] 16:32:06:224 nodo/(3976:3976): Intentando conectar a nodo
+
+[INFO] 16:32:09:230 nodo/(3976:3976): ERROR: conectar socket_FS
+[TRACE] 16:32:09:234 nodo/(3976:3977): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:32:12:261 nodo/(3976:3977): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (742). El número de socket del cliente es: 7
+[TRACE] 16:32:12:325 nodo/(3976:3977): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (998). El número de socket del cliente es: 8
+[TRACE] 16:32:12:334 nodo/(3976:3981): RECIBO DATOS. socket: 7. buffer: 23130 tamanio:5
+[TRACE] 16:32:12:336 nodo/(3976:3982): RECIBO DATOS. socket: 8. buffer: 23130 tamanio:5
+[INFO] 16:32:12:345 nodo/(3976:3981): ENVIO DATOS. socket: 7. Buffer:Ok 
+[INFO] 16:32:12:352 nodo/(3976:3982): ENVIO DATOS. socket: 8. Buffer:Ok 
+[TRACE] 16:32:12:365 nodo/(3976:3981): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:130
+[TRACE] 16:32:12:367 nodo/(3976:3982): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:134
+[INFO] 16:34:43:113 nodo/(4016:4016): Archivo de configuración: config.cfg
+[INFO] 16:34:43:124 nodo/(4016:4016): Intentando conectar a nodo
+
+[INFO] 16:34:46:128 nodo/(4016:4016): ERROR: conectar socket_FS
+[TRACE] 16:34:46:130 nodo/(4016:4018): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:36:35:206 nodo/(4016:4018): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (4326). El número de socket del cliente es: 7
+[TRACE] 16:36:35:211 nodo/(4016:4018): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (4582). El número de socket del cliente es: 8
+[TRACE] 16:36:35:216 nodo/(4016:4025): RECIBO DATOS. socket: 7. buffer: 23130 tamanio:5
+[TRACE] 16:36:35:217 nodo/(4016:4026): RECIBO DATOS. socket: 8. buffer: 23130 tamanio:5
+[INFO] 16:36:35:220 nodo/(4016:4025): ENVIO DATOS. socket: 7. Buffer:Ok 
+[INFO] 16:36:35:225 nodo/(4016:4026): ENVIO DATOS. socket: 8. Buffer:Ok 
+[TRACE] 16:36:35:230 nodo/(4016:4025): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:130
+[TRACE] 16:36:35:235 nodo/(4016:4026): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:134
+[INFO] 16:36:35:778 nodo/(4016:4025): ENVIO DATOS. socket: 7. Buffer:30 
+[INFO] 16:36:36:13 nodo/(4016:4026): ENVIO DATOS. socket: 8. Buffer:31 
+[INFO] 16:41:00:66 nodo/(4113:4113): Archivo de configuración: config.cfg
+[INFO] 16:41:00:85 nodo/(4113:4113): Intentando conectar a nodo
+
+[INFO] 16:41:03:91 nodo/(4113:4113): ERROR: conectar socket_FS
+[TRACE] 16:41:03:101 nodo/(4113:4114): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:41:05:693 nodo/(4113:4114): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (5862). El número de socket del cliente es: 7
+[TRACE] 16:41:05:751 nodo/(4113:4114): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (10.5.2.185) por el puerto (6118). El número de socket del cliente es: 8
+[TRACE] 16:41:05:755 nodo/(4113:4116): RECIBO DATOS. socket: 7. buffer: 23113 tamanio:5
+[TRACE] 16:41:05:760 nodo/(4113:4117): RECIBO DATOS. socket: 8. buffer: 23113 tamanio:5
+[INFO] 16:41:05:772 nodo/(4113:4117): ENVIO DATOS. socket: 8. Buffer:Ok 
+[INFO] 16:41:05:774 nodo/(4113:4116): ENVIO DATOS. socket: 7. Buffer:Ok 
+[TRACE] 16:41:05:828 nodo/(4113:4117): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:113
+[TRACE] 16:41:05:829 nodo/(4113:4116): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:113
+[INFO] 16:41:06:472 nodo/(4113:4116): ENVIO DATOS. socket: 7. Buffer:30 
+[INFO] 16:41:06:673 nodo/(4113:4117): ENVIO DATOS. socket: 8. Buffer:31 
+[TRACE] 16:41:16:498 nodo/(4113:4116): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:41:16:502 nodo/(4113:4116): SOCKET SE CIERRA: (7).
+[TRACE] 16:41:16:500 nodo/(4113:4117): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:41:16:532 nodo/(4113:4117): SOCKET SE CIERRA: (8).

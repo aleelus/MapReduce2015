@@ -531,6 +531,21 @@ int ChartToInt(char x) {
 	return numero;
 }
 
+int CharAToInt(char* x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+	//char* aux = malloc(1 * sizeof(char));
+	//sprintf(aux, "%c", x);
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
+
+
 int PosicionDeBufferAInt(char* buffer, int posicion) {
 	int logitudBuffer = 0;
 	logitudBuffer = strlen(buffer);
@@ -645,7 +660,7 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 }
 
 void AtiendeFS (t_bloque ** bloque,char *buffer){
-	//SET_BLOQUE
+	//SET_BLOQUE 1311210holaholaho
 	//BUFFER RECIBIDO = 13210820971520
 	//--- 1: soy FS 3: quiero un set bloque 2:cant digitos numero bloque 10:numero de bloque a grabar
 	// 8: cant de dig de tamanio de lo que necesitamos que grabe 20971520: tamaño en bytes
@@ -755,7 +770,8 @@ int procesarRutinaMap(t_job * job){
 	grabarScript(job->nombreSH,job->contenidoSH);
 	//Creo el script y grabo el contenido.
 
-	int numBloque = ChartToInt(job->bloque);
+	int numBloque = CharAToInt(job->bloque);
+	printf("EL NUMERO DE BLOQUE A MAPEAR: %d \n",numBloque);
 	char* contenidoBloque = malloc(TAMANIO_BLOQUE);
 	contenidoBloque= getBloque(numBloque);
 	//Obtengo el contendio del numero de bloque solicitado.
@@ -811,6 +827,85 @@ int procesarRutinaReduceSinCombiner(t_jobComb * job){
 	return 1;
 }
 
+void apareoArchivos(char* archivo1, char* archivo2){
+	//Aparea dos archivos y el resultado lo guarda en un tercer archivo de salida.
+	char* buffer1 = malloc(BUFFERLINEA);
+	char* buffer2 = malloc(BUFFERLINEA);
+	FILE * arch1 = fopen(archivo1,"r+");
+	FILE * arch2 = fopen(archivo2,"r");
+	FILE * salida = fopen("salida.txt","w");
+
+	int count1 = fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
+	int count2 = fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
+	char* codigo1 = obtenerCodigo(buffer1);
+	char* codigo2 = obtenerCodigo(buffer2);
+
+	while(count1 != 0 && count2 != 0){
+		while((strcmp(codigo1,codigo2)!=0) && (count1 != 0 && count2 != 0)){
+
+			if(esMayor(codigo1,codigo2)){
+				fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+				count1 = fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
+				codigo1 = obtenerCodigo(buffer1);
+			}else{
+							fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+							count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
+							codigo2 = obtenerCodigo(buffer2);
+			}
+		}
+		fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+		fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+		count1 =fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
+		codigo1 = obtenerCodigo(buffer1);
+		count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
+		codigo2 = obtenerCodigo(buffer2);
+
+
+	}
+	while(count1!=0){
+		fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+		count1 =fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
+	}
+	while(count2!=0){
+			fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+			count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
+		}
+			fclose(arch1);
+			fclose(arch2);
+			fclose(salida);
+
+
+
+}
+
+char *obtenerCodigo(char* buffer){
+	//Obtiene el codigo de la linea, que es hasta donde aparece un ';'
+	char * codigo = malloc(BUFFERLINEA);
+	int size = 0;
+	char* corte = ";";
+	while(buffer[size] != corte[0]){
+		codigo[size]= buffer[size];
+		size++;
+	}
+	return codigo;
+}
+
+int esMayor(char* primero, char* segundo){
+	//Compara si el primer string es mayor que el segundo y devuelve 1 si es mayor.
+	int size = 0;
+	while(size < strlen(primero)){
+		if(primero[size]>segundo[size]){
+			return 0;
+		}
+		size++;
+	}
+
+	return 1;
+}
+
+
+
+
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	t_job * job;
 	t_jobComb * jobC;
@@ -825,9 +920,8 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
 
-			// Juan, te comente los if de abajo xq me tiraba error y no podia checkiar bien job y marta.    Ale.
 
-			if(1){ //Proceso la rutina de map.          procesarRutinaMap(job)
+			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
 				*mensaje = "31";
 			} else {
@@ -841,7 +935,8 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				printf("Contenido de SH:%s\n",job->contenidoSH);
 				printf("Archivo:%s\n",job->bloque);
 				printf("Nombre de Resultado:%s\n",job->nombreResultado);
-				if(1){ //Proceso la rutina de reduce con combiner.  procesarRutinaReduceCombiner(job)
+				if(procesarRutinaReduceCombiner(job)){ //Proceso la rutina de reduce con combiner.
+					//CAMBIAR FUNCION, HAY QUE HACERLA SOBRE DOS ARCHIVOS RESULTADOS MAP, NO BLOQUES.
 					//Pudo hacerla
 					*mensaje = "31";
 				} else {
@@ -909,14 +1004,14 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 						//								bloque solicitado 20971520: tamanio de bloque
 			case GET_BLOQUE:
 				*cantRafaga=1;
-				char* contenidoBloque, bloqueMsj;
+				char* contenidoBloque, * bloqueMsj;
 				int numBloq = obtenerNumBloque(buffer);
 				contenidoBloque = getBloque(numBloq);
 				bloqueMsj = obtenerSubBuffer(contenidoBloque);
 				if(contenidoBloque !=NULL){
 					//Obtuvo el bloque
 					*mensaje="32";
-					string_append(*mensaje,bloqueMsj);
+					string_append(mensaje,bloqueMsj);
 				}else{
 					*mensaje="320"; //Ver como le aviso que fallo?
 				}
@@ -933,6 +1028,7 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 				//								    de lo que necesitamos que grabe 20971520: tamaño en bytes
 				//BUFFER ENVIADO = Ok
 			case SET_BLOQUE:
+				printf("ES SET BLOQUE\n");
 				AtiendeFS(&bloqueSet,buffer);
 				setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
 
