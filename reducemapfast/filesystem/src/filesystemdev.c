@@ -1108,7 +1108,7 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	EnviarDatos(socket,buffer1,strlen(buffer1));
 	bufferR=RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	//EnviarDatos(socket,buffer2,strlen(buffer2));
-	if(strcmp(bufferR,"Hola")==0){
+	if(strcmp(bufferR,"1")==0){
 		long unsigned len=0;
 		len=strlen(buffer2);
 		printf("LEN : %lu\n",len);

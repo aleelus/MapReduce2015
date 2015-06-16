@@ -213,7 +213,7 @@ char* getBloque(int numero){
 void setBloque(int numero, char*datos){
 	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
 			//Si no se pudo abrir, imprimir el error y abortar;
-			printf("El bloque no existe en el archivo. \n");
+			printf(COLOR_VERDE"El bloque no existe en el archivo. \n"DEFAULT);
 			abort();
 		}
 	char* bloque;
@@ -610,7 +610,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+	//printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a al clientes. Socket: %d", socket);
@@ -669,8 +669,7 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		char *contenidoBloq;
 		int digitosCantDeDigitos=0,numeroBloq,digitosCantDeDigitosBloque;
 		int digitosCantDeDigitosTamanioBloq,tamanioBloque;
-		int posActual=0;
-
+		long unsigned posActual=0;
 
 		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,2);
 		//printf("Cantidad Digitos del numero de bloque:%d\n",digitosCantDeDigitosBloque);
@@ -683,9 +682,11 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		tamanioBloque= ObtenerTamanio(buffer,3,digitosCantDeDigitosTamanioBloq);
 		//printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
 		posActual=2+digitosCantDeDigitosTamanioBloq;
-
-		contenidoBloq=DigitosNombreArchivo(buffer,&posActual);
-		//printf("Contenido del bloque:%s\n",contenidoBloq);
+		//printf("Tamanio BLOQUE POSTA:%d\n",tamanioBloque);
+		printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
+		contenidoBloq=string_substring(buffer,posActual,tamanioBloque);
+		//contenidoBloq=DigitosNombreArchivo(buffer,&posActual);
+		printf("Contenido del bloque:%d\n",strlen(contenidoBloq));
 
 		*bloque = bloque_create(numeroBloq,contenidoBloq);
 
@@ -1029,15 +1030,7 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 				//BUFFER ENVIADO = Ok
 			case SET_BLOQUE:
 				printf("ES SET BLOQUE\n");
-				AtiendeFS(&bloqueSet,buffer);
-				setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
 
-				if(1){ //Hacer que setBloque devuelva algo para saber si fallo
-					*mensaje = "Ok!"; //Se grabo correctamente
-				}else{
-					*mensaje = "Error!"; //Algo fallo
-				}
-				printf("-----------\n");
 
 
 				*cantRafaga=1;
@@ -1057,6 +1050,66 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 				*mensaje = "No";
 			}
 		}
+
+}
+
+int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
+	t_bloque* bloqueSet;
+
+	int digTamanio=0,tamanio=0;
+
+	digTamanio=PosicionDeBufferAInt(buffer,2);
+
+	tamanio=ObtenerTamanio(buffer,3,digTamanio);
+
+	//printf("TAMAÑO:%d\n",strlen(buffer));
+	//printf("BUFFER:%s\n",buffer);
+
+	*mensaje = string_new();
+
+	string_append(mensaje,"1");
+
+	EnviarDatos(socket, *mensaje,strlen(*mensaje));
+
+	char *aux=malloc(tamanio+1);
+
+	char *bloque=malloc(tamanio+1);
+
+	memset(bloque,0,tamanio+1);
+
+	char *recibido=string_new();
+	memset(aux,0,tamanio+1);
+
+	ssize_t numBytesRecv = 0;
+
+	do{
+		numBytesRecv = numBytesRecv + recv(socket, aux, tamanio, 0);
+		if ( numBytesRecv < 0)
+			printf("ERROR\n");
+		string_append(&recibido,aux);
+		strcat(bloque,recibido);
+		free(recibido);
+		recibido=string_new();
+		//printf("------ %d -----\n",strlen(bloque));
+		memset(aux, 0, tamanio+1);
+
+	}while (numBytesRecv <tamanio);
+	printf(COLOR_VERDE"ESTE TAMAÑO:%d\n"DEFAULT,strlen(bloque));
+	AtiendeFS(&bloqueSet,bloque);
+	printf(COLOR_VERDE"ESTE TAMAÑO:%d\n"DEFAULT,strlen(bloqueSet->contenidoBloque));
+	setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
+
+	if(1){ //Hacer que setBloque devuelva algo para saber si fallo
+		*mensaje = string_new();
+		string_append(mensaje,"Ok"); //Se grabo correctamente
+	}else{
+		*mensaje = "Error!"; //Algo fallo
+	}
+//	printf("-----------\n");
+	free(bloqueSet->contenidoBloque);
+	free(aux);
+	free(bloque);
+	close(socket);
 
 }
 
@@ -1090,6 +1143,7 @@ int AtiendeCliente(void * arg) {
 
 // Código de salida por defecto
 	int code = 0;
+	int trabajo;
 	int cantRafaga=1,tamanio=0;
 	char * mensaje;
 	while ((!desconexionCliente) && g_Ejecutando) {
@@ -1117,75 +1171,15 @@ int AtiendeCliente(void * arg) {
 
 				break;
 			case ES_FS:
+
 				printf("implementar atiendeFS\n");
 				implementoFS(buffer,&cantRafaga,&mensaje,socket);
-
-				int trabajo=0;
-				//13xxxxxxxxxxxs
 				trabajo=ObtenerComandoMSJ(buffer+1);
-
 				if(trabajo==3){
-					printf("Proceso BLOQUE!!\n");
-					int digTamanio=0,tamanio=0;
-					digTamanio=PosicionDeBufferAInt(buffer,2);
-					tamanio=ObtenerTamanio(buffer,3,digTamanio);
-
-					mensaje=string_new();
-					string_append(&mensaje,"Hola");
-					EnviarDatos(socket, mensaje,strlen(mensaje));
-					char *aux=malloc(tamanio+1);
-					char *bloque=malloc(tamanio+1);
-					memset(bloque,0,tamanio+1);
-					char *recibido=string_new();
-					memset(aux,0,tamanio+1);
-					ssize_t numBytesRecv = 0;
-					do{
-						numBytesRecv = numBytesRecv + recv(socket, aux, tamanio, 0);
-						if ( numBytesRecv < 0)
-							printf("ERROR\n");
-						//printf("%s\n", aux);
-						string_append(&recibido,aux);
-						strcat(bloque,recibido);
-						free(recibido);
-						recibido=string_new();
-						//printf("------ %d -----\n",strlen(bloque));
-						memset(aux, 0, tamanio+1);
-
-					}while (numBytesRecv <tamanio);
-
-					free(aux);
-					free(bloque);
-					close(socket);
-
-
+					procesarSetBloqueDeFs(buffer,&mensaje,socket);
+					cantRafaga=1;
+					printf(COLOR_VERDE"Afuera:%s"DEFAULT,mensaje);
 				}
-				//Esto va en nodo.h y son define
-				//PRIMERA_CONEXION 1
-				//GET_BLOQUE 2
-				//SET_BLOQUE 3
-				//GET_FILE_CONTENT 4
-
-				//BUFFER RECIBIDO = 11 --- 1:soy FS 1:estas disponible para conectarte?
-				//BUFFER ENVIADO = 311250 --- 3: soy nodo 1: estoy vivo 1: soy nuevo 2: cant de dig de cant de
-				// 							   de bloques 50: cantidad de bloques
-
-				//SET_BLOQUE
-				//BUFFER RECIBIDO = 13820971520  --- 1: soy FS 3: quiero un set bloque 8: cant de dig de tamanio
-				//								    de lo que necesitamos que grabe 20971520: tamaño en bytes
-				//BUFFER ENVIADO = Ok
-
-				//GET_BLOQUE
-				//BUFFER RECIBIDO = 12210 1: soy FS 2: quiero un get bloque 3:cant de dig de numero de bloque
-				//						  10: numero de bloque que necesito recibir
-				//BUFFER ENVIADO = 32820971520 3: soy nodo 2: va un get bloque 8: cant de dig de tamanio de
-				//								bloque solicitado 20971520: tamanio de bloque
-
-				//GET_FILE_CONTENT
-				//BUFFER RECIBIDO = 14213resultado.txt 1: soy FS 4: solicito un get file content 2: cant de dig
-				//					de tamanio de archivo solicitado 13:tamanio de archivo y luego el archivo
-				//BUFFER ENVIADO = 34820971520 3: soy nodo 4: va un get file content solicitado 8: cant de dig
-				//							   de tamanio de arch de result 20971520: tamanio de archivo
-
 				break;
 			case ES_NODO:
 				printf("implementar atiendeNodo\n");

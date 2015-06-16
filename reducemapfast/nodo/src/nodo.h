@@ -23,6 +23,10 @@
 #include <netdb.h>
 #include <signal.h>
 
+
+#define COLOR_VERDE   			"\x1b[32m"
+#define DEFAULT   				"\x1b[0m"
+
 // CONSTANTES //
 //Ruta del config
 #define PATH_CONFIG "config.cfg"
