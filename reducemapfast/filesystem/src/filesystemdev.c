@@ -377,19 +377,19 @@ void RecorrerNodosYBloques(){
 	int i=0,j,posicion;
 	while(i<list_size(lista_nodos)){
 		el_nodo = list_get(lista_nodos, i);
-		/*printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
 		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
 		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
 		printf("El tamaño:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->tamanio);
-		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);*/
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
 		posicion = buscarNodoEnArrayPorNombre(el_nodo->nombre);
 		j=1;
 		while(j<list_size(arrayNodos[posicion])){
 			array = list_get(arrayNodos[posicion],j);
-			/*printf("Bloque:"COLOR_VERDE "%s\n"DEFAULT,array->nombre);
+			printf("Bloque:"COLOR_VERDE "%s\n"DEFAULT,array->nombre);
 			printf("Nombre Archivo:"COLOR_VERDE "%s\n"DEFAULT,array->nombreArchivo);
 			printf("Bloque Archivo:"COLOR_VERDE "%s\n"DEFAULT,array->bloqueArchivo);
-			printf("Padre:"COLOR_VERDE "%d\n"DEFAULT,array->padre);*/
+			printf("Padre:"COLOR_VERDE "%d\n"DEFAULT,array->padre);
 			j++;
 		}
 		i++;
@@ -405,20 +405,20 @@ void RecorrerListaBloques(){
 
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
-		//printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+		printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
 
 		while(j<list_size(el_archivo->listaBloques)){
 			el_bloque = list_get(el_archivo->listaBloques, j);
-			/*printf("%d :: ",el_bloque->bloque);
-			//printf("Copia1:\n");
+			printf("%d :: ",el_bloque->bloque);
+			printf("Copia1:\n");
 			printf("%s--",el_bloque->array[0].nombreNodo);
 			printf("%s  ",el_bloque->array[0].nro_bloque);
-			//printf("Copia2:\n");
+			printf("Copia2:\n");
 			printf("%s--",el_bloque->array[1].nombreNodo);
 			printf("%s  ",el_bloque->array[1].nro_bloque);
-			//printf("Copia3:\n");
+			printf("Copia3:\n");
 			printf("%s--",el_bloque->array[2].nombreNodo);
-			printf("%s  \n",el_bloque->array[2].nro_bloque);*/
+			printf("%s  \n",el_bloque->array[2].nro_bloque);
 			j++;
 		}
 		j=0;
@@ -434,11 +434,11 @@ void RecorrerNodos(){
 	int i=0;
 	while(i<list_size(lista_nodos)){
 		el_nodo = list_get(lista_nodos, i);
-		/*printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
+		printf("Nodo:"COLOR_VERDE "%s\n"DEFAULT,el_nodo->nombre);
 		printf("La IP:"  COLOR_VERDE"%s\n"DEFAULT,el_nodo->ip);
 		printf("El Puerto:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->puerto);
 		printf("El tamaño:"COLOR_VERDE"%s\n"DEFAULT,el_nodo->tamanio);
-		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);*/
+		printf("Estado:"COLOR_VERDE "%d\n"DEFAULT,el_nodo->estado);
 		i++;
 	}
 }

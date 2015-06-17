@@ -91,7 +91,7 @@ char* obtenerSubBuffer(char *nombre){
 int cuentaDigitos(int valor){
 	int cont = 0;
 	float tamDigArch=valor;
-	while(tamDigArch>1){
+	while(tamDigArch>=1){
 		tamDigArch=tamDigArch/10;
 		cont++;
 	}
@@ -205,7 +205,7 @@ char* getBloque(int numero){
 			fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
 			abort();
 		}
-	printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
+	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
 
 	return bloque;
 }
@@ -223,10 +223,12 @@ void setBloque(int numero, char*datos){
 				//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
 				fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
 				abort();
+	} else {
+		printf(COLOR_VERDE"Se realizo el setBloque del bloque:%d\n"DEFAULT,numero);
 	}
 	memcpy(bloque, datos, strlen(datos)+1);
  //Copia los datos a grabar en el bloque auxiliar
-	printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
+	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
 
 
 }
@@ -547,7 +549,7 @@ int CharAToInt(char* x) {
 
 
 int PosicionDeBufferAInt(char* buffer, int posicion) {
-	int logitudBuffer = 0;
+	long unsigned logitudBuffer = 0;
 	logitudBuffer = strlen(buffer);
 
 	if (logitudBuffer <= posicion)
@@ -610,10 +612,11 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	int bytecount;
 
-	//printf("CantidadBytesAEnviar:%d\n",cantidadDeBytesAEnviar);
+	printf(COLOR_VERDE"CantidadBytesAEnviar:%d\n"DEFAULT,cantidadDeBytesAEnviar);
+	printf(COLOR_VERDE"BUFFER:%s\n"DEFAULT,buffer);
 
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
-		Error("No puedo enviar información a al clientes. Socket: %d", socket);
+		Error("No puedo enviar información al cliente. Socket: %d", socket);
 
 	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
 
@@ -667,26 +670,29 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		//semaforo
 		estado = 1;
 		char *contenidoBloq;
+		char*buffer2 = malloc(32);
+		memset(&buffer2,0,32);
 		int digitosCantDeDigitos=0,numeroBloq,digitosCantDeDigitosBloque;
 		int digitosCantDeDigitosTamanioBloq,tamanioBloque;
 		long unsigned posActual=0;
 
-		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,2);
-		//printf("Cantidad Digitos del numero de bloque:%d\n",digitosCantDeDigitosBloque);
-		numeroBloq=ObtenerTamanio(buffer,3,digitosCantDeDigitosBloque);
-		//printf("Numero de bloque: %d\n",numeroBloque);
-		posActual=2+digitosCantDeDigitosBloque;
-
+		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,3);
+		//printf("CANT DIGITOS:%d\n",digitosCantDeDigitosBloque);
+		numeroBloq=ObtenerTamanio(buffer,4,digitosCantDeDigitosBloque);
+		//printf(COLOR_VERDE"NUMERO DE BLOQUE:%d\n"DEFAULT,numeroBloq);
+		posActual=4+digitosCantDeDigitosBloque;
+		//131218820971517
 		digitosCantDeDigitosTamanioBloq = PosicionDeBufferAInt(buffer,posActual);
-		//printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
+		printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
 		tamanioBloque= ObtenerTamanio(buffer,3,digitosCantDeDigitosTamanioBloq);
-		//printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
+		printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
 		posActual=2+digitosCantDeDigitosTamanioBloq;
 		//printf("Tamanio BLOQUE POSTA:%d\n",tamanioBloque);
-		printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
+		//printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
+		buffer2 = string_substring(buffer,0,30);
 		contenidoBloq=string_substring(buffer,posActual,tamanioBloque);
 		//contenidoBloq=DigitosNombreArchivo(buffer,&posActual);
-		printf("Contenido del bloque:%d\n",strlen(contenidoBloq));
+		printf(COLOR_VERDE"Buffer:%s\n"DEFAULT,buffer2);
 
 		*bloque = bloque_create(numeroBloq,contenidoBloq);
 
@@ -722,7 +728,7 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//printf("Posicion Actual:%d\n",posActual);
 	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
 	el_Bloque=DigitosNombreArchivo(buffer,&posActual);
-	printf("bloque: %s\n",el_Bloque);
+	//printf("bloque: %s\n",el_Bloque);
 
 	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
 	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
@@ -758,7 +764,7 @@ void AtiendeJobSinCombiner (t_job ** job,char *buffer, int *cantRafaga){
 	//printf("Posicion Actual:%d\n",posActual);
 	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
 	el_Bloque=DigitosNombreArchivo(buffer,&posActual);
-	printf("bloque: %s\n",el_Bloque);
+	//printf("bloque: %s\n",el_Bloque);
 
 	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
 	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
@@ -772,7 +778,7 @@ int procesarRutinaMap(t_job * job){
 	//Creo el script y grabo el contenido.
 
 	int numBloque = CharAToInt(job->bloque);
-	printf("EL NUMERO DE BLOQUE A MAPEAR: %d \n",numBloque);
+	//printf("EL NUMERO DE BLOQUE A MAPEAR: %d \n",numBloque);
 	char* contenidoBloque = malloc(TAMANIO_BLOQUE);
 	contenidoBloque= getBloque(numBloque);
 	//Obtengo el contendio del numero de bloque solicitado.
@@ -985,7 +991,7 @@ int obtenerNumBloque (char* buffer){
 		numeroBloque=ObtenerTamanio(buffer,3,digitosCantDeDigitosNumBloq);
 		//printf("Tamanio del SH: %d\n",tamanioSH);
 
-		printf("bloque numero: %d\n",numeroBloque);
+		//printf("bloque numero: %d\n",numeroBloque);
 
 	return numeroBloque;
 }
@@ -995,7 +1001,7 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 	t_bloque* bloqueSet;
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 		//printf("RAFAGA:%d\n",tipo_mensaje);
-		printf("LA RAFAGA:%d\n",*cantRafaga);
+		//printf("LA RAFAGA:%d\n",*cantRafaga);
 		if(*cantRafaga == 2){
 			switch(tipo_mensaje){
 						//GET_BLOQUE
@@ -1094,9 +1100,7 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 		memset(aux, 0, tamanio+1);
 
 	}while (numBytesRecv <tamanio);
-	printf(COLOR_VERDE"ESTE TAMAÑO:%d\n"DEFAULT,strlen(bloque));
 	AtiendeFS(&bloqueSet,bloque);
-	printf(COLOR_VERDE"ESTE TAMAÑO:%d\n"DEFAULT,strlen(bloqueSet->contenidoBloque));
 	setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
 
 	if(1){ //Hacer que setBloque devuelva algo para saber si fallo
@@ -1172,22 +1176,22 @@ int AtiendeCliente(void * arg) {
 				break;
 			case ES_FS:
 
-				printf("implementar atiendeFS\n");
+				//printf("implementar atiendeFS\n");
 				implementoFS(buffer,&cantRafaga,&mensaje,socket);
 				trabajo=ObtenerComandoMSJ(buffer+1);
 				if(trabajo==3){
 					procesarSetBloqueDeFs(buffer,&mensaje,socket);
 					cantRafaga=1;
-					printf(COLOR_VERDE"Afuera:%s"DEFAULT,mensaje);
+					//printf(COLOR_VERDE"Afuera:%s"DEFAULT,mensaje);
 				}
 				break;
 			case ES_NODO:
-				printf("implementar atiendeNodo\n");
+				//printf("implementar atiendeNodo\n");
 				//RecorrerArchivos();
 				mensaje = "Ok";
 				break;
 			case COMANDOBLOQUES:
-				printf("Despues vemos que hace esto\n");
+				//printf("Despues vemos que hace esto\n");
 				//RecorrerListaBloques();
 				mensaje = "Ok";
 				break;
