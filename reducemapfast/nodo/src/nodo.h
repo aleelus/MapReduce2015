@@ -24,6 +24,8 @@
 #include <signal.h>
 
 
+sem_t semaforo;
+
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
 
@@ -107,7 +109,7 @@ int conectado=0;
 void HiloOrquestadorDeConexiones();
 
 // Tamanio del buffer
-#define BUFFERSIZE 1024*4 //Definir tamanio buffer
+#define BUFFERSIZE 50 //Definir tamanio buffer
 
 //Mensajes aceptados
 #define MSJ_LEER_BLOQUE          1
@@ -126,6 +128,7 @@ static t_bloque *bloque_create(int numeroB, char* contenidoB) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->numeroBloque = numeroB;
 	new->contenidoBloque = strdup(contenidoB);
+	free(contenidoB);
 	return new;
 }
 
@@ -247,7 +250,7 @@ char* g_MensajeError;
 // Logger del commons
 t_log* logger;
 
-int pagina;  //Tamanio paginas Mapeo
+long pagina;  //Tamanio paginas Mapeo
 
 //Funciones interfaz FileSystem
 char* getBloque(int numero);

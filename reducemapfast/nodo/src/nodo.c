@@ -16,6 +16,9 @@ int main(int argv, char** argc) {
 	pagina = sysconf(_SC_PAGE_SIZE);
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "nodo", true, LOG_LEVEL_TRACE);
 
+	//sem_init(&semaforo,1,1);
+
+
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
 
@@ -199,7 +202,9 @@ int tamanio_archivo(char* nomArch){
 char* getBloque(int numero){
 	char* bloque;
 	int fd= fileno(archivoEspacioDatos);
-	int offset = numero*(TAMANIO_BLOQUE/pagina);
+	long unsigned offset = numero*(TAMANIO_BLOQUE/pagina);
+	printf(COLOR_VERDE"Offset:%lu\n"DEFAULT,offset);
+
 	if( (bloque = mmap( NULL, TAMANIO_BLOQUE, PROT_READ, MAP_SHARED, fd, offset*pagina)) == MAP_FAILED){
 			//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
 			fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
@@ -218,15 +223,19 @@ void setBloque(int numero, char*datos){
 		}
 	char* bloque;
 	int fd= fileno(archivoEspacioDatos);
-	int offset = numero*(TAMANIO_BLOQUE/pagina);
+	long unsigned offset = numero*(TAMANIO_BLOQUE/pagina);
+	//sem_wait(&semaforo);
+
 	if( (bloque = mmap( NULL, TAMANIO_BLOQUE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offset*pagina)) == MAP_FAILED){
 				//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
 				fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
 				abort();
 	} else {
+		munmap(bloque,TAMANIO_BLOQUE);
 		printf(COLOR_VERDE"Se realizo el setBloque del bloque:%d\n"DEFAULT,numero);
 	}
-	memcpy(bloque, datos, strlen(datos)+1);
+	//sem_post(&semaforo);
+	//memcpy(bloque, datos, strlen(datos)+1);
  //Copia los datos a grabar en el bloque auxiliar
 	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
 
@@ -329,8 +338,8 @@ fprintf (stderr,
 }
 free(comandoScript);
 free(cambioModo);
-}
-*/
+}*/
+
 
 void permisosScript(char * nombre){
 	char *cambioModo = string_new();
@@ -670,8 +679,8 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		//semaforo
 		estado = 1;
 		char *contenidoBloq;
-		char*buffer2 = malloc(32);
-		memset(&buffer2,0,32);
+		//char*buffer2 = malloc(32);
+		//memset(&buffer2,0,32);
 		int digitosCantDeDigitos=0,numeroBloq,digitosCantDeDigitosBloque;
 		int digitosCantDeDigitosTamanioBloq,tamanioBloque;
 		long unsigned posActual=0;
@@ -683,18 +692,23 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		posActual=4+digitosCantDeDigitosBloque;
 		//131218820971517
 		digitosCantDeDigitosTamanioBloq = PosicionDeBufferAInt(buffer,posActual);
-		printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
+		//printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
 		tamanioBloque= ObtenerTamanio(buffer,3,digitosCantDeDigitosTamanioBloq);
-		printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
+		//printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
 		posActual=2+digitosCantDeDigitosTamanioBloq;
 		//printf("Tamanio BLOQUE POSTA:%d\n",tamanioBloque);
 		//printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
-		buffer2 = string_substring(buffer,0,30);
+		//buffer2 = string_substring(buffer,0,30);
 		contenidoBloq=string_substring(buffer,posActual,tamanioBloque);
 		//contenidoBloq=DigitosNombreArchivo(buffer,&posActual);
-		printf(COLOR_VERDE"Buffer:%s\n"DEFAULT,buffer2);
-
-		*bloque = bloque_create(numeroBloq,contenidoBloq);
+		//printf(COLOR_VERDE"Buffer:%s\n"DEFAULT,buffer2);
+		//free(buffer);
+		//*bloque = bloque_create(numeroBloq,contenidoBloq);
+		*bloque = (t_bloque*)malloc(sizeof(t_bloque));
+		(*bloque)->numeroBloque = numeroBloq;
+		(*bloque)->contenidoBloque = string_new();
+		string_append(&(*bloque)->contenidoBloque,contenidoBloq);
+		free(contenidoBloq);
 
 }
 
@@ -930,10 +944,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 
 			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
-				*mensaje = "31";
+				string_append(mensaje,"31");
 			} else {
 				//No pudo hacerla
-				*mensaje = "30";
+				string_append(mensaje,"30");
 			}
 			break;
 		case REDUCE_COMBINER:
@@ -971,10 +985,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 		}
 	} else {
 		if (*cantRafaga==1) {
-			*mensaje = "Ok";
+			string_append(mensaje,"Ok");
 			*cantRafaga = 2;
 		} else {
-			*mensaje = "No";
+			string_append(mensaje,"No");
 		}
 	}
 }
@@ -1102,15 +1116,16 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 	}while (numBytesRecv <tamanio);
 	AtiendeFS(&bloqueSet,bloque);
 	setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
-
-	if(1){ //Hacer que setBloque devuelva algo para saber si fallo
+	free(bloqueSet->contenidoBloque);
+	//string_append(mensaje,"Listo");
+	/*if(1){ //Hacer que setBloque devuelva algo para saber si fallo
 		*mensaje = string_new();
 		string_append(mensaje,"Ok"); //Se grabo correctamente
 	}else{
 		*mensaje = "Error!"; //Algo fallo
-	}
+	}*/
 //	printf("-----------\n");
-	free(bloqueSet->contenidoBloque);
+	//free(bloqueSet->contenidoBloque);
 	free(aux);
 	free(bloque);
 	close(socket);
@@ -1177,11 +1192,12 @@ int AtiendeCliente(void * arg) {
 			case ES_FS:
 
 				//printf("implementar atiendeFS\n");
-				implementoFS(buffer,&cantRafaga,&mensaje,socket);
+				//implementoFS(buffer,&cantRafaga,&mensaje,socket);
 				trabajo=ObtenerComandoMSJ(buffer+1);
 				if(trabajo==3){
 					procesarSetBloqueDeFs(buffer,&mensaje,socket);
 					cantRafaga=1;
+					//desconexionCliente = 1;
 					//printf(COLOR_VERDE"Afuera:%s"DEFAULT,mensaje);
 				}
 				break;
@@ -1201,8 +1217,9 @@ int AtiendeCliente(void * arg) {
 			longitudBuffer=strlen(mensaje);
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
-			EnviarDatos(socket, mensaje,longitudBuffer);
-
+			//if(!strcmp(mensaje,"Listo")){
+				EnviarDatos(socket, mensaje,longitudBuffer);
+			//}
 		} else
 			desconexionCliente = 1;
 
