@@ -17,7 +17,7 @@ int main(int argv, char** argc) {
 	//inicializamos los semaforos
 
 
-	//sem_init(&semaforoMarcosLibres, 0, 0);
+	sem_init(&semaforoLogger, 0, 1);
 	//sem_init(&semaforo,1,0);
 	//sem_init(&semaforoJob,1,0);
 	// Instanciamos el archivo donde se grabará lo solicitado por consola

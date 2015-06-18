@@ -941,9 +941,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
 
-
+			printf(COLOR_VERDE"AHORA SI\n"DEFAULT);
 			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
+				printf(COLOR_VERDE"AHORA SI\n"DEFAULT);
 				string_append(mensaje,"31");
 			} else {
 				//No pudo hacerla
@@ -985,10 +986,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 		}
 	} else {
 		if (*cantRafaga==1) {
-			string_append(mensaje,"Ok");
+			*mensaje="Ok";
 			*cantRafaga = 2;
 		} else {
-			string_append(mensaje,"No");
+			*mensaje="No";
 		}
 	}
 }
