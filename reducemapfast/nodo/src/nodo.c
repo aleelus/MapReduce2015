@@ -203,19 +203,19 @@ char* getBloque(int numero){
 	char* bloque;
 	int fd= fileno(archivoEspacioDatos);
 	long unsigned offset = numero*(TAMANIO_BLOQUE/pagina);
-	printf(COLOR_VERDE"Offset:%lu\n"DEFAULT,offset);
+	//printf(COLOR_VERDE"Offset:%lu\n"DEFAULT,offset);
 
 	if( (bloque = mmap( NULL, TAMANIO_BLOQUE, PROT_READ, MAP_SHARED, fd, offset*pagina)) == MAP_FAILED){
 			//Si no se pudo ejecutar el MMAP, imprimir el error y abortar;
 			fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
 			abort();
 		}
-	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
+	printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
 
 	return bloque;
 }
 
-void setBloque(int numero, char*datos){
+/*void setBloque(int numero, char*datos){
 	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
 			//Si no se pudo abrir, imprimir el error y abortar;
 			printf(COLOR_VERDE"El bloque no existe en el archivo. \n"DEFAULT);
@@ -231,16 +231,17 @@ void setBloque(int numero, char*datos){
 				fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
 				abort();
 	} else {
+		memcpy(bloque, datos, strlen(datos)+1);
 		munmap(bloque,TAMANIO_BLOQUE);
 		printf(COLOR_VERDE"Se realizo el setBloque del bloque:%d\n"DEFAULT,numero);
 	}
 	//sem_post(&semaforo);
-	//memcpy(bloque, datos, strlen(datos)+1);
+
  //Copia los datos a grabar en el bloque auxiliar
 	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
 
 
-}
+}*/
 
 /* char* getBloque(int numero){
 	char* bloque = malloc(TAMANIO_BLOQUE);
@@ -251,7 +252,7 @@ void setBloque(int numero, char*datos){
 }*/
 
 
-/* void setBloque(int numero, char*datos){
+void setBloque(int numero, char*datos){
 	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
 			//Si no se pudo abrir, imprimir el error y abortar;
 			printf("El bloque no existe en el archivo. \n");
@@ -273,7 +274,7 @@ void setBloque(int numero, char*datos){
 	//Libero el puntero
 
 
-} */
+}
 
 char * armarRutaTemporal( char *nombre){
 		//static char ruta[] = g_Dir_Temp;
@@ -395,7 +396,7 @@ int runScriptFile(char* script,char* archNom, char* input)
         //printf("lo que se va a escribir es %s y la longitud es %d\n", input, strlen(input));
         // Write to child’s stdin
 
-        if (write(PARENT_WRITE_FD, input, (strlen(input)+1)) == -1){
+        if (write(PARENT_WRITE_FD, input, (strlen(input))) == -1){
         	return 0;
         }
 
@@ -801,6 +802,7 @@ int procesarRutinaMap(t_job * job){
 	//Doy permisos de ejecucion al script
 
 	//Ejecuto el script sobre el bloque
+
 	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoBloque)){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
 		if (contenidoBloque != NULL){

@@ -10599,3 +10599,1147 @@ ERROR FATAL--> Error al hacer el Bind. El puerto está en uso
 [ERROR] 13:03:42:589 nodo/(6844:7003): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
 [TRACE] 13:03:42:589 nodo/(6844:7003): RECIBO DATOS. socket: 7. buffer:  tamanio:0
 [TRACE] 13:03:42:589 nodo/(6844:7003): SOCKET SE CIERRA: (7).
+[INFO] 16:46:49:171 nodo/(7777:7777): Archivo de configuración: config.cfg
+[INFO] 16:46:49:172 nodo/(7777:7777): Intentando conectar a nodo
+
+[INFO] 16:46:49:172 nodo/(7777:7777): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:46:49:173 nodo/(7777:7777): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:46:49:174 nodo/(7777:7777): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:46:49:174 nodo/(7777:7777): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:46:49:175 nodo/(7777:7779): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:47:21:471 nodo/(7777:7779): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14507). El número de socket del cliente es: 7
+[TRACE] 16:47:21:515 nodo/(7777:7790): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:47:21:515 nodo/(7777:7790): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 16:48:42:254 nodo/(7856:7856): Archivo de configuración: config.cfg
+[INFO] 16:48:42:254 nodo/(7856:7856): Intentando conectar a nodo
+
+[INFO] 16:48:42:255 nodo/(7856:7856): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:48:42:256 nodo/(7856:7856): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:48:42:256 nodo/(7856:7856): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:48:42:256 nodo/(7856:7856): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:48:42:257 nodo/(7856:7858): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:49:08:100 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17323). El número de socket del cliente es: 7
+[TRACE] 16:49:08:145 nodo/(7856:7869): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:49:08:146 nodo/(7856:7869): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:08:505 nodo/(7856:7869): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:49:08:506 nodo/(7856:7869): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:08:507 nodo/(7856:7869): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:49:08:507 nodo/(7856:7869): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:49:08:508 nodo/(7856:7869): SOCKET SE CIERRA: (7).
+[TRACE] 16:49:19:687 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19115). El número de socket del cliente es: 8
+[TRACE] 16:49:19:735 nodo/(7856:7883): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:49:19:735 nodo/(7856:7883): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:49:20:68 nodo/(7856:7883): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:49:20:68 nodo/(7856:7883): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:49:20:68 nodo/(7856:7883): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:49:20:68 nodo/(7856:7883): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:49:20:68 nodo/(7856:7883): SOCKET SE CIERRA: (8).
+[TRACE] 16:49:21:934 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19627). El número de socket del cliente es: 7
+[TRACE] 16:49:21:976 nodo/(7856:7887): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:49:21:976 nodo/(7856:7887): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:22:405 nodo/(7856:7887): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:49:22:405 nodo/(7856:7887): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:22:405 nodo/(7856:7887): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:49:22:405 nodo/(7856:7887): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:49:22:405 nodo/(7856:7887): SOCKET SE CIERRA: (7).
+[TRACE] 16:49:28:792 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (20907). El número de socket del cliente es: 8
+[TRACE] 16:49:28:831 nodo/(7856:7898): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:49:28:831 nodo/(7856:7898): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:49:29:74 nodo/(7856:7898): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:49:29:74 nodo/(7856:7898): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:49:29:74 nodo/(7856:7898): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:49:29:74 nodo/(7856:7898): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:49:29:74 nodo/(7856:7898): SOCKET SE CIERRA: (8).
+[TRACE] 16:49:29:908 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21419). El número de socket del cliente es: 7
+[TRACE] 16:49:29:941 nodo/(7856:7902): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:49:29:941 nodo/(7856:7902): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:30:256 nodo/(7856:7902): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:49:30:256 nodo/(7856:7902): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:30:256 nodo/(7856:7902): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:49:30:256 nodo/(7856:7902): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:49:30:256 nodo/(7856:7902): SOCKET SE CIERRA: (7).
+[TRACE] 16:49:41:259 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23211). El número de socket del cliente es: 8
+[TRACE] 16:49:41:298 nodo/(7856:7916): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:49:41:298 nodo/(7856:7916): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:49:41:483 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23467). El número de socket del cliente es: 7
+[TRACE] 16:49:41:583 nodo/(7856:7918): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:49:41:583 nodo/(7856:7918): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:41:635 nodo/(7856:7916): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:49:41:636 nodo/(7856:7916): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:49:41:636 nodo/(7856:7916): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:49:41:636 nodo/(7856:7916): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:49:41:636 nodo/(7856:7916): SOCKET SE CIERRA: (8).
+[ERROR] 16:49:41:875 nodo/(7856:7918): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:49:41:875 nodo/(7856:7918): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:41:875 nodo/(7856:7918): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:49:41:875 nodo/(7856:7918): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:49:41:875 nodo/(7856:7918): SOCKET SE CIERRA: (7).
+[TRACE] 16:49:56:692 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25259). El número de socket del cliente es: 9
+[TRACE] 16:49:56:741 nodo/(7856:7932): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 16:49:56:742 nodo/(7856:7932): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 16:49:57:90 nodo/(7856:7932): No puedo enviar información al cliente. Socket: 9
+[INFO] 16:49:57:90 nodo/(7856:7932): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 16:49:57:91 nodo/(7856:7932): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 16:49:57:91 nodo/(7856:7932): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 16:49:57:91 nodo/(7856:7932): SOCKET SE CIERRA: (9).
+[TRACE] 16:49:59:244 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25771). El número de socket del cliente es: 7
+[TRACE] 16:49:59:290 nodo/(7856:7936): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:49:59:290 nodo/(7856:7936): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:59:599 nodo/(7856:7936): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:49:59:599 nodo/(7856:7936): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:49:59:599 nodo/(7856:7936): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:49:59:599 nodo/(7856:7936): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:49:59:599 nodo/(7856:7936): SOCKET SE CIERRA: (7).
+[TRACE] 16:50:07:436 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27051). El número de socket del cliente es: 8
+[TRACE] 16:50:07:482 nodo/(7856:7946): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:50:07:482 nodo/(7856:7946): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:50:07:850 nodo/(7856:7946): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:50:07:850 nodo/(7856:7946): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:50:07:850 nodo/(7856:7946): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:50:07:850 nodo/(7856:7946): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:50:07:850 nodo/(7856:7946): SOCKET SE CIERRA: (8).
+[TRACE] 16:50:08:754 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27563). El número de socket del cliente es: 7
+[TRACE] 16:50:08:830 nodo/(7856:7950): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:50:08:830 nodo/(7856:7950): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:09:148 nodo/(7856:7950): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:50:09:148 nodo/(7856:7950): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:09:148 nodo/(7856:7950): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:50:09:148 nodo/(7856:7950): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:50:09:148 nodo/(7856:7950): SOCKET SE CIERRA: (7).
+[TRACE] 16:50:21:804 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29355). El número de socket del cliente es: 8
+[TRACE] 16:50:21:850 nodo/(7856:7964): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:50:21:850 nodo/(7856:7964): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:50:22:78 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29611). El número de socket del cliente es: 7
+[TRACE] 16:50:22:151 nodo/(7856:7966): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:50:22:151 nodo/(7856:7966): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:22:232 nodo/(7856:7964): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:50:22:232 nodo/(7856:7964): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:50:22:232 nodo/(7856:7964): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:50:22:232 nodo/(7856:7964): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:50:22:232 nodo/(7856:7964): SOCKET SE CIERRA: (8).
+[ERROR] 16:50:22:531 nodo/(7856:7966): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:50:22:531 nodo/(7856:7966): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:22:531 nodo/(7856:7966): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:50:22:531 nodo/(7856:7966): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:50:22:531 nodo/(7856:7966): SOCKET SE CIERRA: (7).
+[TRACE] 16:50:34:295 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31403). El número de socket del cliente es: 9
+[TRACE] 16:50:34:330 nodo/(7856:7981): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 16:50:34:330 nodo/(7856:7981): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 16:50:34:651 nodo/(7856:7981): No puedo enviar información al cliente. Socket: 9
+[INFO] 16:50:34:651 nodo/(7856:7981): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 16:50:34:651 nodo/(7856:7981): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 16:50:34:652 nodo/(7856:7981): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 16:50:34:652 nodo/(7856:7981): SOCKET SE CIERRA: (9).
+[TRACE] 16:50:36:636 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31915). El número de socket del cliente es: 7
+[TRACE] 16:50:36:671 nodo/(7856:7985): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:50:36:671 nodo/(7856:7985): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:37:404 nodo/(7856:7985): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:50:37:404 nodo/(7856:7985): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:37:404 nodo/(7856:7985): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:50:37:404 nodo/(7856:7985): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:50:37:404 nodo/(7856:7985): SOCKET SE CIERRA: (7).
+[TRACE] 16:50:46:693 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33195). El número de socket del cliente es: 8
+[TRACE] 16:50:46:738 nodo/(7856:7995): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:50:46:738 nodo/(7856:7995): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:50:47:98 nodo/(7856:7995): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:50:47:98 nodo/(7856:7995): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:50:47:99 nodo/(7856:7995): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:50:47:99 nodo/(7856:7995): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:50:47:99 nodo/(7856:7995): SOCKET SE CIERRA: (8).
+[TRACE] 16:50:47:932 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33707). El número de socket del cliente es: 7
+[TRACE] 16:50:47:978 nodo/(7856:7999): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:50:47:978 nodo/(7856:7999): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:48:216 nodo/(7856:7999): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:50:48:216 nodo/(7856:7999): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:50:48:217 nodo/(7856:7999): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:50:48:217 nodo/(7856:7999): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:50:48:217 nodo/(7856:7999): SOCKET SE CIERRA: (7).
+[TRACE] 16:51:00:885 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35755). El número de socket del cliente es: 8
+[TRACE] 16:51:00:928 nodo/(7856:8014): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:51:00:928 nodo/(7856:8014): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:51:01:54 nodo/(7856:7858): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36011). El número de socket del cliente es: 7
+[TRACE] 16:51:01:129 nodo/(7856:8016): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:51:01:130 nodo/(7856:8016): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:51:01:199 nodo/(7856:8014): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:51:01:199 nodo/(7856:8014): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:51:01:200 nodo/(7856:8014): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:51:01:200 nodo/(7856:8014): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:51:01:200 nodo/(7856:8014): SOCKET SE CIERRA: (8).
+[INFO] 16:55:07:578 nodo/(8091:8091): Archivo de configuración: config.cfg
+[INFO] 16:55:07:578 nodo/(8091:8091): Intentando conectar a nodo
+
+[INFO] 16:55:07:579 nodo/(8091:8091): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:55:07:580 nodo/(8091:8091): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:55:07:580 nodo/(8091:8091): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:55:07:580 nodo/(8091:8091): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:55:07:581 nodo/(8091:8093): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[INFO] 16:55:19:885 nodo/(8100:8100): Archivo de configuración: config.cfg
+[INFO] 16:55:19:885 nodo/(8100:8100): Intentando conectar a nodo
+
+[INFO] 16:55:19:885 nodo/(8100:8100): ERROR: conectar socket_FS
+[TRACE] 16:55:19:885 nodo/(8100:8101): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[INFO] 16:55:41:47 nodo/(8106:8106): Archivo de configuración: config.cfg
+[INFO] 16:55:41:47 nodo/(8106:8106): Intentando conectar a nodo
+
+[INFO] 16:55:41:49 nodo/(8106:8106): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:55:41:49 nodo/(8106:8106): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:55:41:49 nodo/(8106:8106): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:55:41:49 nodo/(8106:8106): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:55:41:49 nodo/(8106:8108): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:56:43:927 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (40107). El número de socket del cliente es: 7
+[TRACE] 16:56:43:968 nodo/(8106:8120): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:43:969 nodo/(8106:8120): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:44:220 nodo/(8106:8120): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:44:220 nodo/(8106:8120): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:44:220 nodo/(8106:8120): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:44:220 nodo/(8106:8120): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:44:220 nodo/(8106:8120): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:45:917 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (41899). El número de socket del cliente es: 8
+[TRACE] 16:56:45:962 nodo/(8106:8134): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:45:962 nodo/(8106:8134): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:46:256 nodo/(8106:8134): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:46:258 nodo/(8106:8134): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:46:259 nodo/(8106:8134): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:46:260 nodo/(8106:8134): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:46:262 nodo/(8106:8134): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:46:503 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (42411). El número de socket del cliente es: 7
+[TRACE] 16:56:46:540 nodo/(8106:8138): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:46:541 nodo/(8106:8138): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:46:824 nodo/(8106:8138): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:46:824 nodo/(8106:8138): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:46:827 nodo/(8106:8138): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:46:828 nodo/(8106:8138): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:46:828 nodo/(8106:8138): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:47:720 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43691). El número de socket del cliente es: 8
+[TRACE] 16:56:47:768 nodo/(8106:8148): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:47:768 nodo/(8106:8148): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:48:45 nodo/(8106:8148): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:48:46 nodo/(8106:8148): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:48:46 nodo/(8106:8148): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:48:46 nodo/(8106:8148): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:48:46 nodo/(8106:8148): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:48:290 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (44203). El número de socket del cliente es: 7
+[TRACE] 16:56:48:343 nodo/(8106:8152): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:48:343 nodo/(8106:8152): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:48:648 nodo/(8106:8152): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:48:648 nodo/(8106:8152): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:48:648 nodo/(8106:8152): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:48:648 nodo/(8106:8152): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:48:648 nodo/(8106:8152): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:49:952 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45995). El número de socket del cliente es: 8
+[TRACE] 16:56:49:994 nodo/(8106:8167): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:49:994 nodo/(8106:8167): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:50:214 nodo/(8106:8167): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:50:214 nodo/(8106:8167): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:50:215 nodo/(8106:8167): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:50:215 nodo/(8106:8167): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:50:215 nodo/(8106:8167): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:50:241 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (46251). El número de socket del cliente es: 7
+[TRACE] 16:56:50:282 nodo/(8106:8169): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:50:282 nodo/(8106:8169): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:50:495 nodo/(8106:8169): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:50:495 nodo/(8106:8169): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:50:495 nodo/(8106:8169): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:50:495 nodo/(8106:8169): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:50:495 nodo/(8106:8169): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:51:524 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48043). El número de socket del cliente es: 8
+[TRACE] 16:56:51:560 nodo/(8106:8184): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:51:560 nodo/(8106:8184): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:51:791 nodo/(8106:8184): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:51:792 nodo/(8106:8184): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:51:792 nodo/(8106:8184): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:51:792 nodo/(8106:8184): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:51:792 nodo/(8106:8184): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:51:949 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48555). El número de socket del cliente es: 7
+[TRACE] 16:56:51:995 nodo/(8106:8188): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:51:996 nodo/(8106:8188): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:52:207 nodo/(8106:8188): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:52:207 nodo/(8106:8188): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:52:207 nodo/(8106:8188): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:52:207 nodo/(8106:8188): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:52:207 nodo/(8106:8188): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:52:813 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49835). El número de socket del cliente es: 8
+[TRACE] 16:56:52:851 nodo/(8106:8198): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:52:851 nodo/(8106:8198): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:53:24 nodo/(8106:8198): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:53:24 nodo/(8106:8198): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:53:25 nodo/(8106:8198): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:53:25 nodo/(8106:8198): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:53:25 nodo/(8106:8198): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:53:167 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (50347). El número de socket del cliente es: 7
+[TRACE] 16:56:53:206 nodo/(8106:8202): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:53:206 nodo/(8106:8202): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:53:466 nodo/(8106:8202): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:53:467 nodo/(8106:8202): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:53:467 nodo/(8106:8202): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:53:467 nodo/(8106:8202): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:53:467 nodo/(8106:8202): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:54:441 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52139). El número de socket del cliente es: 8
+[TRACE] 16:56:54:476 nodo/(8106:8216): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:54:476 nodo/(8106:8216): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:56:54:633 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52395). El número de socket del cliente es: 7
+[TRACE] 16:56:54:668 nodo/(8106:8218): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:54:668 nodo/(8106:8218): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:54:688 nodo/(8106:8216): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:54:688 nodo/(8106:8216): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:54:688 nodo/(8106:8216): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:54:688 nodo/(8106:8216): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:54:688 nodo/(8106:8216): SOCKET SE CIERRA: (8).
+[ERROR] 16:56:54:860 nodo/(8106:8218): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:54:860 nodo/(8106:8218): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:54:860 nodo/(8106:8218): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:54:860 nodo/(8106:8218): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:54:860 nodo/(8106:8218): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:55:639 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (54187). El número de socket del cliente es: 9
+[TRACE] 16:56:55:667 nodo/(8106:8232): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 16:56:55:668 nodo/(8106:8232): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 16:56:55:838 nodo/(8106:8232): No puedo enviar información al cliente. Socket: 9
+[INFO] 16:56:55:838 nodo/(8106:8232): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 16:56:55:838 nodo/(8106:8232): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 16:56:55:838 nodo/(8106:8232): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 16:56:55:838 nodo/(8106:8232): SOCKET SE CIERRA: (9).
+[TRACE] 16:56:55:924 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (54955). El número de socket del cliente es: 7
+[TRACE] 16:56:55:953 nodo/(8106:8236): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:55:953 nodo/(8106:8236): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:56:132 nodo/(8106:8236): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:56:132 nodo/(8106:8236): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:56:132 nodo/(8106:8236): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:56:132 nodo/(8106:8236): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:56:132 nodo/(8106:8236): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:56:581 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (56235). El número de socket del cliente es: 8
+[TRACE] 16:56:56:612 nodo/(8106:8246): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:56:612 nodo/(8106:8246): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:56:801 nodo/(8106:8246): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:56:801 nodo/(8106:8246): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:56:801 nodo/(8106:8246): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:56:801 nodo/(8106:8246): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:56:801 nodo/(8106:8246): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:56:877 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (56747). El número de socket del cliente es: 7
+[TRACE] 16:56:56:910 nodo/(8106:8250): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:56:910 nodo/(8106:8250): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:57:91 nodo/(8106:8250): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:57:91 nodo/(8106:8250): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:57:92 nodo/(8106:8250): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:57:92 nodo/(8106:8250): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:57:92 nodo/(8106:8250): SOCKET SE CIERRA: (7).
+[TRACE] 16:56:57:827 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58539). El número de socket del cliente es: 8
+[TRACE] 16:56:57:858 nodo/(8106:8264): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:56:57:858 nodo/(8106:8264): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:57:979 nodo/(8106:8264): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:56:57:979 nodo/(8106:8264): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:56:57:979 nodo/(8106:8264): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:56:57:979 nodo/(8106:8264): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:56:57:979 nodo/(8106:8264): SOCKET SE CIERRA: (8).
+[TRACE] 16:56:57:991 nodo/(8106:8108): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58795). El número de socket del cliente es: 7
+[TRACE] 16:56:58:15 nodo/(8106:8266): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:56:58:15 nodo/(8106:8266): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:58:172 nodo/(8106:8266): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:56:58:172 nodo/(8106:8266): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:56:58:172 nodo/(8106:8266): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:56:58:172 nodo/(8106:8266): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:56:58:172 nodo/(8106:8266): SOCKET SE CIERRA: (7).
+[INFO] 16:59:29:820 nodo/(8293:8293): Archivo de configuración: config.cfg
+[INFO] 16:59:29:820 nodo/(8293:8293): Intentando conectar a nodo
+
+[INFO] 16:59:29:822 nodo/(8293:8293): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:59:29:823 nodo/(8293:8293): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:59:29:823 nodo/(8293:8293): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:59:29:823 nodo/(8293:8293): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:59:29:824 nodo/(8293:8295): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:59:53:56 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (61611). El número de socket del cliente es: 7
+[TRACE] 16:59:53:104 nodo/(8293:8307): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:59:53:105 nodo/(8293:8307): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:59:53:400 nodo/(8293:8307): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:59:53:400 nodo/(8293:8307): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:59:53:400 nodo/(8293:8307): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:59:53:400 nodo/(8293:8307): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:59:53:400 nodo/(8293:8307): SOCKET SE CIERRA: (7).
+[TRACE] 16:59:55:209 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (63403). El número de socket del cliente es: 8
+[TRACE] 16:59:55:259 nodo/(8293:8321): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:59:55:259 nodo/(8293:8321): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:59:55:565 nodo/(8293:8321): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:59:55:566 nodo/(8293:8321): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:59:55:568 nodo/(8293:8321): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:59:55:568 nodo/(8293:8321): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:59:55:568 nodo/(8293:8321): SOCKET SE CIERRA: (8).
+[TRACE] 16:59:56:17 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (63915). El número de socket del cliente es: 7
+[TRACE] 16:59:56:62 nodo/(8293:8325): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:59:56:62 nodo/(8293:8325): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:59:56:287 nodo/(8293:8325): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:59:56:287 nodo/(8293:8325): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:59:56:289 nodo/(8293:8325): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:59:56:289 nodo/(8293:8325): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:59:56:290 nodo/(8293:8325): SOCKET SE CIERRA: (7).
+[TRACE] 16:59:57:323 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (65195). El número de socket del cliente es: 8
+[TRACE] 16:59:57:376 nodo/(8293:8335): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 16:59:57:376 nodo/(8293:8335): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:59:57:647 nodo/(8293:8335): No puedo enviar información al cliente. Socket: 8
+[INFO] 16:59:57:647 nodo/(8293:8335): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 16:59:57:647 nodo/(8293:8335): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 16:59:57:647 nodo/(8293:8335): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:59:57:647 nodo/(8293:8335): SOCKET SE CIERRA: (8).
+[TRACE] 16:59:58:133 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (172). El número de socket del cliente es: 7
+[TRACE] 16:59:58:183 nodo/(8293:8339): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 16:59:58:183 nodo/(8293:8339): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:59:58:499 nodo/(8293:8339): No puedo enviar información al cliente. Socket: 7
+[INFO] 16:59:58:500 nodo/(8293:8339): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 16:59:58:500 nodo/(8293:8339): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 16:59:58:500 nodo/(8293:8339): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:59:58:500 nodo/(8293:8339): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:00:59 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (1964). El número de socket del cliente es: 8
+[TRACE] 17:00:00:101 nodo/(8293:8353): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:00:00:102 nodo/(8293:8353): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:00:356 nodo/(8293:8353): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:00:00:356 nodo/(8293:8353): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:00:356 nodo/(8293:8353): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:00:00:356 nodo/(8293:8353): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:00:00:356 nodo/(8293:8353): SOCKET SE CIERRA: (8).
+[TRACE] 17:00:00:403 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2220). El número de socket del cliente es: 7
+[TRACE] 17:00:00:444 nodo/(8293:8355): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:00:445 nodo/(8293:8355): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:00:693 nodo/(8293:8355): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:00:693 nodo/(8293:8355): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:00:693 nodo/(8293:8355): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:00:693 nodo/(8293:8355): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:00:693 nodo/(8293:8355): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:01:775 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4012). El número de socket del cliente es: 8
+[TRACE] 17:00:01:817 nodo/(8293:8369): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:00:01:817 nodo/(8293:8369): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:02:57 nodo/(8293:8369): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:00:02:57 nodo/(8293:8369): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:02:58 nodo/(8293:8369): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:00:02:58 nodo/(8293:8369): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:00:02:58 nodo/(8293:8369): SOCKET SE CIERRA: (8).
+[TRACE] 17:00:02:207 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4524). El número de socket del cliente es: 7
+[TRACE] 17:00:02:245 nodo/(8293:8373): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:02:245 nodo/(8293:8373): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:02:487 nodo/(8293:8373): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:02:487 nodo/(8293:8373): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:02:487 nodo/(8293:8373): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:02:487 nodo/(8293:8373): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:02:487 nodo/(8293:8373): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:03:196 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5804). El número de socket del cliente es: 8
+[TRACE] 17:00:03:237 nodo/(8293:8383): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:00:03:237 nodo/(8293:8383): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:03:518 nodo/(8293:8383): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:00:03:519 nodo/(8293:8383): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:03:519 nodo/(8293:8383): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:00:03:519 nodo/(8293:8383): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:00:03:519 nodo/(8293:8383): SOCKET SE CIERRA: (8).
+[TRACE] 17:00:03:603 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6316). El número de socket del cliente es: 7
+[TRACE] 17:00:03:641 nodo/(8293:8387): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:03:641 nodo/(8293:8387): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:03:907 nodo/(8293:8387): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:03:907 nodo/(8293:8387): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:03:907 nodo/(8293:8387): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:03:907 nodo/(8293:8387): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:03:907 nodo/(8293:8387): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:04:808 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8108). El número de socket del cliente es: 8
+[TRACE] 17:00:04:846 nodo/(8293:8401): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:00:04:846 nodo/(8293:8401): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:00:05:9 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8364). El número de socket del cliente es: 7
+[TRACE] 17:00:05:48 nodo/(8293:8403): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:05:48 nodo/(8293:8403): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:05:107 nodo/(8293:8401): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:00:05:107 nodo/(8293:8401): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:05:108 nodo/(8293:8401): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:00:05:108 nodo/(8293:8401): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:00:05:109 nodo/(8293:8401): SOCKET SE CIERRA: (8).
+[ERROR] 17:00:05:275 nodo/(8293:8403): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:05:275 nodo/(8293:8403): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:05:276 nodo/(8293:8403): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:05:276 nodo/(8293:8403): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:05:276 nodo/(8293:8403): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:06:97 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10156). El número de socket del cliente es: 9
+[TRACE] 17:00:06:130 nodo/(8293:8417): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 17:00:06:130 nodo/(8293:8417): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:00:06:339 nodo/(8293:8417): No puedo enviar información al cliente. Socket: 9
+[INFO] 17:00:06:340 nodo/(8293:8417): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:00:06:340 nodo/(8293:8417): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 17:00:06:340 nodo/(8293:8417): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 17:00:06:340 nodo/(8293:8417): SOCKET SE CIERRA: (9).
+[TRACE] 17:00:06:417 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10668). El número de socket del cliente es: 7
+[TRACE] 17:00:06:451 nodo/(8293:8421): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:06:451 nodo/(8293:8421): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:06:652 nodo/(8293:8421): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:06:652 nodo/(8293:8421): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:06:652 nodo/(8293:8421): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:06:652 nodo/(8293:8421): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:06:652 nodo/(8293:8421): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:07:146 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11948). El número de socket del cliente es: 8
+[TRACE] 17:00:07:178 nodo/(8293:8431): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:00:07:178 nodo/(8293:8431): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:07:392 nodo/(8293:8431): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:00:07:392 nodo/(8293:8431): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:07:392 nodo/(8293:8431): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:00:07:393 nodo/(8293:8431): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:00:07:393 nodo/(8293:8431): SOCKET SE CIERRA: (8).
+[TRACE] 17:00:07:433 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12460). El número de socket del cliente es: 7
+[TRACE] 17:00:07:467 nodo/(8293:8435): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:07:467 nodo/(8293:8435): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:07:672 nodo/(8293:8435): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:07:672 nodo/(8293:8435): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:07:672 nodo/(8293:8435): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:07:672 nodo/(8293:8435): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:07:672 nodo/(8293:8435): SOCKET SE CIERRA: (7).
+[TRACE] 17:00:08:437 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14252). El número de socket del cliente es: 8
+[TRACE] 17:00:08:473 nodo/(8293:8449): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:00:08:473 nodo/(8293:8449): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:00:08:575 nodo/(8293:8295): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14508). El número de socket del cliente es: 7
+[TRACE] 17:00:08:606 nodo/(8293:8451): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:00:08:607 nodo/(8293:8451): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:08:668 nodo/(8293:8449): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:00:08:668 nodo/(8293:8449): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:00:08:668 nodo/(8293:8449): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:00:08:669 nodo/(8293:8449): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:00:08:669 nodo/(8293:8449): SOCKET SE CIERRA: (8).
+[ERROR] 17:00:08:812 nodo/(8293:8451): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:00:08:812 nodo/(8293:8451): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:00:08:812 nodo/(8293:8451): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:00:08:812 nodo/(8293:8451): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:00:08:812 nodo/(8293:8451): SOCKET SE CIERRA: (7).
+[INFO] 17:04:04:615 nodo/(8472:8472): Archivo de configuración: config.cfg
+[INFO] 17:04:04:616 nodo/(8472:8472): Intentando conectar a nodo
+
+[INFO] 17:04:04:616 nodo/(8472:8472): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 17:04:04:617 nodo/(8472:8472): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 17:04:04:618 nodo/(8472:8472): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 17:04:04:618 nodo/(8472:8472): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 17:04:04:618 nodo/(8472:8474): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 17:04:24:526 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17580). El número de socket del cliente es: 7
+[TRACE] 17:04:24:572 nodo/(8472:8486): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:24:572 nodo/(8472:8486): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:24:820 nodo/(8472:8486): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:24:820 nodo/(8472:8486): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:24:820 nodo/(8472:8486): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:24:820 nodo/(8472:8486): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:24:820 nodo/(8472:8486): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:26:594 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19372). El número de socket del cliente es: 8
+[TRACE] 17:04:26:665 nodo/(8472:8500): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:26:665 nodo/(8472:8500): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:26:1 nodo/(8472:8500): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:26:1 nodo/(8472:8500): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:26:1 nodo/(8472:8500): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:26:1 nodo/(8472:8500): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:26:1 nodo/(8472:8500): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:27:316 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19884). El número de socket del cliente es: 7
+[TRACE] 17:04:27:366 nodo/(8472:8504): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:27:367 nodo/(8472:8504): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:27:636 nodo/(8472:8504): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:27:636 nodo/(8472:8504): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:27:636 nodo/(8472:8504): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:27:636 nodo/(8472:8504): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:27:636 nodo/(8472:8504): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:28:543 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21164). El número de socket del cliente es: 8
+[TRACE] 17:04:28:592 nodo/(8472:8514): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:28:593 nodo/(8472:8514): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:28:918 nodo/(8472:8514): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:28:919 nodo/(8472:8514): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:28:919 nodo/(8472:8514): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:28:919 nodo/(8472:8514): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:28:919 nodo/(8472:8514): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:29:105 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21676). El número de socket del cliente es: 7
+[TRACE] 17:04:29:154 nodo/(8472:8518): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:29:154 nodo/(8472:8518): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:29:468 nodo/(8472:8518): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:29:468 nodo/(8472:8518): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:29:469 nodo/(8472:8518): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:29:469 nodo/(8472:8518): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:29:469 nodo/(8472:8518): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:30:960 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23468). El número de socket del cliente es: 8
+[TRACE] 17:04:31:8 nodo/(8472:8533): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:31:8 nodo/(8472:8533): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:31:317 nodo/(8472:8533): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:31:317 nodo/(8472:8533): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:31:317 nodo/(8472:8533): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:31:317 nodo/(8472:8533): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:31:317 nodo/(8472:8533): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:31:347 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23724). El número de socket del cliente es: 7
+[TRACE] 17:04:31:386 nodo/(8472:8535): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:31:386 nodo/(8472:8535): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:31:648 nodo/(8472:8535): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:31:649 nodo/(8472:8535): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:31:649 nodo/(8472:8535): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:31:649 nodo/(8472:8535): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:31:649 nodo/(8472:8535): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:32:867 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25516). El número de socket del cliente es: 8
+[TRACE] 17:04:32:911 nodo/(8472:8549): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:32:911 nodo/(8472:8549): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:33:170 nodo/(8472:8549): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:33:170 nodo/(8472:8549): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:33:170 nodo/(8472:8549): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:33:170 nodo/(8472:8549): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:33:170 nodo/(8472:8549): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:33:323 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (26028). El número de socket del cliente es: 7
+[TRACE] 17:04:33:359 nodo/(8472:8553): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:33:359 nodo/(8472:8553): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:33:560 nodo/(8472:8553): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:33:560 nodo/(8472:8553): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:33:560 nodo/(8472:8553): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:33:560 nodo/(8472:8553): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:33:560 nodo/(8472:8553): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:34:153 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27308). El número de socket del cliente es: 8
+[TRACE] 17:04:34:187 nodo/(8472:8563): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:34:187 nodo/(8472:8563): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:34:343 nodo/(8472:8563): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:34:344 nodo/(8472:8563): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:34:344 nodo/(8472:8563): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:34:344 nodo/(8472:8563): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:34:344 nodo/(8472:8563): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:34:464 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27820). El número de socket del cliente es: 7
+[TRACE] 17:04:34:497 nodo/(8472:8567): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:34:497 nodo/(8472:8567): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:34:733 nodo/(8472:8567): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:34:733 nodo/(8472:8567): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:34:733 nodo/(8472:8567): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:34:733 nodo/(8472:8567): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:34:733 nodo/(8472:8567): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:35:590 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29612). El número de socket del cliente es: 8
+[TRACE] 17:04:35:625 nodo/(8472:8581): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:35:625 nodo/(8472:8581): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:04:35:773 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29868). El número de socket del cliente es: 7
+[TRACE] 17:04:35:810 nodo/(8472:8583): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:35:810 nodo/(8472:8583): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:35:846 nodo/(8472:8581): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:35:846 nodo/(8472:8581): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:35:847 nodo/(8472:8581): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:35:847 nodo/(8472:8581): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:35:847 nodo/(8472:8581): SOCKET SE CIERRA: (8).
+[ERROR] 17:04:36:17 nodo/(8472:8583): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:36:17 nodo/(8472:8583): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:36:17 nodo/(8472:8583): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:36:17 nodo/(8472:8583): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:36:17 nodo/(8472:8583): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:36:857 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31660). El número de socket del cliente es: 9
+[TRACE] 17:04:36:915 nodo/(8472:8597): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 17:04:36:915 nodo/(8472:8597): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:04:37:194 nodo/(8472:8597): No puedo enviar información al cliente. Socket: 9
+[INFO] 17:04:37:194 nodo/(8472:8597): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:04:37:194 nodo/(8472:8597): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 17:04:37:194 nodo/(8472:8597): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 17:04:37:194 nodo/(8472:8597): SOCKET SE CIERRA: (9).
+[TRACE] 17:04:37:296 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32172). El número de socket del cliente es: 7
+[TRACE] 17:04:37:330 nodo/(8472:8602): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:37:330 nodo/(8472:8602): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:37:522 nodo/(8472:8602): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:37:522 nodo/(8472:8602): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:37:522 nodo/(8472:8602): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:37:522 nodo/(8472:8602): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:37:522 nodo/(8472:8602): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:37:995 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33452). El número de socket del cliente es: 8
+[TRACE] 17:04:38:31 nodo/(8472:8612): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:38:31 nodo/(8472:8612): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:38:206 nodo/(8472:8612): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:38:206 nodo/(8472:8612): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:38:206 nodo/(8472:8612): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:38:206 nodo/(8472:8612): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:38:206 nodo/(8472:8612): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:38:281 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33964). El número de socket del cliente es: 7
+[TRACE] 17:04:38:307 nodo/(8472:8616): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:38:307 nodo/(8472:8616): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:38:496 nodo/(8472:8616): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:38:496 nodo/(8472:8616): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:38:496 nodo/(8472:8616): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:38:497 nodo/(8472:8616): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:38:497 nodo/(8472:8616): SOCKET SE CIERRA: (7).
+[TRACE] 17:04:39:176 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35756). El número de socket del cliente es: 8
+[TRACE] 17:04:39:207 nodo/(8472:8630): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:04:39:207 nodo/(8472:8630): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:04:39:342 nodo/(8472:8474): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36012). El número de socket del cliente es: 7
+[ERROR] 17:04:39:360 nodo/(8472:8630): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:04:39:360 nodo/(8472:8630): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:04:39:360 nodo/(8472:8630): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:04:39:360 nodo/(8472:8630): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:04:39:360 nodo/(8472:8630): SOCKET SE CIERRA: (8).
+[TRACE] 17:04:39:376 nodo/(8472:8632): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:04:39:376 nodo/(8472:8632): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:39:537 nodo/(8472:8632): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:04:39:537 nodo/(8472:8632): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:04:39:538 nodo/(8472:8632): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:04:39:538 nodo/(8472:8632): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:04:39:538 nodo/(8472:8632): SOCKET SE CIERRA: (7).
+[INFO] 17:19:39:41 nodo/(8845:8845): Archivo de configuración: config.cfg
+[INFO] 17:19:39:41 nodo/(8845:8845): Intentando conectar a nodo
+
+[INFO] 17:19:39:42 nodo/(8845:8845): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 17:19:39:43 nodo/(8845:8845): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 17:19:39:43 nodo/(8845:8845): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 17:19:39:44 nodo/(8845:8845): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 17:19:39:44 nodo/(8845:8847): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 17:20:04:619 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (41644). El número de socket del cliente es: 7
+[TRACE] 17:20:04:662 nodo/(8845:8858): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:04:663 nodo/(8845:8858): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:04:911 nodo/(8845:8858): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:04:911 nodo/(8845:8858): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:04:911 nodo/(8845:8858): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:04:911 nodo/(8845:8858): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:04:911 nodo/(8845:8858): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:06:576 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43436). El número de socket del cliente es: 8
+[TRACE] 17:20:06:648 nodo/(8845:8873): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:06:648 nodo/(8845:8873): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:06:949 nodo/(8845:8873): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:06:949 nodo/(8845:8873): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:06:949 nodo/(8845:8873): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:06:949 nodo/(8845:8873): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:06:949 nodo/(8845:8873): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:07:220 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43948). El número de socket del cliente es: 7
+[TRACE] 17:20:07:265 nodo/(8845:8877): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:07:265 nodo/(8845:8877): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:07:537 nodo/(8845:8877): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:07:537 nodo/(8845:8877): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:07:537 nodo/(8845:8877): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:07:537 nodo/(8845:8877): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:07:537 nodo/(8845:8877): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:08:602 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45228). El número de socket del cliente es: 8
+[TRACE] 17:20:08:684 nodo/(8845:8887): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:08:684 nodo/(8845:8887): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:08:999 nodo/(8845:8887): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:08:999 nodo/(8845:8887): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:08:999 nodo/(8845:8887): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:08:999 nodo/(8845:8887): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:08:999 nodo/(8845:8887): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:09:236 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45740). El número de socket del cliente es: 7
+[TRACE] 17:20:09:303 nodo/(8845:8891): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:09:303 nodo/(8845:8891): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:09:675 nodo/(8845:8891): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:09:675 nodo/(8845:8891): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:09:676 nodo/(8845:8891): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:09:676 nodo/(8845:8891): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:09:676 nodo/(8845:8891): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:11:162 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47532). El número de socket del cliente es: 8
+[TRACE] 17:20:11:224 nodo/(8845:8905): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:11:224 nodo/(8845:8905): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:11:501 nodo/(8845:8905): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:11:501 nodo/(8845:8905): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:11:501 nodo/(8845:8905): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:11:501 nodo/(8845:8905): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:11:501 nodo/(8845:8905): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:11:546 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47788). El número de socket del cliente es: 7
+[TRACE] 17:20:11:581 nodo/(8845:8907): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:11:581 nodo/(8845:8907): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:11:799 nodo/(8845:8907): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:11:799 nodo/(8845:8907): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:11:799 nodo/(8845:8907): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:11:799 nodo/(8845:8907): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:11:799 nodo/(8845:8907): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:13:123 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49580). El número de socket del cliente es: 8
+[TRACE] 17:20:13:176 nodo/(8845:8921): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:13:176 nodo/(8845:8921): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:13:446 nodo/(8845:8921): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:13:446 nodo/(8845:8921): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:13:447 nodo/(8845:8921): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:13:447 nodo/(8845:8921): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:13:447 nodo/(8845:8921): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:13:644 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (50092). El número de socket del cliente es: 7
+[TRACE] 17:20:13:682 nodo/(8845:8925): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:13:686 nodo/(8845:8925): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:13:926 nodo/(8845:8925): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:13:926 nodo/(8845:8925): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:13:926 nodo/(8845:8925): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:13:926 nodo/(8845:8925): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:13:926 nodo/(8845:8925): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:14:724 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51372). El número de socket del cliente es: 8
+[TRACE] 17:20:14:779 nodo/(8845:8935): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:14:779 nodo/(8845:8935): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:15:68 nodo/(8845:8935): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:15:68 nodo/(8845:8935): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:15:68 nodo/(8845:8935): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:15:68 nodo/(8845:8935): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:15:68 nodo/(8845:8935): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:15:232 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51884). El número de socket del cliente es: 7
+[TRACE] 17:20:15:296 nodo/(8845:8939): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:15:296 nodo/(8845:8939): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:15:698 nodo/(8845:8939): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:15:699 nodo/(8845:8939): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:15:700 nodo/(8845:8939): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:15:700 nodo/(8845:8939): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:15:701 nodo/(8845:8939): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:17:68 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (53676). El número de socket del cliente es: 8
+[TRACE] 17:20:17:123 nodo/(8845:8953): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:17:124 nodo/(8845:8953): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:20:17:304 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (53932). El número de socket del cliente es: 7
+[TRACE] 17:20:17:341 nodo/(8845:8955): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:17:341 nodo/(8845:8955): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:17:466 nodo/(8845:8953): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:17:466 nodo/(8845:8953): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:17:466 nodo/(8845:8953): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:17:466 nodo/(8845:8953): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:17:466 nodo/(8845:8953): SOCKET SE CIERRA: (8).
+[ERROR] 17:20:17:646 nodo/(8845:8955): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:17:646 nodo/(8845:8955): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:17:646 nodo/(8845:8955): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:17:646 nodo/(8845:8955): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:17:646 nodo/(8845:8955): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:18:840 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (55724). El número de socket del cliente es: 9
+[TRACE] 17:20:18:895 nodo/(8845:8969): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 17:20:18:895 nodo/(8845:8969): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:20:19:198 nodo/(8845:8969): No puedo enviar información al cliente. Socket: 9
+[INFO] 17:20:19:199 nodo/(8845:8969): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:20:19:199 nodo/(8845:8969): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 17:20:19:200 nodo/(8845:8969): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 17:20:19:200 nodo/(8845:8969): SOCKET SE CIERRA: (9).
+[TRACE] 17:20:19:259 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (56236). El número de socket del cliente es: 7
+[TRACE] 17:20:19:304 nodo/(8845:8973): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:19:305 nodo/(8845:8973): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:19:549 nodo/(8845:8973): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:19:549 nodo/(8845:8973): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:19:550 nodo/(8845:8973): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:19:550 nodo/(8845:8973): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:19:550 nodo/(8845:8973): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:20:350 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (57516). El número de socket del cliente es: 8
+[TRACE] 17:20:20:396 nodo/(8845:8983): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:20:397 nodo/(8845:8983): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:20:690 nodo/(8845:8983): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:20:690 nodo/(8845:8983): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:20:691 nodo/(8845:8983): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:20:691 nodo/(8845:8983): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:20:691 nodo/(8845:8983): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:20:806 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58028). El número de socket del cliente es: 7
+[TRACE] 17:20:20:862 nodo/(8845:8987): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:20:863 nodo/(8845:8987): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:21:112 nodo/(8845:8987): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:21:112 nodo/(8845:8987): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:21:112 nodo/(8845:8987): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:21:112 nodo/(8845:8987): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:21:112 nodo/(8845:8987): SOCKET SE CIERRA: (7).
+[TRACE] 17:20:22:271 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (59820). El número de socket del cliente es: 8
+[TRACE] 17:20:22:305 nodo/(8845:9001): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:20:22:305 nodo/(8845:9001): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:20:22:531 nodo/(8845:8847): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (60076). El número de socket del cliente es: 7
+[ERROR] 17:20:22:572 nodo/(8845:9001): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:20:22:573 nodo/(8845:9001): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:20:22:574 nodo/(8845:9001): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:20:22:574 nodo/(8845:9001): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:20:22:574 nodo/(8845:9001): SOCKET SE CIERRA: (8).
+[TRACE] 17:20:22:577 nodo/(8845:9003): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:20:22:578 nodo/(8845:9003): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:22:824 nodo/(8845:9003): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:20:22:824 nodo/(8845:9003): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:20:22:824 nodo/(8845:9003): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:20:22:824 nodo/(8845:9003): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:20:22:824 nodo/(8845:9003): SOCKET SE CIERRA: (7).
+[INFO] 17:24:08:250 nodo/(9097:9097): Archivo de configuración: config.cfg
+[INFO] 17:24:08:251 nodo/(9097:9097): Intentando conectar a nodo
+
+[INFO] 17:24:08:251 nodo/(9097:9097): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 17:24:08:252 nodo/(9097:9097): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 17:24:08:253 nodo/(9097:9097): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 17:24:08:253 nodo/(9097:9097): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 17:24:08:253 nodo/(9097:9099): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 17:24:35:905 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64172). El número de socket del cliente es: 7
+[TRACE] 17:24:35:944 nodo/(9097:9111): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:35:944 nodo/(9097:9111): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:36:180 nodo/(9097:9111): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:36:180 nodo/(9097:9111): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:36:180 nodo/(9097:9111): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:36:180 nodo/(9097:9111): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:36:180 nodo/(9097:9111): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:37:951 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (429). El número de socket del cliente es: 8
+[TRACE] 17:24:38:52 nodo/(9097:9125): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:38:52 nodo/(9097:9125): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:38:379 nodo/(9097:9125): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:38:380 nodo/(9097:9125): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:38:381 nodo/(9097:9125): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:38:381 nodo/(9097:9125): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:38:382 nodo/(9097:9125): SOCKET SE CIERRA: (8).
+[TRACE] 17:24:38:647 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (941). El número de socket del cliente es: 7
+[TRACE] 17:24:38:692 nodo/(9097:9129): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:38:692 nodo/(9097:9129): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:38:983 nodo/(9097:9129): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:38:983 nodo/(9097:9129): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:38:984 nodo/(9097:9129): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:38:984 nodo/(9097:9129): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:38:984 nodo/(9097:9129): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:39:996 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2221). El número de socket del cliente es: 8
+[TRACE] 17:24:40:132 nodo/(9097:9139): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:40:132 nodo/(9097:9139): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:40:464 nodo/(9097:9139): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:40:464 nodo/(9097:9139): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:40:465 nodo/(9097:9139): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:40:465 nodo/(9097:9139): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:40:465 nodo/(9097:9139): SOCKET SE CIERRA: (8).
+[TRACE] 17:24:40:751 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2733). El número de socket del cliente es: 7
+[TRACE] 17:24:40:859 nodo/(9097:9143): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:40:859 nodo/(9097:9143): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:41:175 nodo/(9097:9143): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:41:175 nodo/(9097:9143): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:41:175 nodo/(9097:9143): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:41:175 nodo/(9097:9143): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:41:175 nodo/(9097:9143): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:42:586 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4525). El número de socket del cliente es: 8
+[TRACE] 17:24:42:636 nodo/(9097:9158): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:42:636 nodo/(9097:9158): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:42:896 nodo/(9097:9158): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:42:897 nodo/(9097:9158): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:42:897 nodo/(9097:9158): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:42:898 nodo/(9097:9158): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:42:898 nodo/(9097:9158): SOCKET SE CIERRA: (8).
+[TRACE] 17:24:42:908 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4781). El número de socket del cliente es: 7
+[TRACE] 17:24:42:942 nodo/(9097:9160): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:42:942 nodo/(9097:9160): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:43:176 nodo/(9097:9160): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:43:176 nodo/(9097:9160): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:43:176 nodo/(9097:9160): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:43:176 nodo/(9097:9160): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:43:176 nodo/(9097:9160): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:44:393 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6573). El número de socket del cliente es: 8
+[TRACE] 17:24:44:443 nodo/(9097:9174): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:44:443 nodo/(9097:9174): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:44:683 nodo/(9097:9174): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:44:683 nodo/(9097:9174): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:44:683 nodo/(9097:9174): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:44:683 nodo/(9097:9174): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:44:684 nodo/(9097:9174): SOCKET SE CIERRA: (8).
+[TRACE] 17:24:44:875 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7085). El número de socket del cliente es: 7
+[TRACE] 17:24:44:950 nodo/(9097:9178): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:44:950 nodo/(9097:9178): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:45:177 nodo/(9097:9178): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:45:177 nodo/(9097:9178): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:45:177 nodo/(9097:9178): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:45:177 nodo/(9097:9178): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:45:177 nodo/(9097:9178): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:46:10 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8365). El número de socket del cliente es: 8
+[TRACE] 17:24:46:62 nodo/(9097:9188): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:46:62 nodo/(9097:9188): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:46:305 nodo/(9097:9188): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:46:306 nodo/(9097:9188): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:46:306 nodo/(9097:9188): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:46:307 nodo/(9097:9188): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:46:307 nodo/(9097:9188): SOCKET SE CIERRA: (8).
+[TRACE] 17:24:46:483 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8877). El número de socket del cliente es: 7
+[TRACE] 17:24:46:533 nodo/(9097:9192): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:46:533 nodo/(9097:9192): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:46:812 nodo/(9097:9192): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:46:812 nodo/(9097:9192): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:46:812 nodo/(9097:9192): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:46:812 nodo/(9097:9192): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:46:812 nodo/(9097:9192): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:48:91 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10669). El número de socket del cliente es: 8
+[TRACE] 17:24:48:147 nodo/(9097:9206): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:48:147 nodo/(9097:9206): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:24:48:340 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10925). El número de socket del cliente es: 7
+[TRACE] 17:24:48:393 nodo/(9097:9208): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:48:393 nodo/(9097:9208): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:48:417 nodo/(9097:9206): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:48:417 nodo/(9097:9206): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:48:417 nodo/(9097:9206): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:48:417 nodo/(9097:9206): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:48:417 nodo/(9097:9206): SOCKET SE CIERRA: (8).
+[ERROR] 17:24:48:678 nodo/(9097:9208): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:48:678 nodo/(9097:9208): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:48:678 nodo/(9097:9208): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:48:678 nodo/(9097:9208): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:48:678 nodo/(9097:9208): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:49:879 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12717). El número de socket del cliente es: 9
+[TRACE] 17:24:49:931 nodo/(9097:9222): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 17:24:49:931 nodo/(9097:9222): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:24:50:185 nodo/(9097:9222): No puedo enviar información al cliente. Socket: 9
+[INFO] 17:24:50:185 nodo/(9097:9222): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:24:50:185 nodo/(9097:9222): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 17:24:50:185 nodo/(9097:9222): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 17:24:50:185 nodo/(9097:9222): SOCKET SE CIERRA: (9).
+[TRACE] 17:24:50:318 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13229). El número de socket del cliente es: 7
+[TRACE] 17:24:50:371 nodo/(9097:9226): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:50:371 nodo/(9097:9226): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:50:590 nodo/(9097:9226): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:50:590 nodo/(9097:9226): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:50:591 nodo/(9097:9226): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:50:591 nodo/(9097:9226): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:50:591 nodo/(9097:9226): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:51:231 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14509). El número de socket del cliente es: 8
+[TRACE] 17:24:51:274 nodo/(9097:9236): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:51:274 nodo/(9097:9236): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:51:508 nodo/(9097:9236): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:51:508 nodo/(9097:9236): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:51:508 nodo/(9097:9236): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:51:508 nodo/(9097:9236): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:51:508 nodo/(9097:9236): SOCKET SE CIERRA: (8).
+[TRACE] 17:24:51:609 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15021). El número de socket del cliente es: 7
+[TRACE] 17:24:51:652 nodo/(9097:9240): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:51:652 nodo/(9097:9240): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:51:903 nodo/(9097:9240): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:51:903 nodo/(9097:9240): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:51:903 nodo/(9097:9240): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:51:903 nodo/(9097:9240): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:51:903 nodo/(9097:9240): SOCKET SE CIERRA: (7).
+[TRACE] 17:24:52:864 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16813). El número de socket del cliente es: 8
+[TRACE] 17:24:52:910 nodo/(9097:9254): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:24:52:910 nodo/(9097:9254): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:24:53:42 nodo/(9097:9099): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17069). El número de socket del cliente es: 7
+[TRACE] 17:24:53:80 nodo/(9097:9256): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:24:53:80 nodo/(9097:9256): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:53:105 nodo/(9097:9254): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:24:53:105 nodo/(9097:9254): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:24:53:105 nodo/(9097:9254): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:24:53:105 nodo/(9097:9254): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:24:53:105 nodo/(9097:9254): SOCKET SE CIERRA: (8).
+[ERROR] 17:24:53:295 nodo/(9097:9256): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:24:53:295 nodo/(9097:9256): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:24:53:295 nodo/(9097:9256): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:24:53:295 nodo/(9097:9256): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:24:53:295 nodo/(9097:9256): SOCKET SE CIERRA: (7).
+[INFO] 17:28:08:470 nodo/(9338:9338): Archivo de configuración: config.cfg
+[INFO] 17:28:08:470 nodo/(9338:9338): Intentando conectar a nodo
+
+[INFO] 17:28:08:471 nodo/(9338:9338): ERROR: conectar socket_FS
+[TRACE] 17:28:08:471 nodo/(9338:9339): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[INFO] 17:28:12:762 nodo/(9343:9343): Archivo de configuración: config.cfg
+[INFO] 17:28:12:762 nodo/(9343:9343): Intentando conectar a nodo
+
+[INFO] 17:28:12:763 nodo/(9343:9343): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 17:28:12:763 nodo/(9343:9343): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 17:28:12:764 nodo/(9343:9343): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 17:28:12:764 nodo/(9343:9343): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 17:28:12:764 nodo/(9343:9345): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 17:28:32:524 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21421). El número de socket del cliente es: 7
+[TRACE] 17:28:32:565 nodo/(9343:9356): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:32:566 nodo/(9343:9356): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:32:805 nodo/(9343:9356): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:32:805 nodo/(9343:9356): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:32:806 nodo/(9343:9356): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:32:807 nodo/(9343:9356): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:32:807 nodo/(9343:9356): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:34:476 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23213). El número de socket del cliente es: 8
+[TRACE] 17:28:34:544 nodo/(9343:9370): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:34:545 nodo/(9343:9370): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:34:901 nodo/(9343:9370): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:34:901 nodo/(9343:9370): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:34:901 nodo/(9343:9370): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:34:908 nodo/(9343:9370): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:34:913 nodo/(9343:9370): SOCKET SE CIERRA: (8).
+[TRACE] 17:28:35:220 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23725). El número de socket del cliente es: 7
+[TRACE] 17:28:35:265 nodo/(9343:9374): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:35:265 nodo/(9343:9374): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:35:600 nodo/(9343:9374): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:35:604 nodo/(9343:9374): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:35:605 nodo/(9343:9374): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:35:605 nodo/(9343:9374): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:35:606 nodo/(9343:9374): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:36:588 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25005). El número de socket del cliente es: 8
+[TRACE] 17:28:36:648 nodo/(9343:9384): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:36:648 nodo/(9343:9384): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:36:935 nodo/(9343:9384): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:36:935 nodo/(9343:9384): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:36:935 nodo/(9343:9384): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:36:935 nodo/(9343:9384): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:36:935 nodo/(9343:9384): SOCKET SE CIERRA: (8).
+[TRACE] 17:28:37:173 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25517). El número de socket del cliente es: 7
+[TRACE] 17:28:37:233 nodo/(9343:9388): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:37:233 nodo/(9343:9388): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:37:546 nodo/(9343:9388): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:37:546 nodo/(9343:9388): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:37:547 nodo/(9343:9388): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:37:547 nodo/(9343:9388): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:37:548 nodo/(9343:9388): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:38:836 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27309). El número de socket del cliente es: 8
+[TRACE] 17:28:38:888 nodo/(9343:9402): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:38:888 nodo/(9343:9402): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:39:133 nodo/(9343:9402): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:39:133 nodo/(9343:9402): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:39:133 nodo/(9343:9402): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:39:134 nodo/(9343:9402): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:39:134 nodo/(9343:9402): SOCKET SE CIERRA: (8).
+[TRACE] 17:28:39:156 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27565). El número de socket del cliente es: 7
+[TRACE] 17:28:39:192 nodo/(9343:9404): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:39:193 nodo/(9343:9404): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:39:404 nodo/(9343:9404): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:39:404 nodo/(9343:9404): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:39:404 nodo/(9343:9404): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:39:404 nodo/(9343:9404): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:39:404 nodo/(9343:9404): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:40:499 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29357). El número de socket del cliente es: 8
+[TRACE] 17:28:40:548 nodo/(9343:9418): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:40:548 nodo/(9343:9418): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:40:734 nodo/(9343:9418): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:40:734 nodo/(9343:9418): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:40:734 nodo/(9343:9418): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:40:734 nodo/(9343:9418): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:40:734 nodo/(9343:9418): SOCKET SE CIERRA: (8).
+[TRACE] 17:28:40:913 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29869). El número de socket del cliente es: 7
+[TRACE] 17:28:40:966 nodo/(9343:9422): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:40:966 nodo/(9343:9422): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:41:221 nodo/(9343:9422): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:41:222 nodo/(9343:9422): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:41:223 nodo/(9343:9422): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:41:223 nodo/(9343:9422): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:41:223 nodo/(9343:9422): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:41:904 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31149). El número de socket del cliente es: 8
+[TRACE] 17:28:41:949 nodo/(9343:9432): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:41:949 nodo/(9343:9432): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:42:209 nodo/(9343:9432): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:42:209 nodo/(9343:9432): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:42:209 nodo/(9343:9432): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:42:209 nodo/(9343:9432): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:42:209 nodo/(9343:9432): SOCKET SE CIERRA: (8).
+[TRACE] 17:28:42:312 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31661). El número de socket del cliente es: 7
+[TRACE] 17:28:42:359 nodo/(9343:9436): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:42:360 nodo/(9343:9436): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:42:633 nodo/(9343:9436): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:42:633 nodo/(9343:9436): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:42:633 nodo/(9343:9436): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:42:633 nodo/(9343:9436): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:42:633 nodo/(9343:9436): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:43:682 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33453). El número de socket del cliente es: 8
+[TRACE] 17:28:43:729 nodo/(9343:9450): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:43:729 nodo/(9343:9450): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:28:43:894 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33709). El número de socket del cliente es: 7
+[TRACE] 17:28:43:936 nodo/(9343:9452): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:43:936 nodo/(9343:9452): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:43:970 nodo/(9343:9450): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:43:970 nodo/(9343:9450): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:43:971 nodo/(9343:9450): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:43:971 nodo/(9343:9450): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:43:971 nodo/(9343:9450): SOCKET SE CIERRA: (8).
+[ERROR] 17:28:44:165 nodo/(9343:9452): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:44:166 nodo/(9343:9452): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:44:166 nodo/(9343:9452): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:44:166 nodo/(9343:9452): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:44:166 nodo/(9343:9452): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:45:336 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35501). El número de socket del cliente es: 9
+[TRACE] 17:28:45:405 nodo/(9343:9466): RECIBO DATOS. socket: 9. buffer: soy grande tamanio:11
+[INFO] 17:28:45:405 nodo/(9343:9466): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:28:45:632 nodo/(9343:9466): No puedo enviar información al cliente. Socket: 9
+[INFO] 17:28:45:632 nodo/(9343:9466): ENVIO DATOS. socket: 9. Buffer:1 
+[ERROR] 17:28:45:632 nodo/(9343:9466): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 9
+[TRACE] 17:28:45:632 nodo/(9343:9466): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 17:28:45:632 nodo/(9343:9466): SOCKET SE CIERRA: (9).
+[TRACE] 17:28:45:722 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36013). El número de socket del cliente es: 7
+[TRACE] 17:28:45:758 nodo/(9343:9470): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:45:758 nodo/(9343:9470): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:45:944 nodo/(9343:9470): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:45:944 nodo/(9343:9470): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:45:944 nodo/(9343:9470): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:45:945 nodo/(9343:9470): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:45:945 nodo/(9343:9470): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:46:393 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37293). El número de socket del cliente es: 8
+[TRACE] 17:28:46:423 nodo/(9343:9480): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:46:423 nodo/(9343:9480): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:46:637 nodo/(9343:9480): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:46:637 nodo/(9343:9480): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:46:637 nodo/(9343:9480): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:46:637 nodo/(9343:9480): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:46:637 nodo/(9343:9480): SOCKET SE CIERRA: (8).
+[TRACE] 17:28:46:689 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37805). El número de socket del cliente es: 7
+[TRACE] 17:28:46:722 nodo/(9343:9484): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:46:722 nodo/(9343:9484): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:46:913 nodo/(9343:9484): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:46:913 nodo/(9343:9484): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:46:913 nodo/(9343:9484): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:46:913 nodo/(9343:9484): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:46:913 nodo/(9343:9484): SOCKET SE CIERRA: (7).
+[TRACE] 17:28:47:679 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39597). El número de socket del cliente es: 8
+[TRACE] 17:28:47:720 nodo/(9343:9498): RECIBO DATOS. socket: 8. buffer: soy grande tamanio:11
+[INFO] 17:28:47:720 nodo/(9343:9498): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 17:28:47:846 nodo/(9343:9345): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39853). El número de socket del cliente es: 7
+[TRACE] 17:28:47:881 nodo/(9343:9500): RECIBO DATOS. socket: 7. buffer: soy grande tamanio:11
+[INFO] 17:28:47:881 nodo/(9343:9500): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:47:915 nodo/(9343:9498): No puedo enviar información al cliente. Socket: 8
+[INFO] 17:28:47:915 nodo/(9343:9498): ENVIO DATOS. socket: 8. Buffer:1 
+[ERROR] 17:28:47:916 nodo/(9343:9498): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 8
+[TRACE] 17:28:47:916 nodo/(9343:9498): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 17:28:47:916 nodo/(9343:9498): SOCKET SE CIERRA: (8).
+[ERROR] 17:28:48:51 nodo/(9343:9500): No puedo enviar información al cliente. Socket: 7
+[INFO] 17:28:48:51 nodo/(9343:9500): ENVIO DATOS. socket: 7. Buffer:1 
+[ERROR] 17:28:48:51 nodo/(9343:9500): Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: 7
+[TRACE] 17:28:48:51 nodo/(9343:9500): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 17:28:48:51 nodo/(9343:9500): SOCKET SE CIERRA: (7).
