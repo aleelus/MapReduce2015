@@ -457,9 +457,11 @@ int runScriptFile(char* script,char* archNom, char* input)
         execl(argv[0], argv[0], (char*)0);
 
     } else {
-        char buffer[1024*1024*2];
+        char buffer[strlen(input)];
+        char res[strlen(input)];
+        memset(&res,0,strlen(input));
         int count;
-        long unsigned valor,cotaM=0,cotaS=1024*1024;
+        long unsigned valor=0,acum=0,restantes=0,cotaM=0,cotaS=1024*1024;
         char * aux;
 
         /* close fds not required by parent */
@@ -469,19 +471,37 @@ int runScriptFile(char* script,char* archNom, char* input)
         aux = string_substring(input,cotaM,cotaS);
 
         // Write to child’s stdin
-        valor = write(PARENT_WRITE_FD, aux, strlen(aux));
-        printf(COLOR_VERDE"VALOR:%lu\n"DEFAULT,valor);
-
+        restantes=strlen(input);
+        while(acum<strlen(input)){
+			valor = write(PARENT_WRITE_FD, input+acum, restantes);
+			if(valor == -1)
+				printf("ERROR AL ESCRIBIR\n");
+			acum=acum+valor;
+			restantes=restantes-valor;
+			printf(COLOR_VERDE"VALOR:%lu\n"DEFAULT,valor);
+        }
         close(PARENT_WRITE_FD);
-        wait(NULL);
+        //wait(NULL);
         // Read from child’s stdout
-        count = read(PARENT_READ_FD, &buffer, sizeof(buffer)-1);
-        if (count >= 0) {
+
+        while(count>0){
+        	count = read(PARENT_READ_FD, &buffer, sizeof(buffer)-1);
+        	if(count == -1)
+        		printf("ERROR AL LEER\n");
+        	strcat(res,buffer);
+        	memset(&buffer,0,strlen(input));
+
+        }
+
+
+        printf("%s", res);
+
+        /*if (count >= 0) {
             buffer[count] = 0;
             printf("%s", buffer);
         } else {
             printf("IO Error\n");
-        }
+        }*/
     }
     return 1;
 }
