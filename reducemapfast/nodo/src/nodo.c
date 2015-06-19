@@ -443,7 +443,7 @@ int runScriptFile(char* script,char* archNom, char* input)
     char *argv[]={ "mapper.sh", "-q", 0};
 
     if(!fork()) {
-
+    	printf("HIJO\n");
         dup2(CHILD_READ_FD, STDIN_FILENO);
         dup2(CHILD_WRITE_FD, STDOUT_FILENO);
 
@@ -457,10 +457,14 @@ int runScriptFile(char* script,char* archNom, char* input)
         execl(argv[0], argv[0], (char*)0);
 
     } else {
-        char buffer[strlen(input)];
-        char res[strlen(input)];
-        memset(&res,0,strlen(input));
-        int count;
+    	printf("PADRE\n");
+        char *buffer = malloc(TAMANIO_BLOQUE);
+        char *res = malloc(TAMANIO_BLOQUE);;
+        memset(res,0,TAMANIO_BLOQUE);
+        memset(buffer,0,TAMANIO_BLOQUE);
+        printf("----------\n");
+
+        int count=1;
         long unsigned valor=0,acum=0,restantes=0,cotaM=0,cotaS=1024*1024;
         char * aux;
 
@@ -485,11 +489,11 @@ int runScriptFile(char* script,char* archNom, char* input)
         // Read from child’s stdout
 
         while(count>0){
-        	count = read(PARENT_READ_FD, &buffer, sizeof(buffer)-1);
+        	count = read(PARENT_READ_FD, buffer, strlen(buffer));
         	if(count == -1)
         		printf("ERROR AL LEER\n");
         	strcat(res,buffer);
-        	memset(&buffer,0,strlen(input));
+        	memset(buffer,0,TAMANIO_BLOQUE);
 
         }
 
