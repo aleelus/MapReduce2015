@@ -200,7 +200,7 @@ int tamanio_archivo(char* nomArch){
 }
 
 char* getBloque(int numero){
-	char* bloque;
+	char* bloque = string_new();
 	int fd= fileno(archivoEspacioDatos);
 	long unsigned offset = numero*(TAMANIO_BLOQUE/pagina);
 	//printf(COLOR_VERDE"Offset:%lu\n"DEFAULT,offset);
@@ -210,8 +210,8 @@ char* getBloque(int numero){
 			fprintf(stderr, "Error al ejecutar MMAP del archivo '%s' de tamaño: %d: %s\n", g_Archivo_Bin, TAMANIO_BLOQUE, strerror(errno));
 			abort();
 		}
-	printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
-
+	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
+	string_append(&bloque,"\n");
 	return bloque;
 }
 
@@ -364,17 +364,85 @@ int enviarDatos(int socket, void *buffer) {
 	return (bytecount);
 }
 
+/*int runScriptFile(char* script,char* archNom, char* input)
+{
+    //int outfd[2];
+    //int infd[2];
+	pid_t id;
+    // pipes for parent to write and read
+    pipe(pipes[PARENT_READ_PIPE]);
+    pipe(pipes[PARENT_WRITE_PIPE]);
+
+    id=fork();
+    if(id==0) {
+
+
+        dup2(CHILD_READ_FD, STDIN_FILENO);
+        dup2(CHILD_WRITE_FD, STDOUT_FILENO);
+        printf("Entro a FORK\n");
+        /* Close fds not required by child. Also, we don't
+           want the exec'ed program to know these existed */
+
+/*        close(CHILD_READ_FD);
+        close(CHILD_WRITE_FD);
+        close(PARENT_READ_FD);
+        close(PARENT_WRITE_FD);
+
+        execl(script, script, (char*)0);
+
+
+
+    } else if(id==-1) {
+    	printf("Error");
+    } else {
+
+        char buffer[50]; //definir el tamanio de este buffer
+
+        int count;
+
+        /* close fds not required by parent */
+/*        close(CHILD_READ_FD);
+        close(CHILD_WRITE_FD);
+        //printf("lo que se va a escribir es %s y la longitud es %d\n", input, strlen(input));
+
+        // Write to child’s stdin
+        write(PARENT_WRITE_FD, input, (strlen(input)));
+
+        printf("NO ENTRO\n");
+
+        close(PARENT_WRITE_FD);
+
+        count = 1;
+        FILE* archSalida = fopen(archNom, "w");
+        while(count != 0){
+        	// Read from child’s stdout
+        	count = read(PARENT_READ_FD, buffer, sizeof(buffer)-1);
+        	if (count >= 0) {
+        		buffer[count] = 0;
+        		fwrite(buffer,sizeof(char),strlen(buffer),archSalida);
+        		//printf("lo que se grabo %s\n", buffer);
+        	} else {
+        		printf("IO Error\n");
+        		return 0;
+        	}
+        }
+     }
+
+     return 1;
+}*/
+
 int runScriptFile(char* script,char* archNom, char* input)
 {
-    int outfd[2];
-    int infd[2];
+	char * input2 = "03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93,\n";
+
 
     // pipes for parent to write and read
     pipe(pipes[PARENT_READ_PIPE]);
     pipe(pipes[PARENT_WRITE_PIPE]);
 
-    if(!fork()) {
+    char *argv[]={ "mapper.sh", "-q", 0};
 
+    if(!fork()) {
 
         dup2(CHILD_READ_FD, STDIN_FILENO);
         dup2(CHILD_WRITE_FD, STDOUT_FILENO);
@@ -385,40 +453,35 @@ int runScriptFile(char* script,char* archNom, char* input)
         close(CHILD_WRITE_FD);
         close(PARENT_READ_FD);
         close(PARENT_WRITE_FD);
-        execl(script, script, (char*) 0);
+
+        execl(argv[0], argv[0], (char*)0);
+
     } else {
-        char* buffer= malloc(50); //definir el tamanio de este buffer
+        char buffer[100];
         int count;
 
         /* close fds not required by parent */
         close(CHILD_READ_FD);
         close(CHILD_WRITE_FD);
-        //printf("lo que se va a escribir es %s y la longitud es %d\n", input, strlen(input));
-        // Write to child’s stdin
 
-        if (write(PARENT_WRITE_FD, input, (strlen(input))) == -1){
-        	return 0;
-        }
+        // Write to child’s stdin
+        write(PARENT_WRITE_FD, input2, strlen(input2));
 
         close(PARENT_WRITE_FD);
-        count = 1;
-        FILE* archSalida = fopen(archNom, "w");
-        while(count != 0){
-        	// Read from child’s stdout
-        	        count = read(PARENT_READ_FD, buffer, sizeof(buffer)-1);
-        	        if (count >= 0) {
-        	            buffer[count] = 0;
-        	            fwrite(buffer,sizeof(char),strlen(buffer),archSalida);
-        	            //printf("lo que se grabo %s\n", buffer);
-        	        } else {
-        	            printf("IO Error\n");
-        	            return 0;
-        	        }
-        }
 
+        // Read from child’s stdout
+        count = read(PARENT_READ_FD, buffer, sizeof(buffer)-1);
+        if (count >= 0) {
+            buffer[count] = 0;
+            printf("%s", buffer);
+        } else {
+            printf("IO Error\n");
+        }
     }
     return 1;
 }
+
+
 
 #if 1 // METODOS CONFIGURACION //
 void LevantarConfig() {
@@ -802,11 +865,11 @@ int procesarRutinaMap(t_job * job){
 	//Doy permisos de ejecucion al script
 
 	//Ejecuto el script sobre el bloque
-
+	//printf(COLOR_VERDE"AHORA SI\n"DEFAULT);
 	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoBloque)){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
 		if (contenidoBloque != NULL){
-			//free(contenidoBloque); //rompe si dejo el free.
+			free(contenidoBloque); //rompe si dejo el free.
 		}
 		return 1;
 	} else {
@@ -943,10 +1006,9 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			printf("Bloque:%s\n",job->bloque);
 			printf("Nombre de Resultado:%s\n",job->nombreResultado);
 
-			printf(COLOR_VERDE"AHORA SI\n"DEFAULT);
+
 			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
-				printf(COLOR_VERDE"AHORA SI\n"DEFAULT);
 				string_append(mensaje,"31");
 			} else {
 				//No pudo hacerla
