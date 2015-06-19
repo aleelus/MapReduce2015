@@ -211,7 +211,7 @@ char* getBloque(int numero){
 			abort();
 		}
 	//printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloque);
-	string_append(&bloque,"\n");
+	//string_append(&bloque,"\n");
 	return bloque;
 }
 
@@ -260,7 +260,7 @@ void setBloque(int numero, char*datos){
 		}
 	long int tamanio = TAMANIO_BLOQUE; //Tamanio del bloque 20mb
 	char*txtBloq = malloc(TAMANIO_BLOQUE);
-	memset(txtBloq, '0', tamanio * sizeof(char));
+	memset(txtBloq, '\0', tamanio * sizeof(char));
 	//Rellena de 0 el txtBloq que se va a grabar
 	memcpy(txtBloq, datos, strlen(datos)+1);
 	//Copia los datos a grabar en el bloque auxiliar
@@ -433,7 +433,7 @@ int enviarDatos(int socket, void *buffer) {
 
 int runScriptFile(char* script,char* archNom, char* input)
 {
-	char * input2 = "03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93,\n";
+	char * input2 = "03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n";
 
 
     // pipes for parent to write and read
@@ -457,7 +457,7 @@ int runScriptFile(char* script,char* archNom, char* input)
         execl(argv[0], argv[0], (char*)0);
 
     } else {
-        char buffer[100];
+        char buffer[1000];
         int count;
 
         /* close fds not required by parent */
@@ -470,7 +470,7 @@ int runScriptFile(char* script,char* archNom, char* input)
         close(PARENT_WRITE_FD);
 
         // Read from child’s stdout
-        count = read(PARENT_READ_FD, buffer, sizeof(buffer)-1);
+        count = read(PARENT_READ_FD, &buffer, sizeof(buffer)-1);
         if (count >= 0) {
             buffer[count] = 0;
             printf("%s", buffer);
@@ -631,10 +631,31 @@ int PosicionDeBufferAInt(char* buffer, int posicion) {
 		return ChartToInt(buffer[posicion]);
 }
 
+int PosicionDeBufferALong(char* buffer, long unsigned posicion) {
+	long unsigned logitudBuffer = 0;
+	logitudBuffer = strlen(buffer);
+
+	if (logitudBuffer <= posicion)
+		return 0;
+	else
+		return ChartToInt(buffer[posicion]);
+}
+
+
 int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 	int x,digito,aux=0;
 	for(x=0;x<dig_tamanio;x++){
 		digito=PosicionDeBufferAInt(buffer,posicion+x);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
+long unsigned ObtenerTamanioLong (char *buffer , int posicion, int dig_tamanio){
+	long unsigned x,aux=0;
+	int digito=0;
+	for(x=0;x<dig_tamanio;x++){
+		digito=PosicionDeBufferALong(buffer,posicion+x);
 		aux=aux*10+digito;
 	}
 	return aux;
@@ -737,7 +758,7 @@ char* DigitosNombreArchivo(char *buffer,int *posicion){
 
 void AtiendeFS (t_bloque ** bloque,char *buffer){
 	//SET_BLOQUE 1311210holaholaho
-	//BUFFER RECIBIDO = 13210820971520
+	//BUFFER RECIBIDO = 13110820971520
 	//--- 1: soy FS 3: quiero un set bloque 2:cant digitos numero bloque 10:numero de bloque a grabar
 	// 8: cant de dig de tamanio de lo que necesitamos que grabe 20971520: tamaño en bytes
 		//semaforo
@@ -746,24 +767,25 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		//char*buffer2 = malloc(32);
 		//memset(&buffer2,0,32);
 		int digitosCantDeDigitos=0,numeroBloq,digitosCantDeDigitosBloque;
-		int digitosCantDeDigitosTamanioBloq,tamanioBloque;
-		long unsigned posActual=0;
+		int digitosCantDeDigitosTamanioBloq,tamanioBloque,cantDigNumBloque=0;
+		long unsigned posActual=0,tam=0;
 
-		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,3);
+		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,2);
 		//printf("CANT DIGITOS:%d\n",digitosCantDeDigitosBloque);
-		numeroBloq=ObtenerTamanio(buffer,4,digitosCantDeDigitosBloque);
+		cantDigNumBloque=ObtenerTamanio(buffer,3,digitosCantDeDigitosBloque);
+		numeroBloq=ObtenerTamanio(buffer,4,cantDigNumBloque);
 		//printf(COLOR_VERDE"NUMERO DE BLOQUE:%d\n"DEFAULT,numeroBloq);
-		posActual=4+digitosCantDeDigitosBloque;
+		posActual=3+cantDigNumBloque+digitosCantDeDigitosBloque;
 		//131218820971517
 		digitosCantDeDigitosTamanioBloq = PosicionDeBufferAInt(buffer,posActual);
 		//printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
-		tamanioBloque= ObtenerTamanio(buffer,3,digitosCantDeDigitosTamanioBloq);
-		//printf("Tamanio del contenido del bloque: %d\n",tamanioBloque);
-		posActual=2+digitosCantDeDigitosTamanioBloq;
+		tam= ObtenerTamanioLong(buffer,posActual+1,digitosCantDeDigitosTamanioBloq);
+		printf("Tamanio del contenido del bloque: %lu\n",tam);
+		posActual=posActual+1;
 		//printf("Tamanio BLOQUE POSTA:%d\n",tamanioBloque);
 		//printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
 		//buffer2 = string_substring(buffer,0,30);
-		contenidoBloq=string_substring(buffer,posActual,tamanioBloque);
+		contenidoBloq=string_substring(buffer,posActual,tam);
 		//contenidoBloq=DigitosNombreArchivo(buffer,&posActual);
 		//printf(COLOR_VERDE"Buffer:%s\n"DEFAULT,buffer2);
 		//free(buffer);
@@ -860,7 +882,8 @@ int procesarRutinaMap(t_job * job){
 	char* contenidoBloque = malloc(TAMANIO_BLOQUE);
 	contenidoBloque= getBloque(numBloque);
 	//Obtengo el contendio del numero de bloque solicitado.
-
+	//printf("%s",contenidoBloque);
+	printf("\n\n%d\n",strlen(contenidoBloque));
 	permisosScript(job->nombreSH);
 	//Doy permisos de ejecucion al script
 
@@ -1179,7 +1202,9 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 		memset(aux, 0, tamanio+1);
 
 	}while (numBytesRecv <tamanio);
+	//printf(COLOR_VERDE"---%d---\n"DEFAULT,strlen(bloque));
 	AtiendeFS(&bloqueSet,bloque);
+	printf(COLOR_VERDE"---%d---\n"DEFAULT,strlen(bloqueSet->contenidoBloque));
 	setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
 	free(bloqueSet->contenidoBloque);
 	//string_append(mensaje,"Listo");

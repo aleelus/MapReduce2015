@@ -227,6 +227,8 @@ int PosicionDeBufferAInt(char* buffer, int posicion);
 int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio);
 int obtenerNumBloque (char* buffer);
 void AtiendeFS (t_bloque ** bloque,char *buffer);
+long unsigned ObtenerTamanioLong (char *buffer , int posicion, int dig_tamanio);
+int PosicionDeBufferALong(char* buffer, long unsigned posicion);
 
 //Apareo
 #define BUFFERLINEA 50
