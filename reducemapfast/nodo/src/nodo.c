@@ -17,7 +17,7 @@ int main(int argv, char** argc) {
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "nodo", true, LOG_LEVEL_TRACE);
 
 	//sem_init(&semaforo,1,1);
-
+	letra = 'A';
 
 	// Levantamos el archivo de configuracion.
 	LevantarConfig();
@@ -433,7 +433,7 @@ int enviarDatos(int socket, void *buffer) {
 
 int runScriptFile(char* script,char* archNom, char* input)
 {
-	char * input2 = "03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n03011,20130101,0000,0,OVC, , 5.00, , , ,M, ,M, ,M, ,M, ,M, ,M, ,M, , 5, ,120, , , ,M, , , , , ,M, ,AA, , , ,29.93\n";
+	char * input2 = "20971513WBAN,Date,Time,StationType,SkyCondition,SkyConditionFlag,Visibility,VisibilityFlag,WeatherType,WeatherTypeFlag,DryBulbFarenheit,DryBulbFarenheitFlag,DryBulbCels";
 
 
     // pipes for parent to write and read
@@ -457,18 +457,23 @@ int runScriptFile(char* script,char* archNom, char* input)
         execl(argv[0], argv[0], (char*)0);
 
     } else {
-        char buffer[1000];
+        char buffer[1024*1024*2];
         int count;
+        long unsigned valor,cotaM=0,cotaS=1024*1024;
+        char * aux;
 
         /* close fds not required by parent */
         close(CHILD_READ_FD);
         close(CHILD_WRITE_FD);
 
+        aux = string_substring(input,cotaM,cotaS);
+
         // Write to child’s stdin
-        write(PARENT_WRITE_FD, input2, strlen(input2));
+        valor = write(PARENT_WRITE_FD, aux, strlen(aux));
+        printf(COLOR_VERDE"VALOR:%lu\n"DEFAULT,valor);
 
         close(PARENT_WRITE_FD);
-
+        wait(NULL);
         // Read from child’s stdout
         count = read(PARENT_READ_FD, &buffer, sizeof(buffer)-1);
         if (count >= 0) {
@@ -884,6 +889,11 @@ int procesarRutinaMap(t_job * job){
 	//Obtengo el contendio del numero de bloque solicitado.
 	//printf("%s",contenidoBloque);
 	printf("\n\n%d\n",strlen(contenidoBloque));
+	FILE * arch;
+	arch = fopen("bloque.txt","w");
+	fwrite(contenidoBloque,sizeof(char),strlen(contenidoBloque),arch);
+	fclose(arch);
+
 	permisosScript(job->nombreSH);
 	//Doy permisos de ejecucion al script
 
@@ -892,7 +902,7 @@ int procesarRutinaMap(t_job * job){
 	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoBloque)){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
 		if (contenidoBloque != NULL){
-			free(contenidoBloque); //rompe si dejo el free.
+			//free(contenidoBloque); //rompe si dejo el free.
 		}
 		return 1;
 	} else {
@@ -1032,10 +1042,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 
 			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
-				string_append(mensaje,"31");
+				mensaje="31";
 			} else {
 				//No pudo hacerla
-				string_append(mensaje,"30");
+				mensaje="30";
 			}
 			break;
 		case REDUCE_COMBINER:

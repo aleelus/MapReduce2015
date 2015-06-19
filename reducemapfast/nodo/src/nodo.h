@@ -192,7 +192,7 @@ static t_list *agregar_nodoArch(t_list* lista, char* nNodo, char* nArchivo){
 	return lista;
 }
 
-
+int letra;
 
 // Archivo para Espacio de Datos
 FILE * archivoEspacioDatos;
