@@ -212,6 +212,7 @@ void CerrarSocket(int socket);
 int ObtenerComandoMSJ(char* buffer);
 char* DigitosNombreArchivo(char *buffer,int *posicion);
 void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga);
+void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga);
 int runScriptFile(char* script,char* archNom, char* input);
 void grabarScript(char* nombreScript, char* codigoScript);
 char * armarRutaTemporal( char *nombre);

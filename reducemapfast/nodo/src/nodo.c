@@ -866,10 +866,12 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	*cantRafaga=1;
 }
 
-void AtiendeJobSinCombiner (t_job ** job,char *buffer, int *cantRafaga){
+void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 	//Cadena recibida del Job
 	// A NODO => 2312 15NodoA  13 215resultado00.txt     215resultado01.txt    1215resultado02.txt     15NodoA212192.168.1.27146000
 	//         15NodoC  11 215resultado03.txt     15NodoC212192.168.1.27146000
+	//FALTA IMPLEMENTAR
+	/*
 	//semaforo
 	estado = 1;
 	char *nArchivoSH;
@@ -900,6 +902,7 @@ void AtiendeJobSinCombiner (t_job ** job,char *buffer, int *cantRafaga){
 
 	*job = job_create(nArchivoSH,fileSH,el_Bloque,nArchivoResultado);
 	*cantRafaga=1;
+	*/
 }
 
 int procesarRutinaMap(t_job * job){
@@ -1134,11 +1137,11 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			}
 			break;
 		case REDUCE_COMBINER:
-				AtiendeJob(&job,buffer,cantRafaga);
-				printf("Nombre de SH:%s\n",job->nombreSH);
-				printf("Contenido de SH:%s\n",job->contenidoSH);
-				printf("Archivo:%s\n",job->bloque);
-				printf("Nombre de Resultado:%s\n",job->nombreResultado);
+				AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
+				//printf("Nombre de SH:%s\n",job->nombreSH);
+				//printf("Contenido de SH:%s\n",job->contenidoSH);
+				//printf("Archivo:%s\n",job->bloque);
+				//printf("Nombre de Resultado:%s\n",job->nombreResultado);
 				if(procesarRutinaReduce(jobR,1)){ //Proceso la rutina de reduce con combiner.
 					//CAMBIAR FUNCION, HAY QUE HACERLA SOBRE DOS ARCHIVOS RESULTADOS MAP, NO BLOQUES.
 					//Pudo hacerla
@@ -1150,11 +1153,11 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				break;
 
 		case REDUCE_SIN_COMBINER:
-				AtiendeJobSinCombiner(&job,buffer,cantRafaga);
-				printf("Nombre de SH:%s\n",job->nombreSH);
-				printf("Contenido de SH:%s\n",job->contenidoSH);
-				printf("Archivo:%s\n",job->bloque);
-				printf("Nombre de Resultado:%s\n",job->nombreResultado);
+				AtiendeJobCombiner(&jobR,buffer,cantRafaga);
+				//printf("Nombre de SH:%s\n",job->nombreSH);
+				//printf("Contenido de SH:%s\n",job->contenidoSH);
+				//printf("Archivo:%s\n",job->bloque);
+				//printf("Nombre de Resultado:%s\n",job->nombreResultado);
 				if(procesarRutinaReduce(jobR,0)){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
 					//Pudo hacerla
 					*mensaje = "31";
