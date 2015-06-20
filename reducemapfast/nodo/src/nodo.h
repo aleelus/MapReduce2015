@@ -216,8 +216,9 @@ int runScriptFile(char* script,char* archNom, char* input);
 void grabarScript(char* nombreScript, char* codigoScript);
 char * armarRutaTemporal( char *nombre);
 int procesarRutinaMap(t_job * job);
-int procesarRutinaReduceCombiner(t_job * job);
-int procesarRutinaReduceSinCombiner(t_jobComb * job);
+int procesarRutinaReduce(t_jobComb * job, int combiner);
+char* armarArchivoCombiner(t_list* listaArchivos);
+char* armarArchivoSinCombiner(t_list* listaArchivos);
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje);
 void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket);
 int AtiendeCliente(void * arg);
@@ -234,7 +235,7 @@ int PosicionDeBufferALong(char* buffer, long unsigned posicion);
 #define BUFFERLINEA 50
 
 char *obtenerCodigo(char* buffer);
-void apareoArchivos(char* archivo1, char* archivo2);
+char* apareoArchivos(char* archivo1, char* archivo2);
 int esMayor(char* primero, char* segundo);
 
 

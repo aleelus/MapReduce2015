@@ -936,19 +936,27 @@ int procesarRutinaMap(t_job * job){
 
 }
 
-int procesarRutinaReduceCombiner(t_job * job){
+int procesarRutinaReduce(t_jobComb * job, int combiner){
 	grabarScript(job->nombreSH,job->contenidoSH);
 	//Creo el script y grabo el contenido.
 
 	permisosScript(job->nombreSH);
-		//Doy permisos de ejecucion al script
+	//Doy permisos de ejecucion al script
+	char* contenidoArchivo;
 
-	char* contenidoArchivo = getFileContent(job->bloque);
+	//en base al valor combiner armo el contenido de archivo de una manera u otra
+	if(combiner){
+	contenidoArchivo = armarArchivoCombiner(job->listaArchivos);
+				}else{
+					contenidoArchivo = armarArchivoSinCombiner(job->listaArchivos);
+
+				}
+	//apareo los archivos y devuelvo el contenido
+
 	if (contenidoArchivo == NULL){
 		//Error al traer el contenido del archivo
 		return 0;
 	}
-	//Obtengo el contendio del archivo temporal solicitado.
 
 	//Ejecuto el script sobre el contenido del archivo temporal
 	if (runScriptFile(job->nombreSH,job->nombreResultado,contenidoArchivo)){
@@ -964,19 +972,63 @@ int procesarRutinaReduceCombiner(t_job * job){
 
 }
 
-
-int procesarRutinaReduceSinCombiner(t_jobComb * job){
-	//Falta implementar
-	return 1;
+char* armarArchivoCombiner(t_list* listaArchivos){
+	t_NodoArch* elemLista;
+	t_NodoArch* elemLista2;
+	char* nomArch, *resultado;
+	char* archSalida="salida.txt";
+	FILE * salida;
+	int primerApareo =1;
+	//si la lista tiene un solo elemento, no hace falta apareo, devuelvo el unico archivo
+	if(list_size(listaArchivos)==1){
+		elemLista = list_remove(listaArchivos, 0);
+		nomArch=elemLista->nomArchT;
+		return (getFileContent(nomArch));
+	}
+	while(!(list_is_empty(listaArchivos))){
+		if(primerApareo){
+			//al ser el primer apareo necesito agarrar dos elementos de la lista
+			elemLista = list_remove(listaArchivos, 0);
+			elemLista2 = list_remove(listaArchivos, 0);
+			//apareo los dos archivos
+			resultado = apareoArchivos(elemLista->nomArchT,elemLista2->nomArchT);
+			//grabo el resultado en un archivo salida, que voy a usar para seguir apareando
+			salida = fopen(archSalida,"w");
+			fwrite(resultado, sizeof(char),strlen(resultado),salida);
+			fclose(salida);
+			//cambio la variable primer apareo a cero
+			primerApareo =0;
+		} else{
+		//agarro el primer elemento
+		elemLista = list_remove(listaArchivos, 0);
+		//apareo con la salida del primer apareo y devuelvo char*
+		resultado =apareoArchivos(elemLista->nomArchT,archSalida);
+		//grabo el archivo
+		salida = fopen(archSalida,"w");
+		fwrite(resultado, sizeof(char),strlen(resultado),salida);
+		fclose(salida);
+		}
+	}
+	resultado= getFileContent(archSalida);
+	//paso a resultado el resultado de apareo final
+	remove(archSalida);
+	//elimino el archivo de salida
+	return resultado;
 }
 
-void apareoArchivos(char* archivo1, char* archivo2){
+
+char* armarArchivoSinCombiner(t_list* listaArchivos){
+	//Falta implementar
+	return "OK";
+}
+
+char* apareoArchivos(char* archivo1, char* archivo2){
 	//Aparea dos archivos y el resultado lo guarda en un tercer archivo de salida.
 	char* buffer1 = malloc(BUFFERLINEA);
 	char* buffer2 = malloc(BUFFERLINEA);
 	FILE * arch1 = fopen(archivo1,"r+");
 	FILE * arch2 = fopen(archivo2,"r");
-	FILE * salida = fopen("salida.txt","w");
+	char* salida = string_new();
 
 	int count1 = fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
 	int count2 = fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
@@ -987,17 +1039,24 @@ void apareoArchivos(char* archivo1, char* archivo2){
 		while((strcmp(codigo1,codigo2)!=0) && (count1 != 0 && count2 != 0)){
 
 			if(esMayor(codigo1,codigo2)){
-				fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+				//fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+				string_append(&salida,buffer1);
 				count1 = fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
 				codigo1 = obtenerCodigo(buffer1);
 			}else{
-							fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
-							count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
+							//fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+				string_append(&salida,buffer2);
+				count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
 							codigo2 = obtenerCodigo(buffer2);
 			}
 		}
-		fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
-		fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+		//fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+		//fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+		if(count1!=0)
+			string_append(&salida,buffer1);
+		if(count2!=0)
+			string_append(&salida,buffer2);
+
 		count1 =fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
 		codigo1 = obtenerCodigo(buffer1);
 		count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
@@ -1006,28 +1065,30 @@ void apareoArchivos(char* archivo1, char* archivo2){
 
 	}
 	while(count1!=0){
-		fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+		//fwrite(buffer1, sizeof(char),BUFFERLINEA,salida);
+		string_append(&salida,buffer1);
 		count1 =fread(buffer1, sizeof(char),BUFFERLINEA,arch1);
 	}
 	while(count2!=0){
-			fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
-			count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
+			//fwrite(buffer2, sizeof(char),BUFFERLINEA,salida);
+		string_append(&salida,buffer2);
+		count2 =fread(buffer2, sizeof(char),BUFFERLINEA,arch2);
 		}
 			fclose(arch1);
 			fclose(arch2);
-			fclose(salida);
+			//fclose(salida);
 
 
-
+			return salida;
 }
 
 char *obtenerCodigo(char* buffer){
 	//Obtiene el codigo de la linea, que es hasta donde aparece un ';'
-	char * codigo = malloc(BUFFERLINEA);
+	char * codigo = string_new();
 	int size = 0;
 	char* corte = ";";
 	while(buffer[size] != corte[0]){
-		codigo[size]= buffer[size];
+		string_append_with_format(&codigo, "%c", buffer[size]);
 		size++;
 	}
 	return codigo;
@@ -1051,7 +1112,7 @@ int esMayor(char* primero, char* segundo){
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 	t_job * job;
-	t_jobComb * jobC;
+	t_jobComb * jobR;
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 	printf("RAFAGA:%d\n",tipo_mensaje);
 	if(*cantRafaga == 2){
@@ -1078,7 +1139,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				printf("Contenido de SH:%s\n",job->contenidoSH);
 				printf("Archivo:%s\n",job->bloque);
 				printf("Nombre de Resultado:%s\n",job->nombreResultado);
-				if(procesarRutinaReduceCombiner(job)){ //Proceso la rutina de reduce con combiner.
+				if(procesarRutinaReduce(jobR,1)){ //Proceso la rutina de reduce con combiner.
 					//CAMBIAR FUNCION, HAY QUE HACERLA SOBRE DOS ARCHIVOS RESULTADOS MAP, NO BLOQUES.
 					//Pudo hacerla
 					*mensaje = "31";
@@ -1094,7 +1155,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				printf("Contenido de SH:%s\n",job->contenidoSH);
 				printf("Archivo:%s\n",job->bloque);
 				printf("Nombre de Resultado:%s\n",job->nombreResultado);
-				if(1){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
+				if(procesarRutinaReduce(jobR,0)){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
 					//Pudo hacerla
 					*mensaje = "31";
 				} else {
