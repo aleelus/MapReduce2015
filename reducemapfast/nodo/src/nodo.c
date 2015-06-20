@@ -875,18 +875,20 @@ void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 int procesarRutinaMap(t_job * job){
 	grabarScript(job->nombreSH,job->contenidoSH);
 	//Creo el script y grabo el contenido.
+	char ** array;
 
-	int numBloque = CharAToInt(job->bloque);
+	//int numBloque = CharAToInt(job->bloque);
+	array = string_split(job->bloque,"e");
+
+	int nroBloque = atoi(array[1]);
+
 	//printf("EL NUMERO DE BLOQUE A MAPEAR: %d \n",numBloque);
 	char* contenidoBloque = malloc(TAMANIO_BLOQUE);
-	contenidoBloque= getBloque(numBloque);
+	contenidoBloque= getBloque(nroBloque);
+	printf(COLOR_VERDE"NUMEROBLOQUE:%d\n"DEFAULT,nroBloque);
 	//Obtengo el contendio del numero de bloque solicitado.
 	//printf("%s",contenidoBloque);
 	printf("\n\n%d\n",strlen(contenidoBloque));
-	FILE * arch;
-	arch = fopen("bloque.txt","w");
-	fwrite(contenidoBloque,sizeof(char),strlen(contenidoBloque),arch);
-	fclose(arch);
 
 	permisosScript(job->nombreSH);
 	//Doy permisos de ejecucion al script
