@@ -433,80 +433,47 @@ int enviarDatos(int socket, void *buffer) {
 
 int runScriptFile(char* script,char* archNom, char* input)
 {
-	char * input2 = "20971513WBAN,Date,Time,StationType,SkyCondition,SkyConditionFlag,Visibility,VisibilityFlag,WeatherType,WeatherTypeFlag,DryBulbFarenheit,DryBulbFarenheitFlag,DryBulbCels";
 
+      int a[2],cont=0;
+      pipe(a);
+      char **array = string_split(script,"/");
+      while(array[cont]!=NULL){
+    	  cont++;
+      }
 
-    // pipes for parent to write and read
-    pipe(pipes[PARENT_READ_PIPE]);
-    pipe(pipes[PARENT_WRITE_PIPE]);
-
-    char *argv[]={ "mapper.sh", "-q", 0};
+    char *argv[]={ array[cont-1], "-q", 0};
 
     if(!fork()) {
     	printf("HIJO\n");
-        dup2(CHILD_READ_FD, STDIN_FILENO);
-        dup2(CHILD_WRITE_FD, STDOUT_FILENO);
+    	close(a[1]);
+    	dup2(a[0],STDIN_FILENO);
+    	close(STDOUT_FILENO);
+    	FILE *fd = fopen(archNom, "w" );
+        close(a[0]);
 
-        /* Close fds not required by child. Also, we don't
-           want the exec'ed program to know these existed */
-        close(CHILD_READ_FD);
-        close(CHILD_WRITE_FD);
-        close(PARENT_READ_FD);
-        close(PARENT_WRITE_FD);
+        dup(STDOUT_FILENO);
+        execl(argv[0],argv[0],NULL);
 
-        execl(argv[0], argv[0], (char*)0);
+
+
 
     } else {
     	printf("PADRE\n");
-        char *buffer = malloc(TAMANIO_BLOQUE);
-        char *res = malloc(TAMANIO_BLOQUE);;
-        memset(res,0,TAMANIO_BLOQUE);
-        memset(buffer,0,TAMANIO_BLOQUE);
-        printf("----------\n");
 
-        int count=1;
-        long unsigned valor=0,acum=0,restantes=0,cotaM=0,cotaS=1024*1024;
-        char * aux;
+		close(a[0]);
 
-        /* close fds not required by parent */
-        close(CHILD_READ_FD);
-        close(CHILD_WRITE_FD);
+		int c;
+		c = write(a[1],input,strlen(input));
+		printf("ACA TERMINA\n");
+		close(a[1]);
 
-        aux = string_substring(input,cotaM,cotaS);
-
-        // Write to child’s stdin
-        restantes=strlen(input);
-        while(acum<strlen(input)){
-			valor = write(PARENT_WRITE_FD, input+acum, restantes);
-			if(valor == -1)
-				printf("ERROR AL ESCRIBIR\n");
-			acum=acum+valor;
-			restantes=restantes-valor;
-			printf(COLOR_VERDE"VALOR:%lu\n"DEFAULT,valor);
-        }
-        close(PARENT_WRITE_FD);
-        //wait(NULL);
-        // Read from child’s stdout
-
-        while(count>0){
-        	count = read(PARENT_READ_FD, buffer, strlen(buffer));
-        	if(count == -1)
-        		printf("ERROR AL LEER\n");
-        	strcat(res,buffer);
-        	memset(buffer,0,TAMANIO_BLOQUE);
-
-        }
+		wait(NULL);
+		printf("------%d---------\n",c);
 
 
-        printf("%s", res);
-
-        /*if (count >= 0) {
-            buffer[count] = 0;
-            printf("%s", buffer);
-        } else {
-            printf("IO Error\n");
-        }*/
     }
+
+
     return 1;
 }
 
