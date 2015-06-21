@@ -111,12 +111,9 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	return 1;
 }
 
-int existeArchivo(char* nArchivo, t_archivo** archivo){
+int existeArchivo(char* nArchivo, t_archivo** archivo,int padre){
 
-	char** array;
-	array =(char**) malloc (strlen(nArchivo)+1);
-	array=string_split(nArchivo,"/");
-	*archivo = buscarArchivoPorNombre(array[0]);
+	*archivo = buscarArchivoPorNombre(nArchivo,padre);
 
 	if(*archivo==NULL){
 		return 0;
@@ -124,9 +121,53 @@ int existeArchivo(char* nArchivo, t_archivo** archivo){
 	return 1;
 }
 
+int validarDirectorios(char* archivoConPath,char**nArchivo){
+	char** array;
+	int listo=0,i=0,j=0,valido=1,tamanioArray,correcto=0;
+
+	array = string_split(archivoConPath,"/");
+
+	while(array[i]!=NULL){
+		i++;
+	}
+
+	tamanioArray=i;
+	i=0;
+
+	if(tamanioArray<2){
+		*nArchivo = strdup(array[0]);
+		return 0;
+	}
+
+	while(!listo){
+		while(valido&&(j<(tamanioArray-1))){
+			i = validarDirectorio(array[j],i);
+			//printf("LA I:%d\n",i);
+			if(i!=0){
+				listo=0;
+				j++;
+				if(j==(tamanioArray-1)){
+					valido = 0;
+					listo=1;
+					correcto=1;
+				}
+			} else {
+				listo=1;
+				valido=0;
+			}
+		}
+	}
+	if(correcto==0){
+		return -1;
+	}
+	*nArchivo = strdup(array[tamanioArray-1]);
+	return i;
+}
+
 int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 
 	char *nArchivo;
+	char *archivoConPath;
 	t_list * nodos = list_create();
 	int digitosCantDeArchivos=0,cantDeArchivos=0;
 	int x,posActual=0,cont,i,k;
@@ -151,28 +192,37 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 
 	for(x=0;x<cantDeArchivos;x++){
 
-		nArchivo=DigitosNombreArchivo(buffer,&posActual);
-		//printf("ARCHIVO:%s\n",nArchivo);
+		int padre;
 
-		if(!existeArchivo(nArchivo,&el_archivo)){
-			return 0;
-		}else {
-			string_append(&*bufferE,obtenerSubBuffer(el_archivo->nombreArchivo));//aca va la ruta, ahora no lo hace
-			cont = cuentaDigitos(list_size(el_archivo->listaBloques));
-			string_append(&*bufferE,string_itoa(cont));
-			string_append(&*bufferE,string_itoa(list_size(el_archivo->listaBloques)));
-			for(i=0;i<list_size(el_archivo->listaBloques);i++){
-				el_bloque = list_get(el_archivo->listaBloques,i);
-				for(k=0;k<3;k++){
-					if((el_bloque->array+k)!=NULL){
-						string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nombreNodo));
-						bool _true(void *elem){
-							return (!strcmp((char*)elem,el_bloque->array[k].nombreNodo));
+		archivoConPath=DigitosNombreArchivo(buffer,&posActual);
+
+		padre=validarDirectorios(archivoConPath,&nArchivo);
+		//printf(COLOR_VERDE"PADRE:%d\n"DEFAULT,padre);
+		if(nArchivo!=NULL){
+			//printf("NOMBRE:%s\n",nArchivo);
+		}
+		//printf("PADRE:%d ARCHIVO:%s\n",padre,nArchivo);
+		if(padre!=-1){
+			if(!existeArchivo(nArchivo,&el_archivo,padre)){
+				return 0;
+			}else {
+				string_append(&*bufferE,obtenerSubBuffer(el_archivo->nombreArchivo));//aca va la ruta, ahora no lo hace
+				cont = cuentaDigitos(list_size(el_archivo->listaBloques));
+				string_append(&*bufferE,string_itoa(cont));
+				string_append(&*bufferE,string_itoa(list_size(el_archivo->listaBloques)));
+				for(i=0;i<list_size(el_archivo->listaBloques);i++){
+					el_bloque = list_get(el_archivo->listaBloques,i);
+					for(k=0;k<3;k++){
+						if((el_bloque->array+k)!=NULL){
+							string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nombreNodo));
+							bool _true(void *elem){
+								return (!strcmp((char*)elem,el_bloque->array[k].nombreNodo));
+							}
+							if(!list_any_satisfy(nodos,_true)){
+								list_add(nodos,el_bloque->array[k].nombreNodo);
+							}
+							string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nro_bloque));
 						}
-						if(!list_any_satisfy(nodos,_true)){
-							list_add(nodos,el_bloque->array[k].nombreNodo);
-						}
-						string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nro_bloque));
 					}
 				}
 			}
@@ -373,6 +423,7 @@ void CerrarSocket(int socket) {
 
 void RecorrerNodosYBloques(){
 	t_nodo * el_nodo;
+	t_archivo * el_archivo;
 	t_array_nodo* array;
 	int i=0,j,posicion;
 	while(i<list_size(lista_nodos)){
@@ -451,26 +502,40 @@ void recursiva(int padre){
 	bool _true(void *elem){
 		return ((t_filesystem*) elem)->padre==padre;
 	}
+	if (lista_filesystem==NULL){
+		lista_filesystem=list_create();
+	}
 	lista = list_filter(lista_filesystem,_true);
 	bool _true2(void *elem){
 			return ((t_archivo*) elem)->padre==padre;
 	}
+	if (lista_archivos==NULL){
+		lista_archivos = list_create();
+	}
 	listaArchivos = list_filter(lista_archivos,_true2);
+	//printf("CANTIDAD LISTA FILESYSTEM FILTRADA:%d\n",list_size(lista));
+
+	if(list_size(listaArchivos)>0) for(l=0;l<impre;l++) printf(" ");
+
+	for(l=0;l<list_size(listaArchivos);l++){
+		arch = list_get(listaArchivos,l);
+		printf(COLOR_VERDE" %s\n"DEFAULT,arch->nombreArchivo);
+	}
+
 
 	if(list_size(lista)>0){
 		//printf("Index:%d Nombre:%s Padre:%d\n",fs->index,fs->directorio,fs->padre);
 		impre++;
+		//printf("CANTIDAD LISTA FILESYSTEM FILTRADA:%d\n",list_size(lista));
+		//printf("LA I:%d\n",i);
 		while(i<list_size(lista)){
 			fs = list_get(lista,i);
+			//printf("PADRE:%d\n",fs->padre);
 			if(fs->padre==0){
 				printf("/%s\n",fs->directorio);
 			} else {
 				for(l=0;l<impre;l++) printf(" ");
 				printf("/%s\n",fs->directorio);
-			}
-			for(l=0;l<list_size(listaArchivos);l++){
-				arch = list_get(listaArchivos,l);
-				printf(" %s\n",arch->nombreArchivo);
 			}
 			recursiva(fs->index);
 			i++;
@@ -482,7 +547,10 @@ void recursiva(int padre){
 
 void mostrarFilesystem(){
 	printf("Raiz(/)\n");
-	if(list_size(lista_filesystem)>0){
+	int i = list_size(lista_filesystem);
+	int j = list_size(lista_archivos);
+	//printf(COLOR_VERDE"CANTIDAD DE FILESYSTEM:%d\n"DEFAULT,i);
+	if(i>0||j>0){
 		recursiva(0);
 		impre=0;
 	}
@@ -840,7 +908,7 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 	*tamanio = ftell(*fArchivo);
 	rewind(*fArchivo);
 
-	printf("El Tamaño del archivo es:%lu\n",*tamanio);
+	//printf("El Tamaño del archivo es:%lu\n",*tamanio);
 
 	if(!tamanio){
 		printf("No se pudo abrir correctamente el archivo:%s\n",nombreArchivo);
@@ -854,7 +922,7 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 		printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
 		scanf("%s",directorio);
 		fflush(stdin);
-		printf("PADRE INICIO:%d\n",padre);
+		//printf("PADRE INICIO:%d\n",padre);
 		if(strcmp(directorio,"1")){
 			if(!strcmp(directorio,"0")){
 					j=0;
@@ -874,15 +942,46 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 			}
 		} else {
 			correcto = 1;
-			printf("PADRE FIN:%d\n",padre);
+			//printf("PADRE FIN:%d\n",padre);
 		}
 		//system("clear");
 	}
-	printf("PADRE POSTA:%d\n",padre);
+	//printf("PADRE POSTA:%d\n",padre);
 	archivo = archivo_create(nombreArchivo,*tamanio,padre,1);
 	list_add(lista_archivos,archivo);
 	return 1;
 }
+
+int cargarArchivo(int *padre,FILE ** fArchivo,char**nombreArchivo){
+
+	char pathConArchivo[100];
+	*nombreArchivo = (char*)malloc(sizeof(char)*30);
+	char archivoSalida[50];
+
+	mostrarFilesystem();
+
+	printf("Ingrese la ruta completa con el nombre del archivo para recuperar\n ");
+	printf("Ejemplo: /home/utnso/temperatura.txt\n");
+	scanf("%s",pathConArchivo);
+	fflush(stdin);
+
+	*padre = validarDirectorios(pathConArchivo,nombreArchivo);
+	if(*padre!=-1){
+		printf("Ingrese el nombre para guardar este archivo:\n");
+		scanf("%s",archivoSalida);
+		fflush(stdin);
+
+		if(( *fArchivo = fopen(archivoSalida, "w") ) == NULL){
+			//Si no se pudo abrir, imprimir el error y abortar;
+			fprintf(stderr, "Error al abrir el archivo '%s': %s\n", *nombreArchivo, strerror(errno));
+			return 0;
+		}
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 
 int buscarNodoEnArrayPorNombre (char* nombre){
 
@@ -1132,10 +1231,10 @@ t_nodo* buscarNodoPorNombre(char* nombre){
 	return el_nodo;
 }
 
-t_archivo* buscarArchivoPorNombre(char* nombre){
+t_archivo* buscarArchivoPorNombre(char* nombre, int padre){
 	t_archivo* el_archivo = malloc(sizeof(t_archivo));
 	bool _true(void *elem){
-		return ((!strcmp(((t_archivo*) elem)->nombreArchivo,nombre)));
+		return ((!strcmp(((t_archivo*) elem)->nombreArchivo,nombre))&&(((t_archivo*) elem)->padre==padre));
 	}
 	el_archivo = list_find(lista_archivos, _true);
 	return el_archivo;
@@ -1236,6 +1335,7 @@ int enviarCopias(char*bufferAux,t_bloque ** bloque){
 
 int enviarBloque(char *bufferAux){
 	t_bloque * bloque;
+	tamanioTotal = tamanioTotal + strlen(bufferAux);
 	bloque = bloque_create(nroBloque++);
 	if(enviarCopias(bufferAux,&bloque)==1){
 		list_add(archivo->listaBloques,bloque);
@@ -1256,6 +1356,7 @@ int recorrerArchivo(FILE *fArchivo){
 	rewind(fArchivo);
 	int i=0,j=0;
 	llenarArrayDeNodos();
+	nroBloque=0;
 	while(!feof(fArchivo)){
 		fread(buffer,1,TAMANIO_BLOQUE,fArchivo);
 		//printf("STRLEN BUFFER:%lu\n",strlen(buffer));
@@ -1283,10 +1384,119 @@ int recorrerArchivo(FILE *fArchivo){
 		memset(buffer,0,TAMANIO_BLOQUE+1);
 
 	}
+	printf(COLOR_VERDE"TAMANIO TOTAL DEL ARCHIVO:%lu\n",tamanioTotal);
 	//printf("Cantidad Bloques:%d\n",i);
 	free(buffer);
 	return 1;
 }
+
+int getBloque(int nroBloque,char* ip,char*puerto,char**buffer){
+	char* bufferE,*bufferR;
+	int cont,socket,tamanioE,bytesRecibidos,cantRafaga=1,tamanio;
+	bufferE = string_new();
+	bufferR = string_new();
+	*buffer = string_new();
+	//SOLO UNA RAFAGA
+	string_append(&bufferE,"12");
+	if(nroBloque == 0){
+		string_append(&bufferE,"10");
+	} else {
+		cont = cuentaDigitos(nroBloque); //me cuenta los digitos que tiene el nro de bloque
+		string_append(&bufferE,string_itoa(cont)); //agrego la cantidad de digitos del nro de bloque
+		string_append(&bufferE,string_itoa(nroBloque));//agrego el numero de bloque
+	}
+	if(conectarNodo(&socket, ip, puerto)) {
+		tamanioE = strlen(bufferE);
+		if(tamanioE==EnviarDatos(socket,bufferE,tamanioE)) {
+			bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+			printf("TAMANIO DE BUFFER:%d\n",tamanio);
+			if(bufferR!=NULL){
+				bufferE=string_new();
+				string_append(&bufferE,"1");
+				EnviarDatos(socket,bufferE,2);
+				cantRafaga = 2;
+				char *aux=malloc(tamanio+1);
+
+				char *bloque=malloc(tamanio+1);
+
+				memset(bloque,0,tamanio+1);
+
+				char *recibido=string_new();
+				memset(aux,0,tamanio+1);
+
+				ssize_t numBytesRecv = 0;
+
+				do{
+					numBytesRecv = numBytesRecv + recv(socket, aux, tamanio, 0);
+					if ( numBytesRecv < 0)
+						printf("ERROR\n");
+					string_append(&recibido,aux);
+					strcat(bloque,recibido);
+					free(recibido);
+					recibido=string_new();
+					printf("------ %d -----\n",strlen(bloque));
+					memset(aux, 0, tamanio+1);
+
+				}while (numBytesRecv <tamanio);
+				printf("TAMANIO:%d NUMBYTESRECV:%d\n",tamanio,numBytesRecv);
+				*buffer=malloc(tamanio+1);
+				memset(*buffer,0,tamanio+1);
+				memcpy(*buffer,bloque,tamanio);
+				free(bloque);
+				printf("BLOQUE:%d TAMANIO:%lu Recibido Ok\n",nroBloque,(long unsigned)strlen(*buffer));
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+int pedirBloque(int nroBloque, t_array_copias copia,char** buffer){
+	t_nodo * nodo;
+	char** array = string_split(copia.nro_bloque,"e");
+	nodo = buscarNodoPorNombre(copia.nombreNodo);
+	if (nodo!=NULL){
+		if(nodo->estado==1){
+			if(getBloque(atoi(array[1]),nodo->ip,nodo->puerto,buffer)){
+				return 1;
+			} else {
+				return 0;
+			}
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
+int recuperarArchivo(FILE *fArchivo,int padre, char*nombre){
+	char * buffer;
+	int i=0,j=0;
+	t_archivo* archivo = buscarArchivoPorNombre(nombre,padre);
+	if(archivo!=NULL){
+		t_list * listaBloques = archivo->listaBloques;
+		if(listaBloques != NULL){
+			i = list_size(listaBloques);
+			for(j=0;j<i;j++){
+				int l = 0;
+				t_bloque * bloque = malloc(sizeof(t_bloque));
+				bloque = list_get(listaBloques,j);
+				while(!pedirBloque(bloque->bloque,bloque->array[l++],&buffer))
+					if(l==3) return 0;
+				fwrite(buffer,sizeof(char),strlen(buffer),fArchivo);
+			}
+			fclose(fArchivo);
+			free(buffer);
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
 
 int procesarArchivo(){
 	long unsigned tamanio;
@@ -1299,9 +1509,9 @@ int procesarArchivo(){
 		} else {
 			return -1;
 		}
+	} else {
+		return 0;
 	}
-		//printf("Buffer:%s\n",buffer);
-	return 1;
 }
 
 void eliminarFilesystem(){
@@ -1309,7 +1519,7 @@ void eliminarFilesystem(){
 	while(i<list_size(lista_filesystem)){
 		list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
 	}
-	free(lista_filesystem);
+	//free(lista_filesystem);
 }
 
 void eliminarArchivos(){
@@ -1317,7 +1527,7 @@ void eliminarArchivos(){
 	while(i<list_size(lista_archivos)){
 		list_remove_and_destroy_element(lista_archivos,i++,(void*)archivo_destroy);
 	}
-	free(lista_archivos);
+	//free(lista_archivos);
 }
 
 int crearDirectorio(){
@@ -1355,7 +1565,10 @@ int crearDirectorio(){
 	}
 	printf("Ingrese el nombre del directorio a crear\n");
 	scanf("%s", directorio);
-	filesystem = filesystem_create(indexGlobal++,directorio,padre);
+	filesystem = malloc(sizeof(t_filesystem));
+	filesystem->index = indexGlobal++;
+	filesystem->padre = padre;
+	filesystem->directorio = strdup(directorio);
 	list_add(lista_filesystem,filesystem);
 	mostrarFilesystem();
 	return 1;
@@ -1384,6 +1597,41 @@ int manejoDeDirectorios(){
 				break;
 	}
 	return 0;
+}
+
+int armarArchivoPorHilo(){
+
+	int valor;
+
+	int iThreadHilo = pthread_create(&hNodos, NULL,
+					(void*) armarArchivo, NULL );
+	if (iThreadHilo) {
+		fprintf(stderr,
+		"Error al crear hilo - pthread_create() return code: %d\n",
+		iThreadHilo);
+		exit(EXIT_FAILURE);
+	}
+
+	pthread_join(hNodos, (void*)&valor );
+
+	return valor;
+}
+
+int armarArchivo(){
+	int padre;
+	FILE * fArchivo;
+	char* nombre;
+	//char * buffer = malloc(100);
+
+	if(cargarArchivo(&padre,&fArchivo,&nombre)){
+		if(recuperarArchivo(fArchivo,padre,nombre)){
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
 }
 
 int operaciones_consola() {
@@ -1435,7 +1683,11 @@ int operaciones_consola() {
 		}
 		break;
 	case 5:
-		log_info(logger, "Se realizo Copiar un archivo del MDFS al filesystem local\n");
+		if(armarArchivoPorHilo()==1){
+			log_info(logger, "Se realizo Copiar un archivo del MDFS al filesystem local\n");
+		} else {
+			log_info(logger, "No se pudo Copiar un archivo del MDFS al filesystem local\n");
+		}
 		break;
 	case 6:
 		log_info(logger, "Se realizo Solicitar el MD5 de un archivo en MDFS\n");

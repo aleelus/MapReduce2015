@@ -41,7 +41,7 @@
 #define COMANDO2				7
 #define COMANDOFILESYSTEM		9					//idem el de arriba
 #define CONSULTA_ARCHIVO		1					//marta consulta por un archivo
-#define BUFFERSIZE 				10					//Tamaño del buffer
+#define BUFFERSIZE 				50					//Tamaño del buffer
 
 
 // TIPOS //
@@ -126,8 +126,10 @@ t_archivo * archivo;
 int nroBloque;
 t_list ** arrayNodos;
 int indexGlobal;
+long unsigned tamanioTotal;
 
 //FUNCIONES
+int validarDirectorio(char *directorio,int i);
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(t_error unError);					//Mostrar error
 void ejecutarComando(int);							//Ejecutar un comando
@@ -198,4 +200,7 @@ int sendall(int s, char *buf, long unsigned *len);
 int buscarNodoEnArrayPorNombre(char *);
 char* obtenerSubBuffer(char*);
 t_nodo* buscarNodoPorNombre(char* nombre);
-t_archivo* buscarArchivoPorNombre(char* nombre);
+t_archivo* buscarArchivoPorNombre(char* nombre,int padre);
+void eliminarFilesystem();
+void eliminarArchivos();
+int armarArchivo();
