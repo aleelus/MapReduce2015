@@ -1099,14 +1099,14 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 
 			if(procesarRutinaMap(job)){ //Proceso la rutina de map.
 				//Pudo hacerla
-				mensaje="31";
+				*mensaje="31";
 			} else {
 				//No pudo hacerla
-				mensaje="30";
+				*mensaje="30";
 			}
 			break;
 		case REDUCE_COMBINER:
-				AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
+				/* AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
 				//printf("Nombre de SH:%s\n",job->nombreSH);
 				//printf("Contenido de SH:%s\n",job->contenidoSH);
 				//printf("Archivo:%s\n",job->bloque);
@@ -1118,7 +1118,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				} else {
 					//No pudo hacerla
 					*mensaje = "30";
-				}
+				} */
 				break;
 
 		case REDUCE_SIN_COMBINER:

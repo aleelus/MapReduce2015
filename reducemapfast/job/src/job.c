@@ -350,6 +350,9 @@ int AtiendeCliente(void * arg) {
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
+					bufferAMartaDos=string_new();
+					bufferAMartaUno=string_new();
+
 				}else if (emisor==1){
 
 					printf(COLOR_VERDE"RECIBO OK DEL NODO (map): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
@@ -369,10 +372,19 @@ int AtiendeCliente(void * arg) {
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
 
-
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+					/*buffer=string_new();
+					recv(socket_Marta, buffer, 10, 0);
+					while(strcmp(buffer,"Ok")!=0){
+						EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+						buffer=string_new();
+						recv(socket_Marta, buffer, 10, 0);
+					}*/
+
+					bufferAMartaDos=string_new();
+					bufferAMartaUno=string_new();
 
 				}else if(emisor == 2){
 
