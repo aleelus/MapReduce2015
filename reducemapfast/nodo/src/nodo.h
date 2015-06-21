@@ -96,6 +96,10 @@ int g_Ejecutando = 1;
 // Retardo (en milisegundos) para contestar una solicitud a un cliente
 int g_Retardo = 0;
 
+long unsigned tamanioTotal;
+
+t_list * lista_Bloques;
+
 //Definimos los hilos principales
 pthread_t hOrquestadorConexiones, hConsola;
 
@@ -122,12 +126,14 @@ void HiloOrquestadorDeConexiones();
 typedef struct{
     int numeroBloque;
     char *contenidoBloque;
+    long unsigned tamanioBloque;
 }t_bloque;
 
-static t_bloque *bloque_create(int numeroB, char* contenidoB) {
+static t_bloque *bloque_create(int numeroB, char* contenidoB,long unsigned tamanioBloque) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->numeroBloque = numeroB;
 	new->contenidoBloque = strdup(contenidoB);
+	new->tamanioBloque = tamanioBloque;
 	free(contenidoB);
 	return new;
 }

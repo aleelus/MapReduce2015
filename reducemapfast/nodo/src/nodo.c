@@ -16,6 +16,10 @@ int main(int argv, char** argc) {
 	pagina = sysconf(_SC_PAGE_SIZE);
 	logger = log_create(NOMBRE_ARCHIVO_LOG, "nodo", true, LOG_LEVEL_TRACE);
 
+	tamanioTotal = 0;
+
+	lista_Bloques = list_create();
+
 	//sem_init(&semaforo,1,1);
 	letra = 'A';
 
@@ -776,7 +780,7 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		digitosCantDeDigitosTamanioBloq = PosicionDeBufferAInt(buffer,posActual);
 		//printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
 		tam= ObtenerTamanioLong(buffer,posActual+1,digitosCantDeDigitosTamanioBloq);
-		printf("Tamanio del contenido del bloque: %lu\n",tam);
+		//printf("Tamanio del contenido del bloque: %lu\n",tam);
 		posActual=posActual+1;
 		//printf("Tamanio BLOQUE POSTA:%d\n",tamanioBloque);
 		//printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
@@ -789,7 +793,10 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		*bloque = (t_bloque*)malloc(sizeof(t_bloque));
 		(*bloque)->numeroBloque = numeroBloq;
 		(*bloque)->contenidoBloque = string_new();
+		(*bloque)->tamanioBloque = strlen(contenidoBloq);
 		string_append(&(*bloque)->contenidoBloque,contenidoBloq);
+		list_add(lista_Bloques,*bloque);
+
 		free(contenidoBloq);
 
 }
@@ -1106,7 +1113,11 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			}
 			break;
 		case REDUCE_COMBINER:
+<<<<<<< HEAD
+				/*AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
+=======
 				/* AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
+>>>>>>> a90d1ce5d2877214752699d88f9b90f92275caff
 				//printf("Nombre de SH:%s\n",job->nombreSH);
 				//printf("Contenido de SH:%s\n",job->contenidoSH);
 				//printf("Archivo:%s\n",job->bloque);
@@ -1118,7 +1129,11 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				} else {
 					//No pudo hacerla
 					*mensaje = "30";
+<<<<<<< HEAD
+				}*/
+=======
 				} */
+>>>>>>> a90d1ce5d2877214752699d88f9b90f92275caff
 				break;
 
 		case REDUCE_SIN_COMBINER:
@@ -1228,6 +1243,62 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 
 }
 
+int sendall(int s, char *buf, long unsigned *len){
+	long unsigned total = 0; // cuántos bytes hemos enviado
+	long unsigned bytesleft = *len; // cuántos se han quedado pendientes
+	long unsigned n;
+	while(total < *len) {
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1){
+			break;
+		}
+		total += n;
+		bytesleft -= n;
+		printf("Cantidad Enviada :%lu\n",n);
+	}
+	*len = total; // devuelve aquí la cantidad enviada en realidad
+	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
+}
+
+
+int procesarGetBloqueDeFs(char* buffer,char**mensaje,int socket){
+	char * bloque;
+	int nroBloque, cantDigBloque,bytesRecibidos,cantRafaga=1,tamanio,cantDigitos;
+	char * bufferR = string_new();
+	char * bufferE = string_new();
+
+	cantDigBloque=PosicionDeBufferAInt(buffer,2);
+	nroBloque=ObtenerTamanio(buffer,3,cantDigBloque);
+
+	bloque = getBloque(nroBloque);
+
+	if(bloque!=NULL){
+		string_append(&bufferE,"3");
+		cantDigitos = cuentaDigitos(strlen(bloque));
+		string_append(&bufferE,string_itoa(cantDigitos));
+		string_append(&bufferE,string_itoa(strlen(bloque)));
+		EnviarDatos(socket,bufferE, strlen(bufferE));
+		bufferR=RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+		if(strcmp(bufferR,"1")==0){
+			long unsigned len=0;
+			len=strlen(bloque);
+			printf("LEN : %lu\n",len);
+			if (sendall(socket, bloque, &len) == -1) {
+				printf("ERROR AL ENVIAR\n");
+			}
+			//free(bloque);
+			close(socket);
+			*mensaje="Ok";
+			return 1;
+		}
+	}
+	//free(bloque);
+	close(socket);
+	*mensaje="No";
+	return 0;
+}
+
+
 int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 	t_bloque* bloqueSet;
 
@@ -1269,6 +1340,7 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 		memset(aux, 0, tamanio+1);
 
 	}while (numBytesRecv <tamanio);
+	tamanioTotal = tamanioTotal + strlen(bloque);
 	//printf(COLOR_VERDE"---%d---\n"DEFAULT,strlen(bloque));
 	AtiendeFS(&bloqueSet,bloque);
 	printf(COLOR_VERDE"---%d---\n"DEFAULT,strlen(bloqueSet->contenidoBloque));
@@ -1287,6 +1359,16 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 	free(bloque);
 	close(socket);
 
+}
+
+void RecorrerListaBloques(){
+	int i;
+	t_bloque* bloque = malloc(sizeof(t_bloque));
+	for(i=0;i<list_size(lista_Bloques);i++){
+		bloque = list_get(lista_Bloques,i);
+		printf("NUMERO DE BLOQUE:%d\n",bloque->numeroBloque);
+		printf("TAMAÑO DEL BLOQUE%lu\n",bloque->tamanioBloque);
+	}
 }
 
 int AtiendeCliente(void * arg) {
@@ -1356,6 +1438,10 @@ int AtiendeCliente(void * arg) {
 					cantRafaga=1;
 					//desconexionCliente = 1;
 					//printf(COLOR_VERDE"Afuera:%s"DEFAULT,mensaje);
+				} else {
+					if (trabajo==2){
+						procesarGetBloqueDeFs(buffer,&mensaje,socket);
+					}
 				}
 				break;
 			case ES_NODO:
@@ -1365,7 +1451,7 @@ int AtiendeCliente(void * arg) {
 				break;
 			case COMANDOBLOQUES:
 				//printf("Despues vemos que hace esto\n");
-				//RecorrerListaBloques();
+				RecorrerListaBloques();
 				mensaje = "Ok";
 				break;
 			default:
@@ -1375,7 +1461,7 @@ int AtiendeCliente(void * arg) {
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
 			//if(!strcmp(mensaje,"Listo")){
-				EnviarDatos(socket, mensaje,longitudBuffer);
+			EnviarDatos(socket, mensaje,longitudBuffer);
 			//}
 		} else
 			desconexionCliente = 1;
