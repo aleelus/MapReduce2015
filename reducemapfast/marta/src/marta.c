@@ -21,6 +21,7 @@ int main(int argv, char** argc) {
 	sem_init(&semaforoListaNodos, 1, 1);
 	sem_init(&semaforoListaArchivos, 1, 1);
 	sem_init(&semaforoListaJobEnviados, 1, 1);
+
 	//sem_init(&semaforoJob,1,0);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//inicializamos los semaforos
@@ -1097,6 +1098,7 @@ void enviarPlanificacionAJob (int id,int socket){
 				sem_post(&semaforoListaJobEnviados);
 				if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0){
 					el_job_enviado->estado=1;
+					el_bloqueArchivo->procesando=1;
 
 					nodo=obtenerSubBuffer(nodo);
 					ipNodo=obtenerSubBuffer(ipNodo);
@@ -1117,6 +1119,9 @@ void enviarPlanificacionAJob (int id,int socket){
 					printf(COLOR_VERDE"----%s---\n"DEFAULT,buffer);
 
 					EnviarDatos(socket, buffer,strlen(buffer));
+
+
+
 
 
 					buffer=string_new();
@@ -1730,12 +1735,45 @@ void reciboOk(char *buffer,int socket){
 			if(contTareasMap>0){
 
 
-				proxTareaBloq=buscarProximaTarea(&el_archivo,1);
-				proxTareaNodo=buscarProximaTareaEnArray(el_archivo,proxTareaBloq);
+				x=0;
+
+				while(x<list_size(lista_job_enviado)){
+					//sem_wait(&semaforoListaJobEnviados);
+					el_job_enviado=list_get(lista_job_enviado,x);
+					//sem_post(&semaforoListaJobEnviados);
+					if(el_job_enviado->estado==0){
+						proxTareaNodo=string_new();
+						string_append(&proxTareaNodo,el_job_enviado->nodo);
+					}
+					x++;
+				}
+
+
+				//proxTareaBloq=buscarProximaTarea(&el_archivo,1);
+				//proxTareaNodo=buscarProximaTareaEnArray(el_archivo,proxTareaBloq);
 				//printf("--------------%s--------------\n",proxTareaNodo);
 				//printf("--------------%s--------------\n",proxTareaBloq);
-				el_nodo=buscarNodo(proxTareaNodo);
 
+				int k=0, bandera=0;
+				while(k<list_size(lista_nodos)){
+					el_nodo=list_get(lista_nodos,k);
+
+					x=0;
+					while(x<list_size(el_nodo->listaBloqueArchivo)){
+						el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,x);
+						if(el_bloqueArchivo->procesando==0){
+							bloque=el_bloqueArchivo->bloque;
+							bandera=1;
+						}
+						if(bandera == 1)
+							x=list_size(el_nodo->listaBloqueArchivo);
+						x++;
+
+					}
+					if(bandera == 1)
+						k=list_size(lista_nodos);
+					k++;
+				}
 
 				if(list_size(el_nodo->listaBloqueArchivo)>0){
 					char *buffer=string_new();
@@ -1746,17 +1784,20 @@ void reciboOk(char *buffer,int socket){
 					nodo=el_nodo->nombreNodo;
 					ipNodo=el_nodo->ipNodo;
 					puertoNodo=el_nodo->puertoNodo;
-					el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
-					bloque=el_bloqueArchivo->bloque;
+
+
+					//printf("::::::::: %s     %s ::::::::\n",bloque,nodo);
 
 
 					x=0;
 					while(x<list_size(lista_job_enviado)){
-						sem_wait(&semaforoListaJobEnviados);
+						//sem_wait(&semaforoListaJobEnviados);
 						el_job_enviado=list_get(lista_job_enviado,x);
-						sem_post(&semaforoListaJobEnviados);
-						if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 ){
+						//sem_post(&semaforoListaJobEnviados);
+						if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0 ){
+
 							el_job_enviado->estado=1;
+							el_bloqueArchivo->procesando=1;
 
 							printf("* Map a enviar: %s--%s\n",bloque,nodo);
 							nodo=obtenerSubBuffer(nodo);
@@ -1812,6 +1853,8 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 			break;
 		case RECIBIDO_OK:
 			reciboOk(buffer,socket);
+			//*mensaje=string_new();
+			//string_append(mensaje,"Ok");
 			*cantRafaga=1;
 			break;
 		case 4:
@@ -1824,7 +1867,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 		//*mensaje = "Ok";
 	} else {
 		if (*cantRafaga==1) {
-			*mensaje = "Ok";
+			*mensaje="Ok";
 			*cantRafaga = 2;
 		} else {
 			*mensaje = "No";
@@ -1862,7 +1905,7 @@ int AtiendeCliente(void * arg) {
 // Código de salida por defecto
 	int code = 0;
 	int cantRafaga=1,tamanio=0;
-	char * mensaje;
+	char * mensaje=string_new();
 	while ((!desconexionCliente) && g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
