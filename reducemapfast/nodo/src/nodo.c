@@ -1113,7 +1113,6 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 			}
 			break;
 		case REDUCE_COMBINER:
-<<<<<<< HEAD
 				/*AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
 =======
 				/* AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
@@ -1129,11 +1128,8 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 				} else {
 					//No pudo hacerla
 					*mensaje = "30";
-<<<<<<< HEAD
+
 				}*/
-=======
-				} */
->>>>>>> a90d1ce5d2877214752699d88f9b90f92275caff
 				break;
 
 		case REDUCE_SIN_COMBINER:
