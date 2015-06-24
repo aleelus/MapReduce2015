@@ -47,6 +47,7 @@ char* obtenerSubBuffer(char *);
 char* DigitosNombreArchivo(char *,int *);
 int AtiendeCliente(void *);
 void CerrarSocket(int);
+char* abrir_Reduce(char*,char*);
 
 sem_t semaforo;
 

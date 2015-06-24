@@ -129,6 +129,13 @@ typedef struct{
     long unsigned tamanioBloque;
 }t_bloque;
 
+typedef struct{
+    char* bloque;
+    int pertenece;
+    char* nombreNodo;
+    char* contenidoBloque;
+}t_bloque_script;
+
 static t_bloque *bloque_create(int numeroB, char* contenidoB,long unsigned tamanioBloque) {
 	t_bloque *new = malloc(sizeof(t_bloque));
 	new->numeroBloque = numeroB;
@@ -187,6 +194,14 @@ static t_NodoArch *nodoArch_create(char* nodo, char* archivo){
 	new->nomArchT = strdup(archivo);
 	return new;
 }
+
+typedef struct {
+	//Estructura Lista de Nodos
+	    char *nombreNodo;
+	    char *ipNodo;
+	    char *puertoNodo;
+	    t_list *listaArchivos;
+} t_nodo;
 
 static t_list *crear_lista_nodoArch(){
 	t_list *lista = list_create();

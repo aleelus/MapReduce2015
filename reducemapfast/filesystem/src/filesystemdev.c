@@ -423,7 +423,6 @@ void CerrarSocket(int socket) {
 
 void RecorrerNodosYBloques(){
 	t_nodo * el_nodo;
-	t_archivo * el_archivo;
 	t_array_nodo* array;
 	int i=0,j,posicion;
 	while(i<list_size(lista_nodos)){
@@ -1533,7 +1532,7 @@ void eliminarArchivos(){
 int crearDirectorio(){
 	char directorio[20];
 	char * path = string_new();
-	int j=0,k,padre=0,correcto=0;
+	int k,padre=0,correcto=0;
 	t_filesystem * filesystem;
 
 	while(!correcto){
@@ -1544,19 +1543,14 @@ int crearDirectorio(){
 		fflush(stdin);
 		if(strcmp(directorio,"1")){
 			if(!strcmp(directorio,"0")){
-				j=0;
+				padre=0;
 				path=string_new();
 			} else {
-				if(j==0){
-					k=validarDirectorio(directorio,0);
-				} else {
-					k=validarDirectorio(directorio,padre);
-				}
+				k=validarDirectorio(directorio,padre);
 				if(k!=0){
 					padre=k;
 					string_append(&path,"/");
 					string_append(&path,directorio);
-					j++;
 				}
 			}
 		} else {
@@ -1569,10 +1563,256 @@ int crearDirectorio(){
 	filesystem->index = indexGlobal++;
 	filesystem->padre = padre;
 	filesystem->directorio = strdup(directorio);
-	list_add(lista_filesystem,filesystem);
-	mostrarFilesystem();
-	return 1;
+	bool _true(void *elem){
+		return ((((t_filesystem*) elem)->padre==padre)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
+	}
+	int existe = list_any_satisfy(lista_filesystem,_true);
+	if(existe==0){
+		list_add(lista_filesystem,filesystem);
+		mostrarFilesystem();
+		return 1;
+	} else {
+		printf("Este directorio ya existe\n");
+		return 0;
+	}
 }
+
+int eliminarDirectorio(){
+	char directorio[20];
+	char * path = string_new();
+	int k,padre=0,correcto=0,indeX=0;
+
+	if(list_size(lista_filesystem)>0){
+		while(!correcto){
+			printf("Ingrese un directorio: ejemplo: home\n");
+			printf("Path Ingresados:%s\n",path);
+			printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+			scanf("%s",directorio);
+			fflush(stdin);
+			if(strcmp(directorio,"1")){
+				if(!strcmp(directorio,"0")){
+					padre=0;
+					path=string_new();
+				} else {
+					k=validarDirectorio(directorio,padre);
+					if(k!=0){
+						padre=k;
+						string_append(&path,"/");
+						string_append(&path,directorio);
+					}
+				}
+			} else {
+				correcto=1;
+			}
+		}
+		path = string_new();
+		printf("Ingrese el nombre del directorio a eliminar\n");
+		scanf("%s", directorio);
+		fflush(stdin);
+
+		if((indeX=validarDirectorio(directorio,padre))==0){
+			printf("Nombre de directorio incorrecto.\n");
+			return 0;
+		}
+
+		bool _true(void *elem){
+			return ((t_filesystem*) elem)->padre==indeX;
+		}
+		bool _true3(void *elem){
+			return ((t_archivo*) elem)->padre==indeX;
+		}
+		int cant = list_count_satisfying(lista_filesystem,_true);
+		int cantf = list_count_satisfying(lista_archivos,_true3);
+		if(cant>0||cantf>0){
+			printf("Este directorio no se pudo eliminar porque no esta vacio\n");
+			return 0;
+		}
+		bool _true2(void *elem){
+			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
+		}
+
+		list_remove_and_destroy_by_condition(lista_filesystem,_true2,(void*)filesystem_destroy);
+		printf("Se elimino el directorio correctamente\n");
+		return 1;
+	} else {
+		printf("No existen archivos o directorios para eliminar\n");
+		return 0;
+	}
+}
+
+int moverDirectorio(){
+	char directorio[20],destino[20];
+	char * path = string_new();
+	int k,padre=0,correcto=0,indeX=0,indexDestino;
+	t_filesystem* fs;
+
+	if(list_size(lista_filesystem)>0){
+		while(!correcto){
+			printf("Ingrese un directorio: ejemplo: home\n");
+			printf("Path Ingresados:%s\n",path);
+			printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+			scanf("%s",directorio);
+			fflush(stdin);
+			if(strcmp(directorio,"1")){
+				if(!strcmp(directorio,"0")){
+					path=string_new();
+					padre=0;
+				}else {
+					k=validarDirectorio(directorio,padre);
+					if(k!=0){
+						padre=k;
+						string_append(&path,"/");
+						string_append(&path,directorio);
+					}
+				}
+			} else {
+				correcto=1;
+			}
+		}
+
+		path = string_new();
+		printf("Ingrese el nombre del directorio a mover\n");
+		scanf("%s", directorio);
+		fflush(stdin);
+
+		if((indeX=validarDirectorio(directorio,padre))==0){
+			printf("Nombre de directorio incorrecto.\n");
+			return 0;
+		}
+
+		bool _true(void *elem){
+			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
+		}
+		fs = list_find(lista_filesystem,_true);
+		correcto=0;
+		padre=0;
+		k=0;
+		if(fs != NULL){
+			while(!correcto){
+				printf("Ingrese un directorio: ejemplo: home\n");
+				printf("Path Ingresados de destino:%s\n",path);
+				printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+				scanf("%s",destino);
+				fflush(stdin);
+				if(strcmp(destino,"1")){
+					if(!strcmp(destino,"0")){
+						padre=0;
+						path=string_new();
+					} else {
+						k=validarDirectorio(destino,padre);
+						if(k!=indeX){
+							if(k!=0){
+								padre=k;
+								string_append(&path,"/");
+								string_append(&path,destino);
+							}
+						} else {
+							printf("Esta intentando mover el directorio en si mismo. Error\n");
+							return 0;
+						}
+					}
+				} else {
+					correcto=1;
+				}
+			}
+			printf("Ingrese el directorio de destino o / si es raiz, directorio a mover:%s\n",directorio);
+			scanf("%s", destino);
+			fflush(stdin);
+			if(strcmp(destino,"/")){
+				indexDestino=validarDirectorio(destino,padre);
+				if(indexDestino>0){
+					fs->padre = indexDestino;
+					printf("Se ha realizado el movimiento con exito!");
+					return 1;
+				} else {
+					printf("Directorio ingresado invalido.\n");
+					return 0;
+				}
+			} else {
+				fs->padre = 0;
+				printf("Se ha realizado el movimiento con exito!");
+				return 1;
+			}
+		} else {
+			printf("No se encontro el directorio, Error!\n");
+			return 0;
+		}
+	} else {
+		printf("No hay directorios para mover.\n");
+		return 0;
+	}
+}
+
+int renombrarDirectorio(){
+	char directorio[20],destino[20];
+	char * path = string_new();
+	int k,padre=0,correcto=0,indeX=0;
+	t_filesystem* fs;
+
+	if(list_size(lista_filesystem)>0){
+		while(!correcto){
+			printf("Ingrese un directorio: ejemplo: home\n");
+			printf("Path Ingresados:%s\n",path);
+			printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+			scanf("%s",directorio);
+			fflush(stdin);
+			if(strcmp(directorio,"1")){
+				if(!strcmp(directorio,"0")){
+					padre=0;
+					path=string_new();
+				} else {
+					k=validarDirectorio(directorio,padre);
+					if(k!=0){
+						padre=k;
+						string_append(&path,"/");
+						string_append(&path,directorio);
+					}
+				}
+			} else {
+				correcto=1;
+			}
+		}
+		printf("Ingrese el nombre del directorio a renombrar\n");
+		scanf("%s", directorio);
+		fflush(stdin);
+
+		if((indeX=validarDirectorio(directorio,padre))==0){
+			printf("Nombre de directorio incorrecto.\n");
+			return 0;
+		}
+
+		bool _true2(void *elem){
+			return ((((t_filesystem*) elem)->padre==padre)&&(!strcmp(((t_filesystem*) elem)->directorio,destino)));
+		}
+
+		bool _true(void *elem){
+			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
+		}
+		fs = list_find(lista_filesystem,_true);
+
+		if(fs != NULL){
+			printf("Ingrese el nuevo nombre para el directorio:%s:\n",directorio);
+			scanf("%s", destino);
+			fflush(stdin);
+			int cant = list_any_satisfy(lista_filesystem,_true2);
+			if(cant==0){
+				printf("Se ha renombrado el directorio con exito.\n");
+				fs->directorio = strdup(destino);
+				return 1;
+			} else {
+				printf("Ya existe un directorio con este nombre.\n");
+				return 0;
+			}
+		} else {
+			printf("No se encontro el directorio, Error!\n");
+			return 0;
+		}
+	} else {
+		printf("No hay directorios para renombrar.\n");
+		return 0;
+	}
+}
+
 
 int manejoDeDirectorios(){
 	int seleccion;
@@ -1585,13 +1825,13 @@ int manejoDeDirectorios(){
 				return crearDirectorio();
 				break;
 		case 2: printf("Se eligio Eliminar\n");
-				//return eliminarDirectorio();
+				return eliminarDirectorio();
 				break;
 		case 3: printf("Se eligio Renombrar\n");
-				//return renombrarDirectorio();
+				return renombrarDirectorio();
 				break;
 		case 4: printf("Se eligio Mover\n");
-				//return moverDirectorio();
+				return moverDirectorio();
 				break;
 		default: printf("Se ha ingresado un comando incorrecto.\n");
 				break;
@@ -1634,6 +1874,25 @@ int armarArchivo(){
 	}
 }
 
+void eliminarListaNodos(){
+	int i = 0;
+	while(i<list_size(lista_nodos)){
+		list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
+	}
+	//free(lista_filesystem);
+}
+
+int formatearFs(){
+	indexGlobal=1;
+	eliminarFilesystem();
+	printf("Se elimino la estructura del filesystem\n");
+	eliminarArchivos();
+	printf("Se eliminaron todos los archivos\n");
+	eliminarListaNodos();
+	printf("Se eliminaron todos los Nodos\n");
+	return 1;
+}
+
 int operaciones_consola() {
 	//system("clear");
 	printf("Comandos posibles: \n");
@@ -1659,11 +1918,11 @@ int operaciones_consola() {
 		return 0;
 		break;
 	case 1:
-		eliminarFilesystem();
-		printf("Se elimino el filesystem\n");
-		eliminarArchivos();
-		printf("Se elimino los archivos\n");
-		log_info(logger, "Ejecutando Formatear MDFS...\n");
+		if(formatearFs()){
+			log_info(logger, "Se Formateo el MDFS con exito!\n");
+		} else {
+			log_info(logger, "No se pudo Formatear el MDFS...\n");
+		}
 		break;
 	case 2:
 		log_info(logger, "Se realizo Eliminar/Renombrar/Mover Archivos\n");

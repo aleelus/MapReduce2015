@@ -263,6 +263,10 @@ int AtiendeCliente(void * arg) {
 		aux=DigitosNombreArchivo(buff,&posicion);
 		el_job->archResultado=aux;
 		string_append(&bufferANodo,obtenerSubBuffer(aux));
+		aux = string_new();
+		aux = abrir_Reduce(aux,g_Reduce);
+		string_append(&bufferANodo,aux);
+		string_append(&bufferANodo,obtenerSubBuffer(g_Reduce));
 
 
 /*
@@ -544,6 +548,38 @@ char* abrir_Mapper(char *aux, char *nombreScript){
 
 	return aux;
 }
+
+char* abrir_Reduce(char *aux, char *nombreScript){
+
+	FILE *f;
+	int tamanioArchivo=0;
+	float tam=0;
+	int cont=0;
+	char *aux2=string_new();
+
+	f= fopen(nombreScript,"rb");
+	fseek(f,0,SEEK_END);
+	tamanioArchivo=ftell(f);
+	rewind(f);
+	aux2=malloc(tamanioArchivo+1);
+	memset(aux2, 0, tamanioArchivo+1);
+	fread(aux2,1,tamanioArchivo,f);
+
+	tam=tamanioArchivo;
+	while(tam>=1){
+		tam=tam/10;
+		cont++;
+	}
+	string_append(&aux,string_itoa(cont));
+	string_append(&aux,string_itoa(tamanioArchivo));
+	string_append(&aux,aux2);
+
+	free(aux2);
+	fclose(f);
+
+	return aux;
+}
+
 
 
 int ChartToInt(char x) {

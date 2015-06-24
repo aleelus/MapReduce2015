@@ -384,7 +384,7 @@ int enviarDatos(int socket, void *buffer) {
         dup2(CHILD_READ_FD, STDIN_FILENO);
         dup2(CHILD_WRITE_FD, STDOUT_FILENO);
         printf("Entro a FORK\n");
-        /* Close fds not required by child. Also, we don't
+        Close fds not required by child. Also, we don't
            want the exec'ed program to know these existed */
 
 /*        close(CHILD_READ_FD);
@@ -404,7 +404,7 @@ int enviarDatos(int socket, void *buffer) {
 
         int count;
 
-        /* close fds not required by parent */
+        close fds not required by parent */
 /*        close(CHILD_READ_FD);
         close(CHILD_WRITE_FD);
         //printf("lo que se va a escribir es %s y la longitud es %d\n", input, strlen(input));
@@ -766,8 +766,8 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		char *contenidoBloq;
 		//char*buffer2 = malloc(32);
 		//memset(&buffer2,0,32);
-		int digitosCantDeDigitos=0,numeroBloq,digitosCantDeDigitosBloque;
-		int digitosCantDeDigitosTamanioBloq,tamanioBloque,cantDigNumBloque=0;
+		int numeroBloq,digitosCantDeDigitosBloque;
+		int digitosCantDeDigitosTamanioBloq,cantDigNumBloque=0;
 		long unsigned posActual=0,tam=0;
 
 		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,2);
@@ -811,14 +811,14 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//semaforo
 	estado = 1;
 	char *nArchivoSH;
-	int digitosCantDeDigitos=0,tamanioSH,digitosCantDeDigitosSH;
+	int digitosCantDeDigitos=0,digitosCantDeDigitosSH;
 	char * el_Bloque;
 	int posActual=0;
 	char * fileSH,*nArchivoResultado;
 
 	digitosCantDeDigitosSH=PosicionDeBufferAInt(buffer,2);
 	//printf("Cantidad Digitos de tamaño de contenido SH:%d\n",digitosCantDeDigitosSH);
-	tamanioSH=ObtenerTamanio(buffer,3,digitosCantDeDigitosSH);
+	ObtenerTamanio(buffer,3,digitosCantDeDigitosSH);
 	//printf("Tamanio del SH: %d\n",tamanioSH);
 	posActual=2+digitosCantDeDigitos;
 
@@ -840,43 +840,85 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	*cantRafaga=1;
 }
 
+void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,char* nombreArchivoFinal){
+	int cB;
+	//t_bloque_script * bloque_script;
+	t_nodo* el_nodo;
+	for(cB=0;cB<list_size(*bloques);cB++){
+	//bloque_script = list_get(*bloques,cB);
+		bool _true(void *elem){
+			return ( !strcmp(((t_nodo*) elem)->nombreNodo,el_nodo->nombreNodo) );
+		}
+
+		//if(!pedirBloque(&bloque_script,list_find(nodos,_true))){
+		//	cB=list_size(bloques);
+		//}
+		//if(ordenarBloques(&bloques)){
+		//}
+	}
+}
+
 void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
-	//Cadena recibida del Job
-	// A NODO => 2312 15NodoA  13 215resultado00.txt     215resultado01.txt    1215resultado02.txt     15NodoA212192.168.1.27146000
-	//         15NodoC  11 215resultado03.txt     15NodoC212192.168.1.27146000
-	//FALTA IMPLEMENTAR
-	/*
+	/*231215NodoB2202144resultado.txt2143resultado.txt2142resultado.txt2141resultado.txt2140resultado.txt21519resultado.txt21518resultado.txt21517resultado.txt21516resultado.txt21515resultado.txt21514resultado.txt21513resultado.txt21512resultado.txt21511resultado.txt21510resultado.txt2149resultado.txt2148resultado.txt2147resultado.txt2146resultado.txt2145resultado.txt15NodoB212192.168.0.1414600015NodoC1621525resultado.txt21524resultado.txt21523resultado.txt21522resultado.txt21521resultado.txt21520resultado.txt15NodoC212192.168.0.13146001230/user/juan/datos/resultado.txt3532#!/usr/bin/perl*/
+
 	//semaforo
 	estado = 1;
-	char *nArchivoSH;
-	int digitosCantDeDigitos=0,tamanioSH,digitosCantDeDigitosSH;
-	char * el_Bloque;
-	int posActual=0;
-	char * fileSH,*nArchivoResultado;
+	t_list * nodos = list_create();
+	t_list * bloques = list_create();
+	t_nodo* el_nodo=malloc(sizeof(t_nodo));
+	t_bloque_script * bloque_script = malloc(sizeof(t_bloque_script));
+	int cantNodos,digCantNodos,cantArchivos,cantDigArchivos;
+	char *nombreResultado=malloc(30);
+	int i,j,posActual=0;
 
-	digitosCantDeDigitosSH=PosicionDeBufferAInt(buffer,2);
-	//printf("Cantidad Digitos de tamaño de contenido SH:%d\n",digitosCantDeDigitosSH);
-	tamanioSH=ObtenerTamanio(buffer,3,digitosCantDeDigitosSH);
-	//printf("Tamanio del SH: %d\n",tamanioSH);
-	posActual=2+digitosCantDeDigitos;
+	digCantNodos=PosicionDeBufferAInt(buffer,2);
 
-	fileSH=DigitosNombreArchivo(buffer,&posActual);
-	//printf("Contenido de archivo SH:%s\n",fileSH);
+	cantNodos=ObtenerTamanio(buffer,3,digCantNodos);
 
-	nArchivoSH=DigitosNombreArchivo(buffer,&posActual);
-	//printf("Nombre Archivo SH:%s\n",nArchivoSH);
+	posActual=2+digCantNodos;
 
-	//printf("Posicion Actual:%d\n",posActual);
-	//printf("Cantidad de digitos del numero de bloque:%d\n",digitosTamanioBloque);
-	el_Bloque=DigitosNombreArchivo(buffer,&posActual);
-	//printf("bloque: %s\n",el_Bloque);
+	for(i=0;i<cantNodos;i++){
 
-	nArchivoResultado=DigitosNombreArchivo(buffer,&posActual);
-	//printf("Nombre Archivo de Resultado:%s\n",nArchivoResultado);
+		el_nodo->nombreNodo = DigitosNombreArchivo(buffer,&posActual);
+		cantDigArchivos=PosicionDeBufferAInt(buffer,posActual);
 
-	*job = job_create(nArchivoSH,fileSH,el_Bloque,nArchivoResultado);
-	*cantRafaga=1;
-	*/
+		posActual= posActual + 1;
+
+		cantArchivos=ObtenerTamanio(buffer,posActual,cantDigArchivos);
+
+		posActual = posActual + cantDigArchivos;
+		el_nodo->listaArchivos = list_create();
+		for(j=0;j<cantArchivos;j++){
+
+			nombreResultado=DigitosNombreArchivo(buffer,&posActual);
+			bloque_script->bloque = nombreResultado;
+			bloque_script->nombreNodo = el_nodo->nombreNodo;
+			int valor = !strcmp(g_Ip_Nodo,el_nodo->ipNodo) && !strcmp(g_Puerto_Nodo,el_nodo->puertoNodo);
+			bloque_script->pertenece = valor;
+			list_add(el_nodo->listaArchivos,nombreResultado);
+			list_add(bloques,bloque_script);
+		}
+
+		el_nodo->nombreNodo = DigitosNombreArchivo(buffer,&posActual);
+
+		el_nodo->ipNodo=DigitosNombreArchivo(buffer,&posActual);
+		el_nodo->puertoNodo=DigitosNombreArchivo(buffer,&posActual);
+		list_add(nodos,el_nodo);
+	}
+
+	char* nombreArchivoFinal=DigitosNombreArchivo(buffer,&posActual);
+
+	char* contenidoScript=DigitosNombreArchivo(buffer,&posActual);
+
+	char* nombreScript=DigitosNombreArchivo(buffer,&posActual);
+
+	grabarScript(nombreScript,contenidoScript);
+
+	permisosScript(nombreScript);
+	//Doy permisos de ejecucion al script
+
+	script_Reduce_Sin_Combiner(&bloques,nodos,nombreScript,nombreArchivoFinal);
+
 }
 
 int procesarRutinaMap(t_job * job){
@@ -1115,7 +1157,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 		case REDUCE_COMBINER:
 				/*AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
 =======
-				/* AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
+				AtiendeJobCombiner(&jobR,buffer,cantRafaga); //Falta desarrollar
 >>>>>>> a90d1ce5d2877214752699d88f9b90f92275caff
 				//printf("Nombre de SH:%s\n",job->nombreSH);
 				//printf("Contenido de SH:%s\n",job->contenidoSH);
@@ -1134,10 +1176,6 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje){
 
 		case REDUCE_SIN_COMBINER:
 				AtiendeJobCombiner(&jobR,buffer,cantRafaga);
-				//printf("Nombre de SH:%s\n",job->nombreSH);
-				//printf("Contenido de SH:%s\n",job->contenidoSH);
-				//printf("Archivo:%s\n",job->bloque);
-				//printf("Nombre de Resultado:%s\n",job->nombreResultado);
 				if(procesarRutinaReduce(jobR,0)){ //Proceso la rutina, reduce sin combiner. procesarRutinaReduceSinCombiner(jobC)
 					//Pudo hacerla
 					*mensaje = "31";
@@ -1178,7 +1216,7 @@ int obtenerNumBloque (char* buffer){
 
 
 void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
-	t_bloque* bloqueSet;
+	//t_bloque* bloqueSet;
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
 		//printf("RAFAGA:%d\n",tipo_mensaje);
 		//printf("LA RAFAGA:%d\n",*cantRafaga);
@@ -1354,6 +1392,7 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 	free(aux);
 	free(bloque);
 	close(socket);
+	return 1;
 
 }
 
