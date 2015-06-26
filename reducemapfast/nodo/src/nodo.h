@@ -134,6 +134,7 @@ typedef struct{
     int pertenece;
     char* nombreNodo;
     char* contenidoBloque;
+    long unsigned fsd;
 }t_bloque_script;
 
 static t_bloque *bloque_create(int numeroB, char* contenidoB,long unsigned tamanioBloque) {

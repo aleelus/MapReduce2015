@@ -840,23 +840,97 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	*cantRafaga=1;
 }
 
-void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,char* nombreArchivoFinal){
-	int cB;
-	//t_bloque_script * bloque_script;
-	t_nodo* el_nodo;
-	for(cB=0;cB<list_size(*bloques);cB++){
-	//bloque_script = list_get(*bloques,cB);
-		bool _true(void *elem){
-			return ( !strcmp(((t_nodo*) elem)->nombreNodo,el_nodo->nombreNodo) );
-		}
-
-		//if(!pedirBloque(&bloque_script,list_find(nodos,_true))){
-		//	cB=list_size(bloques);
-		//}
-		//if(ordenarBloques(&bloques)){
-		//}
+t_nodo* buscarNodoPorNombre(char* nombre,t_list* lista_nodos){
+	t_nodo* el_nodo = malloc(sizeof(t_nodo));
+	bool _true(void *elem){
+		return ((!strcmp(((t_nodo*) elem)->nombreNodo,nombre)));
 	}
+	el_nodo = list_find(lista_nodos, _true);
+	return el_nodo;
 }
+
+long unsigned obtenerCantidadLineas(t_nodo* nodo,char* bloque){
+	return 1;
+}
+
+long unsigned cantidadLineasArchivo(char* bloque){
+	return 1;
+}
+
+long unsigned cantidadDeLineas(t_list** bloques,t_list* nodos){
+	int i;
+	long unsigned cantidadLineas=0;
+	t_nodo* nodo;
+	t_bloque_script* bloque;
+	for(i=0;i<list_size(*bloques);i++){
+		bloque = list_get(*bloques,i);
+		if(!bloque->pertenece){
+			nodo = buscarNodoPorNombre(bloque->nombreNodo,nodos);
+			cantidadLineas = cantidadLineas + obtenerCantidadLineas(nodo,bloque->bloque);
+		} else {
+			cantidadLineas = cantidadLineas + cantidadLineasArchivo(bloque->bloque);
+		}
+	}
+	return cantidadLineas;
+}
+
+char * elMaravilloso(t_list* nodos,t_list**bloques){
+	int i;
+	t_bloque_script* bloque;
+	for(i=0;i<list_size(*bloques);i++){
+		bloque = list_get(*bloques,i);
+		if(!bloque->pertenece){
+
+		}
+	}
+	return "hola";
+}
+
+void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,char* nombreArchivoFinal){
+	long unsigned cB = cantidadDeLineas(bloques,nodos);
+	int cont;
+	char * buffer = string_new();
+	//t_bloque_script * bloque_script;
+
+	char **array = string_split(nombreScript,"/");
+	while(array[cont]!=NULL){
+		  cont++;
+	}
+
+
+	pid_t pid;
+	int p[2];
+
+	pipe( p );
+
+	if ( (pid=fork()) == 0 )
+	{
+		int i;
+			close( p[1] );
+
+
+		dup2(p[0],STDIN_FILENO);
+		close(STDOUT_FILENO);
+		FILE *fd = fopen(nombreArchivoFinal, "w" );
+		close( p[0] );
+		execl(array[cont-1],array[cont-1],NULL);
+
+
+	}
+	else
+	{
+	int j;
+		close( p[0] );
+		for(j=0;j<cB;j++){
+			buffer = elMaravilloso(nodos,bloques);
+			write( p[1], buffer, strlen( buffer ) );
+			sleep(1);
+		}
+		close( p[1] );
+  }
+
+}
+
 
 void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 	/*231215NodoB2202144resultado.txt2143resultado.txt2142resultado.txt2141resultado.txt2140resultado.txt21519resultado.txt21518resultado.txt21517resultado.txt21516resultado.txt21515resultado.txt21514resultado.txt21513resultado.txt21512resultado.txt21511resultado.txt21510resultado.txt2149resultado.txt2148resultado.txt2147resultado.txt2146resultado.txt2145resultado.txt15NodoB212192.168.0.1414600015NodoC1621525resultado.txt21524resultado.txt21523resultado.txt21522resultado.txt21521resultado.txt21520resultado.txt15NodoC212192.168.0.13146001230/user/juan/datos/resultado.txt3532#!/usr/bin/perl*/
@@ -893,7 +967,7 @@ void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 			nombreResultado=DigitosNombreArchivo(buffer,&posActual);
 			bloque_script->bloque = nombreResultado;
 			bloque_script->nombreNodo = el_nodo->nombreNodo;
-			int valor = !strcmp(g_Ip_Nodo,el_nodo->ipNodo) && !strcmp(g_Puerto_Nodo,el_nodo->puertoNodo);
+			int valor = (!strcmp(g_Ip_Nodo,el_nodo->ipNodo) && !strcmp(g_Puerto_Nodo,el_nodo->puertoNodo));
 			bloque_script->pertenece = valor;
 			list_add(el_nodo->listaArchivos,nombreResultado);
 			list_add(bloques,bloque_script);
