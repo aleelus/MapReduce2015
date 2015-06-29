@@ -24,7 +24,7 @@
 #include <signal.h>
 
 
-sem_t semaforo;
+sem_t semaforo,semaforoH,semaforoScript,semaforoGrabar,semaforoSetBloque,semaforoGetBloque,semaforoNodo;
 
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
@@ -43,6 +43,10 @@ sem_t semaforo;
 #define GET_BLOQUE 2
 #define SET_BLOQUE 3
 #define GET_FILE_CONTENT 4
+
+//Tipos de Mensaje entre nodos
+#define CANTIDADLINEAS 1
+#define DAMELINEA 	2
 
 //Tipos de Emisores de Mensaje
 #define ES_JOB 2
@@ -135,6 +139,7 @@ typedef struct{
     char* nombreNodo;
     char* contenidoBloque;
     long unsigned fsd;
+    long unsigned tamanio;
 }t_bloque_script;
 
 static t_bloque *bloque_create(int numeroB, char* contenidoB,long unsigned tamanioBloque) {
@@ -234,7 +239,7 @@ void CerrarSocket(int socket);
 int ObtenerComandoMSJ(char* buffer);
 char* DigitosNombreArchivo(char *buffer,int *posicion);
 void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga);
-void AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga);
+int AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga);
 int runScriptFile(char* script,char* archNom, char* input);
 void grabarScript(char* nombreScript, char* codigoScript);
 char * armarRutaTemporal( char *nombre);
@@ -242,7 +247,7 @@ int procesarRutinaMap(t_job * job);
 int procesarRutinaReduce(t_jobComb * job, int combiner);
 char* armarArchivoCombiner(t_list* listaArchivos);
 char* armarArchivoSinCombiner(t_list* listaArchivos);
-void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje);
+void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int socket,int * tamanio);
 void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket);
 int AtiendeCliente(void * arg);
 int ChartToInt(char x);
@@ -260,6 +265,8 @@ int PosicionDeBufferALong(char* buffer, long unsigned posicion);
 char *obtenerCodigo(char* buffer);
 char* apareoArchivos(char* archivo1, char* archivo2);
 int esMayor(char* primero, char* segundo);
+
+char * dameLinea(char * bloque, long unsigned fCur);
 
 
 // METODOS CONFIGURACION //

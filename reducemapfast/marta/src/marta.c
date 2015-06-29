@@ -1418,8 +1418,8 @@ void reciboOk(char *buffer,int socket){
 
 			el_archivo->contTareas++;
 
-			if(el_archivo->contTareas==list_size(el_archivo->listaBloques)){
-
+			if(el_archivo->contTareas+1==list_size(el_archivo->listaBloques)){
+				printf(COLOR_VERDE"ENVIADO REDUCE\n"DEFAULT);
 				char *bufferAJob_Reduce=string_new();
 				char *nodoAnterior=string_new();
 				int contarNodos=0;

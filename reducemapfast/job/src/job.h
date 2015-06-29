@@ -21,7 +21,7 @@
 #include <netdb.h>
 
 
-sem_t semaforoLogger;
+sem_t semaforoLogger, semaforoMarta, semaforoNodo;
 
 // CONSTANTES //
 //Ruta del config

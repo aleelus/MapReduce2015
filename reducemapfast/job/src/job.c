@@ -18,6 +18,8 @@ int main(int argv, char** argc) {
 
 
 	sem_init(&semaforoLogger, 0, 1);
+	sem_init(&semaforoMarta,1,1);
+	sem_init(&semaforoNodo,1,1);
 	//sem_init(&semaforo,1,0);
 	//sem_init(&semaforoJob,1,0);
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
@@ -289,14 +291,20 @@ int AtiendeCliente(void * arg) {
 	string_append(&bufferEnvia,string_itoa(cuentaDigitos(strlen(bufferANodo))));
 	string_append(&bufferEnvia,string_itoa(strlen(bufferANodo)));
 	//printf("BUFFER ENVIA:%s\n",bufferEnvia);
+	sem_wait(&semaforoNodo);
 	EnviarDatos(socket_nodo,bufferEnvia, strlen(bufferEnvia));
+	sem_post(&semaforoNodo);
 	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferEnvia, strlen(bufferEnvia));
-
+//	sem_wait(&semaforoNodo);
 	bufferR = RecibirDatos(socket_nodo, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferR, strlen(bufferR));
-
+//	sem_post(&semaforoNodo);
 	//Le envio el buffer al Nodo
+	printf(COLOR_VERDE"TAMAÑO BUFFER A NODO:%d\n",strlen(bufferANodo));
+	sem_wait(&semaforoNodo);
 	EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
+	sem_post(&semaforoNodo);
+	printf(COLOR_VERDE"TAMAÑO BUFFER A NODO:%d\n",strlen(bufferANodo));
 	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferANodo, strlen(bufferANodo));
 
 	int code=0;
@@ -321,7 +329,9 @@ int AtiendeCliente(void * arg) {
 		buffer = string_new();
 
 		//Recibimos los datos del nodo
+//		sem_wait(&semaforoNodo);
 		buffer = RecibirDatos(socket_nodo, buffer, &bytesRecibidos,&cantRafaga,&tamanio);
+//		sem_post(&semaforoNodo);
 		//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, buffer, tamanio);
 
 
@@ -346,13 +356,16 @@ int AtiendeCliente(void * arg) {
 
 					//RAFAGA 1
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-
+					sem_post(&semaforoMarta);
 
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+					sem_post(&semaforoMarta);
 
 					bufferAMartaDos=string_new();
 					bufferAMartaUno=string_new();
@@ -373,12 +386,15 @@ int AtiendeCliente(void * arg) {
 
 					//RAFAGA 1
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-
+					sem_post(&semaforoMarta);
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+					sem_post(&semaforoMarta);
 					/*buffer=string_new();
 					recv(socket_Marta, buffer, 10, 0);
 					while(strcmp(buffer,"Ok")!=0){
@@ -406,14 +422,16 @@ int AtiendeCliente(void * arg) {
 
 					//RAFAGA 1
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
+					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-
+					sem_post(&semaforoMarta);
 
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
+					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
-
+					sem_post(&semaforoMarta);
 				}
 				bufferAMartaUno=string_new();
 				bufferAMartaDos=string_new();
