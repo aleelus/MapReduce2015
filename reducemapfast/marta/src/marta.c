@@ -21,6 +21,7 @@ int main(int argv, char** argc) {
 	sem_init(&semaforoListaNodos, 1, 1);
 	sem_init(&semaforoListaArchivos, 1, 1);
 	sem_init(&semaforoListaJobEnviados, 1, 1);
+	sem_init(&semIdJob, 1, 1);
 
 	//sem_init(&semaforoJob,1,0);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,9 +272,9 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	*contIdJob=id_job;
 	t_archivo *el_archivo;
 
-	//wait(mutex)
+	sem_wait(&semIdJob);
 	id_job++;
-	//signal(mutex)
+	sem_post(&semIdJob);
 
 	//BUFFER RECIBIDO = 2270 (EJEMPLO)
 	//BUFFER RECIBIDO = 2112220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
@@ -294,7 +295,11 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	tieneCombiner=PosicionDeBufferAInt(buffer,posActual); // CAMBIE strlen(buffer)-3 por posActual
 
 	int i=0;
-	while(i<list_size(lista_archivos)){
+	sem_wait(&semaforoListaArchivos);
+	int sizeListaArchivos = list_size(lista_archivos);
+	sem_post(&semaforoListaArchivos);
+
+	while(i<sizeListaArchivos){
 
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
@@ -313,7 +318,12 @@ void RecorrerArchivos(){
 	t_archivo * el_archivo;
 
 	int i=0;
-	while(i<list_size(lista_archivos)){
+
+	sem_wait(&semaforoListaArchivos);
+	int sizeListaArchivos = list_size(lista_archivos);
+	sem_post(&semaforoListaArchivos);
+
+	while(i<sizeListaArchivos){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -356,7 +366,11 @@ void RecorrerListaBloques(){
 	int j=0;
 	printf("IDJOB:"COLOR_VERDE"%d\n"DEFAULT,id_job);
 
-	while(i<list_size(lista_archivos)){
+	sem_wait(&semaforoListaArchivos);
+	int sizeListaArchivos = list_size(lista_archivos);
+	sem_post(&semaforoListaArchivos);
+
+	while(i<sizeListaArchivos){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -389,19 +403,31 @@ void RecorrerListaNodos(){
 	t_bloqueArchivo *el_bloqueArchivo;
 	int i=0,j=0;
 
-	while(i<list_size(lista_nodos)){
+	sem_wait(&semaforoListaNodos);
+	int sizeListaNodo = list_size(lista_nodos);
+	sem_post(&semaforoListaNodos);
+	while(i<sizeListaNodo){
+		sem_wait(&semaforoListaNodos);
 		el_nodo=list_get(lista_nodos,i);
+		sem_post(&semaforoListaNodos);
 		printf("************************************************\n");
 		printf("Nombre: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->nombreNodo);
 		printf("IP: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->ipNodo);
 		printf("Puerto: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->puertoNodo);
 		printf("ListaBloqueArchivo: ");
 		j=0;
-		while(j<list_size(el_nodo->listaBloqueArchivo)){
+
+		sem_wait(&semaforoListaNodos);
+		int sizeListaNodoBloque = list_size(el_nodo->listaBloqueArchivo);
+		sem_post(&semaforoListaNodos);
+
+		while(j<sizeListaNodoBloque){
+			sem_wait(&semaforoListaNodos);
 			el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,j);
+			sem_post(&semaforoListaNodos);
 			printf(COLOR_VERDE"  %s"DEFAULT"::::"COLOR_VERDE"%s"DEFAULT,el_bloqueArchivo->bloque,el_bloqueArchivo->archivo);
 			j++;
-			if(j==list_size(el_nodo->listaBloqueArchivo))
+			if(j==sizeListaNodoBloque)
 				printf("\n");
 
 		}
@@ -486,7 +512,12 @@ void ObtenerInfoDeNodos(int id){
 	int i=0,contArchivos=0;
 	//Para el FS
 	string_append(&bufferDos,"41");
-	while(i<list_size(lista_archivos)){
+
+	sem_wait(&semaforoListaArchivos);
+	int sizeListaArchivos = list_size(lista_archivos);
+	sem_post(&semaforoListaArchivos);
+
+	while(i<sizeListaArchivos){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -509,7 +540,12 @@ void ObtenerInfoDeNodos(int id){
 	string_append(&bufferDos,string_itoa(cont));
 	string_append(&bufferDos,string_itoa(contArchivos));
 	i=0;
-	while(i<list_size(lista_archivos)){
+
+	sem_wait(&semaforoListaArchivos);
+	sizeListaArchivos= list_size(lista_archivos);
+	sem_post(&semaforoListaArchivos);
+
+	while(i<sizeListaArchivos){
 			sem_wait(&semaforoListaArchivos);
 			el_archivo = list_get(lista_archivos, i);
 			sem_post(&semaforoListaArchivos);
@@ -617,7 +653,11 @@ void ObtenerInfoDeNodos(int id){
 		j=0;
 		nomArch=DigitosNombreArchivo(rafaga2Fs,&posActual);
 
-		while(j<list_size(lista_archivos)){
+		sem_wait(&semaforoListaArchivos);
+		sizeListaArchivos=list_size(lista_archivos);
+		sem_post(&semaforoListaArchivos);
+
+		while(j<sizeListaArchivos){
 			sem_wait(&semaforoListaArchivos);
 			el_archivo=list_get(lista_archivos,j);
 			sem_post(&semaforoListaArchivos);
@@ -657,7 +697,13 @@ void ObtenerInfoDeNodos(int id){
 
 
 	i=0;
-	while(i<list_size(lista_archivos)){
+	sem_wait(&semaforoListaArchivos);
+	sizeListaArchivos=list_size(lista_archivos);
+	sem_post(&semaforoListaArchivos);
+
+
+
+	while(i<sizeListaArchivos){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);

@@ -944,7 +944,7 @@ long unsigned cantidadLineasArchivo(char* bloque, long unsigned* tamanio){
 		while( (ptr = strtok( NULL, s2 )) != NULL ){
 			i++;
 		}
-
+		free(buffer);
 		fclose(fA);
 		return i;
 	} else {
@@ -1040,11 +1040,13 @@ char * dameLinea(char * bloque, long unsigned fCur) {
 			aux[i-1]=buffer[i-1];
 		}
 		printf("AUXILIAR:%s\n",aux);
+		string_append(&ptrPuto,aux);
 		//printf("BUFFER:%s\n",buffer);
 		//char** array = string_split(buffer,s2);
 		//printf("SPLIT:%s\n",array[0]);
 		fclose(fA);
-		return aux;
+		free(buffer);
+		return ptrPuto;
 	} else {
 		printf("HOLA3\n");
 		return NULL;

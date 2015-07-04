@@ -24,7 +24,7 @@
 #define DEFAULT   "\x1b[0m"
 
 
-sem_t semaforoListaNodos,semaforoListaArchivos,semaforoListaJobEnviados;
+sem_t semaforoListaNodos,semaforoListaArchivos,semaforoListaJobEnviados,semIdJob;
 
 // CONSTANTES //
 //Ruta del config
