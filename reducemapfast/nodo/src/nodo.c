@@ -795,7 +795,7 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		//printf("Cantidad Digitos de contenido de bloque:%d\n",digitosCantDeDigitosTamanioBloq);
 		tam= ObtenerTamanioLong(buffer,posActual+1,digitosCantDeDigitosTamanioBloq);
 		//printf("Tamanio del contenido del bloque: %lu\n",tam);
-		posActual=posActual+1;
+		posActual=posActual+digitosCantDeDigitosTamanioBloq+1;
 		//printf("Tamanio BLOQUE POSTA:%d\n",tamanioBloque);
 		//printf("Posicion Actual%d Tamanio Bloque:%d\n",posActual,tamanioBloque);
 		//buffer2 = string_substring(buffer,0,30);
@@ -944,7 +944,7 @@ long unsigned cantidadLineasArchivo(char* bloque, long unsigned* tamanio){
 		while( (ptr = strtok( NULL, s2 )) != NULL ){
 			i++;
 		}
-		free(buffer);
+
 		fclose(fA);
 		return i;
 	} else {
@@ -987,6 +987,11 @@ char* burbujeo(t_list*bloques,int*indice){
 		list_sort(bloques, (void*)_ordenarPorNodo);
 		*indice = 0;
 		bloque = list_get(bloques,0);
+		printf("MENOR : %s\n",bloque->contenidoBloque);
+		if(bloque->contenidoBloque==NULL) return NULL;
+
+		bloque->fsd = bloque->fsd + strlen(bloque->contenidoBloque)+1;
+
 		return bloque->contenidoBloque;
 	} else {
 		return NULL;
@@ -1040,13 +1045,11 @@ char * dameLinea(char * bloque, long unsigned fCur) {
 			aux[i-1]=buffer[i-1];
 		}
 		printf("AUXILIAR:%s\n",aux);
-		string_append(&ptrPuto,aux);
 		//printf("BUFFER:%s\n",buffer);
 		//char** array = string_split(buffer,s2);
 		//printf("SPLIT:%s\n",array[0]);
 		fclose(fA);
-		free(buffer);
-		return ptrPuto;
+		return aux;
 	} else {
 		printf("HOLA3\n");
 		return NULL;
@@ -1075,11 +1078,13 @@ char* obtenerLinea(t_nodo* nodo,t_bloque_script *bloque){
 
 	//primer rafaga
 	string_append(&bufferE,"3");
+	string_append(&bufferE,string_itoa(cuentaDigitos(strlen(buffer))));
 	string_append(&bufferE,string_itoa(strlen(buffer)));
 
 	EnviarDatos(socket,bufferE,strlen(bufferE));
 
 	tamanio = strlen("*");
+	cantRafaga=1;
 	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
 	int p,bandera=0;
 	for(p=0;p<strlen(bufferR);p++){
@@ -1098,10 +1103,10 @@ char* obtenerLinea(t_nodo* nodo,t_bloque_script *bloque){
 	cantRafaga = 1;
 	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
 
-	//bufferR = string_new();
 
-	bufferR = malloc(atoi(bufferR)+1);
-	tamanio=atoi(bufferR)+1;
+
+	bufferR=string_new();
+	tamanio=200;
 	buffer = string_new();
 	string_append(&buffer,"*");
 	EnviarDatos(socket,buffer,strlen(buffer));
@@ -1115,6 +1120,15 @@ char * elMaravilloso(t_list* nodos,t_list**bloques){
 	int i;
 	t_bloque_script* bloque;
 	t_nodo* nodo;
+	int *vector = malloc (sizeof(int)*list_size(*bloques));
+	char *menor = string_new();
+
+	for(i=0;i<list_size(*bloques);i++){
+		vector[i]=0;
+	}
+
+
+
 	for(i=0;i<list_size(*bloques);i++){
 		bloque = list_get(*bloques,i);
 		if(!bloque->pertenece){
@@ -1126,10 +1140,12 @@ char * elMaravilloso(t_list* nodos,t_list**bloques){
 			bloque->contenidoBloque = dameLinea(bloque->bloque,bloque->fsd);
 		}
 		printf("%d) LA LINEA:%s\n",i,bloque->contenidoBloque);
-		if(bloque->contenidoBloque==NULL) return NULL;
-		bloque->fsd = bloque->fsd + strlen(bloque->contenidoBloque);
+
 	}
-	return dameMenor(nodos,bloques);
+	menor=dameMenor(nodos,bloques);
+
+	free(vector);
+	return menor;
 }
 
 void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,char* nombreArchivoFinal){
@@ -1171,7 +1187,7 @@ void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,
 			buffer = elMaravilloso(nodos,bloques);
 			printf("LINEA:%s\n",buffer);
 			write( p[1], buffer, strlen( buffer ) );
-			sleep(1);
+			//sleep(1);
 		}
 		close( p[1] );
   }
@@ -1540,7 +1556,8 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 			free(buffer);
 			free(bufferE);
 			free(bufferR);
-			free(linea);
+			/*if(linea!=NULL)
+				free(linea);*/
 			free(nombreResultado);
 			*cantRafaga = 1;
 			break;
@@ -1842,7 +1859,7 @@ int AtiendeCliente(void * arg) {
 	int code = 0;
 	int trabajo;
 	int cantRafaga=1,tamanio=0;
-	char * mensaje;
+	char * mensaje=string_new();
 	while ((!desconexionCliente) && g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
 		if (buffer != NULL )
