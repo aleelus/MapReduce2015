@@ -25,6 +25,7 @@
 
 
 sem_t semaforo,semaforoH,semaforoScript,semaforoGrabar,semaforoSetBloque,semaforoGetBloque,semaforoNodo;
+sem_t semCon;
 
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
@@ -35,6 +36,8 @@ sem_t semaforo,semaforoH,semaforoScript,semaforoGrabar,semaforoSetBloque,semafor
 
 //#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "nodo.log"
+
+int contador;
 
 //Tamanio bloques 20mb
 #define TAMANIO_BLOQUE 1024*1024*20
@@ -214,6 +217,7 @@ typedef struct {
 	    char *nombreNodo;
 	    char *ipNodo;
 	    char *puertoNodo;
+	    int socket;
 	    t_list *listaArchivos;
 } t_nodo;
 

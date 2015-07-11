@@ -358,12 +358,12 @@ int AtiendeCliente(void * arg) {
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-					sem_post(&semaforoMarta);
+					//sem_post(&semaforoMarta);
 
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
-					sem_wait(&semaforoMarta);
+					//sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 					sem_post(&semaforoMarta);
 
@@ -388,11 +388,11 @@ int AtiendeCliente(void * arg) {
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-					sem_post(&semaforoMarta);
+					//sem_post(&semaforoMarta);
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
-					sem_wait(&semaforoMarta);
+					//sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 					sem_post(&semaforoMarta);
 					/*buffer=string_new();
@@ -424,12 +424,12 @@ int AtiendeCliente(void * arg) {
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
 					sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-					sem_post(&semaforoMarta);
+					//sem_post(&semaforoMarta);
 
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
-					sem_wait(&semaforoMarta);
+					//sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 					sem_post(&semaforoMarta);
 				}
