@@ -44,6 +44,12 @@
 #define BUFFERSIZE 				50					//Tamaño del buffer
 
 
+//Persistencia nodo archivos y filesystem
+mongoc_collection_t *nodosMongo;
+mongoc_collection_t *archivosMongo;
+mongoc_collection_t *filesystemMongo;
+
+
 // TIPOS //
 typedef enum {
 	CantidadArgumentosIncorrecta,

@@ -2117,3 +2117,474 @@ int sendall(int s, char *buf, long unsigned *len){
 	*len = total; // devuelve aquí la cantidad enviada en realidad
 	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
 }
+
+void mongo_db_nodos_open(){
+	mongoc_init ();
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	nodosMongo = mongoc_client_get_collection (client, "test", "MDFS_NODOS");
+}
+
+void mongo_db_nodos_close(){
+	mongoc_collection_destroy (nodosMongo);
+	mongoc_client_destroy (client);
+}
+
+void armar_nodo_mongo(t_nodo* el_nodo, bson_t** nodo, bson_t** bloquesDisp){
+	bson_append_utf8(nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
+		bson_append_utf8(nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
+		bson_append_utf8(nodo, "puerto", 2, el_nodo->puerto, strlen(el_nodo->puerto));
+		bson_append_utf8(nodo, "tamanio", 2, el_nodo->tamanio, strlen(el_nodo->tamanio));
+		bson_append_int32(nodo, "estado", 6, el_nodo->estado);
+		bson_append_array_begin(nodo, "bloquesDisponibles", 18, bloquesDisp);
+
+		for (int i = 0; i < list_size(el_nodo->bloquesDisponibles); i++) {
+
+			t_bloque_disponible* el_bloque = list_get(el_nodo->bloquesDisponibles, i); //Chequear si tiene que arrancar en 0 para el primer elemento
+
+
+			bson_append_int32(bloquesDisp, "bloque", 6, el_bloque->bloque);
+
+		}
+		bson_append_array_end(nodo, bloquesDisp);
+}
+
+
+bool crear_nodo_mongo(t_nodo* el_nodo) {
+    bool res;
+    bson_t *nodo = bson_new();
+    bson_t *bloquesDisp = bson_new();
+    bson_error_t error;
+
+    armar_nodo_mongo(el_nodo,&nodo, &bloquesDisp);
+
+	res= mongoc_collection_insert (nodosMongo, MONGOC_INSERT_NONE, nodo, NULL, &error);
+    // ver si no hay que crear una collection especial para la lista nodo.
+
+    bson_destroy(bloquesDisp);
+	bson_destroy(error);
+	bson_destroy(nodo);
+
+	return res;
+}
+
+bool borrar_nodo_mongo(t_nodo* el_nodo){
+	bool res;
+	    bson_t *nodo = bson_new();
+	    bson_t *bloquesDisp = bson_new();
+	    bson_error_t error;
+
+	    armar_nodo_mongo(el_nodo,&nodo, &bloquesDisp);
+	    res = mongoc_collection_remove (nodosMongo,MONGOC_DELETE_SINGLE_REMOVE,nodo,NULL,&error);
+
+	    bson_destroy(bloquesDisp);
+	    bson_destroy(error);
+	    bson_destroy(nodo);
+
+	    return res;
+
+}
+
+int grabar_nodo_mongo(t_nodo* el_nodo_viejo, t_nodo* el_nodo_nuevo) {
+    int res;
+
+    bson_t *nodoViejo = bson_new();
+    bson_t *bloquesDispViejo = bson_new();
+    bson_t *nodoNuevo = bson_new();
+    bson_t *bloquesDispNuevo = bson_new();
+
+    armar_nodo_mongo(el_nodo_viejo,&nodoViejo, &bloquesDispViejo);
+    armar_nodo_mongo(el_nodo_nuevo,&nodoNuevo, &bloquesDispNuevo);
+
+
+    res = mongoc_collection_update(nodosMongo, MONGOC_UPDATE_UPSERT, nodoViejo, nodoNuevo, NULL, NULL);
+    // ver si no hay que crear una collection especial para la lista nodo.
+
+    bson_destroy(bloquesDispViejo);
+    bson_destroy(bloquesDispNuevo);
+	bson_destroy(nodoNuevo);
+	bson_destroy(nodoViejo);
+
+	return res;
+}
+
+int *leer_archivo_mongo(){
+//t_archivo_json *leerArchivoMongo(bson_t *query)
+
+	mongoc_cursor_t *cursor;
+	const bson_t *doc;
+	bson_t *query;
+	char *str;
+	bson_iter_t iter, child;
+	int i;
+	uint32_t array_len;
+	const uint8_t    *array;
+	t_nodo *nodoMongo = malloc(sizeof (t_nodo));
+	t_bloque_disponible* el_bloque;
+
+
+	mongo_db_nodos_open();
+
+	query  = bson_new ();
+
+	cursor = mongoc_collection_find (nodoMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+	while (mongoc_cursor_next (cursor, &doc)) {
+		str = bson_as_json (doc, NULL);
+		if(bson_iter_init(&iter,doc)){
+		    while(bson_iter_next(&iter)){
+		        if(bson_iter_find(&iter,"nombre")){
+		        	nodoMongo->nombre=strdup(bson_iter_utf8(&iter,NULL));
+		           	}
+		        if(bson_iter_find(&iter,"ip")){
+		        	nodoMongo->ip=strdup(bson_iter_utf8(&iter,NULL));
+		        	}
+		        if(bson_iter_find(&iter,"puerto")){
+		        	nodoMongo->puerto=strdup(bson_iter_utf8(&iter,NULL));
+		        	}
+		        if(bson_iter_find(&iter,"tamanio")){
+		        	nodoMongo->tamanio=strdup(bson_iter_utf8(&iter,NULL));
+		        	}
+		        if(bson_iter_find(&iter,"estado"))
+		        	nodoMongo->estado = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"bloquesDisponibles")){
+		        	nodoMongo->bloquesDisponibles=list_create();
+		        	 bson_iter_array (&iter, &array_len,&array);
+		        	 bson_iter_recurse(&iter, &child);
+		        	 while(bson_iter_next(&child)){
+		        		 if(bson_iter_find(&child,"bloque"))
+		        		 el_bloque->bloque = (int32_t)bson_iter_int32(&iter);
+
+		        		 list_add(nodoMongo->bloquesDisponibles,el_bloque);
+		        	 }
+
+		        }
+
+
+		    }
+
+		}
+	    printf ("%s\n", str);
+	    bson_free (str);
+	    list_add(lista_nodos,nodoMongo);
+	    list_destroy(nodoMongo->bloquesDisponibles); //Limpio la lista bloques para el proximo archivo a cargar.
+	}
+
+	bson_destroy (query);
+	bson_destroy(doc);
+	mongoc_cursor_destroy (cursor);
+	free(nodoMongo);
+
+	return list_size(lista_nodos);
+}
+
+
+
+void mongo_db_filesystem_open(){
+	mongoc_init ();
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	filesystemMongo = mongoc_client_get_collection (client, "test", "MDFS_FILESYSTEM");
+}
+
+void mongo_db_filesystem_close(){
+	mongoc_collection_destroy (filesystemMongo);
+	mongoc_client_destroy (client);
+}
+
+void armar_filesystem_mongo(t_filesystem* el_fs, bson_t** filesystem){
+	bson_append_int32(filesystem, "index", 5, el_fs->index);
+
+		bson_append_utf8(filesystem, "directorio", 10, el_fs->directorio, strlen(el_fs->directorio));
+
+		bson_append_int32(filesystem, "padre", 5, el_fs->padre);
+}
+
+bool crear_filesystem_mongo(t_filesystem* el_fs) {
+    bool res;
+
+    bson_t *filesystem = bson_new();
+    bson_error_t error;
+    armar_filesystem_mongo(el_fs,filesystem);
+
+    res= mongoc_collection_insert (filesystemMongo, MONGOC_INSERT_NONE, filesystem, NULL, &error);    // ver si no hay que crear una collection especial para la lista nodo.
+
+	bson_destroy(filesystem);
+
+	return res;
+}
+
+bool borrar_filesystem_mongo(t_filesystem* el_fs) {
+    bool res;
+
+    bson_t *filesystem = bson_new();
+    bson_error_t error;
+    armar_filesystem_mongo(el_fs,filesystem);
+
+    res = mongoc_collection_remove (filesystemMongo,MONGOC_DELETE_SINGLE_REMOVE,filesystem,NULL,&error);
+
+	bson_destroy(filesystem);
+
+	return res;
+}
+
+int grabar_filesystem_mongo(t_filesystem* el_fs_viejo, t_filesystem* el_fs_nuevo) {
+    int res;
+
+    bson_t *filesystemViejo = bson_new();
+    bson_t *filesystemNuevo = bson_new();
+
+    armar_filesystem_mongo(el_fs_viejo,filesystemViejo);
+    armar_filesystem_mongo(el_fs_nuevo,filesystemNuevo);
+
+    res = mongoc_collection_update(filesystemMongo, MONGOC_UPDATE_UPSERT, filesystemViejo, filesystemNuevo, NULL, NULL);
+    // ver si no hay que crear una collection especial para la lista nodo.
+
+	bson_destroy(filesystemViejo);
+	bson_destroy(filesystemNuevo);
+
+	return res;
+}
+
+
+int *leer_filesystem_mongo(){
+//t_archivo_json *leerArchivoMongo(bson_t *query)
+
+	mongoc_cursor_t *cursor;
+	const bson_t *doc;
+	bson_t *query;
+	char *str;
+	bson_iter_t iter;
+	int i;
+	uint32_t array_len;
+	const uint8_t    *array;
+	t_filesystem *archivoFilesystem = malloc(sizeof (t_filesystem));
+
+	mongo_db_filesystem_open();
+
+	query  = bson_new ();
+
+	cursor = mongoc_collection_find (archivosMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+	while (mongoc_cursor_next (cursor, &doc)) {
+		str = bson_as_json (doc, NULL);
+		if(bson_iter_init(&iter,doc)){
+		    while(bson_iter_next(&iter)){
+
+		    	if(bson_iter_find(&iter,"index"))
+		    		archivoFilesystem->index = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"directorio")){
+		        	archivoFilesystem->directorio=strdup(bson_iter_utf8(&iter,NULL));
+		           	}
+
+		        if(bson_iter_find(&iter,"padre"))
+		        	archivoFilesystem->padre = (int32_t)bson_iter_int32(&iter);
+
+		        	 }
+
+		        }
+
+	    printf ("%s\n", str);
+	    bson_free (str);
+	    list_add(lista_filesystem,archivoFilesystem);
+	}
+
+	bson_destroy (query);
+	bson_destroy(doc);
+	mongoc_cursor_destroy (cursor);
+	free(archivoFilesystem);
+
+	return list_size(lista_filesystem);
+}
+
+void mongo_db_archivosM_open(){
+	mongoc_init ();
+	client = mongoc_client_new ("mongodb://localhost:27017/");
+	archivosMongo = mongoc_client_get_collection (client, "test", "MDFS_ARCHIVOSMONGO");
+}
+
+void mongo_db_archivosM_close(){
+	mongoc_collection_destroy (archivosMongo);
+	mongoc_client_destroy (client);
+}
+
+void armar_archivo_mongo(t_archivo*el_archivo, bson_t **archivo, bson_t **listaBloques, bson_t **copiasArray){
+	bson_append_utf8(archivo, "nombreArchivo", 13, el_archivo->nombreArchivo, strlen(el_archivo->nombreArchivo));
+		bson_append_int32(archivo, "padre", 5, el_archivo->padre);
+		bson_append_int32(archivo, "tamanio", 7, el_archivo->tamanio);
+		bson_append_int32(archivo, "estado", 6, el_archivo->estado);
+
+		bson_append_array_begin(archivo, "listaBloques", 12, listaBloques);
+
+		for (int i = 0; i < list_size(el_archivo->listaBloques); i++) {
+
+			t_bloque* el_bloque = list_get(el_archivo->listaBloques, i); //Chequear si tiene que arrancar en 0 para el primer elemento
+
+
+			bson_append_int32(listaBloques, "bloque", 6, el_bloque->bloque);
+			bson_append_array_begin(listaBloques, "copias", 6, copiasArray);
+
+			for (int i = 0; i < list_size(el_bloque->array); i++) {
+
+				t_array_copias* la_copia = list_get(el_archivo->listaBloques, i); //Chequear si tiene que arrancar en 0 para el primer elemento
+
+
+				bson_append_utf8(copiasArray, "nombreNodo", 10, la_copia->nombreNodo, strlen(la_copia->nombreNodo));
+				bson_append_utf8(copiasArray, "nroBloque", 9, la_copia->nro_bloque, strlen(la_copia->nro_bloque));
+
+
+				}
+			bson_append_array_end(listaBloques, copiasArray);
+		}
+		bson_append_array_end(archivo, listaBloques);
+}
+
+bool crear_archivo_mongo(t_archivo* el_archivo) {
+    bool res;
+
+    bson_t *archivo = bson_new();
+    bson_t *listaBloques = bson_new();
+    bson_t *copiasArray = bson_new();
+    bson_error_t error;
+
+
+    armar_archivo_mongo(el_archivo, archivo, listaBloques, copiasArray);
+
+
+    res= mongoc_collection_insert (archivosMongo, MONGOC_INSERT_NONE, archivo, NULL, &error);    // ver si no hay que crear una collection especial para la lista nodo.
+    // ver si no hay que crear una collection especial para la lista nodo.
+
+    bson_destroy(listaBloques);
+	bson_destroy(archivo);
+	bson_destroy(copiasArray);
+
+	return res;
+}
+
+bool borrar_archivo_mongo(t_archivo* el_archivo) {
+    bool res;
+
+    bson_t *archivo = bson_new();
+    bson_t *listaBloques = bson_new();
+    bson_t *copiasArray = bson_new();
+    bson_error_t error;
+
+
+    armar_archivo_mongo(el_archivo, archivo, listaBloques, copiasArray);
+
+    res = mongoc_collection_remove (archivosMongo,MONGOC_DELETE_SINGLE_REMOVE,archivo,NULL,&error);
+
+    bson_destroy(listaBloques);
+	bson_destroy(archivo);
+	bson_destroy(copiasArray);
+
+	return res;
+}
+
+int grabar_archivo_mongo(t_archivo* el_archivo_viejo, t_archivo* el_archivo_nuevo) {
+    int res;
+
+    bson_t *archivoViejo = bson_new();
+        bson_t *listaBloquesViejo = bson_new();
+        bson_t *copiasArrayViejo = bson_new();
+        bson_t *archivoNuevo = bson_new();
+            bson_t *listaBloquesNuevo = bson_new();
+            bson_t *copiasArrayNuevo = bson_new();
+
+            armar_archivo_mongo(el_archivo_viejo, archivoViejo, listaBloquesViejo, copiasArrayViejo);
+            armar_archivo_mongo(el_archivo_nuevo, archivoNuevo, listaBloquesNuevo, copiasArrayNuevo);
+
+
+    res = mongoc_collection_update(archivosMongo, MONGOC_UPDATE_UPSERT, archivoViejo, archivoNuevo, NULL, NULL);
+    // ver si no hay que crear una collection especial para la lista nodo.
+
+    bson_destroy(listaBloquesViejo);
+    	bson_destroy(archivoViejo);
+    	bson_destroy(copiasArrayViejo);
+    	bson_destroy(listaBloquesNuevo);
+    		bson_destroy(archivoNuevo);
+    		bson_destroy(copiasArrayNuevo);
+
+	return res;
+}
+
+int *leer_archivo_mongo(){
+//t_archivo_json *leerArchivoMongo(bson_t *query)
+
+	mongoc_cursor_t *cursor;
+	const bson_t *doc;
+	bson_t *query;
+	char *str;
+	bson_iter_t iter, child,child2;
+	int i;
+	uint32_t array_len;
+	const uint8_t    *array;
+	t_archivo *archivoMongo = malloc(sizeof (t_archivo));
+	t_bloque* el_bloque;
+	t_array_copias el_array;
+
+	mongo_db_archivosM_open();
+
+	query  = bson_new ();
+
+	cursor = mongoc_collection_find (archivosMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+	while (mongoc_cursor_next (cursor, &doc)) {
+		str = bson_as_json (doc, NULL);
+		if(bson_iter_init(&iter,doc)){
+		    while(bson_iter_next(&iter)){
+		        if(bson_iter_find(&iter,"nombreArchivo")){
+		        	archivoMongo->nombreArchivo=strdup(bson_iter_utf8(&iter,NULL));
+		           	}
+		        if(bson_iter_find(&iter,"padre"))
+		            archivoMongo->padre = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"tamanio"))
+		        	 archivoMongo->tamanio = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"estado"))
+		        	 archivoMongo->estado = (int32_t)bson_iter_int32(&iter);
+
+		        if(bson_iter_find(&iter,"listaBloques")){
+		        	 archivoMongo->listaBloques=list_create();
+		        	 bson_iter_array (&iter, &array_len,&array);
+		        	 bson_iter_recurse(&iter, &child);
+		        	 while(bson_iter_next(&child)){
+		        		 if(bson_iter_find(&child,"bloque"))
+		        		 el_bloque->bloque = (int32_t)bson_iter_int32(&iter);
+
+		        		 if(bson_iter_find(&child,"copias")){
+		        			 el_bloque->array=list_create();
+		        			 bson_iter_array (&child, &array_len,&array);
+		        			 bson_iter_recurse(&child, &child2);
+		        			 while(bson_iter_next(&child2)){
+		        			 if(bson_iter_find(&child2,"nombreNodo")){
+		        				 el_array->nombreNodo=strdup(bson_iter_utf8(&child2,NULL));
+		        			 }
+		        			 if(bson_iter_find(&child2,"nroBloque")){
+		        				 el_array->nro_bloque=strdup(bson_iter_utf8(&child2,NULL));
+		        				 }
+		        			 list_add(el_bloque->array,el_array); //Agrego la copia a la lista
+
+		        			 }
+		        			 list_add(archivoMongo->listaBloques,el_bloque);
+		        			 list_destroy(el_bloque->array); //Limpio la lista de copia del bloque
+		        		 }
+		        	 }
+
+		        }
+
+
+		    }
+
+		}
+	    printf ("%s\n", str);
+	    bson_free (str);
+	    list_add(lista_archivos,archivoMongo);
+	    list_destroy(archivoMongo->listaBloques); //Limpio la lista bloques para el proximo archivo a cargar.
+	}
+
+	bson_destroy (query);
+	bson_destroy(doc);
+	mongoc_cursor_destroy (cursor);
+	free(archivoMongo);
+
+	return list_size(lista_archivos);
+}
