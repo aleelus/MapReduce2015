@@ -439,6 +439,8 @@ int AtiendeCliente(void * arg) {
 
 				//pthread_exit(NULL);
 
+			}else if (strcmp(buffer,"30")==0){
+
 			}
 
 
