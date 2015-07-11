@@ -44,7 +44,11 @@ int main(int argv, char** argc) {
 
 	fseek(archivoEspacioDatos, 0L, SEEK_END);
 
-	printf("Tamaño de Archivo de Datos:%lu\n",ftell(archivoEspacioDatos));
+	tamanioDataBin = 1024*1024*g_Tamanio_Bin;
+
+	//tamanioDataBin = ftell(archivoEspacioDatos);
+
+	printf("Tamaño de Archivo de Datos:%lu\n",tamanioDataBin);
 	//Prueba getFileContent
 	//char* temp_file = getFileContent("temporalPrueba.tmp");
 
@@ -269,7 +273,7 @@ char* getBloque(int numero){
 
 
 void setBloque(int numero, char*datos){
-	if(( tamanio_archivo(g_Archivo_Bin) <= (numero*TAMANIO_BLOQUE) )){
+	if(( tamanioDataBin <= (numero*TAMANIO_BLOQUE) )){
 			//Si no se pudo abrir, imprimir el error y abortar;
 			printf("El bloque no existe en el archivo. \n");
 			abort();
@@ -524,6 +528,13 @@ void LevantarConfig() {
 			g_Archivo_Bin = config_get_string_value(config, "ARCHIVO_BIN");
 		} else{
 			Error("No se pudo leer el parametro ARCHIVO_BIN");
+		}
+
+		// Obtenemos el tamanio del archivo con los bloques
+		if (config_has_property(config, "TAMANIO_BIN")) {
+			g_Tamanio_Bin = config_get_int_value(config, "TAMANIO_BIN");
+		} else{
+			Error("No se pudo leer el parametro TAMANIO_BIN");
 		}
 
 		// Obtenemos el nombre del directorio temporal
@@ -991,6 +1002,7 @@ char* burbujeo(t_list*bloques,int*indice){
 		if(bloque->contenidoBloque==NULL) return NULL;
 
 		bloque->fsd = bloque->fsd + strlen(bloque->contenidoBloque)+1;
+		bloque->nuevaLinea = 1;
 
 		return bloque->contenidoBloque;
 	} else {
@@ -1023,10 +1035,11 @@ char * dameLinea(char * bloque, long unsigned fCur) {
 		//char * array[2];
 		fseek(fA,0L,SEEK_END);
 		total = ftell(fA);
+		printf("TOTAL:%lu\n",total);
 		fseek(fA,fCur,SEEK_SET);
-		char * buffer = malloc(total-fCur+1);
-		memset(buffer,0,total-fCur+1);
-		fread(buffer,1,total-fCur,fA);
+		char * buffer = malloc(500);
+		memset(buffer,0,500);
+		fread(buffer,1,500,fA);
 		//ptr = strtok( buffer, s2 );    // Primera llamada => Primer token
 		//int i=0;
 		//if(ptr==NULL) return NULL;
@@ -1040,7 +1053,8 @@ char * dameLinea(char * bloque, long unsigned fCur) {
 		//	}
 		//}
 		int i=0;
-		char aux[total-fCur];
+		char * aux = malloc(500);
+		memset(aux,0,500);
 		while(buffer[i++]!='\n'){
 			aux[i-1]=buffer[i-1];
 		}
@@ -1048,6 +1062,7 @@ char * dameLinea(char * bloque, long unsigned fCur) {
 		//printf("BUFFER:%s\n",buffer);
 		//char** array = string_split(buffer,s2);
 		//printf("SPLIT:%s\n",array[0]);
+		free(buffer);
 		fclose(fA);
 		return aux;
 	} else {
@@ -1128,18 +1143,20 @@ char * elMaravilloso(t_list* nodos,t_list**bloques){
 	}
 
 
-
 	for(i=0;i<list_size(*bloques);i++){
 		bloque = list_get(*bloques,i);
-		if(!bloque->pertenece){
-			printf("NO PERTENECE\n");
-			nodo = buscarNodoPorNombre(bloque->nombreNodo,nodos);
-			bloque->contenidoBloque = obtenerLinea(nodo,bloque);
-		} else {
-			printf("PERTENECE\n");
-			bloque->contenidoBloque = dameLinea(bloque->bloque,bloque->fsd);
+		if(bloque->nuevaLinea==1){
+			if(!bloque->pertenece){
+				printf("NO PERTENECE\n");
+				nodo = buscarNodoPorNombre(bloque->nombreNodo,nodos);
+				bloque->contenidoBloque = obtenerLinea(nodo,bloque);
+			} else {
+				printf("PERTENECE\n");
+				bloque->contenidoBloque = dameLinea(bloque->bloque,bloque->fsd);
+			}
+			bloque->nuevaLinea = 0;
+			printf("%d) LA LINEA:%s\n",i,bloque->contenidoBloque);
 		}
-		printf("%d) LA LINEA:%s\n",i,bloque->contenidoBloque);
 
 	}
 	menor=dameMenor(nodos,bloques);
@@ -1159,6 +1176,8 @@ void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,
 	while(array[cont]!=NULL){
 		  cont++;
 	}
+
+	int vector[list_size(*bloques)];
 
 
 	pid_t pid;
@@ -1233,6 +1252,7 @@ int AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 			bloque_script->bloque = strdup(nombreResultado);
 			bloque_script->nombreNodo = strdup(el_nodo->nombreNodo);
 			bloque_script->fsd = 0;
+			bloque_script->nuevaLinea = 1;
 			list_add(el_nodo->listaArchivos,nombreResultado);
 			list_add(bloques,bloque_script);
 		}
@@ -1274,6 +1294,26 @@ int AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 	return 1;
 }
 
+void ordenarConSort(char * nombreArchivo,char* nombrePosta){
+
+	char * comandoScript = string_new();
+	string_append(&comandoScript, "sort");
+	string_append(&comandoScript, " < ");
+	//string_append(&comandoScript, "/tmp/"); Agregar Ruta Temporal
+	string_append(&comandoScript, nombreArchivo);
+	printf("NOMBRE DE ARCHIVO CREADO:%s\n",nombreArchivo);
+	printf("NOMBRE DE ARCHIVO CREADO:%s\n",nombrePosta);
+	string_append(&comandoScript, " > ");
+	string_append(&comandoScript, nombrePosta);
+	system(comandoScript);
+	free(comandoScript);
+	comandoScript = string_new();
+	string_append(&comandoScript,"rm ");
+	string_append(&comandoScript,nombreArchivo);
+	system(comandoScript);
+	free(comandoScript);
+}
+
 int procesarRutinaMap(t_job * job){
 	sem_wait(&semaforoGrabar);
 	grabarScript(job->nombreSH,job->contenidoSH);
@@ -1299,7 +1339,12 @@ int procesarRutinaMap(t_job * job){
 
 	//Ejecuto el script sobre el bloque
 	//printf(COLOR_VERDE"AHORA SI\n"DEFAULT);
-	int valor = runScriptFile(job->nombreSH,job->nombreResultado,contenidoBloque);
+	char * elnombre = string_new();
+	string_append(&elnombre,"tmp");
+	string_append(&elnombre,job->nombreResultado);
+	int valor = runScriptFile(job->nombreSH,elnombre,contenidoBloque);
+
+	ordenarConSort(elnombre,job->nombreResultado);
 
 	if (valor){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.

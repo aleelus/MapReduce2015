@@ -88,6 +88,9 @@ char* g_Nodo_Nuevo;
 //Ip del Nodo
 char* g_Ip_Nodo;
 
+//Tamanio Data Bin
+int g_Tamanio_Bin;
+
 //Socket de FS
 int socket_Fs;
 
@@ -101,6 +104,10 @@ int g_Ejecutando = 1;
 int g_Retardo = 0;
 
 long unsigned tamanioTotal;
+
+long unsigned tamanioDataBin;
+
+
 
 t_list * lista_Bloques;
 
@@ -140,6 +147,7 @@ typedef struct{
     char* contenidoBloque;
     long unsigned fsd;
     long unsigned tamanio;
+    int nuevaLinea;
 }t_bloque_script;
 
 static t_bloque *bloque_create(int numeroB, char* contenidoB,long unsigned tamanioBloque) {
