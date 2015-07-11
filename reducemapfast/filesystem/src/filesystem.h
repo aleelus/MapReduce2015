@@ -44,11 +44,6 @@
 #define BUFFERSIZE 				50					//Tamaño del buffer
 
 
-//Persistencia nodo archivos y filesystem
-mongoc_collection_t *nodosMongo;
-mongoc_collection_t *archivosMongo;
-mongoc_collection_t *filesystemMongo;
-
 
 // TIPOS //
 typedef enum {
@@ -210,3 +205,26 @@ t_archivo* buscarArchivoPorNombre(char* nombre,int padre);
 void eliminarFilesystem();
 void eliminarArchivos();
 int armarArchivo();
+
+void mongo_db_nodos_open();
+void mongo_db_nodos_close();
+void armar_nodo_mongo(t_nodo* el_nodo, bson_t** nodo, bson_t** bloquesDisp);
+bool crear_nodo_mongo(t_nodo* el_nodo);
+bool borrar_nodo_mongo(t_nodo* el_nodo);
+int grabar_nodo_mongo(t_nodo* el_nodo_viejo, t_nodo* el_nodo_nuevo);
+int leer_nodo_mongo();
+void mongo_db_filesystem_open();
+void mongo_db_filesystem_close();
+void armar_filesystem_mongo(t_filesystem* el_fs, bson_t** filesystem);
+bool crear_filesystem_mongo(t_filesystem* el_fs);
+bool borrar_filesystem_mongo(t_filesystem* el_fs);
+int grabar_filesystem_mongo(t_filesystem* el_fs_viejo, t_filesystem* el_fs_nuevo);
+int leer_filesystem_mongo();
+void mongo_db_archivosM_open();
+void mongo_db_archivosM_close();
+void armar_archivo_mongo(t_archivo*el_archivo, bson_t **archivo, bson_t **listaBloques, bson_t **copiasArray);
+bool crear_archivo_mongo(t_archivo* el_archivo);
+bool borrar_archivo_mongo(t_archivo* el_archivo);
+int grabar_archivo_mongo(t_archivo* el_archivo_viejo, t_archivo* el_archivo_nuevo);
+int leer_archivo_mongo();
+

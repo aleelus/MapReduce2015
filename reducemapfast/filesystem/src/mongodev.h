@@ -43,6 +43,11 @@ mongoc_collection_t *collection;
 mongoc_client_t *client;
 t_tipoAcceso tipoAcceso;
 
+//Persistencia nodo archivos y filesystem
+mongoc_collection_t *nodosMongo;
+mongoc_collection_t *archivosMongo;
+mongoc_collection_t *filesystemMongo;
+
 int iniciarMongo();
 //int eliminarMongo();
 //int leerMongo();

@@ -26,6 +26,9 @@ int main(int argv, char** argc) {
 	lista_nodos    = list_create();		//Lista de nodos
 	lista_archivos = list_create();		//Lista de archivos
 	lista_filesystem = list_create();	//Lista de estructura de filesystem
+	t_archivo* el_archivo=archivo_create("el_archivo",125000,1, 1);
+
+
 
 	int iThreadConsola;					//Hilo de consola
 	int iThreadOrquestador;				//Hilo orquestador
