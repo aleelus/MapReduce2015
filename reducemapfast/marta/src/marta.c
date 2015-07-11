@@ -21,7 +21,6 @@ int main(int argv, char** argc) {
 	sem_init(&semaforoListaNodos, 1, 1);
 	sem_init(&semaforoListaArchivos, 1, 1);
 	sem_init(&semaforoListaJobEnviados, 1, 1);
-	sem_init(&semIdJob, 1, 1);
 
 	//sem_init(&semaforoJob,1,0);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,9 +271,9 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	*contIdJob=id_job;
 	t_archivo *el_archivo;
 
-	sem_wait(&semIdJob);
+	//wait(mutex)
 	id_job++;
-	sem_post(&semIdJob);
+	//signal(mutex)
 
 	//BUFFER RECIBIDO = 2270 (EJEMPLO)
 	//BUFFER RECIBIDO = 2112220temperatura-2012.txt220temperatura-2013.txt213resultado.txt1
@@ -295,11 +294,7 @@ void AtiendeJob (int * contIdJob,char *buffer, int *cantRafaga){
 	tieneCombiner=PosicionDeBufferAInt(buffer,posActual); // CAMBIE strlen(buffer)-3 por posActual
 
 	int i=0;
-	sem_wait(&semaforoListaArchivos);
-	int sizeListaArchivos = list_size(lista_archivos);
-	sem_post(&semaforoListaArchivos);
-
-	while(i<sizeListaArchivos){
+	while(i<list_size(lista_archivos)){
 
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
@@ -318,12 +313,7 @@ void RecorrerArchivos(){
 	t_archivo * el_archivo;
 
 	int i=0;
-
-	sem_wait(&semaforoListaArchivos);
-	int sizeListaArchivos = list_size(lista_archivos);
-	sem_post(&semaforoListaArchivos);
-
-	while(i<sizeListaArchivos){
+	while(i<list_size(lista_archivos)){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -366,11 +356,7 @@ void RecorrerListaBloques(){
 	int j=0;
 	printf("IDJOB:"COLOR_VERDE"%d\n"DEFAULT,id_job);
 
-	sem_wait(&semaforoListaArchivos);
-	int sizeListaArchivos = list_size(lista_archivos);
-	sem_post(&semaforoListaArchivos);
-
-	while(i<sizeListaArchivos){
+	while(i<list_size(lista_archivos)){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -403,31 +389,19 @@ void RecorrerListaNodos(){
 	t_bloqueArchivo *el_bloqueArchivo;
 	int i=0,j=0;
 
-	sem_wait(&semaforoListaNodos);
-	int sizeListaNodo = list_size(lista_nodos);
-	sem_post(&semaforoListaNodos);
-	while(i<sizeListaNodo){
-		sem_wait(&semaforoListaNodos);
+	while(i<list_size(lista_nodos)){
 		el_nodo=list_get(lista_nodos,i);
-		sem_post(&semaforoListaNodos);
 		printf("************************************************\n");
 		printf("Nombre: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->nombreNodo);
 		printf("IP: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->ipNodo);
 		printf("Puerto: "COLOR_VERDE"%s\n"DEFAULT,el_nodo->puertoNodo);
 		printf("ListaBloqueArchivo: ");
 		j=0;
-
-		sem_wait(&semaforoListaNodos);
-		int sizeListaNodoBloque = list_size(el_nodo->listaBloqueArchivo);
-		sem_post(&semaforoListaNodos);
-
-		while(j<sizeListaNodoBloque){
-			sem_wait(&semaforoListaNodos);
+		while(j<list_size(el_nodo->listaBloqueArchivo)){
 			el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,j);
-			sem_post(&semaforoListaNodos);
 			printf(COLOR_VERDE"  %s"DEFAULT"::::"COLOR_VERDE"%s"DEFAULT,el_bloqueArchivo->bloque,el_bloqueArchivo->archivo);
 			j++;
-			if(j==sizeListaNodoBloque)
+			if(j==list_size(el_nodo->listaBloqueArchivo))
 				printf("\n");
 
 		}
@@ -512,12 +486,7 @@ void ObtenerInfoDeNodos(int id){
 	int i=0,contArchivos=0;
 	//Para el FS
 	string_append(&bufferDos,"41");
-
-	sem_wait(&semaforoListaArchivos);
-	int sizeListaArchivos = list_size(lista_archivos);
-	sem_post(&semaforoListaArchivos);
-
-	while(i<sizeListaArchivos){
+	while(i<list_size(lista_archivos)){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -540,12 +509,7 @@ void ObtenerInfoDeNodos(int id){
 	string_append(&bufferDos,string_itoa(cont));
 	string_append(&bufferDos,string_itoa(contArchivos));
 	i=0;
-
-	sem_wait(&semaforoListaArchivos);
-	sizeListaArchivos= list_size(lista_archivos);
-	sem_post(&semaforoListaArchivos);
-
-	while(i<sizeListaArchivos){
+	while(i<list_size(lista_archivos)){
 			sem_wait(&semaforoListaArchivos);
 			el_archivo = list_get(lista_archivos, i);
 			sem_post(&semaforoListaArchivos);
@@ -653,11 +617,7 @@ void ObtenerInfoDeNodos(int id){
 		j=0;
 		nomArch=DigitosNombreArchivo(rafaga2Fs,&posActual);
 
-		sem_wait(&semaforoListaArchivos);
-		sizeListaArchivos=list_size(lista_archivos);
-		sem_post(&semaforoListaArchivos);
-
-		while(j<sizeListaArchivos){
+		while(j<list_size(lista_archivos)){
 			sem_wait(&semaforoListaArchivos);
 			el_archivo=list_get(lista_archivos,j);
 			sem_post(&semaforoListaArchivos);
@@ -697,13 +657,7 @@ void ObtenerInfoDeNodos(int id){
 
 
 	i=0;
-	sem_wait(&semaforoListaArchivos);
-	sizeListaArchivos=list_size(lista_archivos);
-	sem_post(&semaforoListaArchivos);
-
-
-
-	while(i<sizeListaArchivos){
+	while(i<list_size(lista_archivos)){
 		sem_wait(&semaforoListaArchivos);
 		el_archivo = list_get(lista_archivos, i);
 		sem_post(&semaforoListaArchivos);
@@ -1027,175 +981,175 @@ char* procesarContadorArchivoParcial(int contador,char* resultado){
 
 void enviarPlanificacionAJob (int id,int socket){
 
-    //415NodoA212192.168.1.2614600018Bloque30213resultado.txt
-    t_archivo *el_archivo;
-    t_nodo *el_nodo;
-    t_dato *el_dato;
-    t_dato *el_dato_aux;
+	//415NodoA212192.168.1.2614600018Bloque30213resultado.txt
+	t_archivo *el_archivo;
+	t_nodo *el_nodo;
+	t_dato *el_dato;
+	t_dato *el_dato_aux;
 
-    int i=0,c=0,contadorBloques=0;
-    char* nodo;
-    char* ipNodo;
-    char* puertoNodo;
-    char *bloque;
-    char *resultado;
-    int contadorArchivoParcial=0;
-    char *archParcial=string_new();
-
-
-    while(i<list_size(lista_archivos)){
-        sem_wait(&semaforoListaArchivos);
-        el_archivo=list_get(lista_archivos,i);
-        sem_post(&semaforoListaArchivos);
-        //SIN COMBINER
-        if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
-            for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
-                if(list_size(el_archivo->array_de_listas[c])>0){
-                    contadorBloques=0;
-                    el_dato_aux=list_get(el_archivo->array_de_listas[c],contadorBloques);
-                    el_nodo=buscarNodo(el_dato_aux->dato);
-
-                    for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
-                        el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
-
-                        if(el_dato->peso==0){
-                            //Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
-                            list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
-                            el_nodo->cantTareasPendientes++;
-
-                            archParcial=procesarContadorArchivoParcial(contadorArchivoParcial,el_archivo->nombreArchivoResultado);
-                            //Agrego a la lista de job's a enviar (ESTA LISTA ME VA A QUEDAR, NO LA VOY A ELIMINAR)
-                            sem_wait(&semaforoListaJobEnviados);
-                            list_add(lista_job_enviado,job_enviado_create(el_dato_aux->dato,el_dato->bloqueDelNodo,el_archivo->nombreArchivo,archParcial));
-                            sem_post(&semaforoListaJobEnviados);
-                            contadorArchivoParcial++;
-                            archParcial=string_new();
-                            //Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
-                            marcarBloquesEnArray(el_archivo,el_dato->dato);
-                        }
-                    }
-
-                }
-            }
-
-        }
-        // CON COMBINER
-        if(el_archivo->idJob==id && el_archivo->tieneCombiner==1){
-            for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
-                if(list_size(el_archivo->array_de_listas[c])>0){
-                    contadorBloques=0;
-                    el_dato_aux=list_get(el_archivo->array_de_listas[c],contadorBloques);
-                    el_nodo=buscarNodo(el_dato_aux->dato);
-
-                    for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
-                        el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
-
-                        if(el_dato->peso==0){
-                            //Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
-                            list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
-                            el_nodo->cantTareasPendientes++;
-
-                            archParcial=procesarContadorArchivoParcial(contadorArchivoParcial,el_archivo->nombreArchivoResultado);
-                            //Agrego a la lista de job's a enviar (ESTA LISTA ME VA A QUEDAR, NO LA VOY A ELIMINAR)
-                            sem_wait(&semaforoListaJobEnviados);
-                            list_add(lista_job_enviado,job_enviado_create(el_dato_aux->dato,el_dato->bloqueDelNodo,el_archivo->nombreArchivo,archParcial));
-                            sem_post(&semaforoListaJobEnviados);
-                            contadorArchivoParcial++;
-
-                            //Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
-                            marcarBloquesEnArray(el_archivo,el_dato->dato);
-
-                        }
-                    }
-
-                }
-            }
-
-        }
-        i++;
-    }
+	int i=0,c=0,contadorBloques=0;
+	char* nodo;
+	char* ipNodo;
+	char* puertoNodo;
+	char *bloque;
+	char *resultado;
+	int contadorArchivoParcial=0;
+	char *archParcial=string_new();
 
 
-    t_bloqueArchivo *el_bloqueArchivo;
-    t_job_enviado *el_job_enviado;
-    int x=0;
-    char* buffer=string_new();
+	while(i<list_size(lista_archivos)){
+		sem_wait(&semaforoListaArchivos);
+		el_archivo=list_get(lista_archivos,i);
+		sem_post(&semaforoListaArchivos);
+		//SIN COMBINER
+		if(el_archivo->idJob==id && el_archivo->tieneCombiner==0){
+			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+				if(list_size(el_archivo->array_de_listas[c])>0){
+					contadorBloques=0;
+					el_dato_aux=list_get(el_archivo->array_de_listas[c],contadorBloques);
+					el_nodo=buscarNodo(el_dato_aux->dato);
+
+					for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
+						el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
+
+						if(el_dato->peso==0){
+							//Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
+							list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
+							el_nodo->cantTareasPendientes++;
+
+							archParcial=procesarContadorArchivoParcial(contadorArchivoParcial,el_archivo->nombreArchivoResultado);
+							//Agrego a la lista de job's a enviar (ESTA LISTA ME VA A QUEDAR, NO LA VOY A ELIMINAR)
+							sem_wait(&semaforoListaJobEnviados);
+							list_add(lista_job_enviado,job_enviado_create(el_dato_aux->dato,el_dato->bloqueDelNodo,el_archivo->nombreArchivo,archParcial));
+							sem_post(&semaforoListaJobEnviados);
+							contadorArchivoParcial++;
+							archParcial=string_new();
+							//Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
+							marcarBloquesEnArray(el_archivo,el_dato->dato);
+						}
+					}
+
+				}
+			}
+
+		}
+		// CON COMBINER
+		if(el_archivo->idJob==id && el_archivo->tieneCombiner==1){
+			for(c=0;c<list_size(el_archivo->listaBloques)*3;c++){
+				if(list_size(el_archivo->array_de_listas[c])>0){
+					contadorBloques=0;
+					el_dato_aux=list_get(el_archivo->array_de_listas[c],contadorBloques);
+					el_nodo=buscarNodo(el_dato_aux->dato);
+
+					for(contadorBloques=1;contadorBloques<list_size(el_archivo->array_de_listas[c]);contadorBloques++){
+						el_dato=list_get(el_archivo->array_de_listas[c],contadorBloques);
+
+						if(el_dato->peso==0){
+							//Agrego a la lista de nodos un bloque de archivo listo para trabajar (de determinado nodo)
+							list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(el_dato->bloqueDelNodo,el_archivo->nombreArchivo,0));
+							el_nodo->cantTareasPendientes++;
+
+							archParcial=procesarContadorArchivoParcial(contadorArchivoParcial,el_archivo->nombreArchivoResultado);
+							//Agrego a la lista de job's a enviar (ESTA LISTA ME VA A QUEDAR, NO LA VOY A ELIMINAR)
+							sem_wait(&semaforoListaJobEnviados);
+							list_add(lista_job_enviado,job_enviado_create(el_dato_aux->dato,el_dato->bloqueDelNodo,el_archivo->nombreArchivo,archParcial));
+							sem_post(&semaforoListaJobEnviados);
+							contadorArchivoParcial++;
+
+							//Marco los bloques q subo a la lista de nodos, EJ: subo el bloque0 entonces marco todos los bloques0 como ya subidos.
+							marcarBloquesEnArray(el_archivo,el_dato->dato);
+
+						}
+					}
+
+				}
+			}
+
+		}
+		i++;
+	}
 
 
-
-
-    i=0;
-    while(i<list_size(lista_nodos)){
-        sem_wait(&semaforoListaNodos);
-        el_nodo=list_get(lista_nodos,i);
-        sem_post(&semaforoListaNodos);
-
-        nodo=el_nodo->nombreNodo;
-        ipNodo=el_nodo->ipNodo;
-        puertoNodo=el_nodo->puertoNodo;
-        el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
-        if(el_bloqueArchivo!=NULL){
-            bloque=el_bloqueArchivo->bloque;
-
-            x=0;
-            while(x<list_size(lista_job_enviado)){
-                sem_wait(&semaforoListaJobEnviados);
-                el_job_enviado=list_get(lista_job_enviado,x);
-                sem_post(&semaforoListaJobEnviados);
-                if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0){
-                    el_job_enviado->estado=1;
-                    el_bloqueArchivo->procesando=1;
-                    el_nodo->trabajando=1;
-
-                    nodo=obtenerSubBuffer(nodo);
-                    ipNodo=obtenerSubBuffer(ipNodo);
-                    puertoNodo=obtenerSubBuffer(puertoNodo);
-                    bloque=obtenerSubBuffer(bloque);
-                    resultado=obtenerSubBuffer(el_job_enviado->resultadoParcial);
-
-                    string_append(&buffer,"4");
-                    string_append(&buffer,"1");
-                    string_append(&buffer,nodo);
-                    string_append(&buffer,ipNodo);
-                    string_append(&buffer,puertoNodo);
-                    string_append(&buffer,bloque);
-                    string_append(&buffer,resultado);
-                    el_nodo->cantTareasPendientes--;
-
-
-                    printf(COLOR_VERDE"----%s---\n"DEFAULT,buffer);
-
-                    EnviarDatos(socket, buffer,strlen(buffer));
+	t_bloqueArchivo *el_bloqueArchivo;
+	t_job_enviado *el_job_enviado;
+	int x=0;
+	char* buffer=string_new();
 
 
 
 
+	i=0;
+	while(i<list_size(lista_nodos)){
+		sem_wait(&semaforoListaNodos);
+		el_nodo=list_get(lista_nodos,i);
+		sem_post(&semaforoListaNodos);
 
-                    buffer=string_new();
-                    nodo=string_new();
-                    ipNodo=string_new();
-                    puertoNodo=string_new();
-                    bloque=string_new();
-                    resultado=string_new();
+		nodo=el_nodo->nombreNodo;
+		ipNodo=el_nodo->ipNodo;
+		puertoNodo=el_nodo->puertoNodo;
+		el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,0);
+		if(el_bloqueArchivo!=NULL){
+			bloque=el_bloqueArchivo->bloque;
 
-                }
-                x++;
-            }
+			x=0;
+			while(x<list_size(lista_job_enviado)){
+				sem_wait(&semaforoListaJobEnviados);
+				el_job_enviado=list_get(lista_job_enviado,x);
+				sem_post(&semaforoListaJobEnviados);
+				if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0){
+					el_job_enviado->estado=1;
+					el_bloqueArchivo->procesando=1;
+					el_nodo->trabajando=1;
 
-        }
-        i++;
-    }
+					nodo=obtenerSubBuffer(nodo);
+					ipNodo=obtenerSubBuffer(ipNodo);
+					puertoNodo=obtenerSubBuffer(puertoNodo);
+					bloque=obtenerSubBuffer(bloque);
+					resultado=obtenerSubBuffer(el_job_enviado->resultadoParcial);
+
+					string_append(&buffer,"4");
+					string_append(&buffer,"1");
+					string_append(&buffer,nodo);
+					string_append(&buffer,ipNodo);
+					string_append(&buffer,puertoNodo);
+					string_append(&buffer,bloque);
+					string_append(&buffer,resultado);
+					el_nodo->cantTareasPendientes--;
+
+
+					printf(COLOR_VERDE"----%s---\n"DEFAULT,buffer);
+
+					EnviarDatos(socket, buffer,strlen(buffer));
 
 
 
-/*    i=0;
-    while(i<list_size(lista_job_enviado)){
-        el_job_enviado=list_get(lista_job_enviado,i);
 
-        printf("Archivo: %s \nNodo: %s \nBloque: %s \nEstado: %d\n",el_job_enviado->archivo,el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->estado);
 
-        i++;
-    }*/
+					buffer=string_new();
+					nodo=string_new();
+					ipNodo=string_new();
+					puertoNodo=string_new();
+					bloque=string_new();
+					resultado=string_new();
+
+				}
+				x++;
+			}
+
+		}
+		i++;
+	}
+
+
+
+/*	i=0;
+	while(i<list_size(lista_job_enviado)){
+		el_job_enviado=list_get(lista_job_enviado,i);
+
+		printf("Archivo: %s \nNodo: %s \nBloque: %s \nEstado: %d\n",el_job_enviado->archivo,el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->estado);
+
+		i++;
+	}*/
 
 
 
@@ -1415,6 +1369,7 @@ void eliminarBloqueDeListaDeNodos(char* nodo,char *bloque){
 		}
 	}
 }
+
 
 void reciboOk(char *buffer,int socket){
 
@@ -1912,7 +1867,6 @@ void reciboOk(char *buffer,int socket){
 
 
 }
-
 
 
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int socket){
