@@ -1423,6 +1423,146 @@ void reciboOk(char *buffer,int socket){
 			eliminarBloqueDeListaDeNodos(nodo,bloque);
 		}
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		if(tareaCompleta==0){
+
+			//Cuento Tareas Pendientes del Archivo
+			contTareasMap=tareasRestantes(1);
+			//contTareasReduce=tareasRestantes(2);
+
+			printf("* Tareas Restantes de Map: "COLOR_VERDE"%d\n"DEFAULT,contTareasMap);
+
+
+
+			if(contTareasMap>0){
+
+
+				/*x=0;
+
+				while(x<list_size(lista_job_enviado)){
+					//sem_wait(&semaforoListaJobEnviados);
+					el_job_enviado=list_get(lista_job_enviado,x);
+					//sem_post(&semaforoListaJobEnviados);
+					if(el_job_enviado->estado==0){
+						proxTareaNodo=string_new();
+						string_append(&proxTareaNodo,el_job_enviado->nodo);
+					}
+					x++;
+				}*/
+
+
+				//proxTareaBloq=buscarProximaTarea(&el_archivo,1);
+				//proxTareaNodo=buscarProximaTareaEnArray(el_archivo,proxTareaBloq);
+				//printf("--------------%s--------------\n",proxTareaNodo);
+				//printf("--------------%s--------------\n",proxTareaBloq);
+
+				int k=0, bandera=0,hecho=0;
+
+				x=0;
+				el_nodo=buscarNodo(nodoAnt);
+				if(list_size(el_nodo->listaBloqueArchivo)>0 && el_nodo->trabajando==0){
+					while(x<list_size(el_nodo->listaBloqueArchivo)){
+						el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,x);
+						if(el_bloqueArchivo->procesando==0){
+							bloque=el_bloqueArchivo->bloque;
+							bandera=1;
+							hecho=1;
+						}
+						if(bandera == 1)
+							x=list_size(el_nodo->listaBloqueArchivo);
+						x++;
+
+					}
+
+				}
+
+				k=0;
+				bandera=0;
+				while(k<list_size(lista_nodos) && hecho == 0){
+					el_nodo=list_get(lista_nodos,k);
+
+					if(el_nodo->trabajando==0){
+						x=0;
+						while(x<list_size(el_nodo->listaBloqueArchivo)){
+							el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,x);
+							if(el_bloqueArchivo->procesando==0){
+								bloque=el_bloqueArchivo->bloque;
+								bandera=1;
+							}
+							if(bandera == 1){
+								x=list_size(el_nodo->listaBloqueArchivo);
+								hecho=1;
+							}
+							x++;
+
+						}
+						if(bandera == 1)
+							k=list_size(lista_nodos);
+					}
+					k++;
+				}
+
+				if(list_size(el_nodo->listaBloqueArchivo)>0){
+					char *buffer=string_new();
+					char *ipNodo=string_new(),*puertoNodo=string_new(),*resultado=string_new();
+
+
+
+					nodo=el_nodo->nombreNodo;
+					ipNodo=el_nodo->ipNodo;
+					puertoNodo=el_nodo->puertoNodo;
+
+
+					//printf("::::::::: %s     %s ::::::::\n",bloque,nodo);
+
+
+					x=0;
+					while(x<list_size(lista_job_enviado)){
+						//sem_wait(&semaforoListaJobEnviados);
+						el_job_enviado=list_get(lista_job_enviado,x);
+						//sem_post(&semaforoListaJobEnviados);
+						if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0 ){
+
+							el_job_enviado->estado=1;
+							el_bloqueArchivo->procesando=1;
+
+							printf("* Map a enviar: %s--%s\n",bloque,nodo);
+							nodo=obtenerSubBuffer(nodo);
+							ipNodo=obtenerSubBuffer(ipNodo);
+							puertoNodo=obtenerSubBuffer(puertoNodo);
+							bloque=obtenerSubBuffer(bloque);
+							resultado=obtenerSubBuffer(el_job_enviado->resultadoParcial);
+							string_append(&buffer,"4");
+							string_append(&buffer,"1");
+							string_append(&buffer,nodo);
+							string_append(&buffer,ipNodo);
+							string_append(&buffer,puertoNodo);
+							string_append(&buffer,bloque);
+							string_append(&buffer,resultado);
+							el_nodo->cantTareasPendientes--;
+
+							EnviarDatos(socket,buffer,strlen(buffer));
+
+
+
+						}
+						x++;
+					}
+				}
+
+
+			}
+		}
+
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 		if(el_archivo->tieneCombiner==0){
 
 			el_archivo->contTareas++;
@@ -1730,136 +1870,6 @@ void reciboOk(char *buffer,int socket){
 					}
 
 				}
-			}
-		}
-
-		if(tareaCompleta==0){
-
-			//Cuento Tareas Pendientes del Archivo
-			contTareasMap=tareasRestantes(1);
-			//contTareasReduce=tareasRestantes(2);
-
-			printf("* Tareas Restantes de Map: "COLOR_VERDE"%d\n"DEFAULT,contTareasMap);
-
-
-
-			if(contTareasMap>0){
-
-
-				/*x=0;
-
-				while(x<list_size(lista_job_enviado)){
-					//sem_wait(&semaforoListaJobEnviados);
-					el_job_enviado=list_get(lista_job_enviado,x);
-					//sem_post(&semaforoListaJobEnviados);
-					if(el_job_enviado->estado==0){
-						proxTareaNodo=string_new();
-						string_append(&proxTareaNodo,el_job_enviado->nodo);
-					}
-					x++;
-				}*/
-
-
-				//proxTareaBloq=buscarProximaTarea(&el_archivo,1);
-				//proxTareaNodo=buscarProximaTareaEnArray(el_archivo,proxTareaBloq);
-				//printf("--------------%s--------------\n",proxTareaNodo);
-				//printf("--------------%s--------------\n",proxTareaBloq);
-
-				int k=0, bandera=0,hecho=0;
-
-				x=0;
-				el_nodo=buscarNodo(nodoAnt);
-				if(list_size(el_nodo->listaBloqueArchivo)>0 && el_nodo->trabajando==0){
-					while(x<list_size(el_nodo->listaBloqueArchivo)){
-						el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,x);
-						if(el_bloqueArchivo->procesando==0){
-							bloque=el_bloqueArchivo->bloque;
-							bandera=1;
-							hecho=1;
-						}
-						if(bandera == 1)
-							x=list_size(el_nodo->listaBloqueArchivo);
-						x++;
-
-					}
-
-				}
-
-				k=0;
-				bandera=0;
-				while(k<list_size(lista_nodos) && hecho == 0){
-					el_nodo=list_get(lista_nodos,k);
-
-					if(el_nodo->trabajando==0){
-						x=0;
-						while(x<list_size(el_nodo->listaBloqueArchivo)){
-							el_bloqueArchivo=list_get(el_nodo->listaBloqueArchivo,x);
-							if(el_bloqueArchivo->procesando==0){
-								bloque=el_bloqueArchivo->bloque;
-								bandera=1;
-							}
-							if(bandera == 1){
-								x=list_size(el_nodo->listaBloqueArchivo);
-								hecho=1;
-							}
-							x++;
-
-						}
-						if(bandera == 1)
-							k=list_size(lista_nodos);
-					}
-					k++;
-				}
-
-				if(list_size(el_nodo->listaBloqueArchivo)>0){
-					char *buffer=string_new();
-					char *ipNodo=string_new(),*puertoNodo=string_new(),*resultado=string_new();
-
-
-
-					nodo=el_nodo->nombreNodo;
-					ipNodo=el_nodo->ipNodo;
-					puertoNodo=el_nodo->puertoNodo;
-
-
-					//printf("::::::::: %s     %s ::::::::\n",bloque,nodo);
-
-
-					x=0;
-					while(x<list_size(lista_job_enviado)){
-						//sem_wait(&semaforoListaJobEnviados);
-						el_job_enviado=list_get(lista_job_enviado,x);
-						//sem_post(&semaforoListaJobEnviados);
-						if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0 ){
-
-							el_job_enviado->estado=1;
-							el_bloqueArchivo->procesando=1;
-
-							printf("* Map a enviar: %s--%s\n",bloque,nodo);
-							nodo=obtenerSubBuffer(nodo);
-							ipNodo=obtenerSubBuffer(ipNodo);
-							puertoNodo=obtenerSubBuffer(puertoNodo);
-							bloque=obtenerSubBuffer(bloque);
-							resultado=obtenerSubBuffer(el_job_enviado->resultadoParcial);
-							string_append(&buffer,"4");
-							string_append(&buffer,"1");
-							string_append(&buffer,nodo);
-							string_append(&buffer,ipNodo);
-							string_append(&buffer,puertoNodo);
-							string_append(&buffer,bloque);
-							string_append(&buffer,resultado);
-							el_nodo->cantTareasPendientes--;
-
-							EnviarDatos(socket,buffer,strlen(buffer));
-
-
-
-						}
-						x++;
-					}
-				}
-
-
 			}
 		}
 

@@ -25544,3 +25544,1186 @@ ERROR FATAL--> Error al hacer el Bind. El puerto está en uso
 [INFO] 15:30:57:535 nodo/(21896:21926): ENVIO DATOS. socket: 7. Buffer:1 
 [TRACE] 15:30:57:535 nodo/(21896:21926): RECIBO DATOS. socket: 7. buffer:  tamanio:0
 [TRACE] 15:30:57:536 nodo/(21896:21926): SOCKET SE CIERRA: (7).
+[INFO] 15:34:53:153 nodo/(2440:2440): Archivo de configuración: config.cfg
+[INFO] 15:34:53:154 nodo/(2440:2440): Intentando conectar a nodo
+
+[INFO] 15:34:53:154 nodo/(2440:2440): ERROR: conectar socket_FS
+[TRACE] 15:34:53:154 nodo/(2440:2441): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[INFO] 15:35:48:611 nodo/(2469:2469): Archivo de configuración: config.cfg
+[INFO] 15:35:48:611 nodo/(2469:2469): Intentando conectar a nodo
+
+[INFO] 15:35:48:611 nodo/(2469:2469): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:35:48:613 nodo/(2469:2469): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:35:48:613 nodo/(2469:2469): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:35:48:613 nodo/(2469:2469): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:35:48:614 nodo/(2469:2471): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:36:24:703 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4022). El número de socket del cliente es: 7
+[TRACE] 15:36:24:751 nodo/(2469:2482): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:36:24:751 nodo/(2469:2482): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:25:61 nodo/(2469:2482): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:25:62 nodo/(2469:2482): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:25:63 nodo/(2469:2482): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:26:352 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5814). El número de socket del cliente es: 8
+[TRACE] 15:36:26:408 nodo/(2469:2496): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:36:26:408 nodo/(2469:2496): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:26:673 nodo/(2469:2496): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:26:674 nodo/(2469:2496): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:26:675 nodo/(2469:2496): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:26:850 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6326). El número de socket del cliente es: 7
+[TRACE] 15:36:26:883 nodo/(2469:2500): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:36:26:883 nodo/(2469:2500): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:27:160 nodo/(2469:2500): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:27:160 nodo/(2469:2500): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:27:161 nodo/(2469:2500): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:27:792 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7606). El número de socket del cliente es: 8
+[TRACE] 15:36:27:840 nodo/(2469:2510): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:36:27:840 nodo/(2469:2510): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:28:114 nodo/(2469:2510): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:28:114 nodo/(2469:2510): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:28:114 nodo/(2469:2510): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:28:337 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8118). El número de socket del cliente es: 7
+[TRACE] 15:36:28:399 nodo/(2469:2514): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:36:28:399 nodo/(2469:2514): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:28:877 nodo/(2469:2514): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:28:877 nodo/(2469:2514): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:28:877 nodo/(2469:2514): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:30:328 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (9910). El número de socket del cliente es: 8
+[TRACE] 15:36:30:390 nodo/(2469:2528): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:36:30:391 nodo/(2469:2528): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:30:684 nodo/(2469:2528): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:30:685 nodo/(2469:2528): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:30:688 nodo/(2469:2528): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:30:717 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10166). El número de socket del cliente es: 7
+[TRACE] 15:36:30:778 nodo/(2469:2540): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:36:30:778 nodo/(2469:2540): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:31:101 nodo/(2469:2540): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:31:101 nodo/(2469:2540): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:31:101 nodo/(2469:2540): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:32:307 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11958). El número de socket del cliente es: 8
+[TRACE] 15:36:32:399 nodo/(2469:2575): RECIBO DATOS. socket: 8. buffer: 13820971465 tamanio:11
+[INFO] 15:36:32:399 nodo/(2469:2575): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:32:664 nodo/(2469:2575): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:32:664 nodo/(2469:2575): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:32:665 nodo/(2469:2575): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:32:796 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12470). El número de socket del cliente es: 7
+[TRACE] 15:36:32:822 nodo/(2469:2587): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:36:32:822 nodo/(2469:2587): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:33:10 nodo/(2469:2587): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:33:10 nodo/(2469:2587): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:33:11 nodo/(2469:2587): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:34:203 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13750). El número de socket del cliente es: 8
+[TRACE] 15:36:34:258 nodo/(2469:2602): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:36:34:258 nodo/(2469:2602): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:34:520 nodo/(2469:2602): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:34:520 nodo/(2469:2602): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:34:521 nodo/(2469:2602): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:34:719 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14262). El número de socket del cliente es: 7
+[TRACE] 15:36:34:763 nodo/(2469:2606): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:36:34:763 nodo/(2469:2606): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:35:4 nodo/(2469:2606): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:35:4 nodo/(2469:2606): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:35:4 nodo/(2469:2606): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:36:498 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16054). El número de socket del cliente es: 8
+[TRACE] 15:36:36:572 nodo/(2469:2620): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:36:36:572 nodo/(2469:2620): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:36:780 nodo/(2469:2620): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:36:780 nodo/(2469:2620): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:36:780 nodo/(2469:2620): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:36:786 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16310). El número de socket del cliente es: 7
+[TRACE] 15:36:36:815 nodo/(2469:2622): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:36:36:816 nodo/(2469:2622): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:37:21 nodo/(2469:2622): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:37:22 nodo/(2469:2622): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:37:23 nodo/(2469:2622): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:38:53 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (18102). El número de socket del cliente es: 8
+[TRACE] 15:36:38:96 nodo/(2469:2636): RECIBO DATOS. socket: 8. buffer: 13820971473 tamanio:11
+[INFO] 15:36:38:96 nodo/(2469:2636): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:38:340 nodo/(2469:2636): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:38:341 nodo/(2469:2636): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:38:341 nodo/(2469:2636): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:38:980 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (18614). El número de socket del cliente es: 7
+[TRACE] 15:36:39:20 nodo/(2469:2640): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:36:39:20 nodo/(2469:2640): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:39:308 nodo/(2469:2640): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:39:308 nodo/(2469:2640): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:39:308 nodo/(2469:2640): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:40:176 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19894). El número de socket del cliente es: 8
+[TRACE] 15:36:40:226 nodo/(2469:2650): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:36:40:227 nodo/(2469:2650): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:40:547 nodo/(2469:2650): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:40:548 nodo/(2469:2650): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:40:548 nodo/(2469:2650): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:40:731 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (20406). El número de socket del cliente es: 7
+[TRACE] 15:36:40:785 nodo/(2469:2655): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:36:40:785 nodo/(2469:2655): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:41:208 nodo/(2469:2655): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:41:208 nodo/(2469:2655): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:41:208 nodo/(2469:2655): SOCKET SE CIERRA: (7).
+[TRACE] 15:36:42:630 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (22198). El número de socket del cliente es: 8
+[TRACE] 15:36:42:674 nodo/(2469:2671): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:36:42:674 nodo/(2469:2671): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:36:42:992 nodo/(2469:2671): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:36:42:992 nodo/(2469:2671): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:36:42:992 nodo/(2469:2671): SOCKET SE CIERRA: (8).
+[TRACE] 15:36:43:153 nodo/(2469:2471): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (22454). El número de socket del cliente es: 7
+[TRACE] 15:36:43:188 nodo/(2469:2673): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:36:43:188 nodo/(2469:2673): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:36:43:442 nodo/(2469:2673): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:36:43:443 nodo/(2469:2673): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:36:43:443 nodo/(2469:2673): SOCKET SE CIERRA: (7).
+[INFO] 15:38:39:102 nodo/(2928:2928): Archivo de configuración: config.cfg
+[INFO] 15:38:39:102 nodo/(2928:2928): Intentando conectar a nodo
+
+[INFO] 15:38:39:102 nodo/(2928:2928): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:38:39:104 nodo/(2928:2928): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:38:39:104 nodo/(2928:2928): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:38:39:104 nodo/(2928:2928): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:38:39:105 nodo/(2928:2930): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:39:02:209 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (34230). El número de socket del cliente es: 7
+[TRACE] 15:39:02:267 nodo/(2928:2943): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:39:02:267 nodo/(2928:2943): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:02:581 nodo/(2928:2943): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:02:581 nodo/(2928:2943): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:02:581 nodo/(2928:2943): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:03:928 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36022). El número de socket del cliente es: 8
+[TRACE] 15:39:03:970 nodo/(2928:2957): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:39:03:970 nodo/(2928:2957): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:39:04:207 nodo/(2928:2957): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:04:208 nodo/(2928:2957): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:04:209 nodo/(2928:2957): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:04:352 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36534). El número de socket del cliente es: 7
+[TRACE] 15:39:04:381 nodo/(2928:2961): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:39:04:381 nodo/(2928:2961): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:04:586 nodo/(2928:2961): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:04:586 nodo/(2928:2961): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:04:587 nodo/(2928:2961): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:05:82 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37814). El número de socket del cliente es: 8
+[TRACE] 15:39:05:127 nodo/(2928:2971): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:39:05:127 nodo/(2928:2971): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:39:05:348 nodo/(2928:2971): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:05:348 nodo/(2928:2971): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:05:348 nodo/(2928:2971): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:05:983 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (38326). El número de socket del cliente es: 7
+[TRACE] 15:39:06:31 nodo/(2928:2975): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:39:06:31 nodo/(2928:2975): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:06:296 nodo/(2928:2975): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:06:296 nodo/(2928:2975): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:06:296 nodo/(2928:2975): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:07:470 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (40118). El número de socket del cliente es: 8
+[TRACE] 15:39:07:518 nodo/(2928:2991): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:39:07:518 nodo/(2928:2991): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:39:07:900 nodo/(2928:2991): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:07:900 nodo/(2928:2991): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:07:900 nodo/(2928:2991): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:07:984 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (40374). El número de socket del cliente es: 7
+[TRACE] 15:39:08:24 nodo/(2928:2993): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:39:08:24 nodo/(2928:2993): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:08:261 nodo/(2928:2993): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:08:261 nodo/(2928:2993): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:08:262 nodo/(2928:2993): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:09:930 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (42166). El número de socket del cliente es: 8
+[TRACE] 15:39:09:976 nodo/(2928:3007): RECIBO DATOS. socket: 8. buffer: 13820971465 tamanio:11
+[INFO] 15:39:09:976 nodo/(2928:3007): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:39:10:230 nodo/(2928:3007): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:10:230 nodo/(2928:3007): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:10:230 nodo/(2928:3007): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:10:527 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (42678). El número de socket del cliente es: 7
+[TRACE] 15:39:10:566 nodo/(2928:3011): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:39:10:566 nodo/(2928:3011): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:10:838 nodo/(2928:3011): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:10:838 nodo/(2928:3011): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:10:839 nodo/(2928:3011): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:11:828 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43958). El número de socket del cliente es: 8
+[TRACE] 15:39:11:889 nodo/(2928:3021): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:39:11:889 nodo/(2928:3021): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:39:12:128 nodo/(2928:3021): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:12:129 nodo/(2928:3021): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:12:129 nodo/(2928:3021): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:12:304 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (44470). El número de socket del cliente es: 7
+[TRACE] 15:39:12:357 nodo/(2928:3025): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:39:12:357 nodo/(2928:3025): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:12:613 nodo/(2928:3025): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:12:614 nodo/(2928:3025): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:12:615 nodo/(2928:3025): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:14:9 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (46262). El número de socket del cliente es: 8
+[TRACE] 15:39:14:73 nodo/(2928:3039): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:39:14:73 nodo/(2928:3039): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:14:360 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (46518). El número de socket del cliente es: 7
+[INFO] 15:39:14:362 nodo/(2928:3039): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:14:362 nodo/(2928:3039): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:14:362 nodo/(2928:3039): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:14:404 nodo/(2928:3041): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:39:14:404 nodo/(2928:3041): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:14:659 nodo/(2928:3041): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:14:659 nodo/(2928:3041): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:14:659 nodo/(2928:3041): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:16:117 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48310). El número de socket del cliente es: 9
+[TRACE] 15:39:16:171 nodo/(2928:3055): RECIBO DATOS. socket: 9. buffer: 13820971473 tamanio:11
+[INFO] 15:39:16:172 nodo/(2928:3055): ENVIO DATOS. socket: 9. Buffer:1 
+[INFO] 15:39:16:533 nodo/(2928:3055): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:39:16:533 nodo/(2928:3055): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:39:16:533 nodo/(2928:3055): SOCKET SE CIERRA: (9).
+[TRACE] 15:39:16:814 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48822). El número de socket del cliente es: 7
+[TRACE] 15:39:16:845 nodo/(2928:3059): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:39:16:845 nodo/(2928:3059): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:17:65 nodo/(2928:3059): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:17:65 nodo/(2928:3059): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:17:65 nodo/(2928:3059): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:17:712 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (50102). El número de socket del cliente es: 8
+[TRACE] 15:39:17:758 nodo/(2928:3069): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:39:17:758 nodo/(2928:3069): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:39:17:972 nodo/(2928:3069): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:17:972 nodo/(2928:3069): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:17:972 nodo/(2928:3069): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:18:162 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (50614). El número de socket del cliente es: 7
+[TRACE] 15:39:18:206 nodo/(2928:3073): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:39:18:206 nodo/(2928:3073): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:18:470 nodo/(2928:3073): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:18:476 nodo/(2928:3073): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:18:478 nodo/(2928:3073): SOCKET SE CIERRA: (7).
+[TRACE] 15:39:20:223 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52406). El número de socket del cliente es: 8
+[TRACE] 15:39:20:277 nodo/(2928:3087): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:39:20:277 nodo/(2928:3087): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:20:535 nodo/(2928:2930): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52662). El número de socket del cliente es: 7
+[INFO] 15:39:20:543 nodo/(2928:3087): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:39:20:544 nodo/(2928:3087): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:39:20:546 nodo/(2928:3087): SOCKET SE CIERRA: (8).
+[TRACE] 15:39:20:569 nodo/(2928:3089): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:39:20:570 nodo/(2928:3089): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:39:20:849 nodo/(2928:3089): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:39:20:849 nodo/(2928:3089): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:39:20:850 nodo/(2928:3089): SOCKET SE CIERRA: (7).
+[INFO] 15:41:32:60 nodo/(3372:3372): Archivo de configuración: config.cfg
+[INFO] 15:41:32:60 nodo/(3372:3372): Intentando conectar a nodo
+
+[INFO] 15:41:32:61 nodo/(3372:3372): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:41:32:62 nodo/(3372:3372): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:41:32:62 nodo/(3372:3372): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:41:32:62 nodo/(3372:3372): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:41:32:62 nodo/(3372:3374): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:42:00:255 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62902). El número de socket del cliente es: 7
+[TRACE] 15:42:00:305 nodo/(3372:3387): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:42:00:305 nodo/(3372:3387): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:00:696 nodo/(3372:3387): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:00:696 nodo/(3372:3387): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:00:696 nodo/(3372:3387): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:02:386 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64694). El número de socket del cliente es: 8
+[TRACE] 15:42:02:456 nodo/(3372:3401): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:42:02:456 nodo/(3372:3401): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:42:02:771 nodo/(3372:3401): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:02:771 nodo/(3372:3401): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:02:771 nodo/(3372:3401): SOCKET SE CIERRA: (8).
+[TRACE] 15:42:03:17 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (65206). El número de socket del cliente es: 7
+[TRACE] 15:42:03:56 nodo/(3372:3406): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:42:03:56 nodo/(3372:3406): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:03:342 nodo/(3372:3406): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:03:343 nodo/(3372:3406): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:03:345 nodo/(3372:3406): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:04:566 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (951). El número de socket del cliente es: 8
+[TRACE] 15:42:04:629 nodo/(3372:3416): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:42:04:629 nodo/(3372:3416): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:42:04:923 nodo/(3372:3416): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:04:924 nodo/(3372:3416): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:04:924 nodo/(3372:3416): SOCKET SE CIERRA: (8).
+[TRACE] 15:42:05:91 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (1463). El número de socket del cliente es: 7
+[TRACE] 15:42:05:166 nodo/(3372:3420): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:42:05:167 nodo/(3372:3420): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:05:427 nodo/(3372:3420): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:05:428 nodo/(3372:3420): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:05:429 nodo/(3372:3420): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:07:64 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3511). El número de socket del cliente es: 8
+[TRACE] 15:42:07:133 nodo/(3372:3434): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:42:07:133 nodo/(3372:3434): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:07:369 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3767). El número de socket del cliente es: 7
+[INFO] 15:42:07:371 nodo/(3372:3434): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:07:372 nodo/(3372:3434): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:07:372 nodo/(3372:3434): SOCKET SE CIERRA: (8).
+[TRACE] 15:42:07:411 nodo/(3372:3436): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:42:07:411 nodo/(3372:3436): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:07:651 nodo/(3372:3436): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:07:652 nodo/(3372:3436): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:07:653 nodo/(3372:3436): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:09:305 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5559). El número de socket del cliente es: 9
+[TRACE] 15:42:09:375 nodo/(3372:3450): RECIBO DATOS. socket: 9. buffer: 13820971465 tamanio:11
+[INFO] 15:42:09:375 nodo/(3372:3450): ENVIO DATOS. socket: 9. Buffer:1 
+[INFO] 15:42:09:812 nodo/(3372:3450): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:42:09:812 nodo/(3372:3450): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:42:09:813 nodo/(3372:3450): SOCKET SE CIERRA: (9).
+[TRACE] 15:42:10:77 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6071). El número de socket del cliente es: 7
+[TRACE] 15:42:10:114 nodo/(3372:3454): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:42:10:114 nodo/(3372:3454): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:10:377 nodo/(3372:3454): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:10:378 nodo/(3372:3454): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:10:378 nodo/(3372:3454): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:11:55 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7351). El número de socket del cliente es: 8
+[TRACE] 15:42:11:88 nodo/(3372:3464): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:42:11:88 nodo/(3372:3464): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:42:11:282 nodo/(3372:3464): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:11:282 nodo/(3372:3464): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:11:282 nodo/(3372:3464): SOCKET SE CIERRA: (8).
+[TRACE] 15:42:11:676 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7863). El número de socket del cliente es: 7
+[TRACE] 15:42:11:726 nodo/(3372:3470): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:42:11:727 nodo/(3372:3470): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:12:131 nodo/(3372:3470): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:12:131 nodo/(3372:3470): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:12:132 nodo/(3372:3470): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:13:638 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (9655). El número de socket del cliente es: 8
+[TRACE] 15:42:13:685 nodo/(3372:3484): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:42:13:685 nodo/(3372:3484): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:13:941 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (9911). El número de socket del cliente es: 7
+[TRACE] 15:42:13:987 nodo/(3372:3486): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:42:13:987 nodo/(3372:3486): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:14:47 nodo/(3372:3484): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:14:48 nodo/(3372:3484): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:14:49 nodo/(3372:3484): SOCKET SE CIERRA: (8).
+[INFO] 15:42:14:271 nodo/(3372:3486): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:14:272 nodo/(3372:3486): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:14:273 nodo/(3372:3486): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:15:806 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11703). El número de socket del cliente es: 9
+[TRACE] 15:42:15:867 nodo/(3372:3500): RECIBO DATOS. socket: 9. buffer: 13820971473 tamanio:11
+[INFO] 15:42:15:867 nodo/(3372:3500): ENVIO DATOS. socket: 9. Buffer:1 
+[INFO] 15:42:16:235 nodo/(3372:3500): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:42:16:235 nodo/(3372:3500): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:42:16:235 nodo/(3372:3500): SOCKET SE CIERRA: (9).
+[TRACE] 15:42:16:636 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12215). El número de socket del cliente es: 7
+[TRACE] 15:42:16:675 nodo/(3372:3504): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:42:16:675 nodo/(3372:3504): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:16:960 nodo/(3372:3504): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:16:960 nodo/(3372:3504): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:16:960 nodo/(3372:3504): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:17:853 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13495). El número de socket del cliente es: 8
+[TRACE] 15:42:17:905 nodo/(3372:3514): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:42:17:905 nodo/(3372:3514): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:42:18:224 nodo/(3372:3514): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:18:224 nodo/(3372:3514): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:18:224 nodo/(3372:3514): SOCKET SE CIERRA: (8).
+[TRACE] 15:42:18:432 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14007). El número de socket del cliente es: 7
+[TRACE] 15:42:18:472 nodo/(3372:3518): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:42:18:472 nodo/(3372:3518): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:18:708 nodo/(3372:3518): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:18:708 nodo/(3372:3518): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:18:708 nodo/(3372:3518): SOCKET SE CIERRA: (7).
+[TRACE] 15:42:19:809 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15799). El número de socket del cliente es: 8
+[TRACE] 15:42:19:844 nodo/(3372:3532): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:42:19:844 nodo/(3372:3532): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:42:20:114 nodo/(3372:3532): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:42:20:115 nodo/(3372:3532): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:42:20:115 nodo/(3372:3532): SOCKET SE CIERRA: (8).
+[TRACE] 15:42:20:415 nodo/(3372:3374): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16055). El número de socket del cliente es: 7
+[TRACE] 15:42:20:457 nodo/(3372:3534): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:42:20:457 nodo/(3372:3534): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:42:20:725 nodo/(3372:3534): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:42:20:725 nodo/(3372:3534): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:42:20:725 nodo/(3372:3534): SOCKET SE CIERRA: (7).
+[INFO] 15:45:16:587 nodo/(3782:3782): Archivo de configuración: config.cfg
+[INFO] 15:45:16:588 nodo/(3782:3782): Intentando conectar a nodo
+
+[INFO] 15:45:16:588 nodo/(3782:3782): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:45:16:589 nodo/(3782:3782): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:45:16:589 nodo/(3782:3782): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:45:16:590 nodo/(3782:3782): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:45:16:590 nodo/(3782:3784): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:45:36:788 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (26295). El número de socket del cliente es: 7
+[TRACE] 15:45:36:827 nodo/(3782:3796): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:45:36:827 nodo/(3782:3796): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:37:116 nodo/(3782:3796): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:37:117 nodo/(3782:3796): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:37:117 nodo/(3782:3796): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:38:672 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28087). El número de socket del cliente es: 8
+[TRACE] 15:45:38:720 nodo/(3782:3810): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:45:38:720 nodo/(3782:3810): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:45:38:0 nodo/(3782:3810): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:38:1 nodo/(3782:3810): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:38:1 nodo/(3782:3810): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:39:229 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28599). El número de socket del cliente es: 7
+[TRACE] 15:45:39:267 nodo/(3782:3816): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:45:39:267 nodo/(3782:3816): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:39:516 nodo/(3782:3816): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:39:516 nodo/(3782:3816): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:39:517 nodo/(3782:3816): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:40:447 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29879). El número de socket del cliente es: 8
+[TRACE] 15:45:40:531 nodo/(3782:3826): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:45:40:531 nodo/(3782:3826): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:45:40:779 nodo/(3782:3826): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:40:779 nodo/(3782:3826): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:40:780 nodo/(3782:3826): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:40:955 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (30391). El número de socket del cliente es: 7
+[TRACE] 15:45:40:998 nodo/(3782:3830): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:45:40:998 nodo/(3782:3830): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:41:247 nodo/(3782:3830): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:41:248 nodo/(3782:3830): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:41:249 nodo/(3782:3830): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:42:786 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32183). El número de socket del cliente es: 8
+[TRACE] 15:45:42:839 nodo/(3782:3844): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:45:42:839 nodo/(3782:3844): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:45:43:109 nodo/(3782:3844): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:43:109 nodo/(3782:3844): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:43:110 nodo/(3782:3844): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:43:118 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32439). El número de socket del cliente es: 7
+[TRACE] 15:45:43:158 nodo/(3782:3848): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:45:43:158 nodo/(3782:3848): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:43:440 nodo/(3782:3848): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:43:440 nodo/(3782:3848): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:43:440 nodo/(3782:3848): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:44:732 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (34231). El número de socket del cliente es: 8
+[TRACE] 15:45:44:771 nodo/(3782:3862): RECIBO DATOS. socket: 8. buffer: 13820971465 tamanio:11
+[INFO] 15:45:44:771 nodo/(3782:3862): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:45:45:71 nodo/(3782:3862): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:45:71 nodo/(3782:3862): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:45:72 nodo/(3782:3862): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:45:327 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (34743). El número de socket del cliente es: 7
+[TRACE] 15:45:45:360 nodo/(3782:3866): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:45:45:360 nodo/(3782:3866): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:45:576 nodo/(3782:3866): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:45:576 nodo/(3782:3866): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:45:576 nodo/(3782:3866): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:46:187 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36023). El número de socket del cliente es: 8
+[TRACE] 15:45:46:224 nodo/(3782:3876): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:45:46:224 nodo/(3782:3876): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:45:46:466 nodo/(3782:3876): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:46:466 nodo/(3782:3876): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:46:466 nodo/(3782:3876): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:46:739 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36535). El número de socket del cliente es: 7
+[TRACE] 15:45:46:774 nodo/(3782:3880): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:45:46:774 nodo/(3782:3880): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:47:195 nodo/(3782:3880): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:47:195 nodo/(3782:3880): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:47:195 nodo/(3782:3880): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:49:65 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (38327). El número de socket del cliente es: 8
+[TRACE] 15:45:49:104 nodo/(3782:3918): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:45:49:104 nodo/(3782:3918): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:49:326 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (38583). El número de socket del cliente es: 7
+[TRACE] 15:45:49:372 nodo/(3782:3922): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:45:49:372 nodo/(3782:3922): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:49:400 nodo/(3782:3918): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:49:401 nodo/(3782:3918): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:49:407 nodo/(3782:3918): SOCKET SE CIERRA: (8).
+[INFO] 15:45:49:619 nodo/(3782:3922): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:49:620 nodo/(3782:3922): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:49:621 nodo/(3782:3922): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:50:924 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (40375). El número de socket del cliente es: 9
+[TRACE] 15:45:50:985 nodo/(3782:3941): RECIBO DATOS. socket: 9. buffer: 13820971473 tamanio:11
+[INFO] 15:45:50:985 nodo/(3782:3941): ENVIO DATOS. socket: 9. Buffer:1 
+[INFO] 15:45:51:213 nodo/(3782:3941): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:45:51:214 nodo/(3782:3941): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:45:51:214 nodo/(3782:3941): SOCKET SE CIERRA: (9).
+[TRACE] 15:45:51:336 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (40887). El número de socket del cliente es: 7
+[TRACE] 15:45:51:371 nodo/(3782:3951): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:45:51:371 nodo/(3782:3951): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:51:647 nodo/(3782:3951): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:51:647 nodo/(3782:3951): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:51:647 nodo/(3782:3951): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:52:356 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (42167). El número de socket del cliente es: 8
+[TRACE] 15:45:52:403 nodo/(3782:3962): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:45:52:404 nodo/(3782:3962): ENVIO DATOS. socket: 8. Buffer:1 
+[INFO] 15:45:52:637 nodo/(3782:3962): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:52:637 nodo/(3782:3962): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:52:637 nodo/(3782:3962): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:52:729 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (42679). El número de socket del cliente es: 7
+[TRACE] 15:45:52:769 nodo/(3782:3972): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:45:52:769 nodo/(3782:3972): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:52:4 nodo/(3782:3972): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:52:4 nodo/(3782:3972): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:52:5 nodo/(3782:3972): SOCKET SE CIERRA: (7).
+[TRACE] 15:45:54:977 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45239). El número de socket del cliente es: 8
+[TRACE] 15:45:55:86 nodo/(3782:3993): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:45:55:86 nodo/(3782:3993): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:55:370 nodo/(3782:3784): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45751). El número de socket del cliente es: 7
+[INFO] 15:45:55:388 nodo/(3782:3993): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:45:55:388 nodo/(3782:3993): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:45:55:388 nodo/(3782:3993): SOCKET SE CIERRA: (8).
+[TRACE] 15:45:55:408 nodo/(3782:3995): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:45:55:408 nodo/(3782:3995): ENVIO DATOS. socket: 7. Buffer:1 
+[INFO] 15:45:55:723 nodo/(3782:3995): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:45:55:723 nodo/(3782:3995): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:45:55:723 nodo/(3782:3995): SOCKET SE CIERRA: (7).
+[INFO] 15:49:06:634 nodo/(4120:4120): Archivo de configuración: config.cfg
+[INFO] 15:49:06:635 nodo/(4120:4120): Intentando conectar a nodo
+
+[INFO] 15:49:06:635 nodo/(4120:4120): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:49:06:636 nodo/(4120:4120): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:49:06:636 nodo/(4120:4120): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:49:06:637 nodo/(4120:4120): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:49:06:637 nodo/(4120:4122): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:49:25:701 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62391). El número de socket del cliente es: 7
+[TRACE] 15:49:25:746 nodo/(4120:4133): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:49:25:746 nodo/(4120:4133): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:26:82 nodo/(4120:4133): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:26:82 nodo/(4120:4133): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:27:449 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64183). El número de socket del cliente es: 8
+[TRACE] 15:49:27:501 nodo/(4120:4147): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:49:27:501 nodo/(4120:4147): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:27:777 nodo/(4120:4147): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:27:778 nodo/(4120:4147): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:27:975 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64695). El número de socket del cliente es: 7
+[TRACE] 15:49:28:5 nodo/(4120:4151): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:49:28:5 nodo/(4120:4151): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:28:248 nodo/(4120:4151): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:28:248 nodo/(4120:4151): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:29:116 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (440). El número de socket del cliente es: 8
+[TRACE] 15:49:29:181 nodo/(4120:4161): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:49:29:181 nodo/(4120:4161): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:29:468 nodo/(4120:4161): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:29:468 nodo/(4120:4161): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:29:673 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (952). El número de socket del cliente es: 7
+[TRACE] 15:49:29:734 nodo/(4120:4165): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:49:29:734 nodo/(4120:4165): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:30:64 nodo/(4120:4165): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:30:65 nodo/(4120:4165): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:31:767 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2744). El número de socket del cliente es: 8
+[TRACE] 15:49:31:836 nodo/(4120:4179): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:49:31:836 nodo/(4120:4179): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:32:150 nodo/(4120:4179): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:32:150 nodo/(4120:4179): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:32:274 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3000). El número de socket del cliente es: 7
+[TRACE] 15:49:32:313 nodo/(4120:4181): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:49:32:313 nodo/(4120:4181): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:32:619 nodo/(4120:4181): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:32:621 nodo/(4120:4181): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:33:981 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4792). El número de socket del cliente es: 8
+[TRACE] 15:49:34:53 nodo/(4120:4195): RECIBO DATOS. socket: 8. buffer: 13820971465 tamanio:11
+[INFO] 15:49:34:54 nodo/(4120:4195): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:34:338 nodo/(4120:4195): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:34:339 nodo/(4120:4195): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:34:502 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5304). El número de socket del cliente es: 7
+[TRACE] 15:49:34:535 nodo/(4120:4199): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:49:34:535 nodo/(4120:4199): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:34:764 nodo/(4120:4199): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:34:767 nodo/(4120:4199): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:35:626 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6584). El número de socket del cliente es: 8
+[TRACE] 15:49:35:689 nodo/(4120:4211): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:49:35:689 nodo/(4120:4211): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:36:35 nodo/(4120:4211): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:36:36 nodo/(4120:4211): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:36:216 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7096). El número de socket del cliente es: 7
+[TRACE] 15:49:36:267 nodo/(4120:4215): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:49:36:267 nodo/(4120:4215): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:36:547 nodo/(4120:4215): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:36:549 nodo/(4120:4215): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:38:364 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8888). El número de socket del cliente es: 8
+[TRACE] 15:49:38:436 nodo/(4120:4229): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:49:38:436 nodo/(4120:4229): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:38:667 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (9144). El número de socket del cliente es: 7
+[TRACE] 15:49:38:675 nodo/(4120:4229): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:38:676 nodo/(4120:4229): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:38:711 nodo/(4120:4231): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:49:38:712 nodo/(4120:4231): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:38:949 nodo/(4120:4231): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:38:951 nodo/(4120:4231): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:40:581 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10936). El número de socket del cliente es: 9
+[TRACE] 15:49:40:637 nodo/(4120:4245): RECIBO DATOS. socket: 9. buffer: 13820971473 tamanio:11
+[INFO] 15:49:40:637 nodo/(4120:4245): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:49:40:987 nodo/(4120:4245): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:49:40:989 nodo/(4120:4245): SOCKET SE CIERRA: (9).
+[TRACE] 15:49:41:174 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11448). El número de socket del cliente es: 7
+[TRACE] 15:49:41:208 nodo/(4120:4249): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:49:41:208 nodo/(4120:4249): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:41:546 nodo/(4120:4249): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:41:548 nodo/(4120:4249): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:42:264 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12728). El número de socket del cliente es: 8
+[TRACE] 15:49:42:313 nodo/(4120:4259): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:49:42:313 nodo/(4120:4259): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:42:566 nodo/(4120:4259): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:42:567 nodo/(4120:4259): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:42:803 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13240). El número de socket del cliente es: 7
+[TRACE] 15:49:42:865 nodo/(4120:4263): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:49:42:865 nodo/(4120:4263): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:43:263 nodo/(4120:4263): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:43:264 nodo/(4120:4263): SOCKET SE CIERRA: (7).
+[TRACE] 15:49:45:144 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15032). El número de socket del cliente es: 8
+[TRACE] 15:49:45:205 nodo/(4120:4278): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:49:45:205 nodo/(4120:4278): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:49:45:464 nodo/(4120:4278): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:49:45:464 nodo/(4120:4278): SOCKET SE CIERRA: (8).
+[TRACE] 15:49:45:482 nodo/(4120:4122): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15288). El número de socket del cliente es: 7
+[TRACE] 15:49:45:515 nodo/(4120:4280): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:49:45:515 nodo/(4120:4280): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:49:45:815 nodo/(4120:4280): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:49:45:816 nodo/(4120:4280): SOCKET SE CIERRA: (7).
+[INFO] 15:50:43:107 nodo/(4458:4458): Archivo de configuración: config.cfg
+[INFO] 15:50:43:107 nodo/(4458:4458): Intentando conectar a nodo
+
+[INFO] 15:50:43:108 nodo/(4458:4458): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:50:43:109 nodo/(4458:4458): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:50:43:110 nodo/(4458:4458): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:50:43:110 nodo/(4458:4458): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:50:43:110 nodo/(4458:4460): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:51:04:447 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (24760). El número de socket del cliente es: 7
+[TRACE] 15:51:04:529 nodo/(4458:4473): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:51:04:529 nodo/(4458:4473): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:51:04:877 nodo/(4458:4473): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:51:04:878 nodo/(4458:4473): SOCKET SE CIERRA: (7).
+[TRACE] 15:51:13:763 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (26552). El número de socket del cliente es: 8
+[TRACE] 15:51:13:840 nodo/(4458:4487): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:51:13:840 nodo/(4458:4487): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:51:14:50 nodo/(4458:4487): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:51:14:51 nodo/(4458:4487): SOCKET SE CIERRA: (8).
+[TRACE] 15:51:15:186 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27064). El número de socket del cliente es: 7
+[TRACE] 15:51:15:207 nodo/(4458:4491): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:51:15:207 nodo/(4458:4491): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:51:15:416 nodo/(4458:4491): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:51:15:416 nodo/(4458:4491): SOCKET SE CIERRA: (7).
+[TRACE] 15:51:15:936 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28344). El número de socket del cliente es: 8
+[TRACE] 15:51:16:29 nodo/(4458:4501): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:51:16:29 nodo/(4458:4501): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:51:16:208 nodo/(4458:4501): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:51:16:208 nodo/(4458:4501): SOCKET SE CIERRA: (8).
+[TRACE] 15:51:23:935 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28856). El número de socket del cliente es: 7
+[TRACE] 15:51:23:995 nodo/(4458:4505): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:51:23:995 nodo/(4458:4505): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:51:24:325 nodo/(4458:4505): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:51:24:325 nodo/(4458:4505): SOCKET SE CIERRA: (7).
+[TRACE] 15:51:40:865 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (30648). El número de socket del cliente es: 8
+[TRACE] 15:51:40:887 nodo/(4458:4519): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:51:40:887 nodo/(4458:4519): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:51:41:88 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (30904). El número de socket del cliente es: 7
+[TRACE] 15:51:41:116 nodo/(4458:4519): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:51:41:116 nodo/(4458:4519): SOCKET SE CIERRA: (8).
+[TRACE] 15:51:41:134 nodo/(4458:4521): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:51:41:134 nodo/(4458:4521): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:51:41:298 nodo/(4458:4521): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:51:41:299 nodo/(4458:4521): SOCKET SE CIERRA: (7).
+[TRACE] 15:51:49:530 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32696). El número de socket del cliente es: 9
+[TRACE] 15:51:49:584 nodo/(4458:4535): RECIBO DATOS. socket: 9. buffer: 13820971465 tamanio:11
+[INFO] 15:51:49:584 nodo/(4458:4535): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:51:49:793 nodo/(4458:4535): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:51:49:793 nodo/(4458:4535): SOCKET SE CIERRA: (9).
+[TRACE] 15:51:53:797 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33208). El número de socket del cliente es: 7
+[TRACE] 15:51:53:819 nodo/(4458:4541): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:51:53:819 nodo/(4458:4541): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:51:53:984 nodo/(4458:4541): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:51:53:984 nodo/(4458:4541): SOCKET SE CIERRA: (7).
+[TRACE] 15:51:55:10 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (34488). El número de socket del cliente es: 8
+[TRACE] 15:51:55:70 nodo/(4458:4551): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:51:55:70 nodo/(4458:4551): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:51:55:234 nodo/(4458:4551): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:51:55:234 nodo/(4458:4551): SOCKET SE CIERRA: (8).
+[TRACE] 15:51:59:385 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35000). El número de socket del cliente es: 7
+[TRACE] 15:51:59:430 nodo/(4458:4555): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:51:59:430 nodo/(4458:4555): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:51:59:674 nodo/(4458:4555): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:51:59:674 nodo/(4458:4555): SOCKET SE CIERRA: (7).
+[TRACE] 15:52:03:279 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36792). El número de socket del cliente es: 8
+[TRACE] 15:52:03:299 nodo/(4458:4571): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:52:03:299 nodo/(4458:4571): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:52:03:435 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37048). El número de socket del cliente es: 7
+[TRACE] 15:52:03:485 nodo/(4458:4571): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:52:03:486 nodo/(4458:4571): SOCKET SE CIERRA: (8).
+[TRACE] 15:52:03:500 nodo/(4458:4573): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:52:03:500 nodo/(4458:4573): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:52:03:686 nodo/(4458:4573): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:52:03:687 nodo/(4458:4573): SOCKET SE CIERRA: (7).
+[TRACE] 15:52:16:702 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39096). El número de socket del cliente es: 9
+[TRACE] 15:52:16:735 nodo/(4458:4587): RECIBO DATOS. socket: 9. buffer: 13820971473 tamanio:11
+[INFO] 15:52:16:735 nodo/(4458:4587): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 15:52:16:953 nodo/(4458:4587): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 15:52:16:953 nodo/(4458:4587): SOCKET SE CIERRA: (9).
+[TRACE] 15:52:20:350 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39608). El número de socket del cliente es: 7
+[TRACE] 15:52:20:371 nodo/(4458:4591): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:52:20:371 nodo/(4458:4591): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:52:20:589 nodo/(4458:4591): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:52:20:590 nodo/(4458:4591): SOCKET SE CIERRA: (7).
+[TRACE] 15:52:21:176 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (40888). El número de socket del cliente es: 8
+[TRACE] 15:52:21:275 nodo/(4458:4601): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:52:21:275 nodo/(4458:4601): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:52:21:456 nodo/(4458:4601): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:52:21:456 nodo/(4458:4601): SOCKET SE CIERRA: (8).
+[TRACE] 15:52:30:263 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (41400). El número de socket del cliente es: 7
+[TRACE] 15:52:30:286 nodo/(4458:4605): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:52:30:286 nodo/(4458:4605): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:52:30:469 nodo/(4458:4605): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:52:30:470 nodo/(4458:4605): SOCKET SE CIERRA: (7).
+[TRACE] 15:52:36:195 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43192). El número de socket del cliente es: 8
+[TRACE] 15:52:36:223 nodo/(4458:4621): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:52:36:223 nodo/(4458:4621): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:52:36:369 nodo/(4458:4460): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43448). El número de socket del cliente es: 7
+[TRACE] 15:52:36:441 nodo/(4458:4623): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:52:36:442 nodo/(4458:4623): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:52:36:460 nodo/(4458:4621): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:52:36:460 nodo/(4458:4621): SOCKET SE CIERRA: (8).
+[TRACE] 15:52:36:703 nodo/(4458:4623): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:52:36:704 nodo/(4458:4623): SOCKET SE CIERRA: (7).
+[INFO] 15:56:50:168 nodo/(4883:4883): Archivo de configuración: config.cfg
+[INFO] 15:56:50:168 nodo/(4883:4883): Intentando conectar a nodo
+
+[INFO] 15:56:50:169 nodo/(4883:4883): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 15:56:50:170 nodo/(4883:4883): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 15:56:50:170 nodo/(4883:4883): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 15:56:50:170 nodo/(4883:4883): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 15:56:50:171 nodo/(4883:4885): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 15:57:13:716 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (53688). El número de socket del cliente es: 7
+[TRACE] 15:57:13:759 nodo/(4883:4899): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 15:57:13:759 nodo/(4883:4899): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:14:51 nodo/(4883:4899): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:14:51 nodo/(4883:4899): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:15:427 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (55480). El número de socket del cliente es: 8
+[TRACE] 15:57:15:466 nodo/(4883:4913): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 15:57:15:466 nodo/(4883:4913): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:15:710 nodo/(4883:4913): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:15:716 nodo/(4883:4913): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:15:840 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (55992). El número de socket del cliente es: 7
+[TRACE] 15:57:15:869 nodo/(4883:4917): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 15:57:15:869 nodo/(4883:4917): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:16:139 nodo/(4883:4917): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:16:139 nodo/(4883:4917): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:16:800 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (57272). El número de socket del cliente es: 8
+[TRACE] 15:57:16:832 nodo/(4883:4929): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 15:57:16:832 nodo/(4883:4929): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:17:17 nodo/(4883:4929): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:17:17 nodo/(4883:4929): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:17:186 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (57784). El número de socket del cliente es: 7
+[TRACE] 15:57:17:219 nodo/(4883:4933): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 15:57:17:219 nodo/(4883:4933): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:17:475 nodo/(4883:4933): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:17:476 nodo/(4883:4933): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:18:564 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (59576). El número de socket del cliente es: 8
+[TRACE] 15:57:18:595 nodo/(4883:4947): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 15:57:18:595 nodo/(4883:4947): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:18:755 nodo/(4883:4947): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:18:755 nodo/(4883:4947): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:18:763 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (59832). El número de socket del cliente es: 7
+[TRACE] 15:57:18:783 nodo/(4883:4949): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 15:57:18:783 nodo/(4883:4949): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:18:957 nodo/(4883:4949): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:18:957 nodo/(4883:4949): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:20:67 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (61624). El número de socket del cliente es: 8
+[TRACE] 15:57:20:130 nodo/(4883:4963): RECIBO DATOS. socket: 8. buffer: 13820971465 tamanio:11
+[INFO] 15:57:20:130 nodo/(4883:4963): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:20:482 nodo/(4883:4963): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:20:483 nodo/(4883:4963): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:20:666 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62136). El número de socket del cliente es: 7
+[TRACE] 15:57:20:704 nodo/(4883:4967): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 15:57:20:704 nodo/(4883:4967): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:20:966 nodo/(4883:4967): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:20:966 nodo/(4883:4967): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:21:867 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (63416). El número de socket del cliente es: 8
+[TRACE] 15:57:21:928 nodo/(4883:4977): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 15:57:21:928 nodo/(4883:4977): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:22:249 nodo/(4883:4977): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:22:249 nodo/(4883:4977): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:22:602 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (63928). El número de socket del cliente es: 7
+[TRACE] 15:57:22:665 nodo/(4883:4981): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 15:57:22:665 nodo/(4883:4981): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:22:927 nodo/(4883:4981): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:22:927 nodo/(4883:4981): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:24:395 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (185). El número de socket del cliente es: 8
+[TRACE] 15:57:24:455 nodo/(4883:4995): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 15:57:24:455 nodo/(4883:4995): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:24:685 nodo/(4883:4995): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:24:685 nodo/(4883:4995): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:24:702 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (441). El número de socket del cliente es: 7
+[TRACE] 15:57:24:740 nodo/(4883:4997): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 15:57:24:740 nodo/(4883:4997): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:24:989 nodo/(4883:4997): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:24:989 nodo/(4883:4997): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:26:214 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2233). El número de socket del cliente es: 8
+[TRACE] 15:57:26:264 nodo/(4883:5011): RECIBO DATOS. socket: 8. buffer: 13820971473 tamanio:11
+[INFO] 15:57:26:264 nodo/(4883:5011): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:26:610 nodo/(4883:5011): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:26:611 nodo/(4883:5011): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:26:733 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2745). El número de socket del cliente es: 7
+[TRACE] 15:57:26:760 nodo/(4883:5015): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 15:57:26:760 nodo/(4883:5015): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:26:952 nodo/(4883:5015): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:26:952 nodo/(4883:5015): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:27:605 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4025). El número de socket del cliente es: 8
+[TRACE] 15:57:27:651 nodo/(4883:5025): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 15:57:27:651 nodo/(4883:5025): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:27:866 nodo/(4883:5025): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:27:866 nodo/(4883:5025): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:28:54 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4537). El número de socket del cliente es: 7
+[TRACE] 15:57:28:96 nodo/(4883:5029): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 15:57:28:96 nodo/(4883:5029): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:28:370 nodo/(4883:5029): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:28:370 nodo/(4883:5029): SOCKET SE CIERRA: (7).
+[TRACE] 15:57:29:852 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6329). El número de socket del cliente es: 8
+[TRACE] 15:57:29:936 nodo/(4883:5043): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 15:57:29:937 nodo/(4883:5043): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 15:57:30:183 nodo/(4883:5043): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 15:57:30:183 nodo/(4883:5043): SOCKET SE CIERRA: (8).
+[TRACE] 15:57:30:219 nodo/(4883:4885): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6585). El número de socket del cliente es: 7
+[TRACE] 15:57:30:257 nodo/(4883:5045): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 15:57:30:257 nodo/(4883:5045): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 15:57:30:501 nodo/(4883:5045): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 15:57:30:502 nodo/(4883:5045): SOCKET SE CIERRA: (7).
+[INFO] 16:02:24:676 nodo/(5320:5320): Archivo de configuración: config.cfg
+[INFO] 16:02:24:677 nodo/(5320:5320): Intentando conectar a nodo
+
+[INFO] 16:02:24:677 nodo/(5320:5320): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:02:24:678 nodo/(5320:5320): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:02:24:678 nodo/(5320:5320): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:02:24:678 nodo/(5320:5320): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:02:24:678 nodo/(5320:5322): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:02:47:181 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17081). El número de socket del cliente es: 7
+[TRACE] 16:02:47:226 nodo/(5320:5335): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 16:02:47:227 nodo/(5320:5335): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:47:534 nodo/(5320:5335): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:47:534 nodo/(5320:5335): SOCKET SE CIERRA: (7).
+[TRACE] 16:02:48:959 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (18873). El número de socket del cliente es: 8
+[TRACE] 16:02:49:13 nodo/(5320:5349): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 16:02:49:13 nodo/(5320:5349): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:02:49:243 nodo/(5320:5349): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:02:49:244 nodo/(5320:5349): SOCKET SE CIERRA: (8).
+[TRACE] 16:02:49:441 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19385). El número de socket del cliente es: 7
+[TRACE] 16:02:49:470 nodo/(5320:5353): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 16:02:49:470 nodo/(5320:5353): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:49:725 nodo/(5320:5353): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:49:726 nodo/(5320:5353): SOCKET SE CIERRA: (7).
+[TRACE] 16:02:50:575 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (20665). El número de socket del cliente es: 8
+[TRACE] 16:02:50:642 nodo/(5320:5363): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 16:02:50:643 nodo/(5320:5363): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:02:50:924 nodo/(5320:5363): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:02:50:924 nodo/(5320:5363): SOCKET SE CIERRA: (8).
+[TRACE] 16:02:51:162 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21177). El número de socket del cliente es: 7
+[TRACE] 16:02:51:221 nodo/(5320:5367): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 16:02:51:221 nodo/(5320:5367): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:51:504 nodo/(5320:5367): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:51:504 nodo/(5320:5367): SOCKET SE CIERRA: (7).
+[TRACE] 16:02:52:790 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (22969). El número de socket del cliente es: 8
+[TRACE] 16:02:52:827 nodo/(5320:5381): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 16:02:52:827 nodo/(5320:5381): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:02:53:66 nodo/(5320:5381): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:02:53:67 nodo/(5320:5381): SOCKET SE CIERRA: (8).
+[TRACE] 16:02:53:92 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23225). El número de socket del cliente es: 7
+[TRACE] 16:02:53:124 nodo/(5320:5383): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 16:02:53:124 nodo/(5320:5383): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:53:351 nodo/(5320:5383): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:53:351 nodo/(5320:5383): SOCKET SE CIERRA: (7).
+[TRACE] 16:02:54:598 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25017). El número de socket del cliente es: 8
+[TRACE] 16:02:54:649 nodo/(5320:5397): RECIBO DATOS. socket: 8. buffer: 13820971465 tamanio:11
+[INFO] 16:02:54:649 nodo/(5320:5397): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:02:54:856 nodo/(5320:5397): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:02:54:857 nodo/(5320:5397): SOCKET SE CIERRA: (8).
+[TRACE] 16:02:55:5 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25529). El número de socket del cliente es: 7
+[TRACE] 16:02:55:33 nodo/(5320:5401): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 16:02:55:33 nodo/(5320:5401): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:55:248 nodo/(5320:5401): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:55:248 nodo/(5320:5401): SOCKET SE CIERRA: (7).
+[TRACE] 16:02:55:966 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (26809). El número de socket del cliente es: 8
+[TRACE] 16:02:56:16 nodo/(5320:5411): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 16:02:56:16 nodo/(5320:5411): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:02:56:195 nodo/(5320:5411): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:02:56:195 nodo/(5320:5411): SOCKET SE CIERRA: (8).
+[TRACE] 16:02:56:726 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27321). El número de socket del cliente es: 7
+[TRACE] 16:02:56:788 nodo/(5320:5415): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 16:02:56:788 nodo/(5320:5415): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:57:50 nodo/(5320:5415): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:57:51 nodo/(5320:5415): SOCKET SE CIERRA: (7).
+[TRACE] 16:02:58:640 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29113). El número de socket del cliente es: 8
+[TRACE] 16:02:58:705 nodo/(5320:5429): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 16:02:58:706 nodo/(5320:5429): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:02:59:15 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29369). El número de socket del cliente es: 7
+[TRACE] 16:02:59:25 nodo/(5320:5429): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:02:59:26 nodo/(5320:5429): SOCKET SE CIERRA: (8).
+[TRACE] 16:02:59:64 nodo/(5320:5431): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 16:02:59:64 nodo/(5320:5431): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:02:59:339 nodo/(5320:5431): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:02:59:341 nodo/(5320:5431): SOCKET SE CIERRA: (7).
+[TRACE] 16:03:00:860 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31161). El número de socket del cliente es: 9
+[TRACE] 16:03:00:913 nodo/(5320:5445): RECIBO DATOS. socket: 9. buffer: 13820971473 tamanio:11
+[INFO] 16:03:00:913 nodo/(5320:5445): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 16:03:01:177 nodo/(5320:5445): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 16:03:01:177 nodo/(5320:5445): SOCKET SE CIERRA: (9).
+[TRACE] 16:03:01:376 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31673). El número de socket del cliente es: 7
+[TRACE] 16:03:01:406 nodo/(5320:5449): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 16:03:01:406 nodo/(5320:5449): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:03:01:646 nodo/(5320:5449): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:03:01:646 nodo/(5320:5449): SOCKET SE CIERRA: (7).
+[TRACE] 16:03:02:477 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32953). El número de socket del cliente es: 8
+[TRACE] 16:03:02:531 nodo/(5320:5460): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 16:03:02:531 nodo/(5320:5460): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:03:02:756 nodo/(5320:5460): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:03:02:757 nodo/(5320:5460): SOCKET SE CIERRA: (8).
+[TRACE] 16:03:02:907 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33465). El número de socket del cliente es: 7
+[TRACE] 16:03:02:950 nodo/(5320:5465): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 16:03:02:950 nodo/(5320:5465): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:03:03:119 nodo/(5320:5465): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:03:03:119 nodo/(5320:5465): SOCKET SE CIERRA: (7).
+[TRACE] 16:03:04:184 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35257). El número de socket del cliente es: 8
+[TRACE] 16:03:04:222 nodo/(5320:5479): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 16:03:04:222 nodo/(5320:5479): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:03:04:374 nodo/(5320:5479): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:03:04:375 nodo/(5320:5479): SOCKET SE CIERRA: (8).
+[TRACE] 16:03:04:387 nodo/(5320:5322): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35513). El número de socket del cliente es: 7
+[TRACE] 16:03:04:407 nodo/(5320:5481): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 16:03:04:407 nodo/(5320:5481): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:03:04:570 nodo/(5320:5481): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:03:04:571 nodo/(5320:5481): SOCKET SE CIERRA: (7).
+[INFO] 16:11:32:812 nodo/(5825:5825): Archivo de configuración: config.cfg
+[INFO] 16:11:32:812 nodo/(5825:5825): Intentando conectar a nodo
+
+[INFO] 16:11:32:812 nodo/(5825:5825): ENVIO DATOS. socket: 5. Buffer:3232 
+[TRACE] 16:11:32:813 nodo/(5825:5825): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[INFO] 16:11:32:814 nodo/(5825:5825): ENVIO DATOS. socket: 5. Buffer:3119127.0.0.11460002101073741824 
+[TRACE] 16:11:32:814 nodo/(5825:5825): RECIBO DATOS. socket: 5. buffer: Ok tamanio:2
+[TRACE] 16:11:32:814 nodo/(5825:5827): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 6000
+[TRACE] 16:11:55:969 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45753). El número de socket del cliente es: 7
+[TRACE] 16:11:56:13 nodo/(5825:5840): RECIBO DATOS. socket: 7. buffer: 13820971527 tamanio:11
+[INFO] 16:11:56:13 nodo/(5825:5840): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:11:56:348 nodo/(5825:5840): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:11:56:349 nodo/(5825:5840): SOCKET SE CIERRA: (7).
+[TRACE] 16:11:57:760 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47545). El número de socket del cliente es: 8
+[TRACE] 16:11:57:817 nodo/(5825:5854): RECIBO DATOS. socket: 8. buffer: 13820971471 tamanio:11
+[INFO] 16:11:57:817 nodo/(5825:5854): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:11:58:52 nodo/(5825:5854): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:11:58:54 nodo/(5825:5854): SOCKET SE CIERRA: (8).
+[TRACE] 16:11:58:263 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48057). El número de socket del cliente es: 7
+[TRACE] 16:11:58:294 nodo/(5825:5858): RECIBO DATOS. socket: 7. buffer: 13820971417 tamanio:11
+[INFO] 16:11:58:294 nodo/(5825:5858): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:11:58:615 nodo/(5825:5858): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:11:58:617 nodo/(5825:5858): SOCKET SE CIERRA: (7).
+[TRACE] 16:11:59:288 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49337). El número de socket del cliente es: 8
+[TRACE] 16:11:59:340 nodo/(5825:5869): RECIBO DATOS. socket: 8. buffer: 13820971474 tamanio:11
+[INFO] 16:11:59:340 nodo/(5825:5869): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:11:59:571 nodo/(5825:5869): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:11:59:571 nodo/(5825:5869): SOCKET SE CIERRA: (8).
+[TRACE] 16:11:59:723 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49849). El número de socket del cliente es: 7
+[TRACE] 16:11:59:771 nodo/(5825:5873): RECIBO DATOS. socket: 7. buffer: 13820971525 tamanio:11
+[INFO] 16:11:59:771 nodo/(5825:5873): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:00:103 nodo/(5825:5873): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:00:104 nodo/(5825:5873): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:01:644 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51641). El número de socket del cliente es: 8
+[TRACE] 16:12:01:694 nodo/(5825:5887): RECIBO DATOS. socket: 8. buffer: 13820971416 tamanio:11
+[INFO] 16:12:01:694 nodo/(5825:5887): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:12:01:986 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51897). El número de socket del cliente es: 7
+[TRACE] 16:12:02:12 nodo/(5825:5887): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:12:02:14 nodo/(5825:5887): SOCKET SE CIERRA: (8).
+[TRACE] 16:12:02:29 nodo/(5825:5889): RECIBO DATOS. socket: 7. buffer: 13820971458 tamanio:11
+[INFO] 16:12:02:33 nodo/(5825:5889): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:02:321 nodo/(5825:5889): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:02:322 nodo/(5825:5889): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:03:850 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (53689). El número de socket del cliente es: 9
+[TRACE] 16:12:03:909 nodo/(5825:5904): RECIBO DATOS. socket: 9. buffer: 13820971465 tamanio:11
+[INFO] 16:12:03:910 nodo/(5825:5904): ENVIO DATOS. socket: 9. Buffer:1 
+[TRACE] 16:12:04:220 nodo/(5825:5904): RECIBO DATOS. socket: 9. buffer:  tamanio:0
+[TRACE] 16:12:04:220 nodo/(5825:5904): SOCKET SE CIERRA: (9).
+[TRACE] 16:12:04:429 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (54201). El número de socket del cliente es: 7
+[TRACE] 16:12:04:462 nodo/(5825:5908): RECIBO DATOS. socket: 7. buffer: 13820971411 tamanio:11
+[INFO] 16:12:04:462 nodo/(5825:5908): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:04:707 nodo/(5825:5908): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:04:707 nodo/(5825:5908): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:05:633 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (55481). El número de socket del cliente es: 8
+[TRACE] 16:12:05:682 nodo/(5825:5918): RECIBO DATOS. socket: 8. buffer: 13820971506 tamanio:11
+[INFO] 16:12:05:682 nodo/(5825:5918): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:12:06:18 nodo/(5825:5918): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:12:06:20 nodo/(5825:5918): SOCKET SE CIERRA: (8).
+[TRACE] 16:12:06:218 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (56249). El número de socket del cliente es: 7
+[TRACE] 16:12:06:275 nodo/(5825:5922): RECIBO DATOS. socket: 7. buffer: 13820971522 tamanio:11
+[INFO] 16:12:06:276 nodo/(5825:5922): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:06:740 nodo/(5825:5922): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:06:742 nodo/(5825:5922): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:08:227 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58041). El número de socket del cliente es: 8
+[TRACE] 16:12:08:290 nodo/(5825:5936): RECIBO DATOS. socket: 8. buffer: 13820971526 tamanio:11
+[INFO] 16:12:08:290 nodo/(5825:5936): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:12:08:644 nodo/(5825:5936): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:12:08:644 nodo/(5825:5936): SOCKET SE CIERRA: (8).
+[TRACE] 16:12:08:657 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58297). El número de socket del cliente es: 7
+[TRACE] 16:12:08:697 nodo/(5825:5938): RECIBO DATOS. socket: 7. buffer: 13820971490 tamanio:11
+[INFO] 16:12:08:697 nodo/(5825:5938): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:09:78 nodo/(5825:5938): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:09:78 nodo/(5825:5938): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:10:589 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (60089). El número de socket del cliente es: 8
+[TRACE] 16:12:10:650 nodo/(5825:5952): RECIBO DATOS. socket: 8. buffer: 13820971473 tamanio:11
+[INFO] 16:12:10:650 nodo/(5825:5952): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:12:11:117 nodo/(5825:5952): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:12:11:118 nodo/(5825:5952): SOCKET SE CIERRA: (8).
+[TRACE] 16:12:11:269 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (60601). El número de socket del cliente es: 7
+[TRACE] 16:12:11:305 nodo/(5825:5956): RECIBO DATOS. socket: 7. buffer: 13820971448 tamanio:11
+[INFO] 16:12:11:305 nodo/(5825:5956): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:11:557 nodo/(5825:5956): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:11:557 nodo/(5825:5956): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:12:560 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (61881). El número de socket del cliente es: 8
+[TRACE] 16:12:12:604 nodo/(5825:5966): RECIBO DATOS. socket: 8. buffer: 13820971451 tamanio:11
+[INFO] 16:12:12:605 nodo/(5825:5966): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:12:12:918 nodo/(5825:5966): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:12:12:918 nodo/(5825:5966): SOCKET SE CIERRA: (8).
+[TRACE] 16:12:13:105 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62393). El número de socket del cliente es: 7
+[TRACE] 16:12:13:152 nodo/(5825:5970): RECIBO DATOS. socket: 7. buffer: 13820971524 tamanio:11
+[INFO] 16:12:13:152 nodo/(5825:5970): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:13:495 nodo/(5825:5970): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:13:496 nodo/(5825:5970): SOCKET SE CIERRA: (7).
+[TRACE] 16:12:14:772 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64185). El número de socket del cliente es: 8
+[TRACE] 16:12:14:849 nodo/(5825:5986): RECIBO DATOS. socket: 8. buffer: 13820971513 tamanio:11
+[INFO] 16:12:14:849 nodo/(5825:5986): ENVIO DATOS. socket: 8. Buffer:1 
+[TRACE] 16:12:15:51 nodo/(5825:5986): RECIBO DATOS. socket: 8. buffer:  tamanio:0
+[TRACE] 16:12:15:51 nodo/(5825:5986): SOCKET SE CIERRA: (8).
+[TRACE] 16:12:15:190 nodo/(5825:5827): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64441). El número de socket del cliente es: 7
+[TRACE] 16:12:15:220 nodo/(5825:5988): RECIBO DATOS. socket: 7. buffer: 13820971532 tamanio:11
+[INFO] 16:12:15:220 nodo/(5825:5988): ENVIO DATOS. socket: 7. Buffer:1 
+[TRACE] 16:12:15:419 nodo/(5825:5988): RECIBO DATOS. socket: 7. buffer:  tamanio:0
+[TRACE] 16:12:15:420 nodo/(5825:5988): SOCKET SE CIERRA: (7).
+[TRACE] 16:18:14:534 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11706). El número de socket del cliente es: 7
+[TRACE] 16:18:16:333 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13498). El número de socket del cliente es: 8
+[TRACE] 16:18:16:866 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14010). El número de socket del cliente es: 7
+[TRACE] 16:18:18:96 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15290). El número de socket del cliente es: 8
+[TRACE] 16:18:18:706 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15802). El número de socket del cliente es: 7
+[TRACE] 16:18:20:541 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17594). El número de socket del cliente es: 8
+[TRACE] 16:18:20:839 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17850). El número de socket del cliente es: 7
+[TRACE] 16:18:22:217 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19642). El número de socket del cliente es: 9
+[TRACE] 16:18:22:759 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (20154). El número de socket del cliente es: 7
+[TRACE] 16:18:23:468 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21434). El número de socket del cliente es: 8
+[TRACE] 16:18:23:827 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21946). El número de socket del cliente es: 7
+[TRACE] 16:18:25:896 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23738). El número de socket del cliente es: 8
+[TRACE] 16:18:26:233 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23994). El número de socket del cliente es: 7
+[TRACE] 16:18:28:246 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25786). El número de socket del cliente es: 9
+[TRACE] 16:18:29:162 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (26298). El número de socket del cliente es: 7
+[TRACE] 16:18:30:333 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27578). El número de socket del cliente es: 8
+[TRACE] 16:18:30:852 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28090). El número de socket del cliente es: 7
+[TRACE] 16:18:32:864 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29882). El número de socket del cliente es: 8
+[TRACE] 16:18:33:169 nodo/(6415:6417): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (30138). El número de socket del cliente es: 7
+[TRACE] 16:41:03:173 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52410). El número de socket del cliente es: 7
+[TRACE] 16:41:05:252 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (54202). El número de socket del cliente es: 8
+[TRACE] 16:41:05:861 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (54714). El número de socket del cliente es: 7
+[TRACE] 16:41:06:978 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (55994). El número de socket del cliente es: 8
+[TRACE] 16:41:07:412 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (56506). El número de socket del cliente es: 7
+[TRACE] 16:41:09:442 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58298). El número de socket del cliente es: 8
+[TRACE] 16:41:09:769 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (58554). El número de socket del cliente es: 7
+[TRACE] 16:41:11:574 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (60346). El número de socket del cliente es: 9
+[TRACE] 16:41:12:159 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (60858). El número de socket del cliente es: 7
+[TRACE] 16:41:12:996 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62138). El número de socket del cliente es: 8
+[TRACE] 16:41:13:986 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62650). El número de socket del cliente es: 7
+[TRACE] 16:41:15:754 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64442). El número de socket del cliente es: 8
+[TRACE] 16:41:16:127 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64698). El número de socket del cliente es: 7
+[TRACE] 16:41:18:25 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (955). El número de socket del cliente es: 8
+[TRACE] 16:41:18:620 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (1467). El número de socket del cliente es: 7
+[TRACE] 16:41:20:43 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2747). El número de socket del cliente es: 8
+[TRACE] 16:41:20:617 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3259). El número de socket del cliente es: 7
+[TRACE] 16:41:22:622 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5051). El número de socket del cliente es: 8
+[TRACE] 16:41:22:901 nodo/(7200:7202): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5307). El número de socket del cliente es: 7
+[TRACE] 16:54:20:398 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17339). El número de socket del cliente es: 7
+[TRACE] 16:54:22:505 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19131). El número de socket del cliente es: 8
+[TRACE] 16:54:23:107 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19643). El número de socket del cliente es: 7
+[TRACE] 16:54:24:271 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (20923). El número de socket del cliente es: 8
+[TRACE] 16:54:24:885 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21435). El número de socket del cliente es: 7
+[TRACE] 16:54:26:684 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23227). El número de socket del cliente es: 8
+[TRACE] 16:54:26:981 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23483). El número de socket del cliente es: 7
+[TRACE] 16:54:28:339 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25275). El número de socket del cliente es: 8
+[TRACE] 16:54:28:805 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (25787). El número de socket del cliente es: 7
+[TRACE] 16:54:29:706 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27067). El número de socket del cliente es: 8
+[TRACE] 16:54:30:49 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (27579). El número de socket del cliente es: 7
+[TRACE] 16:54:31:878 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29371). El número de socket del cliente es: 8
+[TRACE] 16:54:32:269 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (29627). El número de socket del cliente es: 7
+[TRACE] 16:54:34:211 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31419). El número de socket del cliente es: 8
+[TRACE] 16:54:34:774 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31931). El número de socket del cliente es: 7
+[TRACE] 16:54:35:686 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33211). El número de socket del cliente es: 8
+[TRACE] 16:54:36:136 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33723). El número de socket del cliente es: 7
+[TRACE] 16:54:37:471 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35515). El número de socket del cliente es: 8
+[TRACE] 16:54:37:676 nodo/(8049:8051): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35771). El número de socket del cliente es: 7
+[TRACE] 17:02:43:58 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47035). El número de socket del cliente es: 7
+[TRACE] 17:02:45:297 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48827). El número de socket del cliente es: 8
+[TRACE] 17:02:45:886 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49339). El número de socket del cliente es: 7
+[TRACE] 17:02:46:982 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (50619). El número de socket del cliente es: 8
+[TRACE] 17:02:47:611 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51131). El número de socket del cliente es: 7
+[TRACE] 17:02:49:333 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52923). El número de socket del cliente es: 8
+[TRACE] 17:02:49:665 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (53179). El número de socket del cliente es: 7
+[TRACE] 17:02:51:163 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (54971). El número de socket del cliente es: 8
+[TRACE] 17:02:51:692 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (55483). El número de socket del cliente es: 7
+[TRACE] 17:02:53:73 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (56763). El número de socket del cliente es: 8
+[TRACE] 17:02:53:666 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (57275). El número de socket del cliente es: 7
+[TRACE] 17:02:55:267 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (59067). El número de socket del cliente es: 8
+[TRACE] 17:02:55:553 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (59323). El número de socket del cliente es: 7
+[TRACE] 17:02:56:985 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (61115). El número de socket del cliente es: 8
+[TRACE] 17:02:57:453 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (61627). El número de socket del cliente es: 7
+[TRACE] 17:02:58:723 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62907). El número de socket del cliente es: 8
+[TRACE] 17:02:59:261 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (63419). El número de socket del cliente es: 7
+[TRACE] 17:03:00:940 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (65211). El número de socket del cliente es: 8
+[TRACE] 17:03:01:231 nodo/(8468:8470): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (65467). El número de socket del cliente es: 7
+[TRACE] 17:04:34:786 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4028). El número de socket del cliente es: 7
+[TRACE] 17:04:36:728 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5820). El número de socket del cliente es: 8
+[TRACE] 17:04:37:290 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6332). El número de socket del cliente es: 7
+[TRACE] 17:04:38:467 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7612). El número de socket del cliente es: 8
+[TRACE] 17:04:38:949 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8124). El número de socket del cliente es: 7
+[TRACE] 17:04:40:856 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (9916). El número de socket del cliente es: 8
+[TRACE] 17:04:41:217 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10172). El número de socket del cliente es: 7
+[TRACE] 17:04:42:729 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11964). El número de socket del cliente es: 8
+[TRACE] 17:04:43:214 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12476). El número de socket del cliente es: 7
+[TRACE] 17:04:44:363 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13756). El número de socket del cliente es: 8
+[TRACE] 17:04:44:3 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14268). El número de socket del cliente es: 7
+[TRACE] 17:04:46:992 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16060). El número de socket del cliente es: 8
+[TRACE] 17:04:47:372 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16316). El número de socket del cliente es: 7
+[TRACE] 17:04:48:890 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (18108). El número de socket del cliente es: 8
+[TRACE] 17:04:49:294 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (18620). El número de socket del cliente es: 7
+[TRACE] 17:04:50:162 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19900). El número de socket del cliente es: 8
+[TRACE] 17:04:50:607 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (20412). El número de socket del cliente es: 7
+[TRACE] 17:04:51:860 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (22204). El número de socket del cliente es: 8
+[TRACE] 17:04:52:88 nodo/(8669:8671): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (22460). El número de socket del cliente es: 7
+[TRACE] 17:12:48:395 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33724). El número de socket del cliente es: 7
+[TRACE] 17:12:50:341 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (35516). El número de socket del cliente es: 8
+[TRACE] 17:12:50:930 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36028). El número de socket del cliente es: 7
+[TRACE] 17:12:51:989 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37308). El número de socket del cliente es: 8
+[TRACE] 17:12:52:582 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37820). El número de socket del cliente es: 7
+[TRACE] 17:12:54:361 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39612). El número de socket del cliente es: 8
+[TRACE] 17:12:54:648 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39868). El número de socket del cliente es: 7
+[TRACE] 17:12:56:28 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (41660). El número de socket del cliente es: 9
+[TRACE] 17:12:56:400 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (42172). El número de socket del cliente es: 7
+[TRACE] 17:12:57:232 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43452). El número de socket del cliente es: 8
+[TRACE] 17:12:57:557 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43964). El número de socket del cliente es: 7
+[TRACE] 17:12:58:987 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (45756). El número de socket del cliente es: 8
+[TRACE] 17:12:59:350 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (46012). El número de socket del cliente es: 7
+[TRACE] 17:13:01:456 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47804). El número de socket del cliente es: 9
+[TRACE] 17:13:02:97 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48316). El número de socket del cliente es: 7
+[TRACE] 17:13:03:253 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49596). El número de socket del cliente es: 8
+[TRACE] 17:13:03:722 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (50108). El número de socket del cliente es: 7
+[TRACE] 17:13:05:183 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51900). El número de socket del cliente es: 8
+[TRACE] 17:13:05:477 nodo/(9240:9242): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52156). El número de socket del cliente es: 7
+[TRACE] 17:20:57:682 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (63676). El número de socket del cliente es: 7
+[TRACE] 17:20:59:723 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (65468). El número de socket del cliente es: 8
+[TRACE] 17:21:00:278 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (445). El número de socket del cliente es: 7
+[TRACE] 17:21:01:388 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (1725). El número de socket del cliente es: 8
+[TRACE] 17:21:01:855 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (2237). El número de socket del cliente es: 7
+[TRACE] 17:21:03:238 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4029). El número de socket del cliente es: 8
+[TRACE] 17:21:03:533 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (4285). El número de socket del cliente es: 7
+[TRACE] 17:21:04:893 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6077). El número de socket del cliente es: 8
+[TRACE] 17:21:05:301 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (6589). El número de socket del cliente es: 7
+[TRACE] 17:21:06:712 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (7869). El número de socket del cliente es: 8
+[TRACE] 17:21:07:450 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (8381). El número de socket del cliente es: 7
+[TRACE] 17:21:09:292 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10173). El número de socket del cliente es: 8
+[TRACE] 17:21:09:697 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (10429). El número de socket del cliente es: 7
+[TRACE] 17:21:11:216 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12221). El número de socket del cliente es: 8
+[TRACE] 17:21:11:767 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (12733). El número de socket del cliente es: 7
+[TRACE] 17:21:12:668 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14013). El número de socket del cliente es: 8
+[TRACE] 17:21:13:68 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (14525). El número de socket del cliente es: 7
+[TRACE] 17:21:14:205 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16317). El número de socket del cliente es: 8
+[TRACE] 17:21:14:533 nodo/(9756:9758): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (16573). El número de socket del cliente es: 7
+[TRACE] 17:37:43:900 nodo/(10195:10197): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28861). El número de socket del cliente es: 7
+[TRACE] 17:37:45:732 nodo/(10195:10197): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (30653). El número de socket del cliente es: 8
+[TRACE] 17:55:11:483 nodo/(10475:10477): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (37565). El número de socket del cliente es: 7
+[TRACE] 17:55:13:122 nodo/(10475:10477): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39357). El número de socket del cliente es: 8
+[TRACE] 18:09:38:969 nodo/(10785:10787): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (44221). El número de socket del cliente es: 7
+[TRACE] 18:09:40:982 nodo/(10785:10787): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (46013). El número de socket del cliente es: 8
+[TRACE] 18:09:41:514 nodo/(10785:10787): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (46525). El número de socket del cliente es: 7
+[TRACE] 18:09:42:690 nodo/(10785:10787): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47805). El número de socket del cliente es: 8
+[TRACE] 18:10:27:73 nodo/(10836:10838): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (49341). El número de socket del cliente es: 7
+[TRACE] 18:10:28:823 nodo/(10836:10838): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (51133). El número de socket del cliente es: 8
+[TRACE] 18:33:39:707 nodo/(11334:11336): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (13246). El número de socket del cliente es: 7
+[TRACE] 18:33:41:475 nodo/(11334:11336): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15038). El número de socket del cliente es: 8
+[TRACE] 18:50:37:774 nodo/(12007:12009): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21438). El número de socket del cliente es: 7
+[TRACE] 18:50:39:483 nodo/(12007:12009): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23230). El número de socket del cliente es: 8
+[TRACE] 19:05:08:11 nodo/(12190:12192): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (31166). El número de socket del cliente es: 7
+[TRACE] 19:05:09:642 nodo/(12190:12192): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32958). El número de socket del cliente es: 8
+[TRACE] 19:07:43:891 nodo/(12298:12300): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (36286). El número de socket del cliente es: 7
+[TRACE] 19:07:45:571 nodo/(12298:12300): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (38078). El número de socket del cliente es: 8
+[TRACE] 19:09:31:456 nodo/(12405:12407): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (41406). El número de socket del cliente es: 7
+[TRACE] 19:09:33:347 nodo/(12405:12407): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (43198). El número de socket del cliente es: 8
+[TRACE] 19:14:35:363 nodo/(12628:12630): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (47038). El número de socket del cliente es: 7
+[TRACE] 19:14:36:934 nodo/(12628:12630): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (48830). El número de socket del cliente es: 8
+[TRACE] 19:15:53:660 nodo/(12699:12701): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (52158). El número de socket del cliente es: 7
+[TRACE] 19:15:55:274 nodo/(12699:12701): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (53950). El número de socket del cliente es: 8
+[TRACE] 19:17:34:905 nodo/(12770:12772): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (57278). El número de socket del cliente es: 7
+[TRACE] 19:17:36:476 nodo/(12770:12772): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (59070). El número de socket del cliente es: 8
+[TRACE] 19:19:30:193 nodo/(12870:12872): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (62398). El número de socket del cliente es: 7
+[TRACE] 19:19:31:916 nodo/(12870:12872): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (64190). El número de socket del cliente es: 8
+[TRACE] 20:44:03:654 nodo/(13133:13135): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (3775). El número de socket del cliente es: 7
+[TRACE] 20:44:05:184 nodo/(13133:13135): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (5567). El número de socket del cliente es: 8
+[TRACE] 20:49:38:384 nodo/(13258:13260): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (9407). El número de socket del cliente es: 7
+[TRACE] 20:49:40:58 nodo/(13258:13260): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (11199). El número de socket del cliente es: 8
+[TRACE] 21:00:48:279 nodo/(13392:13394): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (15551). El número de socket del cliente es: 7
+[TRACE] 21:00:50:34 nodo/(13392:13394): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (17343). El número de socket del cliente es: 8
+[TRACE] 21:10:00:442 nodo/(13597:13599): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21695). El número de socket del cliente es: 7
+[TRACE] 21:10:02:162 nodo/(13597:13599): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (23487). El número de socket del cliente es: 8
+[TRACE] 21:11:30:746 nodo/(13666:13668): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (26559). El número de socket del cliente es: 7
+[TRACE] 21:11:35:876 nodo/(13666:13668): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (28351). El número de socket del cliente es: 8
+[TRACE] 21:16:35:972 nodo/(13768:13770): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (32191). El número de socket del cliente es: 7
+[TRACE] 21:16:37:689 nodo/(13768:13770): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (33983). El número de socket del cliente es: 8
+[TRACE] 01:17:13:19 nodo/(14054:14056): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (39359). El número de socket del cliente es: 7
+[TRACE] 01:17:14:246 nodo/(14054:14056): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (41151). El número de socket del cliente es: 8

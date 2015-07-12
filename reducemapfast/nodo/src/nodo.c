@@ -170,7 +170,7 @@ void conexionAFs(){
 int conectarFS(int * socket_Fs, char* ipFs, char* puertoFs) {
 
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON NODO
-	log_info(logger, "Intentando conectar a nodo\n");
+	//log_info(logger, "Intentando conectar a nodo\n");
 	//conectar con Nodo
 	struct addrinfo hints;
 	struct addrinfo *serverInfo;
@@ -213,6 +213,13 @@ void grabarScript(char* nombreScript, char* codigoScript){
 		fclose(archivoScript);
 		//Cierro el script
 }
+
+long unsigned tamanio_archivoLu(char* nomArch){
+	struct stat buf;
+	stat(nomArch, &buf);
+	return buf.st_size;
+}
+
 
 int tamanio_archivo(char* nomArch){
 	struct stat buf;
@@ -382,8 +389,8 @@ int enviarDatos(int socket, void *buffer) {
 		printf("ERROR: no se pudo enviar información. \n");
 		log_info(logger, "ERROR: no se pudo enviar información. \n");
 	}
-	log_info(logger, "ENVIO datos. socket: %d. buffer: %s", socket,
-			(char*) buffer);
+	//log_info(logger, "ENVIO datos. socket: %d. buffer: %s", socket,
+		//	(char*) buffer);
 
 	return (bytecount);
 }
@@ -508,7 +515,7 @@ int runScriptFile(char* script,char* archNom, char* input)
 #if 1 // METODOS CONFIGURACION //
 void LevantarConfig() {
 	t_config* config = config_create(PATH_CONFIG);
-	log_info(logger, "Archivo de configuración: %s", PATH_CONFIG);
+	//log_info(logger, "Archivo de configuración: %s", PATH_CONFIG);
 	// Nos fijamos si el archivo de conf. pudo ser leido y si tiene los parametros
 	if (config->properties->table_current_size != 0) {
 
@@ -671,6 +678,15 @@ int PosicionDeBufferALong(char* buffer, long unsigned posicion) {
 }
 
 
+long unsigned ObtenerLu (char *buffer){
+	long unsigned x,digito,aux=0;
+	for(x=0;x<strlen(buffer);x++){
+		digito=ChartToInt(buffer[x]);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
 int ObtenerTamanio (char *buffer , int posicion, int dig_tamanio){
 	int x,digito,aux=0;
 	for(x=0;x<dig_tamanio;x++){
@@ -709,24 +725,24 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 
 		digTamanio=PosicionDeBufferAInt(bufferAux,1);
 		*tamanio=ObtenerTamanio(bufferAux,2,digTamanio);
-		printf(COLOR_VERDE"TAMAÑO:%d\n"DEFAULT,*tamanio);
+		//printf(COLOR_VERDE"TAMAÑO:%d\n"DEFAULT,*tamanio);
 
 
 	}else if(*cantRafaga==2){
 		bufferAux = realloc(bufferAux,*tamanio * sizeof(char)+1);
 		memset(bufferAux, 0, *tamanio * sizeof(char)+1); //-> llenamos el bufferAux con barras ceros.
 
-		printf("ANTES BYTESRECIBIDO:%d\n",*bytesRecibidos);
+		//printf("ANTES BYTESRECIBIDO:%d\n",*bytesRecibidos);
 		if ((*bytesRecibidos = *bytesRecibidos+recv(socket, bufferAux, *tamanio, 0)) == -1) {
 			Error("Ocurrio un error al intentar recibir datos desde uno de los clientes. Socket: %d",socket);
 		}
-		printf("DESPUES BYTESRECIBIDO:%d\n",*bytesRecibidos);
+		//printf("DESPUES BYTESRECIBIDO:%d\n",*bytesRecibidos);
 	}
 
 	if(strlen(bufferAux)<100){
-		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
+		//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
 	} else {
-		log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d y mi rafaga:%d", socket,"soy grande", strlen(bufferAux),*cantRafaga);
+		//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d y mi rafaga:%d", socket,"soy grande", strlen(bufferAux),*cantRafaga);
 	}
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
@@ -746,8 +762,8 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
 
 	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) buffer);
+	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
+		//	(char*) buffer);
 
 	return bytecount;
 }
@@ -755,7 +771,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 void CerrarSocket(int socket) {
 	close(socket);
 	//Traza("SOCKET SE CIERRA: (%d).", socket);
-	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
+	//log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
 
 int ObtenerComandoMSJ(char* buffer) {
@@ -894,12 +910,15 @@ long unsigned obtenerCantidadLineas(int socket,char* bloque,long unsigned* taman
 
 	printf("Primera Rafaga:%s\n",bufferE);
 
-	sem_wait(&semCon);
+	//sem_wait(&semCon);
 	EnviarDatos(socket,bufferE,strlen(bufferE));
 
 
 	tamanio = strlen("*");
+	cantRafaga=1;
 	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
+	printf("Recibo el Asterisco?:%s\n",bufferR);
+
 	int p,bandera=0;
 	for(p=0;p<strlen(bufferR);p++){
 		if(bufferR[p]=='*'){
@@ -919,22 +938,54 @@ long unsigned obtenerCantidadLineas(int socket,char* bloque,long unsigned* taman
 
 
 	EnviarDatos(socket,buffer,strlen(buffer));
-	sem_post(&semCon);
+	//sem_post(&semCon);
 	bufferR = string_new();
 
 	cantRafaga=2;
 	tamanio=100;
+
 	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
+	printf("Recibo la cantidad de Lineas:%s\n",bufferR);
+
 
 	//12201843434832
 	int pos=0;
 	cantidadLineas=DigitosNombreArchivo(bufferR,&pos);
 	tamanioArc=DigitosNombreArchivo(bufferR,&pos);
-	*tamanioArchivo = atoi(tamanioArc);
-	return atoi(cantidadLineas);
+	*tamanioArchivo = ObtenerLu(tamanioArc);
+	return ObtenerLu(cantidadLineas);
 }
 
 long unsigned cantidadLineasArchivo(char* bloque, long unsigned* tamanio){
+
+	FILE * fA;
+	fA = fopen(bloque,"r");
+	if(fA!=NULL){
+		printf("ABRIO\n");
+		int i=0;
+
+		fseek(fA,0L,SEEK_END);
+		long unsigned tamanioA=ftell(fA);
+		printf("FTELL:%lu\n",tamanioA);
+		*tamanio = tamanioA;
+		rewind(fA);
+
+		char * buffer = malloc(tamanioA+1);
+		memset(buffer,0,tamanioA+1);
+
+		while(!feof(fA)){
+			fgets(buffer,tamanioA,fA);
+			i++;
+		}
+		free(buffer);
+		fclose(fA);
+		return i;
+	} else {
+		return 0;
+	}
+}
+
+/*long unsigned cantidadLineasArchivo(char* bloque, long unsigned* tamanio){
 	FILE * fA;
 	fA = fopen(bloque,"r");
 	if(fA!=NULL){
@@ -964,7 +1015,7 @@ long unsigned cantidadLineasArchivo(char* bloque, long unsigned* tamanio){
 		return 0;
 	}
 
-}
+}*/
 
 long unsigned cantidadDeLineas(t_list** bloques,t_list* nodos){
 	int i;
@@ -983,6 +1034,7 @@ long unsigned cantidadDeLineas(t_list** bloques,t_list* nodos){
 		}
 		printf("%d) CANTIDAD LINEAS:%lu\n",i,cantidadLineas);
 		bloque->tamanio = tamanioA;
+		printf("MALDITO BLOQUE TAMANIO:%lu\n",bloque->tamanio);
 	}
 
 	return cantidadLineas;
@@ -1017,7 +1069,9 @@ char * dameMenor(t_list* nodos, t_list** bloques){
 	int indice;
 	char * menor = burbujeo(*bloques,&indice);
 	t_bloque_script * bloque = list_get(*bloques,indice);
+	printf("FSD:%lu TAMANIO BLOQUE:%lu\n",bloque->fsd,bloque->tamanio);
 	if(bloque->fsd == bloque->tamanio){
+		printf("TE ELIMINE BLOQUE\n");
 		list_remove(*bloques,indice);
 		free(bloque->contenidoBloque);
 		free(bloque->bloque);
@@ -1098,11 +1152,13 @@ char* obtenerLinea(int socket,t_bloque_script *bloque){
 	string_append(&bufferE,string_itoa(strlen(buffer)));
 
 	//sem_wait(&semCon);
+	printf("Primer Rafaga del Maravilloso:%s\n",bufferE);
 	EnviarDatos(socket,bufferE,strlen(bufferE));
 
 	tamanio = strlen("*");
 	cantRafaga=1;
 	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
+	printf("Recibo el asterisco:%s\n",bufferR);
 	int p,bandera=0;
 	for(p=0;p<strlen(bufferR);p++){
 		if(bufferR[p]=='*'){
@@ -1114,21 +1170,25 @@ char* obtenerLinea(int socket,t_bloque_script *bloque){
 		printf("NO ASTERISCO!!!\n)");
 		return 0;
 	}
+	printf("Segunda Rafaga del Maravilloso:%s\n",buffer);
 	EnviarDatos(socket,buffer,strlen(buffer));
 	//sem_post(&semCon);
-	bufferR = string_new();
-	cantRafaga = 2;
-	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
+	//bufferR = string_new();
+	//cantRafaga = 1;
+
+	//bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
+	//printf("Primera rafaga del otro nodo:%s\n",bufferR);
 
 
-
-	bufferR=string_new();
+	//bufferR=string_new();
 	tamanio=200;
-	buffer = string_new();
-	string_append(&buffer,"*");
-	EnviarDatos(socket,buffer,strlen(buffer));
+	//buffer = string_new();
+	//string_append(&buffer,"*");
+	//printf("Envio el Asterisco:%s\n",buffer);
+	//EnviarDatos(socket,buffer,strlen(buffer));
 	cantRafaga = 2;
 	bufferR = RecibirDatos(socket,bufferR,&cantRecibida,&cantRafaga,&tamanio);
+	printf("Recibo la linea del otro nodo:%s\n",bufferR);
 	return bufferR;
 }
 
@@ -1542,13 +1602,15 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 	char * bufferE = string_new();
 	char * bufferR = string_new();
 
+	printf("Te mando el asterisco!!!\n");
 	EnviarDatos(socket,"*",strlen("*"));
 
 
 	*cantRafaga = 2;
 	*tamanio=100;
-	printf("TAMAÑO:%d\n",*tamanio);
+
 	bufferR = RecibirDatos(socket, bufferR, &bytesRecibidos,cantRafaga,tamanio);
+	printf("Recibo segunda rafaga:%s\n",bufferR);
 
 	int tipo_mensaje = ObtenerComandoMSJ(bufferR);
 
@@ -1563,7 +1625,7 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 			printf("Cantidad Lineas:%lu\n",cantidadLineas);
 			string_append(&bufferE,obtenerSubBuffer(string_itoa(cantidadLineas)));
 			string_append(&bufferE,obtenerSubBuffer(string_itoa(tamanioArchivo)));
-			printf("BUFFER ENVIADO:%s\n",bufferE);
+			printf("Envio cantidad de lineas:%s\n",bufferE);
 			EnviarDatos(socket,bufferE,strlen(bufferE));
 			free(bufferE);
 			free(bufferR);
@@ -1573,19 +1635,22 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 			break;
 		case DAMELINEA:
 			//32210RESULTADO.TXT210600000
+			printf("************************DAME LINEA*****************************************\n");
 			posActual = 1;
 			nombreResultado = DigitosNombreArchivo(bufferR,&posActual);
 			long unsigned fCur;
-			fCur = atoi(DigitosNombreArchivo(bufferR,&posActual));
+			fCur = ObtenerLu(DigitosNombreArchivo(bufferR,&posActual));
 			char * linea = dameLinea(nombreResultado,fCur);
 			//primera rafaga
-			string_append(&bufferE,string_itoa(strlen(linea)));
-			EnviarDatos(socket,bufferE,strlen(bufferE));
-			bufferR = string_new();
-			int cantRecibida;
-			*cantRafaga=1;
-			bufferR = RecibirDatos(socket,bufferR,&cantRecibida,cantRafaga,tamanio);
-
+			//bufferE = string_new();
+			//string_append(&bufferE,string_itoa(strlen(linea)));
+			//printf("Primera Rafaga para el maravilloso:%s\n",bufferE);
+			//EnviarDatos(socket,bufferE,strlen(bufferE));
+			//bufferR = string_new();
+			/*int cantRecibida;
+			//*cantRafaga=1;
+			//bufferR = RecibirDatos(socket,bufferR,&cantRecibida,cantRafaga,tamanio);
+			//printf("Recibo el asterisco:%s\n",bufferR);
 			int p,bandera=0;
 			for(p=0;p<strlen(bufferR);p++){
 				if(bufferR[p]=='*'){
@@ -1595,10 +1660,11 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 
 			if(bandera == 0){
 				printf("NO ASTERISCO!!!\n)");
-			}
+			}*/
 
 			buffer = string_new();
 			string_append(&buffer,linea);
+			printf("Segunda Rafaga para el maravilloso:%s\n",buffer);
 			EnviarDatos(socket,buffer,strlen(buffer));
 			free(buffer);
 			free(bufferE);
@@ -1664,6 +1730,9 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 		default:
 			break;
 	}
+	int longitudBuffer = strlen(*mensaje);
+	EnviarDatos(socket, *mensaje,longitudBuffer);
+
 	*cantRafaga = 1;
 }
 
@@ -1879,6 +1948,7 @@ void RecorrerListaBloques(){
 int AtiendeCliente(void * arg) {
 	int socket = (int) arg;
 	int id=-1;
+	printf("ATENDIO AL CLIENTE\n");
 	//cantHilos++;
 	//printf("Hilo numero:%d\n",cantHilos);
 
@@ -1930,6 +2000,8 @@ int AtiendeCliente(void * arg) {
 			switch (emisor) {
 			case ES_JOB:
 				implementoJob(&id,buffer,&cantRafaga,&mensaje,socket,&tamanio);
+				close(socket);
+				return 1;
 				cantRafaga=1;
 				break;
 			case ES_FS:
@@ -1957,9 +2029,9 @@ int AtiendeCliente(void * arg) {
 				atiendeNodo(socket,buffer,&cantRafaga,&mensaje,&tamanio);
 
 				cantRafaga=1;
-				printf(COLOR_VERDE"CERRADO EL SOCKET:%d\n"DEFAULT,socket);
-				close(socket);
-				return 1;
+				//printf(COLOR_VERDE"CERRADO EL SOCKET:%d\n"DEFAULT,socket);
+				//close(socket);
+				//return 1;
 				break;
 			case COMANDOBLOQUES:
 				//printf("Despues vemos que hace esto\n");
@@ -1976,7 +2048,6 @@ int AtiendeCliente(void * arg) {
 			//printf("\nRespuesta: %s\n",buffer);
 			// Enviamos datos al cliente.
 			//if(!strcmp(mensaje,"Listo")){
-			EnviarDatos(socket, mensaje,longitudBuffer);
 			//}
 
 
@@ -2026,9 +2097,9 @@ void HiloOrquestadorDeConexiones() {
 				"Error al hacer el Listen. No se pudo escuchar en el puerto especificado");
 
 	//Traza("El socket está listo para recibir conexiones. Numero de socket: %d, puerto: %d", socket_host, g_Puerto);
-	log_trace(logger,
-			"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
-			socket_host, g_Puerto_Nodo);
+	//log_trace(logger,
+		//	"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
+			//socket_host, g_Puerto_Nodo);
 
 	while (g_Ejecutando) {
 		int socket_client;
