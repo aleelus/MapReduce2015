@@ -2131,22 +2131,22 @@ void mongo_db_nodos_close(){
 }
 
 void armar_nodo_mongo(t_nodo* el_nodo, bson_t** nodo, bson_t** bloquesDisp){
-	bson_append_utf8(nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
-		bson_append_utf8(nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
-		bson_append_utf8(nodo, "puerto", 2, el_nodo->puerto, strlen(el_nodo->puerto));
-		bson_append_utf8(nodo, "tamanio", 2, el_nodo->tamanio, strlen(el_nodo->tamanio));
-		bson_append_int32(nodo, "estado", 6, el_nodo->estado);
-		bson_append_array_begin(nodo, "bloquesDisponibles", 18, bloquesDisp);
+	bson_append_utf8((void*)nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
+		bson_append_utf8((void*)nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
+		bson_append_utf8((void*)nodo, "puerto", 2, el_nodo->puerto, strlen(el_nodo->puerto));
+		bson_append_utf8((void*)nodo, "tamanio", 2, el_nodo->tamanio, strlen(el_nodo->tamanio));
+		bson_append_int32((void*)nodo, "estado", 6, el_nodo->estado);
+		bson_append_array_begin((void*)nodo, "bloquesDisponibles", 18, (void*)bloquesDisp);
 		int i;
 		for (i = 0; i < list_size(el_nodo->bloquesDisponibles); i++) {
 
 			t_bloque_disponible* el_bloque = list_get(el_nodo->bloquesDisponibles, i); //Chequear si tiene que arrancar en 0 para el primer elemento
 
 
-			bson_append_int32(bloquesDisp, "bloque", 6, el_bloque->bloque);
+			bson_append_int32((void*)bloquesDisp, "bloque", 6, el_bloque->bloque);
 
 		}
-		bson_append_array_end(nodo, bloquesDisp);
+		bson_append_array_end((void*)nodo, (void*)bloquesDisp);
 }
 
 
@@ -2218,7 +2218,7 @@ int leer_nodo_mongo(){
 	uint32_t array_len;
 	const uint8_t    *array;
 	t_nodo *nodoMongo = malloc(sizeof (t_nodo));
-	t_bloque_disponible* el_bloque;
+	t_bloque_disponible* el_bloque = malloc(sizeof(t_bloque_disponible));
 
 
 	mongo_db_nodos_open();
@@ -2289,11 +2289,11 @@ void mongo_db_filesystem_close(){
 }
 
 void armar_filesystem_mongo(t_filesystem* el_fs, bson_t** filesystem){
-	bson_append_int32(filesystem, "index", 5, el_fs->index);
+	bson_append_int32((void*)filesystem, "index", 5, el_fs->index);
 
-		bson_append_utf8(filesystem, "directorio", 10, el_fs->directorio, strlen(el_fs->directorio));
+		bson_append_utf8((void*)filesystem, "directorio", 10, el_fs->directorio, strlen(el_fs->directorio));
 
-		bson_append_int32(filesystem, "padre", 5, el_fs->padre);
+		bson_append_int32((void*)filesystem, "padre", 5, el_fs->padre);
 }
 
 bool crear_filesystem_mongo(t_filesystem* el_fs) {
@@ -2402,34 +2402,35 @@ void mongo_db_archivosM_close(){
 }
 
 void armar_archivo_mongo(t_archivo*el_archivo, bson_t **archivo, bson_t **listaBloques, bson_t **copiasArray){
-	bson_append_utf8(archivo, "nombreArchivo", 13, el_archivo->nombreArchivo, strlen(el_archivo->nombreArchivo));
-		bson_append_int32(archivo, "padre", 5, el_archivo->padre);
-		bson_append_int32(archivo, "tamanio", 7, el_archivo->tamanio);
-		bson_append_int32(archivo, "estado", 6, el_archivo->estado);
+	bson_append_utf8((void*)archivo, "nombreArchivo", 13, el_archivo->nombreArchivo, strlen(el_archivo->nombreArchivo));
+		bson_append_int32((void*)archivo, "padre", 5, el_archivo->padre);
+		bson_append_int32((void*)archivo, "tamanio", 7, el_archivo->tamanio);
+		bson_append_int32((void*)archivo, "estado", 6, el_archivo->estado);
 
-		bson_append_array_begin(archivo, "listaBloques", 12, listaBloques);
+		bson_append_array_begin((void*)archivo, "listaBloques", 12, (void*)listaBloques);
 		int j;
 		for (j=0; j < list_size(el_archivo->listaBloques); j++) {
 
 			t_bloque* el_bloque = list_get(el_archivo->listaBloques, j); //Chequear si tiene que arrancar en 0 para el primer elemento
 
 
-			bson_append_int32(listaBloques, "bloque", 6, el_bloque->bloque);
-			bson_append_array_begin(listaBloques, "copias", 6, copiasArray);
+			bson_append_int32((void*)listaBloques, "bloque", 6, el_bloque->bloque);
+			bson_append_array_begin((void*)listaBloques, "copias", 6, (void*)copiasArray);
 			int i ;
-			for (i= 0; i < list_size(el_bloque->array); i++) {
+			for (i= 0; i < 3; i++) {
 
-				t_array_copias* la_copia = list_get(el_archivo->listaBloques, i); //Chequear si tiene que arrancar en 0 para el primer elemento
+				t_array_copias* la_copia = malloc(sizeof(t_array_copias));
+				la_copia->nombreNodo = el_bloque->array[i].nombreNodo; //Chequear si tiene que arrancar en 0 para el primer elemento
+				la_copia->nro_bloque = el_bloque->array[i].nro_bloque;
 
-
-				bson_append_utf8(copiasArray, "nombreNodo", 10, la_copia->nombreNodo, strlen(la_copia->nombreNodo));
-				bson_append_utf8(copiasArray, "nroBloque", 9, la_copia->nro_bloque, strlen(la_copia->nro_bloque));
+				bson_append_utf8((void*)copiasArray, "nombreNodo", 10, la_copia->nombreNodo, strlen(la_copia->nombreNodo));
+				bson_append_utf8((void*)copiasArray, "nroBloque", 9, la_copia->nro_bloque, strlen(la_copia->nro_bloque));
 
 
 				}
-			bson_append_array_end(listaBloques, copiasArray);
+			bson_append_array_end((void*)listaBloques, (void*)copiasArray);
 		}
-		bson_append_array_end(archivo, listaBloques);
+		bson_append_array_end((void*)archivo, (void*)listaBloques);
 }
 
 bool crear_archivo_mongo(t_archivo* el_archivo) {
@@ -2551,10 +2552,10 @@ int leer_archivo_mongo(){
 		        			 bson_iter_recurse(&child, &child2);
 		        			 while(bson_iter_next(&child2)){
 		        			 if(bson_iter_find(&child2,"nombreNodo")){
-		        				 el_bloque->array->nombreNodo[i] =strdup(bson_iter_utf8(&child2,NULL));
+		        				 el_bloque->array[i].nombreNodo =strdup(bson_iter_utf8(&child2,NULL));
 		        			 }
 		        			 if(bson_iter_find(&child2,"nroBloque")){
-		        				 el_bloque->array->nro_bloque[i] = strdup(bson_iter_utf8(&child2,NULL));
+		        				 el_bloque->array[i].nro_bloque = strdup(bson_iter_utf8(&child2,NULL));
 		        				 }
 
 
