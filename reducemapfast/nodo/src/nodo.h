@@ -29,6 +29,7 @@ sem_t semCon;
 
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
+#define CLEAR_SCREE_ANSI 		 "\e[1;1H\e[2J"
 
 // CONSTANTES //
 //Ruta del config
