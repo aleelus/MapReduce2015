@@ -1,0 +1,14 @@
+[TRACE] 18:15:09:977 fs/(7631:7634): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[INFO] 18:15:15:821 fs/(7631:7633): Terminando el programa
+[TRACE] 18:17:42:489 fs/(7731:7738): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[INFO] 18:17:49:588 fs/(7731:7737): Terminando el programa
+[TRACE] 18:32:37:668 fs/(8128:8131): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[TRACE] 22:36:25:307 fs/(2583:2586): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[TRACE] 23:05:40:352 fs/(3620:3628): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[TRACE] 19:16:53:829 fs/(2504:2509): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[TRACE] 19:26:57:607 fs/(2829:2837): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[TRACE] 19:29:50:407 fs/(2934:2942): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[INFO] 19:30:54:593 fs/(2983:2991): Error al hacer el Bind. El puerto está en uso
+[TRACE] 19:30:54:605 fs/(2983:2991): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
+[INFO] 20:07:42:911 fs/(3987:3994): Error al hacer el Bind. El puerto está en uso
+[TRACE] 20:07:42:927 fs/(3987:3994): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 3000

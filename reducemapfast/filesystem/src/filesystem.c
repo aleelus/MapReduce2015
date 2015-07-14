@@ -15,7 +15,7 @@
 
 
 int main(int argv, char** argc) {
-
+	mongo_db_open();
 	levantarConfig();
 	nroBloque=0;
 	indexGlobal = 1;
@@ -26,8 +26,11 @@ int main(int argv, char** argc) {
 	lista_nodos    = list_create();		//Lista de nodos
 	lista_archivos = list_create();		//Lista de archivos
 	lista_filesystem = list_create();	//Lista de estructura de filesystem
-	t_archivo* el_archivo=archivo_create("el_archivo",125000,1, 1);
+	cargar_listas_mongo();
 
+
+
+	printf("\nLO HIZO!!!\n");
 
 
 	int iThreadConsola;					//Hilo de consola
@@ -62,6 +65,8 @@ int main(int argv, char** argc) {
 
 	pthread_join(hOrquestadorConexiones, NULL );
 	pthread_join(hConsola, NULL );
+	mongo_db_close();
+
 
 	return EXIT_SUCCESS; 	
 

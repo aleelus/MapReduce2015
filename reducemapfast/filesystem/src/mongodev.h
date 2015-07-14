@@ -54,7 +54,7 @@ int iniciarMongo();
 t_archivo_json mongo_get_archivo();
 void mongo_db_directorios_open();
 void mongo_db_archivos_open();
-void mongo_db_close();
+void mongo_db_archivos_close();
 void obtenerCampoValor(const char *, t_archivo_json *, t_directorio_json *, t_tipoAcceso);
 void leerJSON(t_tipoAcceso);
 t_archivo_json *leerDirectorioMongo();

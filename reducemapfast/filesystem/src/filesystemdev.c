@@ -106,6 +106,7 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 		string_append(&nombre,&letra);
 		letra++;
 		el_nodo = nodo_create(nombre,la_Ip,el_Puerto,tamanioDatos,0);
+		crear_nodo_mongo(el_nodo);
 		list_add(lista_nodos,el_nodo);
 	}
 
@@ -559,16 +560,22 @@ void mostrarFilesystem(){
 void cargarFilesystem(){
 	t_filesystem* el_fs;
 	el_fs = filesystem_create(1,"etc",0);
+	crear_filesystem_mongo(el_fs);
 	list_add(lista_filesystem,el_fs);
 	el_fs = filesystem_create(2,"home",0);
+	crear_filesystem_mongo(el_fs);
 	list_add(lista_filesystem,el_fs);
 	el_fs = filesystem_create(3,"utnso",2);
+	crear_filesystem_mongo(el_fs);
 	list_add(lista_filesystem,el_fs);
 	el_fs = filesystem_create(4,"tp",3);
+	crear_filesystem_mongo(el_fs);
 	list_add(lista_filesystem,el_fs);
 	el_fs = filesystem_create(5,"tp-2015",4);
+	crear_filesystem_mongo(el_fs);
 	list_add(lista_filesystem,el_fs);
 	el_fs = filesystem_create(6,"var",0);
+	crear_filesystem_mongo(el_fs);
 	list_add(lista_filesystem,el_fs);
 }
 
@@ -1154,7 +1161,9 @@ void eliminarNodo (){
     	scanf("%d",&eleccion);
     	if(eleccion>=0 && eleccion<i){
     		el_nodo=list_get(lista_nodos,eleccion);
+    		t_nodo* nodoViejo = list_get(lista_nodos,eleccion);
     		el_nodo->estado=-1;
+    		grabar_nodo_mongo(nodoViejo,el_nodo);
     	}
     } else {
     	printf("No hay nodos disponibles para eliminar\n");
@@ -1517,6 +1526,8 @@ int procesarArchivo(){
 void eliminarFilesystem(){
 	int i = 0;
 	while(i<list_size(lista_filesystem)){
+		t_filesystem* filesystemEliminar= list_get(lista_filesystem,i);
+		borrar_filesystem_mongo(filesystemEliminar);
 		list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
 	}
 	//free(lista_filesystem);
@@ -1525,6 +1536,8 @@ void eliminarFilesystem(){
 void eliminarArchivos(){
 	int i = 0;
 	while(i<list_size(lista_archivos)){
+		t_archivo* archEliminar = list_get(lista_archivos,i);
+		borrar_archivo_mongo(archEliminar);
 		list_remove_and_destroy_element(lista_archivos,i++,(void*)archivo_destroy);
 	}
 	//free(lista_archivos);
@@ -1569,6 +1582,7 @@ int crearDirectorio(){
 	}
 	int existe = list_any_satisfy(lista_filesystem,_true);
 	if(existe==0){
+		crear_filesystem_mongo(filesystem);
 		list_add(lista_filesystem,filesystem);
 		mostrarFilesystem();
 		return 1;
@@ -1631,7 +1645,8 @@ int eliminarDirectorio(){
 		bool _true2(void *elem){
 			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
 		}
-
+		t_filesystem* filesystemDestroy = list_find(lista_filesystem,_true2);
+		borrar_filesystem_mongo(filesystemDestroy);
 		list_remove_and_destroy_by_condition(lista_filesystem,_true2,(void*)filesystem_destroy);
 		printf("Se elimino el directorio correctamente\n");
 		return 1;
@@ -1685,6 +1700,7 @@ int moverDirectorio(){
 			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
 		}
 		fs = list_find(lista_filesystem,_true);
+		t_filesystem* fs2 = list_find(lista_filesystem,_true); //Para actualizar el mongo
 		correcto=0;
 		padre=0;
 		k=0;
@@ -1723,6 +1739,7 @@ int moverDirectorio(){
 				indexDestino=validarDirectorio(destino,padre);
 				if(indexDestino>0){
 					fs->padre = indexDestino;
+					grabar_filesystem_mongo(fs2,fs);
 					printf("Se ha realizado el movimiento con exito!");
 					return 1;
 				} else {
@@ -1731,6 +1748,7 @@ int moverDirectorio(){
 				}
 			} else {
 				fs->padre = 0;
+				grabar_filesystem_mongo(fs2,fs);
 				printf("Se ha realizado el movimiento con exito!");
 				return 1;
 			}
@@ -1790,7 +1808,7 @@ int renombrarDirectorio(){
 			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
 		}
 		fs = list_find(lista_filesystem,_true);
-
+		t_filesystem* fs2 = list_find(lista_filesystem,_true); //Para actualizar mongo
 		if(fs != NULL){
 			printf("Ingrese el nuevo nombre para el directorio:%s:\n",directorio);
 			scanf("%s", destino);
@@ -1799,6 +1817,7 @@ int renombrarDirectorio(){
 			if(cant==0){
 				printf("Se ha renombrado el directorio con exito.\n");
 				fs->directorio = strdup(destino);
+				grabar_filesystem_mongo(fs2,fs);
 				return 1;
 			} else {
 				printf("Ya existe un directorio con este nombre.\n");
@@ -1878,7 +1897,10 @@ int armarArchivo(){
 void eliminarListaNodos(){
 	int i = 0;
 	while(i<list_size(lista_nodos)){
-		list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
+		t_nodo* nodoEliminar = list_get(lista_nodos, i);
+		borrar_nodo_mongo(nodoEliminar);
+		list_remove_and_destroy_element(lista_nodos,i++,(void*)nodo_destroy);
+		//list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
 	}
 	//free(lista_filesystem);
 }
@@ -2119,34 +2141,43 @@ int sendall(int s, char *buf, long unsigned *len){
 	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
 }
 
-void mongo_db_nodos_open(){
+void mongo_db_open(){
 	mongoc_init ();
 	client = mongoc_client_new ("mongodb://localhost:27017/");
+	archivosMongo = mongoc_client_get_collection (client, "test", "MDFS_ARCHIVOSMONGO");
 	nodosMongo = mongoc_client_get_collection (client, "test", "MDFS_NODOS");
+	filesystemMongo = mongoc_client_get_collection (client, "test", "MDFS_FILESYSTEM");
+
 }
 
-void mongo_db_nodos_close(){
+void mongo_db_close(){
 	mongoc_collection_destroy (nodosMongo);
+	mongoc_collection_destroy (filesystemMongo);
+	mongoc_collection_destroy (archivosMongo);
 	mongoc_client_destroy (client);
 }
 
-void armar_nodo_mongo(t_nodo* el_nodo, bson_t** nodo, bson_t** bloquesDisp){
-	bson_append_utf8((void*)nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
-		bson_append_utf8((void*)nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
-		bson_append_utf8((void*)nodo, "puerto", 2, el_nodo->puerto, strlen(el_nodo->puerto));
-		bson_append_utf8((void*)nodo, "tamanio", 2, el_nodo->tamanio, strlen(el_nodo->tamanio));
-		bson_append_int32((void*)nodo, "estado", 6, el_nodo->estado);
-		bson_append_array_begin((void*)nodo, "bloquesDisponibles", 18, (void*)bloquesDisp);
+
+bson_t* armar_nodo_mongo(t_nodo* el_nodo,bson_t*bloquesDisp){
+	bson_t* nodo = bson_new();
+	bson_append_utf8(nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
+		bson_append_utf8(nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
+		bson_append_utf8(nodo, "puerto", 2, el_nodo->puerto, strlen(el_nodo->puerto));
+		bson_append_utf8(nodo, "tamanio", 2, el_nodo->tamanio, strlen(el_nodo->tamanio));
+		bson_append_int32(nodo, "estado", 6, el_nodo->estado);
+		bson_append_array_begin(nodo, "bloquesDisponibles", 18, bloquesDisp);
 		int i;
 		for (i = 0; i < list_size(el_nodo->bloquesDisponibles); i++) {
 
 			t_bloque_disponible* el_bloque = list_get(el_nodo->bloquesDisponibles, i); //Chequear si tiene que arrancar en 0 para el primer elemento
 
 
-			bson_append_int32((void*)bloquesDisp, "bloque", 6, el_bloque->bloque);
+			bson_append_int32(bloquesDisp, "bloque", 6, el_bloque->bloque);
 
 		}
-		bson_append_array_end((void*)nodo, (void*)bloquesDisp);
+		bson_append_array_end(nodo, bloquesDisp);
+
+		return nodo;
 }
 
 
@@ -2156,7 +2187,7 @@ bool crear_nodo_mongo(t_nodo* el_nodo) {
     bson_t *bloquesDisp = bson_new();
     bson_error_t error;
 
-    armar_nodo_mongo(el_nodo,&nodo, &bloquesDisp);
+    armar_nodo_mongo(el_nodo,bloquesDisp);
 
 	res= mongoc_collection_insert (nodosMongo, MONGOC_INSERT_NONE, nodo, NULL, &error);
     // ver si no hay que crear una collection especial para la lista nodo.
@@ -2170,11 +2201,11 @@ bool crear_nodo_mongo(t_nodo* el_nodo) {
 
 bool borrar_nodo_mongo(t_nodo* el_nodo){
 	bool res;
-	    bson_t *nodo = bson_new();
 	    bson_t *bloquesDisp = bson_new();
 	    bson_error_t error;
+	    bson_t *nodo = armar_nodo_mongo(el_nodo, bloquesDisp);
 
-	    armar_nodo_mongo(el_nodo,&nodo, &bloquesDisp);
+
 	    res = mongoc_collection_remove (nodosMongo,MONGOC_DELETE_SINGLE_REMOVE,nodo,NULL,&error);
 
 	    bson_destroy(bloquesDisp);
@@ -2187,14 +2218,11 @@ bool borrar_nodo_mongo(t_nodo* el_nodo){
 int grabar_nodo_mongo(t_nodo* el_nodo_viejo, t_nodo* el_nodo_nuevo) {
     int res;
 
-    bson_t *nodoViejo = bson_new();
+
     bson_t *bloquesDispViejo = bson_new();
-    bson_t *nodoNuevo = bson_new();
     bson_t *bloquesDispNuevo = bson_new();
-
-    armar_nodo_mongo(el_nodo_viejo,&nodoViejo, &bloquesDispViejo);
-    armar_nodo_mongo(el_nodo_nuevo,&nodoNuevo, &bloquesDispNuevo);
-
+    bson_t *nodoViejo = armar_nodo_mongo(el_nodo_viejo,bloquesDispViejo);
+    bson_t *nodoNuevo = armar_nodo_mongo(el_nodo_nuevo,bloquesDispNuevo);
 
     res = mongoc_collection_update(nodosMongo, MONGOC_UPDATE_UPSERT, nodoViejo, nodoNuevo, NULL, NULL);
     // ver si no hay que crear una collection especial para la lista nodo.
@@ -2219,9 +2247,6 @@ int leer_nodo_mongo(){
 	const uint8_t    *array;
 	t_nodo *nodoMongo = malloc(sizeof (t_nodo));
 	t_bloque_disponible* el_bloque = malloc(sizeof(t_bloque_disponible));
-
-
-	mongo_db_nodos_open();
 
 	query  = bson_new ();
 
@@ -2276,32 +2301,22 @@ int leer_nodo_mongo(){
 }
 
 
+bson_t* armar_filesystem_mongo(t_filesystem* el_fs){
+		bson_t*filesystem = bson_new();
 
-void mongo_db_filesystem_open(){
-	mongoc_init ();
-	client = mongoc_client_new ("mongodb://localhost:27017/");
-	filesystemMongo = mongoc_client_get_collection (client, "test", "MDFS_FILESYSTEM");
-}
+		bson_append_int32(filesystem, "index", 5, el_fs->index);
 
-void mongo_db_filesystem_close(){
-	mongoc_collection_destroy (filesystemMongo);
-	mongoc_client_destroy (client);
-}
+		bson_append_utf8(filesystem, "directorio", 10, el_fs->directorio, strlen(el_fs->directorio));
 
-void armar_filesystem_mongo(t_filesystem* el_fs, bson_t** filesystem){
-	bson_append_int32((void*)filesystem, "index", 5, el_fs->index);
-
-		bson_append_utf8((void*)filesystem, "directorio", 10, el_fs->directorio, strlen(el_fs->directorio));
-
-		bson_append_int32((void*)filesystem, "padre", 5, el_fs->padre);
+		bson_append_int32(filesystem, "padre", 5, el_fs->padre);
+	return filesystem;
 }
 
 bool crear_filesystem_mongo(t_filesystem* el_fs) {
     bool res;
 
-    bson_t *filesystem = bson_new();
+    bson_t *filesystem = armar_filesystem_mongo(el_fs);
     bson_error_t error;
-    armar_filesystem_mongo(el_fs,&filesystem);
 
     res= mongoc_collection_insert (filesystemMongo, MONGOC_INSERT_NONE, filesystem, NULL, &error);    // ver si no hay que crear una collection especial para la lista nodo.
 
@@ -2313,9 +2328,8 @@ bool crear_filesystem_mongo(t_filesystem* el_fs) {
 bool borrar_filesystem_mongo(t_filesystem* el_fs) {
     bool res;
 
-    bson_t *filesystem = bson_new();
+    bson_t *filesystem =  armar_filesystem_mongo(el_fs);
     bson_error_t error;
-    armar_filesystem_mongo(el_fs,&filesystem);
 
     res = mongoc_collection_remove (filesystemMongo,MONGOC_DELETE_SINGLE_REMOVE,filesystem,NULL,&error);
 
@@ -2327,11 +2341,11 @@ bool borrar_filesystem_mongo(t_filesystem* el_fs) {
 int grabar_filesystem_mongo(t_filesystem* el_fs_viejo, t_filesystem* el_fs_nuevo) {
     int res;
 
-    bson_t *filesystemViejo = bson_new();
-    bson_t *filesystemNuevo = bson_new();
+    bson_t *filesystemViejo = armar_filesystem_mongo(el_fs_viejo);
+    bson_t *filesystemNuevo = armar_filesystem_mongo(el_fs_nuevo);
 
-    armar_filesystem_mongo(el_fs_viejo,&filesystemViejo);
-    armar_filesystem_mongo(el_fs_nuevo,&filesystemNuevo);
+
+
 
     res = mongoc_collection_update(filesystemMongo, MONGOC_UPDATE_UPSERT, filesystemViejo, filesystemNuevo, NULL, NULL);
     // ver si no hay que crear una collection especial para la lista nodo.
@@ -2353,8 +2367,6 @@ int leer_filesystem_mongo(){
 	bson_iter_t iter;
 
 	t_filesystem *archivoFilesystem = malloc(sizeof (t_filesystem));
-
-	mongo_db_filesystem_open();
 
 	query  = bson_new ();
 
@@ -2390,24 +2402,15 @@ int leer_filesystem_mongo(){
 	return list_size(lista_filesystem);
 }
 
-void mongo_db_archivosM_open(){
-	mongoc_init ();
-	client = mongoc_client_new ("mongodb://localhost:27017/");
-	archivosMongo = mongoc_client_get_collection (client, "test", "MDFS_ARCHIVOSMONGO");
-}
 
-void mongo_db_archivosM_close(){
-	mongoc_collection_destroy (archivosMongo);
-	mongoc_client_destroy (client);
-}
+bson_t* armar_archivo_mongo(t_archivo*el_archivo, bson_t *listaBloques, bson_t *copiasArray){
+	bson_t* archivo = bson_new();
+	bson_append_utf8(archivo, "nombreArchivo", 13, el_archivo->nombreArchivo, strlen(el_archivo->nombreArchivo));
+		bson_append_int32(archivo, "padre", 5, el_archivo->padre);
+		bson_append_int32(archivo, "tamanio", 7, el_archivo->tamanio);
+		bson_append_int32(archivo, "estado", 6, el_archivo->estado);
 
-void armar_archivo_mongo(t_archivo*el_archivo, bson_t **archivo, bson_t **listaBloques, bson_t **copiasArray){
-	bson_append_utf8((void*)archivo, "nombreArchivo", 13, el_archivo->nombreArchivo, strlen(el_archivo->nombreArchivo));
-		bson_append_int32((void*)archivo, "padre", 5, el_archivo->padre);
-		bson_append_int32((void*)archivo, "tamanio", 7, el_archivo->tamanio);
-		bson_append_int32((void*)archivo, "estado", 6, el_archivo->estado);
-
-		bson_append_array_begin((void*)archivo, "listaBloques", 12, (void*)listaBloques);
+		bson_append_array_begin(archivo, "listaBloques", 12, listaBloques);
 		int j;
 		for (j=0; j < list_size(el_archivo->listaBloques); j++) {
 
@@ -2431,18 +2434,18 @@ void armar_archivo_mongo(t_archivo*el_archivo, bson_t **archivo, bson_t **listaB
 			bson_append_array_end((void*)listaBloques, (void*)copiasArray);
 		}
 		bson_append_array_end((void*)archivo, (void*)listaBloques);
+
+		return archivo;
 }
 
 bool crear_archivo_mongo(t_archivo* el_archivo) {
     bool res;
-
-    bson_t *archivo = bson_new();
     bson_t *listaBloques = bson_new();
     bson_t *copiasArray = bson_new();
     bson_error_t error;
 
 
-    armar_archivo_mongo(el_archivo, &archivo, &listaBloques, &copiasArray);
+    bson_t * archivo= armar_archivo_mongo(el_archivo, listaBloques, copiasArray);
 
 
     res= mongoc_collection_insert (archivosMongo, MONGOC_INSERT_NONE, archivo, NULL, &error);    // ver si no hay que crear una collection especial para la lista nodo.
@@ -2458,13 +2461,12 @@ bool crear_archivo_mongo(t_archivo* el_archivo) {
 bool borrar_archivo_mongo(t_archivo* el_archivo) {
     bool res;
 
-    bson_t *archivo = bson_new();
     bson_t *listaBloques = bson_new();
     bson_t *copiasArray = bson_new();
     bson_error_t error;
 
 
-    armar_archivo_mongo(el_archivo, &archivo, &listaBloques, &copiasArray);
+    bson_t *archivo = armar_archivo_mongo(el_archivo, listaBloques, copiasArray);
 
     res = mongoc_collection_remove (archivosMongo,MONGOC_DELETE_SINGLE_REMOVE,archivo,NULL,&error);
 
@@ -2477,16 +2479,15 @@ bool borrar_archivo_mongo(t_archivo* el_archivo) {
 
 int grabar_archivo_mongo(t_archivo* el_archivo_viejo, t_archivo* el_archivo_nuevo) {
     int res;
+    bson_t *listaBloquesViejo = bson_new();
+    bson_t *copiasArrayViejo = bson_new();
+    bson_t *listaBloquesNuevo = bson_new();
+    bson_t *copiasArrayNuevo = bson_new();
 
-    bson_t *archivoViejo = bson_new();
-        bson_t *listaBloquesViejo = bson_new();
-        bson_t *copiasArrayViejo = bson_new();
-        bson_t *archivoNuevo = bson_new();
-            bson_t *listaBloquesNuevo = bson_new();
-            bson_t *copiasArrayNuevo = bson_new();
+    bson_t *archivoViejo = archivoViejo = armar_archivo_mongo(el_archivo_viejo,listaBloquesViejo, copiasArrayViejo);
 
-            armar_archivo_mongo(el_archivo_viejo, &archivoViejo, &listaBloquesViejo, &copiasArrayViejo);
-            armar_archivo_mongo(el_archivo_nuevo, &archivoNuevo, &listaBloquesNuevo, &copiasArrayNuevo);
+    bson_t *archivoNuevo = armar_archivo_mongo(el_archivo_nuevo,listaBloquesNuevo, copiasArrayNuevo);
+
 
 
     res = mongoc_collection_update(archivosMongo, MONGOC_UPDATE_UPSERT, archivoViejo, archivoNuevo, NULL, NULL);
@@ -2515,8 +2516,6 @@ int leer_archivo_mongo(){
 	t_archivo *archivoMongo = malloc(sizeof (t_archivo));
 	t_bloque* el_bloque=malloc(sizeof (t_bloque));
 	//t_array_copias* el_array =malloc(sizeof (t_array_copias));
-
-	mongo_db_archivosM_open();
 
 	query  = bson_new ();
 
@@ -2574,7 +2573,8 @@ int leer_archivo_mongo(){
 	    printf ("%s\n", str);
 	    bson_free (str);
 	    list_add(lista_archivos,archivoMongo);
-	    list_destroy(archivoMongo->listaBloques); //Limpio la lista bloques para el proximo archivo a cargar.
+	    printf("%s, %d, %lu, %d",archivoMongo->nombreArchivo,archivoMongo->padre,archivoMongo->tamanio,archivoMongo->estado);
+	    //list_destroy(archivoMongo->listaBloques); //Limpio la lista bloques para el proximo archivo a cargar.
 	}
 
 	bson_destroy (query);
@@ -2582,4 +2582,29 @@ int leer_archivo_mongo(){
 	free(archivoMongo);
 
 	return list_size(lista_archivos);
+}
+
+void cargar_listas_mongo(){
+	int larch= leer_archivo_mongo();
+	if (larch==0){
+	printf("La lista de archivos esta vacias\n");
+	}else{
+	printf("Se cargaron %d elementos a la lista de archivos\n",larch);
+	}
+
+	int lnodo= leer_nodo_mongo();
+	if (lnodo==0){
+	printf("La lista de nodos esta vacias\n");
+	}else{
+	printf("Se cargaron %d elementos a la lista de nodos\n",larch);
+	}
+
+	int lfs= leer_filesystem_mongo();
+	if (lfs==0){
+	printf("La lista de archivos esta vacias\n");
+	}else{
+	printf("Se cargaron %d elementos a la lista de archivos\n",lfs);
+	}
+
+
 }

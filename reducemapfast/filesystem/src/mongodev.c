@@ -43,7 +43,7 @@ int iniciarMongo(){
 
 	}
 
-	mongo_db_close();
+	mongo_db_archivos_close();
 	return 0;
 
 }
@@ -78,7 +78,7 @@ int eliminarMongo(){
 
 	bson_destroy (doc);
 
-	mongo_db_close();
+	mongo_db_archivos_close();
 	return 0;
 }
 */
@@ -103,7 +103,7 @@ void eliminarArchivoMongo(){
 
 	bson_destroy (doc);
 
-	mongo_db_close();
+	mongo_db_archivos_close();
 }
 
 void eliminarDirectorioMongo(){
@@ -126,7 +126,7 @@ void eliminarDirectorioMongo(){
 
 	bson_destroy (doc);
 
-	mongo_db_close();
+	mongo_db_archivos_close();
 }
 
 t_archivo_json *leerArchivoMongo(){
@@ -308,7 +308,7 @@ void leerJSON(t_tipoAcceso tipoAcceso){
 		//	free(cadena);
 			fclose(in);
 
-			mongo_db_close();
+			mongo_db_archivos_close();
 			break;
 		}
 
@@ -354,7 +354,7 @@ void leerJSON(t_tipoAcceso tipoAcceso){
 		//	free(cadena);
 			fclose(in);
 
-			mongo_db_close();
+			mongo_db_archivos_close();
 			break;
 		}
 	};
@@ -455,7 +455,7 @@ void mongo_db_archivos_open(){
 	collection = mongoc_client_get_collection (client, "test", "MDFS_ARCHIVOS");
 }
 
-void mongo_db_close(){
+void mongo_db_archivos_close(){
 	mongoc_collection_destroy (collection);
 	mongoc_client_destroy (client);
 }
