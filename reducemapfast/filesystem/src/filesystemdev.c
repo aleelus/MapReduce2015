@@ -279,8 +279,8 @@ int EnviarInfoMarta(int socket,char * buffer) {
 	//Primera Rafaga para Marta
 	if ((bytecount = send(socket, bufferE, strlen(bufferE), 0)) == -1)
 		log_info(logger,"No puedo enviar información al cliente. Socket: %d", socket);
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-		(char*) bufferE);
+	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
+		//(char*) bufferE);
 
 	bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
@@ -288,8 +288,8 @@ int EnviarInfoMarta(int socket,char * buffer) {
 		//Segunda Rafaga para Marta
 		if ((bytecount = send(socket, buffer, strlen(buffer), 0)) == -1)
 			log_info(logger,"No puedo enviar información al cliente. Socket: %d", socket);
-		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-			(char*) buffer);
+		//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
+			//(char*) buffer);
 		bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
 	} else {
@@ -386,8 +386,8 @@ char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga
 		}
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
-			(char*) bufferAux, strlen(bufferAux));
+	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,
+		//	(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo completo.
 }
 
@@ -409,9 +409,9 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 
 	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
 	if(strlen(buffer)<50){
-		log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
+		//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 	} else {
-		log_info(logger, "ENVIO DATOS. socket: %d. Tamanio:%d ",socket,strlen(buffer));
+		//log_info(logger, "ENVIO DATOS. socket: %d. Tamanio:%d ",socket,strlen(buffer));
 	}
 
 	return bytecount;
@@ -420,7 +420,7 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 void CerrarSocket(int socket) {
 	close(socket);
 	//Traza("SOCKET SE CIERRA: (%d).", socket);
-	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
+	//log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
 
 void RecorrerNodosYBloques(){
@@ -693,9 +693,9 @@ void HiloOrquestadorDeConexiones() {
 				"Error al hacer el Listen. No se pudo escuchar en el puerto especificado");
 
 	//Traza("El socket está listo para recibir conexiones. Numero de socket: %d, puerto: %d", socket_host, g_Puerto);
-	log_trace(logger,
-			"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
-			socket_host, fs_Puerto);
+//	log_trace(logger,
+	//		"SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: %d, puerto: %d",
+		//	socket_host, fs_Puerto);
 
 	while (g_Ejecutando) {
 		int socket_client;
@@ -704,10 +704,10 @@ void HiloOrquestadorDeConexiones() {
 
 		if ((socket_client = accept(socket_host,(struct sockaddr *) &client_addr, &size_addr)) != -1) {
 			//Traza("Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d", inet_ntoa(client_addr.sin_addr), client_addr.sin_port, socket_client);
-			log_trace(logger,
-					"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
-					inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
-					socket_client);
+			//log_trace(logger,
+			//		"NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (%s) por el puerto (%d). El número de socket del cliente es: %d",
+				//	inet_ntoa(client_addr.sin_addr), client_addr.sin_port,
+					//socket_client);
 			// Aca hay que crear un nuevo hilo, que será el encargado de atender al cliente
 			pthread_t hNuevoCliente;
 			pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
@@ -741,7 +741,7 @@ void ErrorFatal(const char* mensaje, ...) {
 int conectarNodo(int * socket_Nodo, char* ipNodo, char* puertoNodo) {
 
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON NODO
-	log_info(logger, "Intentando conectar a nodo\n");
+	//log_info(logger, "Intentando conectar a nodo\n");
 	//conectar con Nodo
 	struct addrinfo hints;
 	struct addrinfo *serverInfo;
@@ -1096,7 +1096,7 @@ void llenarArrayDeNodos (){
         }
 
     }
-    imprimirArrayNodos();
+    //imprimirArrayNodos();
 }
 
 void ordenarArrayNodos(){
@@ -1115,7 +1115,7 @@ void ordenarArrayNodos(){
 			}
 		}
 	}
-	imprimirArrayNodos();
+	//imprimirArrayNodos();
 	//sleep(5);
 }
 
@@ -1219,7 +1219,7 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	if(strcmp(bufferR,"1")==0){
 		long unsigned len=0;
 		len=strlen(buffer2);
-		printf("LEN : %lu\n",len);
+		//printf("LEN : %lu\n",len);
 		if (sendall(socket, buffer2, &len) == -1) {
 			printf("ERROR AL ENVIAR\n");
 		}
@@ -1324,7 +1324,6 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 
 
 
-
 		return 1;
 
 	}
@@ -1363,7 +1362,7 @@ int recorrerArchivo(FILE *fArchivo){
 	fseek(fArchivo,0L,SEEK_END);
 	tamanioA=ftell(fArchivo);
 	rewind(fArchivo);
-	int i=0,j=0;
+	int j=0;
 	llenarArrayDeNodos();
 	nroBloque=0;
 	while(!feof(fArchivo)){
@@ -1375,13 +1374,9 @@ int recorrerArchivo(FILE *fArchivo){
 				memset(bufferAux,0,TAMANIO_BLOQUE-j+1);
 				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j);
 				if(enviarBloque(bufferAux)){
-					i++; //Contador de Bloques
-					//printf(COLOR_VERDE"Contador de Bloques:%d\n"DEFAULT,i);
-					//printf("LA J:%d\n",j);
 					tamanio = ftell(fArchivo);
 					if(tamanio!=tamanioA){
-						fseek(fArchivo,-j,SEEK_CUR);
-						//printf("TAMANIO:%lu\n",tamanio);
+						fseek(fArchivo,-j+1,SEEK_CUR);
 					}
 					free(bufferAux);
 					j=TAMANIO_BLOQUE;
@@ -1393,7 +1388,7 @@ int recorrerArchivo(FILE *fArchivo){
 		memset(buffer,0,TAMANIO_BLOQUE+1);
 
 	}
-	printf(COLOR_VERDE"TAMANIO TOTAL DEL ARCHIVO:%lu\n",tamanioTotal);
+	//printf(COLOR_VERDE"TAMANIO TOTAL DEL ARCHIVO:%lu\n",tamanioTotal);
 	//printf("Cantidad Bloques:%d\n",i);
 	free(buffer);
 	return 1;
@@ -1418,7 +1413,7 @@ int getBloque(int nroBloque,char* ip,char*puerto,char**buffer){
 		tamanioE = strlen(bufferE);
 		if(tamanioE==EnviarDatos(socket,bufferE,tamanioE)) {
 			bufferR = RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
-			printf("TAMANIO DE BUFFER:%d\n",tamanio);
+		//	printf("TAMANIO DE BUFFER:%d\n",tamanio);
 			if(bufferR!=NULL){
 				bufferE=string_new();
 				string_append(&bufferE,"1");
@@ -1447,12 +1442,12 @@ int getBloque(int nroBloque,char* ip,char*puerto,char**buffer){
 					memset(aux, 0, tamanio+1);
 
 				}while (numBytesRecv <tamanio);
-				printf("TAMANIO:%d NUMBYTESRECV:%d\n",tamanio,numBytesRecv);
+			//	printf("TAMANIO:%d NUMBYTESRECV:%d\n",tamanio,numBytesRecv);
 				*buffer=malloc(tamanio+1);
 				memset(*buffer,0,tamanio+1);
 				memcpy(*buffer,bloque,tamanio);
 				free(bloque);
-				printf("BLOQUE:%d TAMANIO:%lu Recibido Ok\n",nroBloque,(long unsigned)strlen(*buffer));
+				//printf("BLOQUE:%d TAMANIO:%lu Recibido Ok\n",nroBloque,(long unsigned)strlen(*buffer));
 				return 1;
 			}
 		}
