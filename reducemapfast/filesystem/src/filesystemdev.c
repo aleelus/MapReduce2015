@@ -2471,8 +2471,9 @@ int leer_filesystem_mongo(){
 	char *str;
 	bson_iter_t iter;
 
-	t_filesystem *archivoFilesystem = malloc(sizeof (t_filesystem));
-
+	t_filesystem *archivoFilesystem;
+	int index, padre;
+	char* directorio;
 	query  = bson_new ();
 
 	cursor = mongoc_collection_find (filesystemMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
@@ -2482,14 +2483,17 @@ int leer_filesystem_mongo(){
 		    while(bson_iter_next(&iter)){
 
 		    	if(bson_iter_find(&iter,"index"))
-		    		archivoFilesystem->index = (int32_t)bson_iter_int32(&iter);
+		    		index = (int)bson_iter_int32(&iter);
 
 		        if(bson_iter_find(&iter,"directorio")){
-		        	archivoFilesystem->directorio=strdup(bson_iter_utf8(&iter,NULL));
+		        	directorio=string_new();
+		        	string_append(&directorio,strdup(bson_iter_utf8(&iter,NULL)));
 		           	}
 
 		        if(bson_iter_find(&iter,"padre"))
-		        	archivoFilesystem->padre = (int32_t)bson_iter_int32(&iter);
+		        	archivoFilesystem->padre = (int)bson_iter_int32(&iter);
+
+		        archivoFilesystem= filesystem_create(index,directorio,padre);
 
 		        	 }
 
@@ -2502,7 +2506,7 @@ int leer_filesystem_mongo(){
 
 	bson_destroy (query);
 	mongoc_cursor_destroy (cursor);
-	free(archivoFilesystem);
+	//free(archivoFilesystem);
 
 	return list_size(lista_filesystem);
 }
@@ -2618,8 +2622,12 @@ int leer_archivo_mongo(){
 	bson_iter_t iter, child,child2;
 	uint32_t array_len;
 	const uint8_t    *array;
-	t_archivo *archivoMongo = malloc(sizeof (t_archivo));
-	t_bloque* el_bloque=malloc(sizeof (t_bloque));
+	t_archivo *archivoMongo;
+	char* nombre;
+	int estado, padre;
+	long unsigned tamanio;
+	t_bloque* el_bloque;
+	int bloque;
 	//t_array_copias* el_array =malloc(sizeof (t_array_copias));
 
 	query  = bson_new ();
@@ -2630,24 +2638,29 @@ int leer_archivo_mongo(){
 		if(bson_iter_init(&iter,doc)){
 		    while(bson_iter_next(&iter)){
 		        if(bson_iter_find(&iter,"nombreArchivo")){
-		        	archivoMongo->nombreArchivo=strdup(bson_iter_utf8(&iter,NULL));
+		        	nombre=string_new();
+		        	string_append(&nombre,strdup(bson_iter_utf8(&iter,NULL)));
 		           	}
 		        if(bson_iter_find(&iter,"padre"))
-		            archivoMongo->padre = (int32_t)bson_iter_int32(&iter);
+		            padre = (int)bson_iter_int32(&iter);
 
 		        if(bson_iter_find(&iter,"tamanio"))
-		        	 archivoMongo->tamanio = (int32_t)bson_iter_int32(&iter);
+		        	 tamanio = (long unsigned)bson_iter_int32(&iter);
 
 		        if(bson_iter_find(&iter,"estado"))
-		        	 archivoMongo->estado = (int32_t)bson_iter_int32(&iter);
+		        	 estado = (int)bson_iter_int32(&iter);
 
+		        archivoMongo = archivo_create(nombre,tamanio,padre,estado);
 		        if(bson_iter_find(&iter,"listaBloques")){
 		        	 archivoMongo->listaBloques=list_create();
 		        	 bson_iter_array (&iter, &array_len,&array);
 		        	 bson_iter_recurse(&iter, &child);
 		        	 while(bson_iter_next(&child)){
+
 		        		 if(bson_iter_find(&child,"bloque"))
-		        		 el_bloque->bloque = (int32_t)bson_iter_int32(&iter);
+		        			 bloque = (int)bson_iter_int32(&iter);
+
+		        		 el_bloque = bloque_create(bloque);
 		        		 int i=0;
 		        		 if(bson_iter_find(&child,"copias")){
 
@@ -2684,7 +2697,7 @@ int leer_archivo_mongo(){
 
 	bson_destroy (query);
 	mongoc_cursor_destroy (cursor);
-	free(archivoMongo);
+	//free(archivoMongo);
 
 	return list_size(lista_archivos);
 }
