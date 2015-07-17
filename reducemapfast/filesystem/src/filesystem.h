@@ -205,7 +205,15 @@ t_nodo* buscarNodoPorNombre(char* nombre);
 t_archivo* buscarArchivoPorNombre(char* nombre,int padre);
 void eliminarFilesystem();
 void eliminarArchivos();
+int armarArchivoPorHilo();
+int armarArchivoMD5PorHilo();
 int armarArchivo();
+int armarArchivoMD5();
+int cargarArchivo(int *padre,FILE ** fArchivo,char**nombreArchivo);
+int cargarArchivoMD5(int *padre,FILE ** fArchivo,char**nombreArchivo);
+int recuperarArchivo(FILE *fArchivo,int padre, char*nombre);
+int recuperarArchivoMD5(FILE *fArchivo,int padre, char*nombre);
+
 
 void mongo_db_open();
 void mongo_db_close();

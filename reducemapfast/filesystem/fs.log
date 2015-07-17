@@ -12,3 +12,26 @@
 [TRACE] 19:30:54:605 fs/(2983:2991): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 5, puerto: 3000
 [INFO] 20:07:42:911 fs/(3987:3994): Error al hacer el Bind. El puerto está en uso
 [TRACE] 20:07:42:927 fs/(3987:3994): SOCKET LISTO PARA RECBIR CONEXIONES. Numero de socket: 6, puerto: 3000
+[INFO] 19:51:36:834 fs/(2748:2750): Se realizo Agregar un nodo de datos
+
+[INFO] 19:51:51:177 fs/(2748:2750): Se realizo Agregar un nodo de datos
+
+[INFO] 19:51:57:864 fs/(2748:2750): Se realizo Agregar un nodo de datos
+
+[INFO] 19:52:08:571 fs/(2748:2750): Se realizo Agregar un nodo de datos
+
+[INFO] 20:00:40:129 fs/(3137:3143): Se realizo Agregar un nodo de datos
+
+[INFO] 20:00:46:265 fs/(3137:3143): Se realizo Agregar un nodo de datos
+
+[INFO] 20:00:59:961 fs/(3137:3143): Se realizo Agregar un nodo de datos
+
+[INFO] 20:01:18:198 fs/(3137:3143): Se realizo Agregar un nodo de datos
+
+[INFO] 20:02:25:382 fs/(3137:3143): No se realizo Copiar un archivo local al MDFS
+
+[INFO] 20:02:32:78 fs/(3137:3143): Se realizo Solicitar el MD5 de un archivo en MDFS
+
+[INFO] 20:17:56:470 fs/(3499:3502): Error al hacer el Bind. El puerto está en uso
+[INFO] 20:19:07:628 fs/(3528:3535): Error al hacer el Bind. El puerto está en uso
+[INFO] 20:50:22:426 fs/(3373:3454): Terminando el programa

@@ -1889,6 +1889,100 @@ int armarArchivo(){
 	}
 }
 
+int armarArchivoMD5PorHilo(){
+
+	int valor;
+
+	int iThreadHilo = pthread_create(&hNodos, NULL,
+					(void*) armarArchivoMD5, NULL );
+	if (iThreadHilo) {
+		fprintf(stderr,
+		"Error al crear hilo - pthread_create() return code: %d\n",
+		iThreadHilo);
+		exit(EXIT_FAILURE);
+	}
+
+	pthread_join(hNodos, (void*)&valor );
+
+	return valor;
+}
+
+int armarArchivoMD5(){
+	int padre;
+	FILE * fArchivo;
+	char* nombre;
+	//char * buffer = malloc(100);
+
+	if(cargarArchivoMD5(&padre,&fArchivo,&nombre)){
+		if(recuperarArchivoMD5(fArchivo,padre,nombre)){
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
+int cargarArchivoMD5(int *padre,FILE ** fArchivo,char**nombreArchivo){
+
+	char pathConArchivo[100];
+	*nombreArchivo = (char*)malloc(sizeof(char)*30);
+	char* archivoSalida;
+
+	mostrarFilesystem();
+
+	printf("Ingrese la ruta completa con el nombre del archivo para ver el MD5\n ");
+	printf("Ejemplo: /home/utnso/temperatura.txt\n");
+	scanf("%s",pathConArchivo);
+	fflush(stdin);
+
+	*padre = validarDirectorios(pathConArchivo,nombreArchivo);
+	if(*padre!=-1){
+		archivoSalida="MD5.txt";
+		fflush(stdin);
+
+		if(( *fArchivo = fopen(archivoSalida, "w") ) == NULL){
+			//Si no se pudo abrir, imprimir el error y abortar;
+			fprintf(stderr, "Error al abrir el archivo '%s': %s\n", *nombreArchivo, strerror(errno));
+			return 0;
+		}
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+
+int recuperarArchivoMD5(FILE *fArchivo,int padre, char*nombre){
+	char * buffer;
+	int i=0,j=0;
+	t_archivo* archivo = buscarArchivoPorNombre(nombre,padre);
+	if(archivo!=NULL){
+		t_list * listaBloques = archivo->listaBloques;
+		if(listaBloques != NULL){
+			i = list_size(listaBloques);
+			for(j=0;j<i;j++){
+				int l = 0;
+				t_bloque * bloque = malloc(sizeof(t_bloque));
+				bloque = list_get(listaBloques,j);
+				while(!pedirBloque(bloque->bloque,bloque->array[l++],&buffer))
+					if(l==3) return 0;
+				fwrite(buffer,sizeof(char),strlen(buffer),fArchivo);
+			}
+			fclose(fArchivo);
+			free(buffer);
+			system("md5sum MD5.txt");
+			system("rm MD5.txt");
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
 void eliminarListaNodos(){
 	int i = 0;
 	while(i<list_size(lista_nodos)){
@@ -1967,8 +2061,13 @@ int operaciones_consola() {
 		}
 		break;
 	case 6:
-		log_info(logger, "Se realizo Solicitar el MD5 de un archivo en MDFS\n");
-		break;
+		if(armarArchivoMD5PorHilo()==1){
+			log_info(logger, "Se realizo Solicitar el MD5 de un archivo en MDFS\n");
+			} else {
+				log_info(logger, "No se pudo realizar el MD5 de un archivo en MDFS\n");
+						}
+			break;
+
 	case 7:
 		log_info(logger, "Se realizo Ver/Borrar/Copiar los bloques que componen un archivo\n");
 		break;
@@ -2157,8 +2256,8 @@ bson_t* armar_nodo_mongo(t_nodo* el_nodo,bson_t*bloquesDisp){
 	bson_t* nodo = bson_new();
 	bson_append_utf8(nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
 		bson_append_utf8(nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
-		bson_append_utf8(nodo, "puerto", 2, el_nodo->puerto, strlen(el_nodo->puerto));
-		bson_append_utf8(nodo, "tamanio", 2, el_nodo->tamanio, strlen(el_nodo->tamanio));
+		bson_append_utf8(nodo, "puerto", 6, el_nodo->puerto, strlen(el_nodo->puerto));
+		bson_append_utf8(nodo, "tamanio", 7, el_nodo->tamanio, strlen(el_nodo->tamanio));
 		bson_append_int32(nodo, "estado", 6, el_nodo->estado);
 		bson_append_array_begin(nodo, "bloquesDisponibles", 18, bloquesDisp);
 		int i;
@@ -2178,11 +2277,11 @@ bson_t* armar_nodo_mongo(t_nodo* el_nodo,bson_t*bloquesDisp){
 
 bool crear_nodo_mongo(t_nodo* el_nodo) {
     bool res;
-    bson_t *nodo = bson_new();
     bson_t *bloquesDisp = bson_new();
     bson_error_t error;
 
-    armar_nodo_mongo(el_nodo,bloquesDisp);
+    bson_t *nodo = armar_nodo_mongo(el_nodo,bloquesDisp);
+
 
 	res= mongoc_collection_insert (nodosMongo, MONGOC_INSERT_NONE, nodo, NULL, &error);
     // ver si no hay que crear una collection especial para la lista nodo.
@@ -2247,6 +2346,7 @@ int leer_nodo_mongo(){
 
 	cursor = mongoc_collection_find (nodosMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
 	while (mongoc_cursor_next (cursor, &doc)) {
+		nodoMongo->bloquesDisponibles=list_create();
 		str = bson_as_json (doc, NULL);
 		if(bson_iter_init(&iter,doc)){
 		    while(bson_iter_next(&iter)){
@@ -2266,7 +2366,7 @@ int leer_nodo_mongo(){
 		        	nodoMongo->estado = (int32_t)bson_iter_int32(&iter);
 
 		        if(bson_iter_find(&iter,"bloquesDisponibles")){
-		        	nodoMongo->bloquesDisponibles=list_create();
+
 		        	 bson_iter_array (&iter, &array_len,&array);
 		        	 bson_iter_recurse(&iter, &child);
 		        	 while(bson_iter_next(&child)){
@@ -2591,7 +2691,7 @@ void cargar_listas_mongo(){
 	if (lnodo==0){
 	printf("La lista de nodos esta vacias\n");
 	}else{
-	printf("Se cargaron %d elementos a la lista de nodos\n",larch);
+	printf("Se cargaron %d elementos a la lista de nodos\n",lnodo);
 	}
 
 	int lfs= leer_filesystem_mongo();
