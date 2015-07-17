@@ -2394,12 +2394,13 @@ int leer_nodo_mongo(){
 	    printf ("%s\n", str);
 	    bson_free (str);
 	    list_add(lista_nodos,nodoMongo);
+	    free(nodoMongo);
 	    list_destroy(nodoMongo->bloquesDisponibles); //Limpio la lista bloques para el proximo archivo a cargar.
 	}
 
 	bson_destroy (query);
 	mongoc_cursor_destroy (cursor);
-	free(nodoMongo);
+
 
 	return list_size(lista_nodos);
 }
