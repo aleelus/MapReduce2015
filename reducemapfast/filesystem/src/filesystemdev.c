@@ -2339,31 +2339,40 @@ int leer_nodo_mongo(){
 	bson_iter_t iter, child;
 	uint32_t array_len;
 	const uint8_t    *array;
-	t_nodo *nodoMongo = malloc(sizeof (t_nodo));
+	int estado;
+	char* nombre, *ip, *puerto, *tamanio;
+	t_nodo *nodoMongo;
 	t_bloque_disponible* el_bloque = malloc(sizeof(t_bloque_disponible));
 
 	query  = bson_new ();
 
 	cursor = mongoc_collection_find (nodosMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
 	while (mongoc_cursor_next (cursor, &doc)) {
-		nodoMongo->bloquesDisponibles=list_create();
 		str = bson_as_json (doc, NULL);
 		if(bson_iter_init(&iter,doc)){
 		    while(bson_iter_next(&iter)){
 		        if(bson_iter_find(&iter,"nombre")){
-		        	nodoMongo->nombre=strdup(bson_iter_utf8(&iter,NULL));
+		        	nombre=string_new();
+		        	string_append(&nombre,strdup(bson_iter_utf8(&iter,NULL)));
 		           	}
 		        if(bson_iter_find(&iter,"ip")){
-		        	nodoMongo->ip=strdup(bson_iter_utf8(&iter,NULL));
+		        	ip=string_new();
+		        	string_append(&ip,strdup(bson_iter_utf8(&iter,NULL)));
 		        	}
 		        if(bson_iter_find(&iter,"puerto")){
-		        	nodoMongo->puerto=strdup(bson_iter_utf8(&iter,NULL));
+		        	puerto=string_new();
+		        	string_append(&puerto,strdup(bson_iter_utf8(&iter,NULL)));
 		        	}
 		        if(bson_iter_find(&iter,"tamanio")){
-		        	nodoMongo->tamanio=strdup(bson_iter_utf8(&iter,NULL));
-		        	}
+		        	tamanio=string_new();
+		        	string_append(&tamanio,strdup(bson_iter_utf8(&iter,NULL)));
+		        }
 		        if(bson_iter_find(&iter,"estado"))
-		        	nodoMongo->estado = (int32_t)bson_iter_int32(&iter);
+		        	estado = (int)bson_iter_int32(&iter);
+
+		        nodoMongo = nodo_create(nombre,ip,puerto,tamanio,estado);
+		        nodoMongo->bloquesDisponibles=list_create();
+
 
 		        if(bson_iter_find(&iter,"bloquesDisponibles")){
 
