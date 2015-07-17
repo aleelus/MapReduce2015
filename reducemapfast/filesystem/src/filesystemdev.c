@@ -106,7 +106,6 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 		string_append(&nombre,&letra);
 		letra++;
 		el_nodo = nodo_create(nombre,la_Ip,el_Puerto,tamanioDatos,0);
-		crear_nodo_mongo(el_nodo);
 		list_add(lista_nodos,el_nodo);
 	}
 
@@ -863,6 +862,7 @@ int agregarNodo(){
 			printf("\n%s Habilitado!\n",el_nodo->nombre);
 			el_nodo->estado = 1;
 			cargarListaBloquesDisponibles(el_nodo);
+			crear_nodo_mongo(el_nodo);
 		}
 		return 1;
 	} else {
