@@ -8,9 +8,10 @@
 #include "filesystem.h"
 #include "mongodev.h"
 
-char letra = 'A';
+
 int g_Ejecutando = 1;						// - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
 int impre=0;
+
 
 int ChartToInt(char x) {
 	int numero = 0;
@@ -973,34 +974,36 @@ void cargarListaBloquesDisponibles(t_nodo* nodo){
 
 int agregarNodo(){
 	char ipNodo[TAMANIO_IP];
-	char puertoNodo[5];
+		char puertoNodo[5];
 
 
-	t_nodo *el_nodo;
+		t_nodo *el_nodo;
 
-	printf("Ingrese la ip del nodo: ");
-	scanf("%s",ipNodo);
-	fflush(stdin);
-	printf("Ingrese el puerto de escucha del nodo: ");
-	scanf("%s",puertoNodo);
-	fflush(stdin);
-	el_nodo = buscarNodo(ipNodo,puertoNodo);
+		printf("Ingrese la ip del nodo: ");
+		scanf("%s",ipNodo);
+		fflush(stdin);
+		printf("Ingrese el puerto de escucha del nodo: ");
+		scanf("%s",puertoNodo);
+		fflush(stdin);
+		el_nodo = buscarNodo(ipNodo,puertoNodo);
 
-	if(el_nodo!=NULL){
-		if(el_nodo->estado==-1){
-			printf("\nVolvio a habilitarse el %s !\n",el_nodo->nombre);
-			el_nodo->estado = 1;
+		if(el_nodo!=NULL){
+			if(el_nodo->estado==-1){
+				printf("\nVolvio a habilitarse el %s !\n",el_nodo->nombre);
+				borrar_nodo_mongo(el_nodo);
+				el_nodo->estado = 1;
+				crear_nodo_mongo(el_nodo);
+			} else {
+				printf("\n%s Habilitado!\n",el_nodo->nombre);
+				el_nodo->estado = 1;
+				cargarListaBloquesDisponibles(el_nodo);
+				crear_nodo_mongo(el_nodo);
+			}
+			return 1;
 		} else {
-			printf("\n%s Habilitado!\n",el_nodo->nombre);
-			el_nodo->estado = 1;
-			cargarListaBloquesDisponibles(el_nodo);
-			crear_nodo_mongo(el_nodo);
+			printf("\nNo se pudo habilitar el nodo porque no existe\n");
+			return 0;
 		}
-		return 1;
-	} else {
-		printf("\nNo se pudo habilitar el nodo porque no existe\n");
-		return 0;
-	}
 }
 
 int validarDirectorio(char *directorio,int i){
@@ -1293,9 +1296,11 @@ void eliminarNodo (){
     	scanf("%d",&eleccion);
     	if(eleccion>=0 && eleccion<i){
     		el_nodo=list_get(lista_nodos,eleccion);
-    		t_nodo* nodoViejo = list_get(lista_nodos,eleccion);
-    		el_nodo->estado=-1;
-    		grabar_nodo_mongo(nodoViejo,el_nodo);
+    		  borrar_nodo_mongo(el_nodo);
+    		  //t_nodo* nodoViejo = list_get(lista_nodos,eleccion);
+    		  el_nodo->estado=-1;
+    		  //grabar_nodo_mongo(nodoViejo,el_nodo);
+    		  crear_nodo_mongo(el_nodo);
     	}
     } else {
     	printf("No hay nodos disponibles para eliminar\n");
@@ -1421,46 +1426,48 @@ void agregarBloqueEnArrayNodos(int nroNodo, int bloqueDisponible,int bloque){
 
 int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 	int nroNodo,bloqueDisponible;
-	t_nodo* el_nodo;
-	t_array_nodo* nodo;
-	t_envio_nodo* envio_nodo;
-	ordenarArrayNodos();
-	nroNodo = buscarNodoEnArray((*bloque)->bloque);
-	if(nroNodo!=-1){
-		nodo = list_get(arrayNodos[nroNodo],0);
-		el_nodo=buscarNodoPorNombre(nodo->nombre);
-		//printf("Nodo:%s BloqueArchivo:%d\n",nodo->nombre,(*bloque)->bloque);
-		bloqueDisponible = buscarBloqueDisponible(el_nodo);
-		envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
-		agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
-		//printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
+		t_nodo* el_nodo;
+		t_array_nodo* nodo;
+		t_envio_nodo* envio_nodo;
+		ordenarArrayNodos();
+		nroNodo = buscarNodoEnArray((*bloque)->bloque);
+		if(nroNodo!=-1){
+			nodo = list_get(arrayNodos[nroNodo],0);
+			el_nodo=buscarNodoPorNombre(nodo->nombre);
+			//printf("Nodo:%s BloqueArchivo:%d\n",nodo->nombre,(*bloque)->bloque);
+			borrar_nodo_mongo(el_nodo);
+			bloqueDisponible = buscarBloqueDisponible(el_nodo);
+			crear_nodo_mongo(el_nodo);
+			envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
+			agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
+			//printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
 
-		int iThreadHilo = pthread_create(&hNodos, NULL,
-				(void*) enviarBufferANodo, (void*) envio_nodo );
-		if (iThreadHilo) {
-			fprintf(stderr,
-				"Error al crear hilo - pthread_create() return code: %d\n",
-				iThreadHilo);
-			exit(EXIT_FAILURE);
+			int iThreadHilo = pthread_create(&hNodos, NULL,
+					(void*) enviarBufferANodo, (void*) envio_nodo );
+			if (iThreadHilo) {
+				fprintf(stderr,
+					"Error al crear hilo - pthread_create() return code: %d\n",
+					iThreadHilo);
+				exit(EXIT_FAILURE);
+			}
+
+
+			pthread_join(hNodos, NULL );
+
+			char *nombre = string_new();
+			string_append(&nombre,"Bloque");
+			string_append(&nombre,string_itoa(bloqueDisponible));
+
+			(*bloque)->array[j].nombreNodo=nodo->nombre;
+			(*bloque)->array[j].nro_bloque=nombre;
+
+
+
+			return 1;
+
 		}
-
-
-		pthread_join(hNodos, NULL );
-
-		char *nombre = string_new();
-		string_append(&nombre,"Bloque");
-		string_append(&nombre,string_itoa(bloqueDisponible));
-
-		(*bloque)->array[j].nombreNodo=nodo->nombre;
-		(*bloque)->array[j].nro_bloque=nombre;
-
-
-
-		return 1;
-
-	}
-	log_info(logger, "No se pudo realizar la copia\n");
-	return -1;
+		log_info(logger, "No se pudo realizar la copia\n");
+		return -1;
 }
 
 int enviarCopias(char*bufferAux,t_bloque ** bloque){
@@ -1641,6 +1648,7 @@ int procesarArchivo(){
 
 	if(subirArchivo(&tamanio,&fArchivo)){
 		if(recorrerArchivo(fArchivo)){
+			crear_archivo_mongo(archivo);
 			return 1;
 		} else {
 			return -1;
@@ -2129,11 +2137,15 @@ void eliminarListaNodos(){
 int formatearFs(){
 	indexGlobal=1;
 	eliminarFilesystem();
-	printf("Se elimino la estructura del filesystem\n");
-	eliminarArchivos();
-	printf("Se eliminaron todos los archivos\n");
-	eliminarListaNodos();
-	printf("Se eliminaron todos los Nodos\n");
+	mongoc_collection_drop(filesystemMongo,NULL);
+		printf("Se elimino la estructura del filesystem\n");
+		eliminarArchivos();
+		mongoc_collection_drop(archivosMongo,NULL);
+		printf("Se eliminaron todos los archivos\n");
+		eliminarListaNodos();
+		mongoc_collection_drop(nodosMongo,NULL);
+
+		printf("Se eliminaron todos los Nodos\n");
 	return 1;
 }
 
@@ -2407,6 +2419,17 @@ bson_t* armar_nodo_mongo(t_nodo* el_nodo,bson_t*bloquesDisp){
 		return nodo;
 }
 
+bson_t* armar_nodo_mongo2(t_nodo* el_nodo,bson_t*bloquesDisp){
+	bson_t* nodo = bson_new();
+	bson_append_utf8(nodo, "nombre", 6, el_nodo->nombre, strlen(el_nodo->nombre));
+		bson_append_utf8(nodo, "ip", 2, el_nodo->ip, strlen(el_nodo->ip));
+		bson_append_utf8(nodo, "puerto", 6, el_nodo->puerto, strlen(el_nodo->puerto));
+		bson_append_utf8(nodo, "tamanio", 7, el_nodo->tamanio, strlen(el_nodo->tamanio));
+		bson_append_int32(nodo, "estado", 6, el_nodo->estado);
+
+		return nodo;
+}
+
 
 bool crear_nodo_mongo(t_nodo* el_nodo) {
     bool res;
@@ -2430,10 +2453,10 @@ bool borrar_nodo_mongo(t_nodo* el_nodo){
 	bool res;
 	    bson_t *bloquesDisp = bson_new();
 	    bson_error_t error;
-	    bson_t *nodo = armar_nodo_mongo(el_nodo, bloquesDisp);
+	    bson_t *nodo = armar_nodo_mongo2(el_nodo, bloquesDisp);
 
 
-	    res = mongoc_collection_remove (nodosMongo,MONGOC_DELETE_SINGLE_REMOVE,nodo,NULL,&error);
+	    res = mongoc_collection_remove(nodosMongo,MONGOC_DELETE_SINGLE_REMOVE,nodo,NULL,&error);
 
 	    bson_destroy(bloquesDisp);
 	    bson_destroy(nodo);
@@ -2475,8 +2498,8 @@ int leer_nodo_mongo(){
 	int estado;
 	char* nombre, *ip, *puerto, *tamanio;
 	t_nodo *nodoMongo;
-	t_bloque_disponible* el_bloque = malloc(sizeof(t_bloque_disponible));
-
+	t_bloque_disponible* el_bloque;
+	int bloque;
 	query  = bson_new ();
 
 	cursor = mongoc_collection_find (nodosMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
@@ -2512,9 +2535,12 @@ int leer_nodo_mongo(){
 		        	 bson_iter_array (&iter, &array_len,&array);
 		        	 bson_iter_recurse(&iter, &child);
 		        	 while(bson_iter_next(&child)){
-		        		 if(bson_iter_find(&child,"bloque"))
-		        		 el_bloque->bloque = (int32_t)bson_iter_int32(&iter);
+		        		//const char* clave= bson_iter_key(&child);
 
+		        		 //if(bson_iter_find(&child,"bloque")){
+		        			 bloque = (int)bson_iter_int32(&child);
+		        		 //}
+		        		 el_bloque = bloque_disponible_create(bloque);
 		        		 list_add(nodoMongo->bloquesDisponibles,el_bloque);
 		        	 }
 
@@ -2527,8 +2553,8 @@ int leer_nodo_mongo(){
 	    printf ("%s\n", str);
 	    bson_free (str);
 	    list_add(lista_nodos,nodoMongo);
-	    free(nodoMongo);
-	    list_destroy(nodoMongo->bloquesDisponibles); //Limpio la lista bloques para el proximo archivo a cargar.
+	    //free(nodoMongo);
+	    //list_destroy(nodoMongo->bloquesDisponibles); //Limpio la lista bloques para el proximo archivo a cargar.
 	}
 
 	bson_destroy (query);
@@ -2624,7 +2650,7 @@ int leer_filesystem_mongo(){
 		           	}
 
 		        if(bson_iter_find(&iter,"padre"))
-		        	archivoFilesystem->padre = (int)bson_iter_int32(&iter);
+		        	padre = (int)bson_iter_int32(&iter);
 
 		        archivoFilesystem= filesystem_create(index,directorio,padre);
 
@@ -2791,7 +2817,7 @@ int leer_archivo_mongo(){
 		        	 while(bson_iter_next(&child)){
 
 		        		 if(bson_iter_find(&child,"bloque"))
-		        			 bloque = (int)bson_iter_int32(&iter);
+		        			 bloque = (int)bson_iter_int32(&child);
 
 		        		 el_bloque = bloque_create(bloque);
 		        		 int i=0;
@@ -2848,6 +2874,7 @@ void cargar_listas_mongo(){
 	printf("La lista de nodos esta vacias\n");
 	}else{
 	printf("Se cargaron %d elementos a la lista de nodos\n",lnodo);
+	letra =letra+lnodo;
 	}
 
 	int lfs= leer_filesystem_mongo();
@@ -2859,3 +2886,4 @@ void cargar_listas_mongo(){
 
 
 }
+
