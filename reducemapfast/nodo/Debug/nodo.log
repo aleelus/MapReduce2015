@@ -27114,3 +27114,4 @@ ERROR FATAL--> Error al hacer el Bind. El puerto está en uso
 [TRACE] 18:02:24:975 nodo/(2605:2607): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (19897). El número de socket del cliente es: 7
 [TRACE] 18:02:47:652 nodo/(2605:2607): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (21945). El número de socket del cliente es: 8
 [TRACE] 18:02:48:98 nodo/(2605:2607): NUEVA CONEXION ENTRANTE. Se ha conectado el cliente (127.0.0.1) por el puerto (22201). El número de socket del cliente es: 7
+[INFO] 12:59:23:270 nodo/(23080:23080): ERROR: conectar socket_FS

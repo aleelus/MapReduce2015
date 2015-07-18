@@ -135,6 +135,7 @@ typedef struct{
 	char *archivo;
 	int estado;
 	char *resultadoParcial;
+	char *resultadoParcialReduce;
 	t_list *listaBloques;
 }t_job_enviado;
 
@@ -148,6 +149,7 @@ static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo,
 	new->archivo=strdup(archivo);
 	new->estado=0;
 	new->resultadoParcial=strdup(res);
+	new->resultadoParcialReduce=NULL;
 	new->listaBloques=list_create();
 	return new;
 }

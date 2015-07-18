@@ -25,7 +25,7 @@
 
 
 sem_t semaforo,semaforoH,semaforoScript,semaforoGrabar,semaforoSetBloque,semaforoGetBloque,semaforoNodo;
-sem_t semCon;
+sem_t semCon,semPermiso,semMunmap,contador,semaforoReduce,semaforoMapper;
 
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
@@ -37,8 +37,6 @@ sem_t semCon;
 
 //#define NOMBRE_ARCHIVO_CONSOLA     "Archivo_msp.txt"
 #define NOMBRE_ARCHIVO_LOG 		   "nodo.log"
-
-int contador;
 
 //Tamanio bloques 20mb
 #define TAMANIO_BLOQUE 1024*1024*20
@@ -173,6 +171,7 @@ typedef struct{
     char *contenidoSH;
     char *bloque;
     char *nombreResultado;
+
 }t_job;
 
 static t_job *job_create(char *nSH, char* contenidoSH, char* el_Bloque, char * nResultado) {
@@ -181,6 +180,7 @@ static t_job *job_create(char *nSH, char* contenidoSH, char* el_Bloque, char * n
 	new->contenidoSH = strdup(contenidoSH);
 	new->bloque = strdup(el_Bloque);
 	new->nombreResultado = strdup(nResultado);
+
 	return new;
 }
 
@@ -257,7 +257,9 @@ int runScriptFile(char* script,char* archNom, char* input);
 void grabarScript(char* nombreScript, char* codigoScript);
 char * armarRutaTemporal( char *nombre);
 int procesarRutinaMap(t_job * job);
-int procesarRutinaReduce(t_jobComb * job, int combiner);
+int sendall(int s, char *buf, long unsigned *len);
+//int procesarRutinaReduce(t_jobComb * job, int combiner);
+int procesarRutinaReduce(t_job*);
 char* armarArchivoCombiner(t_list* listaArchivos);
 char* armarArchivoSinCombiner(t_list* listaArchivos);
 void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int socket,int * tamanio);
@@ -271,6 +273,7 @@ int obtenerNumBloque (char* buffer);
 void AtiendeFS (t_bloque ** bloque,char *buffer);
 long unsigned ObtenerTamanioLong (char *buffer , int posicion, int dig_tamanio);
 int PosicionDeBufferALong(char* buffer, long unsigned posicion);
+void AtiendeJobReduce_Combiner(t_job **job,char *buffer,int *cantRafaga);
 
 //Apareo
 #define BUFFERLINEA 50

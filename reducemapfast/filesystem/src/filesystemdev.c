@@ -327,32 +327,152 @@ void implementoMarta(int *id,char * buffer,int * cantRafaga,char ** mensaje, int
 	}
 }
 
+long unsigned ObtenerLu (char *buffer){
+	long unsigned x,digito,aux=0;
+	for(x=0;x<strlen(buffer);x++){
+		digito=ChartToInt(buffer[x]);
+		aux=aux*10+digito;
+	}
+	return aux;
+}
+
+
+int subirArchivoDelNodo(char* buffer,int *cantRafaga, int socket){
+
+	int digitosCantTamanio=0,tamanio;
+	long unsigned tamanioBuffer;
+	int posActual=0;
+	char * bufferR = string_new();
+
+	char * rutaCompleta = malloc(50);
+	memset(rutaCompleta,0,50);
+
+	//BUFFER RECIBIDO = 3220 (EJEMPLO)
+	//BUFFER RECIBIDO = 3119127.0.0.12460002101000000000
+	//3: es nodo 119127.0.0.1: la ip 246000: el puerto 2101000000000: el tamaño del espacio de datos del nodo
+	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
+
+	digitosCantTamanio=PosicionDeBufferAInt(buffer,2);
+	//printf("Cantidad de digitos de Tamanio de Ip:%d\n",digitosCantTamanio);
+	tamanio=ObtenerTamanio(buffer,3,digitosCantTamanio);
+	//printf("Tamaño de Recibido:%d\n",tamanio);
+	if(tamanio>=10){
+		posActual=digitosCantTamanio;
+	} else {
+		posActual=1+digitosCantTamanio;
+	}
+	tamanioBuffer=ObtenerLu(DigitosNombreArchivo(buffer,&posActual));
+	printf("Tamanio de Buffer :%lu\n",tamanioBuffer);
+
+	bufferR = DigitosNombreArchivo(buffer,&posActual);
+
+	memcpy(rutaCompleta,bufferR,strlen(bufferR));
+
+	//printf("Ruta Completa:%s\n",rutaCompleta);
+
+	*cantRafaga = 2;
+
+	char *aux=malloc(tamanioBuffer+10);
+
+	char *bloque=malloc(tamanioBuffer+10);
+
+	memset(bloque,0,tamanioBuffer+10);
+
+	char *recibido=string_new();
+	memset(aux,0,tamanioBuffer+10);
+
+	EnviarDatos(socket, "Ok", strlen("Ok"));
+
+	ssize_t numBytesRecv = 0;
+	char * aux2 = malloc(tamanioBuffer +1);
+	memset(aux2,0,tamanioBuffer+1);
+
+	do{
+		numBytesRecv = numBytesRecv + recv(socket, aux2, tamanioBuffer, 0);
+		if ( numBytesRecv < 0)
+			printf("ERROR\n");
+		string_append(&recibido,aux2);
+		strcat(bloque,recibido);
+		free(recibido);
+		recibido=string_new();
+		//printf("------ %d -----\n",strlen(bloque));
+		memset(aux2, 0, tamanioBuffer+10);
+
+	}while (numBytesRecv <tamanioBuffer);
+
+
+	EnviarDatos(socket, "Ok", strlen("Ok"));
+	//printf("Enviado el OK\n");
+
+	int cont=0;
+
+	char **array = string_split(rutaCompleta,"/");
+
+	while(array[cont]!=NULL){
+		  cont++;
+	}
+	array[cont-1] = NULL;
+	int j=0,k,padre;
+
+	while(array[j]!=NULL){
+		if(j==0){
+			k=validarDirectorio(array[j],0);
+		} else {
+			k=validarDirectorio(array[j],padre);
+		}
+		if(k!=0){
+			padre=k;
+			j++;
+		}
+	}
+
+	archivo = archivo_create("resultado.txt",strlen(bloque),padre,1);
+	list_add(lista_archivos,archivo);
+	crear_archivo_mongo(archivo);
+
+	enviarBloque(bloque);
+
+	printf("Lo subio!\n");
+
+
+	return 1;
+}
+
+
 void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
 
 	int tipo_mensaje = ObtenerComandoMSJ(buffer+1);
-	//printf("RAFAGA:%d\n",tipo_mensaje);
-	if(*cantRafaga == 2){
-		switch(tipo_mensaje){
-		case CONEXION:
-			if(AtiendeNodo(buffer,cantRafaga)){
-				*mensaje = "Ok";
+		//printf("RAFAGA:%d\n",*cantRafaga);
+		if(*cantRafaga == 2){
+			switch(tipo_mensaje){
+			case CONEXION:
+				if(AtiendeNodo(buffer,cantRafaga)){
+					*mensaje = "Ok";
+				} else {
+					*mensaje = "No";
+				}
+				*cantRafaga=1;
+				break;
+			default:
+				break;
+			}
+			//*mensaje = "Ok";
+		} else {
+			if (*cantRafaga==1) {
+				if(tipo_mensaje == SUBIRARCHIVO){
+					if(subirArchivoDelNodo(buffer,cantRafaga,socket)){
+						*mensaje = "Ok";
+					} else {
+						*mensaje = "No";
+					}
+				} else {
+					*mensaje = "Ok";
+					*cantRafaga = 2;
+				}
 			} else {
 				*mensaje = "No";
 			}
-			*cantRafaga=1;
-			break;
-		default:
-			break;
 		}
-		//*mensaje = "Ok";
-	} else {
-		if (*cantRafaga==1) {
-			*mensaje = "Ok";
-			*cantRafaga = 2;
-		} else {
-			*mensaje = "No";
-		}
-	}
 }
 
 char* RecibirDatos(int socket, char *buffer, int *bytesRecibidos,int *cantRafaga,int *tamanio) {
@@ -1372,7 +1492,7 @@ int recorrerArchivo(FILE *fArchivo){
 			if(buffer[TAMANIO_BLOQUE-j]=='\n'){
 				bufferAux = malloc(TAMANIO_BLOQUE-j+1);
 				memset(bufferAux,0,TAMANIO_BLOQUE-j+1);
-				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j);
+				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j+1);
 				if(enviarBloque(bufferAux)){
 					tamanio = ftell(fArchivo);
 					if(tamanio!=tamanioA){
@@ -2215,6 +2335,7 @@ t_envio_nodo *envio_nodo_create(char *buffer, char* ip, char* puerto, int bloque
 t_bloque_disponible *bloque_disponible_create(int bloque) {
     t_bloque_disponible *new = malloc(sizeof(t_bloque_disponible));
     new->bloque = bloque;
+    new->vacio = 1;
     return new;
 }
 

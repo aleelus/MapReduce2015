@@ -18,8 +18,9 @@ int main(int argv, char** argc) {
 
 
 	sem_init(&semaforoLogger, 0, 1);
-	sem_init(&semaforoMarta,1,1);
+	sem_init(&semaforoMarta,0,0);
 	sem_init(&semaforoNodo,1,1);
+	sem_init(&semAux,1,1);
 	//sem_init(&semaforo,1,0);
 	//sem_init(&semaforoJob,1,0);
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
@@ -40,6 +41,7 @@ int main(int argv, char** argc) {
 	int cantidadRafagaMarta=1, cantRafaga=1;
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
+	contador=0;
 
 	//Tamaños iniciales y contadores
 	int tamanio=10;
@@ -81,6 +83,8 @@ int main(int argv, char** argc) {
 	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, bufferRafaga_Uno, strlen(bufferRafaga_Uno));
 	cantidadRafagaMarta=2;
 
+	int emisor =0;
+	int p,bandera=0;
 	// Escucho posibles entradas
 	while ((!desconexionCliente) && g_Ejecutando) {
 			//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
@@ -95,13 +99,35 @@ int main(int argv, char** argc) {
 			buffer = RecibirDatos(socket_Marta,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 			//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_Marta, buffer, tamanio);
 
+			emisor=PosicionDeBufferAInt(buffer,1);
+
+
+
 			// Control de recepción no vacía
 			//printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
 
+
+
+				for(p=0;p<strlen(buffer);p++){
+					if(buffer[p]=='+'){
+						bandera=1;
+					}
+				}
+
+
+
 				//printf("--------El BUFFER:%s\n", buffer);
 				// Si el flag es correcto y Marta devolvió el Ok
-				if(cantidadRafagaMarta==3 && strcmp(buffer,"Ok")!=0){
+				if(cantidadRafagaMarta==3 && bandera==1){
+
+					//printf("-------------------------------LIBERO SEMAFORO MARTA-------------------------------\n");
+					sem_post(&semaforoMarta);
+					bandera=0;
+
+				}
+
+				if(cantidadRafagaMarta==3 && emisor>0 && emisor<4){
 
 					printf("Recibe Planificacion de Marta: %s\n",buffer);
 
@@ -183,7 +209,7 @@ int AtiendeCliente(void * arg) {
 	}else if (emisor==2){
 		aux=string_new();
 		el_job=procesoJob(buff);
-		string_append(&bufferANodo,"21");
+		string_append(&bufferANodo,"22");
 		aux=abrir_Mapper(aux,g_Reduce);
 		string_append(&bufferANodo,aux);
 		free(aux);
@@ -193,7 +219,11 @@ int AtiendeCliente(void * arg) {
 		aux = obtenerSubBuffer(el_job->bloque);
 		string_append(&bufferANodo,aux);
 		free(aux);
-		aux=obtenerSubBuffer(el_job->archResultado);
+		aux = obtenerSubBuffer(el_job->archResultado);
+		string_append(&bufferANodo,aux);
+		free(aux);
+
+		aux=obtenerSubBuffer(el_job->archResultadoReduce);
 		string_append(&bufferANodo,aux);
 		free(aux);
 	}else if(emisor==3){
@@ -293,18 +323,18 @@ int AtiendeCliente(void * arg) {
 	//printf("BUFFER ENVIA:%s\n",bufferEnvia);
 	sem_wait(&semaforoNodo);
 	EnviarDatos(socket_nodo,bufferEnvia, strlen(bufferEnvia));
-	sem_post(&semaforoNodo);
+	//sem_post(&semaforoNodo);
 	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferEnvia, strlen(bufferEnvia));
 //	sem_wait(&semaforoNodo);
 	bufferR = RecibirDatos(socket_nodo, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferR, strlen(bufferR));
 //	sem_post(&semaforoNodo);
 	//Le envio el buffer al Nodo
-	printf(COLOR_VERDE"TAMAÑO BUFFER A NODO:%d\n",strlen(bufferANodo));
-	sem_wait(&semaforoNodo);
+	//printf(COLOR_VERDE"TAMAÑO BUFFER A NODO:%d\n",strlen(bufferANodo));
+	//sem_wait(&semaforoNodo);
 	EnviarDatos(socket_nodo,bufferANodo, strlen(bufferANodo));
 	sem_post(&semaforoNodo);
-	printf(COLOR_VERDE"TAMAÑO BUFFER A NODO:%d\n",strlen(bufferANodo));
+	//printf(COLOR_VERDE"TAMAÑO BUFFER A NODO:%d\n",strlen(bufferANodo));
 	//log_trace(logger, "ENVÍO DATOS. socket: %d. buffer: %s tamanio:%d", socket_nodo, bufferANodo, strlen(bufferANodo));
 
 	int code=0;
@@ -372,7 +402,8 @@ int AtiendeCliente(void * arg) {
 
 				}else if (emisor==1){
 
-					printf(COLOR_VERDE"RECIBO OK DEL NODO (map): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+					sem_wait(&semaforoMarta);
+					printf(COLOR_VERDE"RECIBO OK DEL NODO (map): %s--%s"DEFAULT"    contador: %d\n",el_job->bloque,el_job->nodo,contador);
 					string_append(&bufferAMartaDos,"23");
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
@@ -382,18 +413,46 @@ int AtiendeCliente(void * arg) {
 					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
 
 
+					//printf("CONTADOR : %d\n",contador);
+					contador++;
+
 					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
 
 					//RAFAGA 1
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
-					sem_wait(&semaforoMarta);
+					//sem_wait(&semAux);
+
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 					//sem_post(&semaforoMarta);
+
 
 					//RAFAGA 2
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					//sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+					/*cantRafaga=1;
+					tamanio=20;
+					free(bufferR);
+					bufferR = string_new();
+					bufferR = RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+
+
+					printf("Recibo: %s  (%s-%s)\n",bufferR,el_job->bloque,el_job->nodo);*/
+
+					/*int p,bandera=0;
+					for(p=0;p<strlen(bufferR);p++){
+						if(bufferR[p]=='*'){
+							bandera=1;
+						}
+					}
+
+					if(bandera == 0){
+						printf("NO ASTERISCO!!!\n)");
+						return 0;
+					}*/
+
+					sleep(1);
 					sem_post(&semaforoMarta);
 					/*buffer=string_new();
 					recv(socket_Marta, buffer, 10, 0);
@@ -407,7 +466,7 @@ int AtiendeCliente(void * arg) {
 					bufferAMartaUno=string_new();
 
 				}else if(emisor == 2){
-
+					sem_wait(&semaforoMarta);
 					printf(COLOR_VERDE"RECIBO OK DEL NODO (reduce): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
 					string_append(&bufferAMartaDos,"23");
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
@@ -422,7 +481,7 @@ int AtiendeCliente(void * arg) {
 
 					//RAFAGA 1
 					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
-					sem_wait(&semaforoMarta);
+
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 					//sem_post(&semaforoMarta);
 
@@ -431,6 +490,16 @@ int AtiendeCliente(void * arg) {
 					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
 					//sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+
+				/*	cantRafaga=1;
+					free(bufferR);
+					bufferR = string_new();
+					bufferR = RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
+
+					printf("Recibo: %s  (%s-%s)\n",bufferR,el_job->bloque,el_job->nodo);*/
+
+					sleep(1);
 					sem_post(&semaforoMarta);
 				}
 				bufferAMartaUno=string_new();
@@ -460,7 +529,7 @@ int AtiendeCliente(void * arg) {
 void CerrarSocket(int socket) {
 	close(socket);
 	//Traza("SOCKET SE CIERRA: (%d).", socket);
-	log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
+	//log_trace(logger, "SOCKET SE CIERRA: (%d).", socket);
 }
 
 
@@ -468,7 +537,7 @@ int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 
 
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON UN NODO
-	log_info(logger, "Intentando conectar a %s\n",el_job.nodo);
+	//log_info(logger, "Intentando conectar a %s\n",el_job.nodo);
 
 	struct addrinfo hints;
 	struct addrinfo *serverInfo;
@@ -512,8 +581,9 @@ t_job_a_nodo *procesoJob (char *buffer){
 	el_job->puerto=DigitosNombreArchivo(buffer,&pos);
 	//printf("Puerto:%s\n",el_job->puerto);
 	el_job->bloque=DigitosNombreArchivo(buffer,&pos);
-	//printf("Bloque:%s\n",el_job->bloque);
 	el_job->archResultado=DigitosNombreArchivo(buffer,&pos);
+	//printf("Bloque:%s\n",el_job->bloque);
+	el_job->archResultadoReduce=DigitosNombreArchivo(buffer,&pos);
 	//printf("Resultado:%s\n",el_job->archResultado);
 	return el_job;
 }
@@ -820,7 +890,7 @@ char* RecibirDatos(int socket,char *buffer, int *bytesRecibidos,int *cantRafaga,
 		}
 	}
 
-	log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
+	//log_trace(logger, "RECIBO DATOS. socket: %d. buffer: %s tamanio:%d", socket,(char*) bufferAux, strlen(bufferAux));
 	return bufferAux; //--> buffer apunta al lugar de memoria que tiene el mensaje completo.
 }
 
@@ -836,7 +906,7 @@ int EnviarDatos(int socket,char *buffer, int cantidadDeBytesAEnviar) {
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información a los clientes. Socket: %d", socket);
 
-	log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
+	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,(char*) buffer);
 
 	return bytecount;
 }
@@ -845,7 +915,7 @@ int EnviarDatos(int socket,char *buffer, int cantidadDeBytesAEnviar) {
 void conectarMarta() {
 
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON MARTA
-	log_info(logger, "Intentando conectar a Marta\n");
+	//log_info(logger, "Intentando conectar a Marta\n");
 	//char * puerto = "7000";
 	
 	struct addrinfo infoLocal;

@@ -23,7 +23,7 @@
 #include <sys/stat.h>
 #include <arpa/inet.h>
 
-
+#define SUBIRARCHIVO			3
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
 #define CONEXION				1
@@ -75,6 +75,7 @@ typedef struct {
 
 typedef struct {
 	int bloque;
+	int vacio;
 }t_bloque_disponible;
 
 typedef struct {
@@ -154,7 +155,7 @@ int  conectarNodo(int*,char*,char*);					//Conexion de Nodo
 void HiloOrquestadorDeConexiones();					// maneja las conexiones entrantes
 void implementoMarta(int*,char*,int*,char**,int);   //maneja las peticiones de Marta
 int  ObtenerComandoMSJ(char*);						//Obtiene el tipo del comando del emisor
-
+int enviarBloque(char *bufferAux);
 
 void  Error(const char* mensaje, ...);				//Generar error
 char* RecibirDatos(int,char*,int*,int*,int*);		//Recibir datos
