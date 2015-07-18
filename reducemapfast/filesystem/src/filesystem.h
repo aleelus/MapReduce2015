@@ -129,6 +129,8 @@ int nroBloque;
 t_list ** arrayNodos;
 int indexGlobal;
 long unsigned tamanioTotal;
+char letra;
+
 
 //FUNCIONES
 int validarDirectorio(char *directorio,int i);
@@ -220,6 +222,8 @@ void mongo_db_open();
 void mongo_db_close();
 
 bson_t* armar_nodo_mongo(t_nodo* el_nodo,bson_t*bloquesDisp);
+bson_t* armar_nodo_mongo2(t_nodo* el_nodo,bson_t*bloquesDisp);
+
 bool crear_nodo_mongo(t_nodo* el_nodo);
 bool borrar_nodo_mongo(t_nodo* el_nodo);
 int grabar_nodo_mongo(t_nodo* el_nodo_viejo, t_nodo* el_nodo_nuevo);

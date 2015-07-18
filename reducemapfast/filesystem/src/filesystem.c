@@ -20,7 +20,7 @@ int main(int argv, char** argc) {
 	nroBloque=0;
 	indexGlobal = 1;
 	tamanioTotal = 0;
-
+	letra ='A';
 	nombre = string_new();				//Variable del nombre de los nodos
 
 	lista_nodos    = list_create();		//Lista de nodos
