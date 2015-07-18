@@ -62,7 +62,7 @@ typedef struct {
 	char * buffer;
 }t_job_a_nodo;
 
-int conectarNodo(t_job_a_nodo , int );
+int conectarNodo(t_job_a_nodo el_job,int socket_nodo,int emisor);
 t_job_a_nodo *procesoJob (char *);
 
 char * bufferANodo;

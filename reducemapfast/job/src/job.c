@@ -106,11 +106,9 @@ int main(int argv, char** argc) {
 			// Control de recepción no vacía
 			//printf("BytesRecibidos:%d\n",bytesRecibidos);
 			if (bytesRecibidos>0) {
-
-
-
+				bandera=0;
 				for(p=0;p<strlen(buffer);p++){
-					if(buffer[p]=='+'){
+					if(buffer[p]=='+' || buffer[p]=='*'){
 						bandera=1;
 					}
 				}
@@ -314,7 +312,9 @@ int AtiendeCliente(void * arg) {
 	char * bufferR = string_new();
 	int bytesRecibidos, cantRafaga=1, tamanio=10;
 	//Me conecto con el Nodo
-	socket_nodo=conectarNodo(*el_job,socket_nodo);
+	socket_nodo=conectarNodo(*el_job,socket_nodo,emisor);
+
+
 
 	//Primera Rafaga
 	string_append(&bufferEnvia,"2");
@@ -352,11 +352,46 @@ int AtiendeCliente(void * arg) {
 
 
 
+	struct addrinfo hints;
+	struct addrinfo *serverInfo;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;// Permite que la maquina se encargue de verificar si usamos IPv4 o IPv6
+	hints.ai_socktype = SOCK_STREAM;
+
 	while ((!desconexionCliente) && g_Ejecutando) {
 
 		if (buffer != NULL )
 			free(buffer);
 		buffer = string_new();
+
+		if (getaddrinfo(el_job->ip, el_job->puerto, &hints, &serverInfo) != 0){
+			char *bufferAMartaDos=string_new(),*bufferAMartaUno=string_new();
+			if(emisor==1)
+				printf(COLOR_VERDE" ERROR DEL NODO (map): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+			else if(emisor == 2)
+				printf(COLOR_VERDE" ERROR DEL NODO (reduce): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+			else if(emisor ==3)
+				printf(COLOR_VERDE" ERROR DEL NODO (reduce TOTAL): %s--%s\n"DEFAULT,el_job->archResultado,el_job->nodo);
+
+			string_append(&bufferAMartaDos,"22");
+			string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
+			string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+
+			string_append(&bufferAMartaUno,"2");
+			string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+			string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+
+
+
+			EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
+			EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+
+			sleep(1);
+			abort();
+		}
 
 		//Recibimos los datos del nodo
 //		sem_wait(&semaforoNodo);
@@ -399,6 +434,7 @@ int AtiendeCliente(void * arg) {
 
 					bufferAMartaDos=string_new();
 					bufferAMartaUno=string_new();
+					pthread_exit(NULL);
 
 				}else if (emisor==1){
 
@@ -412,23 +448,13 @@ int AtiendeCliente(void * arg) {
 					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
 					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
 
-
-					//printf("CONTADOR : %d\n",contador);
 					contador++;
 
-					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
 
-					//RAFAGA 1
-					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
-					//sem_wait(&semAux);
+
 
 					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-					//sem_post(&semaforoMarta);
 
-
-					//RAFAGA 2
-					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
-					//sem_wait(&semaforoMarta);
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
 					/*cantRafaga=1;
@@ -439,7 +465,6 @@ int AtiendeCliente(void * arg) {
 
 
 					printf("Recibo: %s  (%s-%s)\n",bufferR,el_job->bloque,el_job->nodo);*/
-
 					/*int p,bandera=0;
 					for(p=0;p<strlen(bufferR);p++){
 						if(bufferR[p]=='*'){
@@ -452,18 +477,13 @@ int AtiendeCliente(void * arg) {
 						return 0;
 					}*/
 
-					sleep(1);
-					sem_post(&semaforoMarta);
-					/*buffer=string_new();
-					recv(socket_Marta, buffer, 10, 0);
-					while(strcmp(buffer,"Ok")!=0){
-						EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
-						buffer=string_new();
-						recv(socket_Marta, buffer, 10, 0);
-					}*/
+					//sleep(3);
+					//sem_post(&semaforoMarta);
+
 
 					bufferAMartaDos=string_new();
 					bufferAMartaUno=string_new();
+					pthread_exit(NULL);
 
 				}else if(emisor == 2){
 					sem_wait(&semaforoMarta);
@@ -471,6 +491,7 @@ int AtiendeCliente(void * arg) {
 					string_append(&bufferAMartaDos,"23");
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
 					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+
 
 					string_append(&bufferAMartaUno,"2");
 					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
@@ -492,23 +513,54 @@ int AtiendeCliente(void * arg) {
 					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 
 
-				/*	cantRafaga=1;
+					/*cantRafaga=1;
 					free(bufferR);
 					bufferR = string_new();
 					bufferR = RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 
 					printf("Recibo: %s  (%s-%s)\n",bufferR,el_job->bloque,el_job->nodo);*/
 
-					sleep(1);
-					sem_post(&semaforoMarta);
-				}
-				bufferAMartaUno=string_new();
-				bufferAMartaDos=string_new();
-				buffer=string_new();
+					//sleep(3);
+					//sem_post(&semaforoMarta);
+					bufferAMartaUno=string_new();
+					bufferAMartaDos=string_new();
+					buffer=string_new();
 
-				//pthread_exit(NULL);
+					pthread_exit(NULL);
+				}
+
 
 			}else if (strcmp(buffer,"30")==0){
+				sem_wait(&semaforoMarta);
+				if(emisor==1)
+					printf(COLOR_VERDE"RECIBO ERROR DEL NODO (map): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+				else if(emisor == 2)
+					printf(COLOR_VERDE"RECIBO ERROR DEL NODO (reduce): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
+				else if(emisor ==3)
+					printf(COLOR_VERDE"RECIBO ERROR DEL NODO (reduce TOTAL): %s--%s\n"DEFAULT,el_job->archResultado,el_job->nodo);
+
+				string_append(&bufferAMartaDos,"22");
+				string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
+				string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+
+				string_append(&bufferAMartaUno,"2");
+				string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+				string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+
+
+				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
+				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+
+
+				sleep(3);
+				sem_post(&semaforoMarta);
+
+
+				bufferAMartaDos=string_new();
+				bufferAMartaUno=string_new();
+				pthread_exit(NULL);
 
 			}
 
@@ -533,7 +585,7 @@ void CerrarSocket(int socket) {
 }
 
 
-int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
+int conectarNodo(t_job_a_nodo el_job,int socket_nodo,int emisor){
 
 
 	//ESTRUCTURA DE SOCKETS; EN ESTE CASO CONECTA CON UN NODO
@@ -556,9 +608,35 @@ int conectarNodo(t_job_a_nodo el_job,int socket_nodo){
 			serverInfo->ai_protocol)) < 0) {
 		log_error(logger, "Error al crear socket_nodo");
 	}
-	if (connect(socket_nodo, serverInfo->ai_addr, serverInfo->ai_addrlen)
-			< 0) {
+	if (connect(socket_nodo, serverInfo->ai_addr, serverInfo->ai_addrlen)< 0) {
 		log_error(logger, "Error al conectar con socket_nodo");
+
+		char *bufferAMartaDos=string_new(),*bufferAMartaUno=string_new();
+		if(emisor==1)
+			printf(COLOR_VERDE" ERROR DEL NODO (map): %s--%s\n"DEFAULT,el_job.bloque,el_job.nodo);
+		else if(emisor == 2)
+			printf(COLOR_VERDE" ERROR DEL NODO (reduce): %s--%s\n"DEFAULT,el_job.bloque,el_job.nodo);
+		else if(emisor ==3)
+			printf(COLOR_VERDE" ERROR DEL NODO (reduce TOTAL): %s--%s\n"DEFAULT,el_job.archResultado,el_job.nodo);
+
+		string_append(&bufferAMartaDos,"22");
+		string_append(&bufferAMartaDos,obtenerSubBuffer(el_job.bloque));
+		string_append(&bufferAMartaDos,obtenerSubBuffer(el_job.nodo));
+
+		string_append(&bufferAMartaUno,"2");
+		string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
+		string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
+
+
+
+		EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+
+		EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+
+		sleep(1);
+		abort();
+
 	}
 	freeaddrinfo(serverInfo);	// No lo necesitamos mas
 

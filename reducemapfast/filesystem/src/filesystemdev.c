@@ -411,10 +411,11 @@ int subirArchivoDelNodo(char* buffer,int *cantRafaga, int socket){
 	while(array[cont]!=NULL){
 		  cont++;
 	}
+	char * nombreResultado = strdup(array[cont-1]);
 	array[cont-1] = NULL;
-	int j=0,k,padre;
+	int j=0,k,padre,correcto=1;
 
-	while(array[j]!=NULL){
+	while(array[j]!=NULL&&correcto){
 		if(j==0){
 			k=validarDirectorio(array[j],0);
 		} else {
@@ -423,17 +424,22 @@ int subirArchivoDelNodo(char* buffer,int *cantRafaga, int socket){
 		if(k!=0){
 			padre=k;
 			j++;
+		} else {
+			correcto=0;
 		}
 	}
+	if(correcto){
+		archivo = archivo_create(nombreResultado,strlen(bloque),padre,1);
+		list_add(lista_archivos,archivo);
+		crear_archivo_mongo(archivo);
 
-	archivo = archivo_create("resultado.txt",strlen(bloque),padre,1);
-	list_add(lista_archivos,archivo);
-	crear_archivo_mongo(archivo);
+		enviarBloque(bloque);
 
-	enviarBloque(bloque);
-
-	printf("Lo subio!\n");
-
+		printf("Lo subio!\n");
+	} else {
+		printf("No se pudo subir el archivo de resultado final porque no existe el directorio.\n");
+		return 0;
+	}
 
 	return 1;
 }
@@ -465,6 +471,7 @@ void implementoNodo(char * buffer,int * cantRafaga,char ** mensaje, int socket){
 					} else {
 						*mensaje = "No";
 					}
+					*cantRafaga=1;
 				} else {
 					*mensaje = "Ok";
 					*cantRafaga = 2;
@@ -747,6 +754,9 @@ int AtiendeCliente(void * arg) {
 			case COMANDO:
 				printf("Muestre toda la lista de Nodos:\n");
 				RecorrerNodos();
+				printf("Emisor:%d\n",emisor);
+				printf("BUFFER:%s\n",buffer);
+				abort();
 				mensaje = "Ok";
 				break;
 			case COMANDOFILESYSTEM:
@@ -754,6 +764,8 @@ int AtiendeCliente(void * arg) {
 				cargarFilesystem();
 				mostrarFilesystem();
 				mensaje ="Ok";
+				printf("Emisor:%d\n",emisor);
+				abort();
 				break;
 			case COMANDO2:
 				printf("Muestre toda la lista de Nodos y sus Bloques Ocupados:\n");
@@ -1007,7 +1019,7 @@ int validarDirectorio(char *directorio,int i){
 			printf("Directorio:%s Invalido\n",directorio);
 			return 0;
 		} else {
-			printf("Directorio:%s Valido\n",directorio);
+			//printf("Directorio:%s Valido\n",directorio);
 			return fs->index;
 		}
 	}

@@ -668,14 +668,10 @@ int EnviarDatos(int socket, char *buffer, int cantidadDeBytesAEnviar) {
 	if ((bytecount = send(socket, buffer, cantidadDeBytesAEnviar, 0)) == -1)
 		Error("No puedo enviar información al cliente. Socket: %d", socket);
 
-	//Traza("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
+	//log_trace("ENVIO datos. socket: %d. buffer: %s", socket, (char*) buffer);
 
-	//char * bufferLogueo = malloc(5);
-	//bufferLogueo[cantidadDeBytesAEnviar] = '\0';
-
-	//memcpy(bufferLogueo,buffer,cantidadDeBytesAEnviar);
 	//log_info(logger, "ENVIO DATOS. socket: %d. Buffer:%s ",socket,
-		//	(char*) buffer);
+		//(char*) buffer);
 
 	return bytecount;
 }
@@ -756,7 +752,7 @@ void AtiendeJob (t_job ** job,char *buffer, int *cantRafaga){
 	//2: soy Job 1: recibo tarea 2: cant de dig del tamaño del .sh 70: tamaño del sh
 	//2: cant de dig de tamaño del nombre del .sh 12: tamaño del nombre del .sh y luego el nombre
 	//2: cant de dig del numero de bloque 33: numero de bloque, el nombre del arch de resultado lo sacas jajaja
-
+	printf("ACA LLEGUE\n");
 	//semaforo
 	estado = 1;
 	char *nArchivoSH;
