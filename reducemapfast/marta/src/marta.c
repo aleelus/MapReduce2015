@@ -18,10 +18,10 @@ int main(int argv, char** argc) {
 	lista_job_enviado=list_create();
 
 
-	sem_init(&semaforoListaNodos, 1, 1);
-	sem_init(&semaforoListaArchivos, 1, 1);
-	sem_init(&semaforoListaJobEnviados, 1, 1);
-	sem_init(&semIdJob, 1, 0);
+	sem_init(&semaforoListaNodos, 0, 1);
+	sem_init(&semaforoListaArchivos, 0, 1);
+	sem_init(&semaforoListaJobEnviados, 0, 1);
+	sem_init(&semIdJob, 0, 1);
 
 
 	//sem_init(&semaforoJob,1,0);
@@ -605,6 +605,8 @@ void ObtenerInfoDeNodos(int id){
 	int cantNodo=0, digCantNodo=0;
 
 
+
+
 	t_bloque *el_bloque= malloc(sizeof(t_bloque));
 
 
@@ -615,6 +617,10 @@ void ObtenerInfoDeNodos(int id){
 	posActual=3+digCantArch;
 
 
+	char **array;
+	int con=0;
+
+
 	for(x=0;x<cantArch;x++){
 		j=0;
 		nomArch=DigitosNombreArchivo(rafaga2Fs,&posActual);
@@ -623,8 +629,17 @@ void ObtenerInfoDeNodos(int id){
 			sem_wait(&semaforoListaArchivos);
 			el_archivo=list_get(lista_archivos,j);
 			sem_post(&semaforoListaArchivos);
-			if(el_archivo->idJob==id && strcmp(el_archivo->nombreArchivo,nomArch)==0){
+
+			array = string_split(el_archivo->nombreArchivo,"/");
+			cont=0;
+			 while(array[con]!=NULL){
+			    	  con++;
+			 }
+
+			if(el_archivo->idJob==id && strcmp(array[con-1],nomArch)==0){
+
 				j=list_size(lista_archivos);
+
 			}
 			j++;
 		}
@@ -670,6 +685,7 @@ void ObtenerInfoDeNodos(int id){
 		}
 		i++;
 	}
+
 
 	//Cantidad de Nodos
 	digCantNodo=PosicionDeBufferAInt(rafaga2Fs,posActual);
@@ -1345,6 +1361,7 @@ void reducesOk(char *buffer){
 		printf(COLOR_VERDE"****** TODOS LOS MAP's Y REDUCES FUERON HECHOS! ******\n"DEFAULT);
 		printf("\nArchivo [ "COLOR_VERDE"%s"DEFAULT" ] procesado con exito!\n\n",el_archivo->nombreArchivo);
 	}
+
 }
 
 void eliminarBloqueDeListaDeNodos(char* nodo,char *bloque){
@@ -1395,21 +1412,10 @@ void reciboOk(char *buffer,int socket){
 		printf("* Recibo OK del Job ("COLOR_VERDE"map"DEFAULT"):   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
 		string_append(&nodoAnt,nodo);
 
-		printf("* Envio *\n");
-		char *envio=string_new();
-		string_append(&envio,"*");
-		EnviarDatos(socket, envio,strlen(envio));
-		sleep(1);
-		free(envio);
 
 	}else if(estado==2){
 		printf("* Recibo OK del Job ("COLOR_VERDE"reduce"DEFAULT"):   "COLOR_VERDE"%s"DEFAULT"--"COLOR_VERDE"%s\n"DEFAULT,bloque,nodo);
-		printf("* Envio *\n");
-		char *envio=string_new();
-		string_append(&envio,"*");
-		EnviarDatos(socket, envio,strlen(envio));
-		sleep(1);
-		free(envio);
+
 	}
 
 
@@ -1437,6 +1443,7 @@ void reciboOk(char *buffer,int socket){
 		if(estado==2){
 			printf("* Reduces Hechos: %d \n",el_archivo->contTareas);
 			el_archivo->contTareas++;
+			eliminarBloqueDeListaDeNodos(nodo,bloque);
 		}
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1452,400 +1459,393 @@ void reciboOk(char *buffer,int socket){
 
 
 
+			if(el_archivo->tieneCombiner==0){
 
-			/*if(contTareasMap>0){
+				el_archivo->contTareas++;
 
-
-				int k=0, bandera=0,hecho=0;
-
-				// tengo que hacer algo con variable bloque y nodo
-
-				if(list_size(el_nodo->listaBloqueArchivo)>0){
-					char *buffer=string_new();
-					char *ipNodo=string_new(),*puertoNodo=string_new(),*resultado=string_new();
+				t_archivo *el_archivo_auxiliar;
+				int z=0,contador_tareas=0,contador_tareas_actual=0,id_auxiliar=el_archivo->idJob;
 
 
+				while(z<list_size(lista_archivos)){
+					el_archivo_auxiliar=list_get(lista_archivos,z);
+					if(el_archivo_auxiliar->idJob==id_auxiliar)
+						contador_tareas=contador_tareas+list_size(el_archivo_auxiliar->listaBloques);
+					z++;
+				}
 
-					nodo=el_nodo->nombreNodo;
-					ipNodo=el_nodo->ipNodo;
-					puertoNodo=el_nodo->puertoNodo;
+				z=0;
+				while(z<list_size(lista_archivos)){
+					el_archivo_auxiliar=list_get(lista_archivos,z);
+					if(el_archivo_auxiliar->idJob==id_auxiliar){
+						contador_tareas_actual= contador_tareas_actual + el_archivo_auxiliar->contTareas;
+					}
+					z++;
+				}
+
+
+				if(contador_tareas_actual==contador_tareas){
+					printf(COLOR_VERDE"ENVIADO REDUCE\n"DEFAULT);
+					char *bufferAJob_Reduce=string_new();
+					char *nodoAnterior=string_new();
+					int contarNodos=0;
+
+					t_list *lista_archivos_reduce = list_create();
+					j=0;
+					z=0;
+					while(z<list_size(lista_archivos)){
+						el_archivo_auxiliar=list_get(lista_archivos,z);
+						j=0;
+						while(j<list_size(lista_job_enviado)){
+							sem_wait(&semaforoListaJobEnviados);
+							el_job_enviado=list_get(lista_job_enviado,j);
+							sem_post(&semaforoListaJobEnviados);
+							if(strcmp(el_job_enviado->archivo,el_archivo_auxiliar->nombreArchivo)==0){
+
+								list_add(lista_archivos_reduce,job_enviado_create(el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->archivo,el_job_enviado->resultadoParcial));
+
+
+							}
+							j++;
+						}
+
+
+						z++;
+					}
+
+
+					// ORDENO POR NOMBRE DE NODOS
+					bool _ordenarPorNodo(t_job_enviado *nodoUno, t_job_enviado *nodoDos){
+						if(strcmp(nodoUno->nodo,nodoDos->nodo)<0)
+							return true;
+						else
+							return false;
+					}
+					list_sort(lista_archivos_reduce, (void*)_ordenarPorNodo);
+
+
+					t_job_enviado_bloque *el_job_enviado_bloque;
+					t_job_enviado *el_aux;
+
+					//Cuento los Nodos y agrego bloques a cada nodo
+					j=0;
+					int k=0;
+					while(j<list_size(lista_archivos_reduce)){
+
+						el_job_enviado=list_get(lista_archivos_reduce,j);
+
+						el_aux=el_job_enviado;
+						contarNodos++;
+						string_append(&nodoAnterior,el_job_enviado->nodo);
+						while(strcmp(nodoAnterior,el_job_enviado->nodo)==0 && j<list_size(lista_archivos_reduce)){
+							list_add(el_aux->listaBloques,job_enviado_bloque_create(el_job_enviado->bloque,el_job_enviado->resultadoParcial));
+
+							j++;
+							if(j<list_size(lista_archivos_reduce))
+								el_job_enviado=list_get(lista_archivos_reduce,j);
+						}
+						nodoAnterior=string_new();
+					}
+
+					//Borro los nodos con listas vacias
+					j=0;
+					while(j<list_size(lista_archivos_reduce)){
+						el_job_enviado=list_get(lista_archivos_reduce,j);
+						if(list_size(el_job_enviado->listaBloques)==0){
+							list_remove(lista_archivos_reduce,j);
+							j--;
+						}
+						j++;
+					}
+
+
+					t_job_enviado *aux_job;
+					int ordenado =0;
+
+					while(ordenado==0){
+						ordenado=1;
+						for(k=1;k<list_size(lista_archivos_reduce);k++){
+							el_job_enviado=list_get(lista_archivos_reduce,k);
+							aux_job=list_get(lista_archivos_reduce,k-1);
+							if(list_size(el_job_enviado->listaBloques)>list_size(aux_job->listaBloques)){
+
+								list_replace(lista_archivos_reduce,k,aux_job);
+								list_replace(lista_archivos_reduce,k-1,el_job_enviado);
+
+								ordenado=0;
+							}
+						}
+					}
 
 
 
+
+					//---------------HAY QUE VER BIEN EL PROTOCOLO------------------------
+					// 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000 230/user/juan/datos/resultado.txt
+					string_append(&bufferAJob_Reduce,"43");
+					string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(contarNodos)));
+					string_append(&bufferAJob_Reduce,string_itoa(contarNodos));
+
+
+
+					j=0;
+					k=0;
+					while(j<list_size(lista_archivos_reduce)){
+						el_job_enviado=list_get(lista_archivos_reduce,j);
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado->nodo));
+						string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(list_size(el_job_enviado->listaBloques))));
+						string_append(&bufferAJob_Reduce,string_itoa(list_size(el_job_enviado->listaBloques)));
+						k=0;
+						while(k<list_size(el_job_enviado->listaBloques)){
+							el_job_enviado_bloque=list_get(el_job_enviado->listaBloques,k);
+							string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado_bloque->resultadoParcial));
+							k++;
+						}
+						el_nodo=buscarNodo(el_job_enviado->nodo);
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->nombreNodo));
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->ipNodo));
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->puertoNodo));
+						j++;
+					}
+
+					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_archivo->nombreArchivoResultado));
+
+
+					EnviarDatos(socket,bufferAJob_Reduce,strlen(bufferAJob_Reduce));
+					el_archivo->contTareas=0;//Asi no entra mas
+					tareaCompleta=1;
+					//printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
+
+				}
+
+			}
+
+		//Aplico reduce a cada bloque que recibo con OK (CON COMBINER)
+			if(el_archivo->tieneCombiner==1){
+
+
+				t_archivo *el_archivo_auxiliar;
+				int z=0,contador_tareas=0,contador_tareas_actual=0,id_auxiliar=el_archivo->idJob;
+
+
+				while(z<list_size(lista_archivos)){
+					el_archivo_auxiliar=list_get(lista_archivos,z);
+					if(el_archivo_auxiliar->idJob==id_auxiliar)
+						contador_tareas=contador_tareas+list_size(el_archivo_auxiliar->listaBloques);
+					z++;
+				}
+
+				z=0;
+				while(z<list_size(lista_archivos)){
+					el_archivo_auxiliar=list_get(lista_archivos,z);
+					if(el_archivo_auxiliar->idJob==id_auxiliar){
+						contador_tareas_actual= contador_tareas_actual + el_archivo_auxiliar->contTareas;
+					}
+					z++;
+				}
+
+
+
+
+				if(contador_tareas_actual==contador_tareas){
+
+					printf(COLOR_VERDE"ENVIO REDUCE TOTAL\n"DEFAULT);
+
+					char *bufferAJob_Reduce=string_new();
+					char *nodoAnterior=string_new();
+					int contarNodos=0;
+
+					t_list *lista_archivos_reduce = list_create();
+					z=0;
+					while(z<list_size(lista_archivos)){
+						el_archivo_auxiliar=list_get(lista_archivos,z);
+						j=0;
+						while(j<list_size(lista_job_enviado)){
+							sem_wait(&semaforoListaJobEnviados);
+							el_job_enviado=list_get(lista_job_enviado,j);
+							sem_post(&semaforoListaJobEnviados);
+							if(strcmp(el_job_enviado->archivo,el_archivo_auxiliar->nombreArchivo)==0){
+
+								list_add(lista_archivos_reduce,job_enviado_create(el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->archivo,el_job_enviado->resultadoParcialReduce));
+
+
+							}
+							j++;
+						}
+
+
+						z++;
+					}
+
+					// ORDENO POR NOMBRE DE NODOS
+					bool _ordenarPorNodo(t_job_enviado *nodoUno, t_job_enviado *nodoDos){
+						if(strcmp(nodoUno->nodo,nodoDos->nodo)<0)
+							return true;
+						else
+							return false;
+					}
+					list_sort(lista_archivos_reduce, (void*)_ordenarPorNodo);
+
+
+
+					t_job_enviado_bloque *el_job_enviado_bloque;
+					t_job_enviado *el_aux;
+
+					//Cuento los Nodos y agrego bloques a cada nodo
+					j=0;
+					int k=0;
+					while(j<list_size(lista_archivos_reduce)){
+						el_job_enviado=list_get(lista_archivos_reduce,j);
+						el_aux=el_job_enviado;
+						contarNodos++;
+						string_append(&nodoAnterior,el_job_enviado->nodo);
+						while(strcmp(nodoAnterior,el_job_enviado->nodo)==0 && j<list_size(lista_archivos_reduce)){
+							list_add(el_aux->listaBloques,job_enviado_bloque_create(el_job_enviado->bloque,el_job_enviado->resultadoParcial));
+
+							j++;
+							if(j<list_size(lista_archivos_reduce))
+								el_job_enviado=list_get(lista_archivos_reduce,j);
+						}
+						nodoAnterior=string_new();
+					}
+
+					//Borro los nodos con listas vacias
+					j=0;
+					while(j<list_size(lista_archivos_reduce)){
+						el_job_enviado=list_get(lista_archivos_reduce,j);
+						if(list_size(el_job_enviado->listaBloques)==0){
+							list_remove(lista_archivos_reduce,j);
+							j--;
+						}
+						j++;
+					}
+
+
+					t_job_enviado *aux_job;
+					int ordenado =0;
+
+					while(ordenado==0){
+						ordenado=1;
+						for(k=1;k<list_size(lista_archivos_reduce);k++){
+							el_job_enviado=list_get(lista_archivos_reduce,k);
+							aux_job=list_get(lista_archivos_reduce,k-1);
+							if(list_size(el_job_enviado->listaBloques)>list_size(aux_job->listaBloques)){
+
+								list_replace(lista_archivos_reduce,k,aux_job);
+								list_replace(lista_archivos_reduce,k-1,el_job_enviado);
+
+								ordenado=0;
+							}
+						}
+					}
+
+
+
+
+					//---------------HAY QUE VER BIEN EL PROTOCOLO------------------------
+					// 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000 230/user/juan/datos/resultado.txt
+					string_append(&bufferAJob_Reduce,"43");
+					string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(contarNodos)));
+					string_append(&bufferAJob_Reduce,string_itoa(contarNodos));
+
+
+
+					j=0;
+					k=0;
+					while(j<list_size(lista_archivos_reduce)){
+						el_job_enviado=list_get(lista_archivos_reduce,j);
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado->nodo));
+						string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(list_size(el_job_enviado->listaBloques))));
+						string_append(&bufferAJob_Reduce,string_itoa(list_size(el_job_enviado->listaBloques)));
+						k=0;
+						while(k<list_size(el_job_enviado->listaBloques)){
+							el_job_enviado_bloque=list_get(el_job_enviado->listaBloques,k);
+							string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado_bloque->resultadoParcial));
+							k++;
+						}
+						el_nodo=buscarNodo(el_job_enviado->nodo);
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->nombreNodo));
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->ipNodo));
+						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->puertoNodo));
+						j++;
+					}
+
+					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_archivo->nombreArchivoResultado));
+
+
+					EnviarDatos(socket,bufferAJob_Reduce,strlen(bufferAJob_Reduce));
+					el_archivo->contTareas=0;//Asi no entra mas
+					tareaCompleta=1;
+
+					//printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
+
+				}
+
+				if(estado==1 && el_archivo->contTareas<list_size(el_archivo->listaBloques)){
+					char *nodoR=string_new(),*ipNodoR=string_new(),*puertoNodoR=string_new(),*bloqueR=string_new(),*resultadoR=string_new();
+					char *bufferReduce=string_new();
+
+					el_nodo=buscarNodo(nodo);
+
+					nodoR=el_nodo->nombreNodo;
+					ipNodoR=el_nodo->ipNodo;
+					puertoNodoR=el_nodo->puertoNodo;
+					bloqueR=el_bloque->array[numCopia].bloque;
 
 					x=0;
 					while(x<list_size(lista_job_enviado)){
 						sem_wait(&semaforoListaJobEnviados);
 						el_job_enviado=list_get(lista_job_enviado,x);
 						sem_post(&semaforoListaJobEnviados);
-						if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==0 ){
+						if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==1){
+							el_job_enviado->estado=2;
 
-							el_job_enviado->estado=1;
-							el_bloqueArchivo->procesando=1;
 
-							printf("* Map a enviar: %s--%s\n",bloque,nodo);
-							nodo=obtenerSubBuffer(nodo);
-							ipNodo=obtenerSubBuffer(ipNodo);
-							puertoNodo=obtenerSubBuffer(puertoNodo);
-							bloque=obtenerSubBuffer(bloque);
-							resultado=obtenerSubBuffer(el_job_enviado->resultadoParcial);
-							string_append(&buffer,"4");
-							string_append(&buffer,"1");
-							string_append(&buffer,nodo);
-							string_append(&buffer,ipNodo);
-							string_append(&buffer,puertoNodo);
-							string_append(&buffer,bloque);
-							string_append(&buffer,resultado);
-							el_nodo->cantTareasPendientes--;
+							list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(bloqueR,el_archivo->nombreArchivo,0));
+							char *nombre_archmap = string_new();
+							char *nombre_archred = string_new();
 
-							EnviarDatos(socket,buffer,strlen(buffer));
+							string_append(&nombre_archred,"Reduce");
+							string_append(&nombre_archred,el_job_enviado->resultadoParcial);
+							el_job_enviado->resultadoParcialReduce=strdup(nombre_archred);
+
+							nodoR=obtenerSubBuffer(nodoR);
+							ipNodoR=obtenerSubBuffer(ipNodoR);
+							puertoNodoR=obtenerSubBuffer(puertoNodoR);
+							bloqueR=obtenerSubBuffer(el_job_enviado->bloque);
+							nombre_archmap=obtenerSubBuffer(el_job_enviado->resultadoParcial);
+							resultadoR=obtenerSubBuffer(el_job_enviado->resultadoParcialReduce);
+							string_append(&bufferReduce,"4");
+							string_append(&bufferReduce,"2");
+							string_append(&bufferReduce,nodoR);
+							string_append(&bufferReduce,ipNodoR);
+							string_append(&bufferReduce,puertoNodoR);
+							string_append(&bufferReduce,bloqueR);
+							string_append(&bufferReduce,nombre_archmap);
+							string_append(&bufferReduce,resultadoR);
+
+							EnviarDatos(socket,bufferReduce,strlen(bufferReduce));
+							x=list_size(lista_job_enviado);
 
 
 
 						}
 						x++;
 					}
+
 				}
 
-
 			}
-
-			*/
+			if(estado==1 || estado==2){
+				printf("* Envio *\n");
+				char *envio=string_new();
+				string_append(&envio,"*");
+				EnviarDatos(socket, envio,strlen(envio));
+				//sleep(2);
+				free(envio);
+			}
 		}
-
-
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-		if(el_archivo->tieneCombiner==0){
-
-			el_archivo->contTareas++;
-
-			if(el_archivo->contTareas==list_size(el_archivo->listaBloques)){
-				printf(COLOR_VERDE"ENVIADO REDUCE\n"DEFAULT);
-				char *bufferAJob_Reduce=string_new();
-				char *nodoAnterior=string_new();
-				int contarNodos=0;
-
-				t_list *lista_archivos_reduce = list_create();
-				j=0;
-				while(j<list_size(lista_job_enviado)){
-					sem_wait(&semaforoListaJobEnviados);
-					el_job_enviado=list_get(lista_job_enviado,j);
-					sem_post(&semaforoListaJobEnviados);
-					if(strcmp(el_job_enviado->archivo,el_archivo_aux->nombreArchivo)==0){
-
-						list_add(lista_archivos_reduce,job_enviado_create(el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->archivo,el_job_enviado->resultadoParcial));
-
-
-					}
-					j++;
-				}
-
-
-				// ORDENO POR NOMBRE DE NODOS
-				bool _ordenarPorNodo(t_job_enviado *nodoUno, t_job_enviado *nodoDos){
-					if(strcmp(nodoUno->nodo,nodoDos->nodo)<0)
-						return true;
-					else
-						return false;
-				}
-				list_sort(lista_archivos_reduce, (void*)_ordenarPorNodo);
-
-
-				t_job_enviado_bloque *el_job_enviado_bloque;
-				t_job_enviado *el_aux;
-
-				//Cuento los Nodos y agrego bloques a cada nodo
-				j=0;
-				int k=0;
-				while(j<list_size(lista_archivos_reduce)){
-
-					el_job_enviado=list_get(lista_archivos_reduce,j);
-
-					el_aux=el_job_enviado;
-					contarNodos++;
-					string_append(&nodoAnterior,el_job_enviado->nodo);
-					while(strcmp(nodoAnterior,el_job_enviado->nodo)==0 && j<list_size(lista_archivos_reduce)){
-						list_add(el_aux->listaBloques,job_enviado_bloque_create(el_job_enviado->bloque,el_job_enviado->resultadoParcial));
-
-						j++;
-						if(j<list_size(lista_archivos_reduce))
-							el_job_enviado=list_get(lista_archivos_reduce,j);
-					}
-					nodoAnterior=string_new();
-				}
-
-				//Borro los nodos con listas vacias
-				j=0;
-				while(j<list_size(lista_archivos_reduce)){
-					el_job_enviado=list_get(lista_archivos_reduce,j);
-					if(list_size(el_job_enviado->listaBloques)==0){
-						list_remove(lista_archivos_reduce,j);
-						j--;
-					}
-					j++;
-				}
-
-
-				t_job_enviado *aux_job;
-				int ordenado =0;
-
-				while(ordenado==0){
-					ordenado=1;
-					for(k=1;k<list_size(lista_archivos_reduce);k++){
-						el_job_enviado=list_get(lista_archivos_reduce,k);
-						aux_job=list_get(lista_archivos_reduce,k-1);
-						if(list_size(el_job_enviado->listaBloques)>list_size(aux_job->listaBloques)){
-
-							list_replace(lista_archivos_reduce,k,aux_job);
-							list_replace(lista_archivos_reduce,k-1,el_job_enviado);
-
-							ordenado=0;
-						}
-					}
-				}
-
-
-
-
-				//---------------HAY QUE VER BIEN EL PROTOCOLO------------------------
-				// 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000 230/user/juan/datos/resultado.txt
-				string_append(&bufferAJob_Reduce,"43");
-				string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(contarNodos)));
-				string_append(&bufferAJob_Reduce,string_itoa(contarNodos));
-
-
-
-				j=0;
-				k=0;
-				while(j<list_size(lista_archivos_reduce)){
-					el_job_enviado=list_get(lista_archivos_reduce,j);
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado->nodo));
-					string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(list_size(el_job_enviado->listaBloques))));
-					string_append(&bufferAJob_Reduce,string_itoa(list_size(el_job_enviado->listaBloques)));
-					k=0;
-					while(k<list_size(el_job_enviado->listaBloques)){
-						el_job_enviado_bloque=list_get(el_job_enviado->listaBloques,k);
-						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado_bloque->resultadoParcial));
-						k++;
-					}
-					el_nodo=buscarNodo(el_job_enviado->nodo);
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->nombreNodo));
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->ipNodo));
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->puertoNodo));
-					j++;
-				}
-
-				string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_archivo->nombreArchivoResultado));
-
-
-				EnviarDatos(socket,bufferAJob_Reduce,strlen(bufferAJob_Reduce));
-				el_archivo->contTareas=-1;//Asi no entra mas
-				tareaCompleta=1;
-				//printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
-
-			}
-
-		}
-
-		//Aplico reduce a cada bloque que recibo con OK (CON COMBINER)
-		if(el_archivo->tieneCombiner==1){
-
-
-
-			if(el_archivo->contTareas==list_size(el_archivo->listaBloques)){
-
-				printf(COLOR_VERDE"ENVIO REDUCE TOTAL\n"DEFAULT);
-
-				char *bufferAJob_Reduce=string_new();
-				char *nodoAnterior=string_new();
-				int contarNodos=0;
-
-				t_list *lista_archivos_reduce = list_create();
-				j=0;
-				while(j<list_size(lista_job_enviado)){
-					sem_wait(&semaforoListaJobEnviados);
-					el_job_enviado=list_get(lista_job_enviado,j);
-					sem_post(&semaforoListaJobEnviados);
-					if(strcmp(el_job_enviado->archivo,el_archivo_aux->nombreArchivo)==0){
-
-						list_add(lista_archivos_reduce,job_enviado_create(el_job_enviado->nodo,el_job_enviado->bloque,el_job_enviado->archivo,el_job_enviado->resultadoParcialReduce));
-
-
-					}
-					j++;
-				}
-
-
-				// ORDENO POR NOMBRE DE NODOS
-				bool _ordenarPorNodo(t_job_enviado *nodoUno, t_job_enviado *nodoDos){
-					if(strcmp(nodoUno->nodo,nodoDos->nodo)<0)
-						return true;
-					else
-						return false;
-				}
-				list_sort(lista_archivos_reduce, (void*)_ordenarPorNodo);
-
-
-
-				t_job_enviado_bloque *el_job_enviado_bloque;
-				t_job_enviado *el_aux;
-
-				//Cuento los Nodos y agrego bloques a cada nodo
-				j=0;
-				int k=0;
-				while(j<list_size(lista_archivos_reduce)){
-					el_job_enviado=list_get(lista_archivos_reduce,j);
-					el_aux=el_job_enviado;
-					contarNodos++;
-					string_append(&nodoAnterior,el_job_enviado->nodo);
-					while(strcmp(nodoAnterior,el_job_enviado->nodo)==0 && j<list_size(lista_archivos_reduce)){
-						list_add(el_aux->listaBloques,job_enviado_bloque_create(el_job_enviado->bloque,el_job_enviado->resultadoParcial));
-
-						j++;
-						if(j<list_size(lista_archivos_reduce))
-							el_job_enviado=list_get(lista_archivos_reduce,j);
-					}
-					nodoAnterior=string_new();
-				}
-
-				//Borro los nodos con listas vacias
-				j=0;
-				while(j<list_size(lista_archivos_reduce)){
-					el_job_enviado=list_get(lista_archivos_reduce,j);
-					if(list_size(el_job_enviado->listaBloques)==0){
-						list_remove(lista_archivos_reduce,j);
-						j--;
-					}
-					j++;
-				}
-
-
-				t_job_enviado *aux_job;
-				int ordenado =0;
-
-				while(ordenado==0){
-					ordenado=1;
-					for(k=1;k<list_size(lista_archivos_reduce);k++){
-						el_job_enviado=list_get(lista_archivos_reduce,k);
-						aux_job=list_get(lista_archivos_reduce,k-1);
-						if(list_size(el_job_enviado->listaBloques)>list_size(aux_job->listaBloques)){
-
-							list_replace(lista_archivos_reduce,k,aux_job);
-							list_replace(lista_archivos_reduce,k-1,el_job_enviado);
-
-							ordenado=0;
-						}
-					}
-				}
-
-
-
-
-				//---------------HAY QUE VER BIEN EL PROTOCOLO------------------------
-				// 4311 15NodoA  13 18Bloque30     18Bloque38    18Bloque43      15NodoA212192.168.1.27146000 230/user/juan/datos/resultado.txt
-				string_append(&bufferAJob_Reduce,"43");
-				string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(contarNodos)));
-				string_append(&bufferAJob_Reduce,string_itoa(contarNodos));
-
-
-
-				j=0;
-				k=0;
-				while(j<list_size(lista_archivos_reduce)){
-					el_job_enviado=list_get(lista_archivos_reduce,j);
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado->nodo));
-					string_append(&bufferAJob_Reduce,string_itoa(cuentaDigitos(list_size(el_job_enviado->listaBloques))));
-					string_append(&bufferAJob_Reduce,string_itoa(list_size(el_job_enviado->listaBloques)));
-					k=0;
-					while(k<list_size(el_job_enviado->listaBloques)){
-						el_job_enviado_bloque=list_get(el_job_enviado->listaBloques,k);
-						string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_job_enviado_bloque->resultadoParcial));
-						k++;
-					}
-					el_nodo=buscarNodo(el_job_enviado->nodo);
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->nombreNodo));
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->ipNodo));
-					string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_nodo->puertoNodo));
-					j++;
-				}
-
-				string_append(&bufferAJob_Reduce,obtenerSubBuffer(el_archivo->nombreArchivoResultado));
-
-
-				EnviarDatos(socket,bufferAJob_Reduce,strlen(bufferAJob_Reduce));
-				el_archivo->contTareas=-1;//Asi no entra mas
-				tareaCompleta=1;
-
-				//printf("//////////"COLOR_VERDE " %s "DEFAULT"//////////////////\n",bufferAJob_Reduce);
-
-			}
-
-			if(estado==1 && el_archivo->contTareas<list_size(el_archivo->listaBloques)){
-				char *nodoR=string_new(),*ipNodoR=string_new(),*puertoNodoR=string_new(),*bloqueR=string_new(),*resultadoR=string_new();
-				char *bufferReduce=string_new();
-
-				el_nodo=buscarNodo(nodo);
-
-				nodoR=el_nodo->nombreNodo;
-				ipNodoR=el_nodo->ipNodo;
-				puertoNodoR=el_nodo->puertoNodo;
-				bloqueR=el_bloque->array[numCopia].bloque;
-
-				x=0;
-				while(x<list_size(lista_job_enviado)){
-					sem_wait(&semaforoListaJobEnviados);
-					el_job_enviado=list_get(lista_job_enviado,x);
-					sem_post(&semaforoListaJobEnviados);
-					if(strcmp(el_job_enviado->bloque,bloque)==0 && strcmp(el_job_enviado->nodo,nodo)==0 && el_job_enviado->estado==1){
-						el_job_enviado->estado=2;
-
-
-						list_add(el_nodo->listaBloqueArchivo,bloqueArchivo_create(bloqueR,el_archivo->nombreArchivo,0));
-						char *nombre_archmap = string_new();
-						char *nombre_archred = string_new();
-
-						string_append(&nombre_archred,"Reduce");
-						string_append(&nombre_archred,el_job_enviado->resultadoParcial);
-						el_job_enviado->resultadoParcialReduce=strdup(nombre_archred);
-
-						nodoR=obtenerSubBuffer(nodoR);
-						ipNodoR=obtenerSubBuffer(ipNodoR);
-						puertoNodoR=obtenerSubBuffer(puertoNodoR);
-						bloqueR=obtenerSubBuffer(el_job_enviado->bloque);
-						nombre_archmap=obtenerSubBuffer(el_job_enviado->resultadoParcial);
-						resultadoR=obtenerSubBuffer(el_job_enviado->resultadoParcialReduce);
-						string_append(&bufferReduce,"4");
-						string_append(&bufferReduce,"2");
-						string_append(&bufferReduce,nodoR);
-						string_append(&bufferReduce,ipNodoR);
-						string_append(&bufferReduce,puertoNodoR);
-						string_append(&bufferReduce,bloqueR);
-						string_append(&bufferReduce,nombre_archmap);
-						string_append(&bufferReduce,resultadoR);
-
-						EnviarDatos(socket,bufferReduce,strlen(bufferReduce));
-						x=list_size(lista_job_enviado);
-
-
-
-					}
-					x++;
-				}
-
-			}
-
-		}
-
 	}
-
 
 
 }
@@ -1860,26 +1860,34 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 	if(*cantRafaga == 2){
 		switch(tipo_mensaje){
 		case RECIBIR_ARCHIVO:
+
 			AtiendeJob(id,buffer,cantRafaga);
 			*cantRafaga=0;
 			ObtenerInfoDeNodos(*id);
 			Planificar(*id);
 			enviarPlanificacionAJob(*id,socket);
 			*cantRafaga=1;
+
 			break;
-		case NOTIFICACION_NODO:
+		case ERRORES:
+
+			reciboError(buffer,socket);
+
+
 			break;
 		case RECIBIDO_OK:
-			//sem_wait(&semIdJob);
+
 			reciboOk(buffer,socket);
 
-			//sem_post(&semIdJob);
+
 			//*mensaje=string_new();
 			//string_append(mensaje,"Ok");
 			*cantRafaga=1;
 			break;
 		case 4:
+
 			reducesOk(buffer);
+
 			*cantRafaga=1;
 			break;
 		default:
@@ -1894,6 +1902,35 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje, int s
 			*mensaje = "No";
 		}
 	}
+}
+
+
+void reciboError(char*buffer,int socket){
+
+	//2218resu.txt15NodoA
+	t_bloque *el_bloque;
+	t_nodo *el_nodo;
+	t_archivo *el_archivo,*el_archivo_aux;
+
+
+	char *nodo;
+	char *bloque;
+	int pos=2;
+
+	bloque=DigitosNombreArchivo(buffer,&pos);
+	nodo=DigitosNombreArchivo(buffer,&pos);
+
+	el_nodo=buscarNodo(nodo);
+
+	int numCopia=0,x=0,j=0;
+	int contTareasMap=-10;//,contTareasReduce=-10;
+	int estado=0;
+	el_bloque=buscarNodoYBloque(nodo,bloque,&numCopia,&el_archivo,&estado);
+
+	printf("***************"COLOR_VERDE"ERROR"DEFAULT"***************\n");
+	printf("* --> Aborto Job: "COLOR_VERDE"%s"DEFAULT"\n",el_archivo->nombreArchivo);
+	printf("* --> Fallo del "COLOR_VERDE"%s"DEFAULT"\n",el_nodo->nombreNodo);
+	printf("***********************************\n");
 }
 
 int AtiendeCliente(void * arg) {
@@ -1944,8 +1981,9 @@ int AtiendeCliente(void * arg) {
 			//Evaluamos los comandos
 			switch (emisor) {
 			case ES_JOB:
+				sem_wait(&semIdJob);
 				implementoJob(&id,buffer,&cantRafaga,&mensaje,socket);
-
+				sem_post(&semIdJob);
 				break;
 			case ES_FS:
 				printf("implementar atiendeFS\n");

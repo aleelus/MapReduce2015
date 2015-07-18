@@ -107,10 +107,14 @@ int longitudBuffer;
 //contador de ID JOB (semaforo)
 int id_job=0;
 
+void reciboError_Brusco(char *buffer,int socket);
+void reciboError(char *buffer,int socket);
+
 //Mensajes aceptados
 //#define MSJ_SALUDO          1
 #define ES_JOB	2
 #define ES_FS	1
+#define ERRORES 2
 #define COMANDO 9
 #define COMANDOBLOQUES 8
 #define COMANDONODOS 7
