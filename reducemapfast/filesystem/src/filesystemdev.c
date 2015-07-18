@@ -1931,7 +1931,6 @@ int renombrarDirectorio(){
 			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
 		}
 		fs = list_find(lista_filesystem,_true);
-		t_filesystem* fs2 = list_find(lista_filesystem,_true); //Para actualizar mongo
 		if(fs != NULL){
 			printf("Ingrese el nuevo nombre para el directorio:%s:\n",directorio);
 			scanf("%s", destino);
@@ -1939,8 +1938,9 @@ int renombrarDirectorio(){
 			int cant = list_any_satisfy(lista_filesystem,_true2);
 			if(cant==0){
 				printf("Se ha renombrado el directorio con exito.\n");
+				borrar_filesystem_mongo(fs);
 				fs->directorio = strdup(destino);
-				grabar_filesystem_mongo(fs2,fs);
+				crear_filesystem_mongo(fs);
 				return 1;
 			} else {
 				printf("Ya existe un directorio con este nombre.\n");
@@ -1954,6 +1954,59 @@ int renombrarDirectorio(){
 		printf("No hay directorios para renombrar.\n");
 		return 0;
 	}
+}
+
+int renombrarArchivo(){
+
+	char pathConArchivo[100];
+	char* nombreArchivo = malloc(sizeof(char)*30);
+	char archivoSalida[50];
+	int padre;
+	mostrarFilesystem();
+
+	printf("Ingrese la ruta completa con el nombre del archivo para recuperar\n ");
+	printf("Ejemplo: /home/utnso/temperatura.txt\n");
+	scanf("%s",pathConArchivo);
+	fflush(stdin);
+
+	padre = validarDirectorios(pathConArchivo,&nombreArchivo);
+	if(padre!=-1){
+		printf("Ingrese el nuevo nombre del archivo:\n");
+		scanf("%s",archivoSalida);
+		fflush(stdin);
+		t_archivo* archivo = buscarArchivoPorNombre(nombreArchivo,padre);
+			if(archivo!=NULL){
+				borrar_archivo_mongo(archivo);
+				archivo->nombreArchivo= strdup(archivoSalida);
+				crear_archivo_mongo(archivo);
+			}
+
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+int manejoDeArchivos(){
+	int seleccion;
+	mostrarFilesystem();
+	printf("Ingrese un comando:\n");
+	printf("1: Eliminar 2: Renombrar 3: Mover\n");
+	scanf("%d", &seleccion);
+	switch(seleccion){
+		case 1: printf("Se eligio Eliminar\n");
+				return eliminarDirectorio();
+				break;
+		case 2: printf("Se eligio Renombrar\n");
+				return renombrarArchivo();
+				break;
+		case 3: printf("Se eligio Mover\n");
+				return moverDirectorio();
+				break;
+		default: printf("Se ha ingresado un comando incorrecto.\n");
+				break;
+	}
+	return 0;
 }
 
 
@@ -2169,7 +2222,11 @@ int operaciones_consola() {
 		}
 		break;
 	case 2:
-		log_info(logger, "Se realizo Eliminar/Renombrar/Mover Archivos\n");
+		if(manejoDeArchivos()){
+			log_info(logger, "Se realizo Eliminar/Renombrar/Mover Archivos\n");
+		} else {
+			log_info(logger, "No se realizo Eliminar/Renombrar/Mover Archivos\n");
+		}
 		break;
 	case 3:
 		if(manejoDeDirectorios()){
@@ -2799,34 +2856,36 @@ int leer_archivo_mongo(){
 
 		        archivoMongo = archivo_create(nombre,tamanio,padre,estado);
 		        if(bson_iter_find(&iter,"listaBloques")){
-		        	 archivoMongo->listaBloques=list_create();
+
 		        	 bson_iter_array (&iter, &array_len,&array);
 		        	 bson_iter_recurse(&iter, &child);
 		        	 while(bson_iter_next(&child)){
 
-		        		 if(bson_iter_find(&child,"bloque"))
+		        		 //if(bson_iter_find(&child,"bloque"))
 		        			 bloque = (int)bson_iter_int32(&child);
+		        			 el_bloque = bloque_create(bloque);
 
-		        		 el_bloque = bloque_create(bloque);
-		        		 int i=0;
+		        		int i=0;
 		        		 if(bson_iter_find(&child,"copias")){
 
 
 		        			 bson_iter_array (&child, &array_len,&array);
 		        			 bson_iter_recurse(&child, &child2);
 		        			 while(bson_iter_next(&child2)){
-		        			 if(bson_iter_find(&child2,"nombreNodo")){
+
+		        			// if(bson_iter_find(&child2,"nombreNodo")){
 		        				 el_bloque->array[i].nombreNodo =strdup(bson_iter_utf8(&child2,NULL));
-		        			 }
-		        			 if(bson_iter_find(&child2,"nroBloque")){
+		        			 //}
+		        			 if(bson_iter_next(&child2)){
 		        				 el_bloque->array[i].nro_bloque = strdup(bson_iter_utf8(&child2,NULL));
 		        				 }
 
-
-		        			 }
 		        			 i++;
+		        			 }
+
 
 		        		 }
+		        		 list_add(archivoMongo->listaBloques,el_bloque);
 		        	 }
 
 		        }
@@ -2839,6 +2898,7 @@ int leer_archivo_mongo(){
 	    bson_free (str);
 	    list_add(lista_archivos,archivoMongo);
 	    printf("%s, %d, %lu, %d",archivoMongo->nombreArchivo,archivoMongo->padre,archivoMongo->tamanio,archivoMongo->estado);
+	    RecorrerListaBloques();
 	    //list_destroy(archivoMongo->listaBloques); //Limpio la lista bloques para el proximo archivo a cargar.
 	}
 

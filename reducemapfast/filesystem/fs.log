@@ -35,3 +35,5 @@
 [INFO] 20:17:56:470 fs/(3499:3502): Error al hacer el Bind. El puerto está en uso
 [INFO] 20:19:07:628 fs/(3528:3535): Error al hacer el Bind. El puerto está en uso
 [INFO] 20:50:22:426 fs/(3373:3454): Terminando el programa
+[INFO] 14:38:42:252 fs/(9222:9229): Error al hacer el Bind. El puerto está en uso
+[INFO] 15:27:49:21 fs/(10376:10383): Error al hacer el Bind. El puerto está en uso
