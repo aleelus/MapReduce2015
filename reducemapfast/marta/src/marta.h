@@ -158,6 +158,7 @@ static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo,
 	return new;
 }
 
+
 //Estructura de array para funcion magica
 typedef struct{
 	char*dato;
@@ -266,3 +267,6 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo) {
 // El tipo de Mensaje para el Job
 #define ES_UN_SOLO_ARCHIVO 1
 #define ES_MUCHOS_ARCHIVOS 2
+
+
+void eliminarJobEnviados(t_archivo* el_archivo);

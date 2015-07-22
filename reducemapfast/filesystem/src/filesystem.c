@@ -19,14 +19,18 @@ int main(int argv, char** argc) {
 	levantarConfig();
 	nroBloque=0;
 	indexGlobal = 1;
-	tamanioTotal = 0;
 	letra ='A';
+	sem_init(&semLNodos,0,1);
+	sem_init(&semHilos,0,1);
+	sem_init(&semArchivos,0,1);
+	sem_init(&semTamanioTotal,0,1);
 	nombre = string_new();				//Variable del nombre de los nodos
 
 	lista_nodos    = list_create();		//Lista de nodos
 	lista_archivos = list_create();		//Lista de archivos
 	lista_filesystem = list_create();	//Lista de estructura de filesystem
 	cargar_listas_mongo();
+
 
 
 
