@@ -44,6 +44,7 @@
 #define BUFFERSIZE 				50					//Tamaño del buffer
 
 
+sem_t semLNodos,semHilos,semArchivos,semTamanioTotal;
 
 // TIPOS //
 typedef enum {
@@ -128,11 +129,11 @@ t_archivo * archivo;
 int nroBloque;
 t_list ** arrayNodos;
 int indexGlobal;
-long unsigned tamanioTotal;
 char letra;
 
 
 //FUNCIONES
+long unsigned tamanioDisponible();
 int validarDirectorio(char *directorio,int i);
 void mostrarAyuda();								//Mostrar ayuda
 void mostrarError(t_error unError);					//Mostrar error
@@ -147,6 +148,7 @@ void procesarBloques();								//Procesar bloques
 int  agregarNodo();									//Agregar un nodo
 void eliminarNodo();								//Eliminar un nodo
 void comandoDesconocido(); 							//Comando desconocido
+long unsigned ObtenerLu (char *buffer);
 
 void levantarConfig();									//Leer archivo de configuracion
 int  conectar_marta();								//Conectar a marta

@@ -25,7 +25,7 @@
 
 
 sem_t semaforo,semaforoH,semaforoScript,semaforoGrabar,semaforoSetBloque,semaforoGetBloque,semaforoNodo;
-sem_t semCon,semPermiso,semMunmap,contador,semaforoReduce,semaforoMapper;
+sem_t semCon,semPermiso,semMunmap,contador,semaforoReduce,semaforoMapper,semLBloques;
 
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"
@@ -49,6 +49,7 @@ sem_t semCon,semPermiso,semMunmap,contador,semaforoReduce,semaforoMapper;
 //Tipos de Mensaje entre nodos
 #define CANTIDADLINEAS 1
 #define DAMELINEA 	2
+#define ELIMINAR	3
 
 //Tipos de Emisores de Mensaje
 #define ES_JOB 2
@@ -105,7 +106,6 @@ int g_Ejecutando = 1;
 // Retardo (en milisegundos) para contestar una solicitud a un cliente
 int g_Retardo = 0;
 
-long unsigned tamanioTotal;
 
 long unsigned tamanioDataBin;
 
@@ -115,9 +115,6 @@ t_list * lista_Bloques;
 
 //Definimos los hilos principales
 pthread_t hOrquestadorConexiones, hConsola;
-
-//Variable Global del Estado de Nodo 1=Ocupado 0=Desocupado
-int estado=0;
 
 //Variable Global que indica si ya estuvo conectado al FS
 int conectado=0;

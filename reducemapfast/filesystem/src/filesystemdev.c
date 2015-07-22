@@ -92,9 +92,7 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 	//printf("Puerto:%s\n",el_Puerto);
 	tamanioDatos=DigitosNombreArchivo(buffer,&posActual);
 	//printf("Tamaño:%s\n",tamanioDatos);
-
 	el_nodo = buscarNodo(la_Ip,el_Puerto);
-
 	if(el_nodo==NULL){
 		free(nombre);
 		nombre = string_new();
@@ -107,9 +105,10 @@ int AtiendeNodo(char* buffer,int*cantRafaga){
 		string_append(&nombre,&letra);
 		letra++;
 		el_nodo = nodo_create(nombre,la_Ip,el_Puerto,tamanioDatos,0);
+		sem_wait(&semLNodos);
 		list_add(lista_nodos,el_nodo);
+		sem_post(&semLNodos);
 	}
-
 	return 1;
 }
 
@@ -208,6 +207,7 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 			if(!existeArchivo(nArchivo,&el_archivo,padre)){
 				return 0;
 			}else {
+				sem_wait(&semArchivos);
 				string_append(&*bufferE,obtenerSubBuffer(el_archivo->nombreArchivo));//aca va la ruta, ahora no lo hace
 				cont = cuentaDigitos(list_size(el_archivo->listaBloques));
 				string_append(&*bufferE,string_itoa(cont));
@@ -227,6 +227,7 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 						}
 					}
 				}
+				sem_post(&semArchivos);
 			}
 
 		}
@@ -369,36 +370,32 @@ int subirArchivoDelNodo(char* buffer,int *cantRafaga, int socket){
 
 	memcpy(rutaCompleta,bufferR,strlen(bufferR));
 
-	//printf("Ruta Completa:%s\n",rutaCompleta);
+	printf("Ruta Completa:%s\n",rutaCompleta);
 
 	*cantRafaga = 2;
 
-	char *aux=malloc(tamanioBuffer+10);
+	char *bloque=malloc(tamanioBuffer+1);
 
-	char *bloque=malloc(tamanioBuffer+10);
-
-	memset(bloque,0,tamanioBuffer+10);
+	memset(bloque,0,tamanioBuffer+1);
 
 	char *recibido=string_new();
-	memset(aux,0,tamanioBuffer+10);
 
 	EnviarDatos(socket, "Ok", strlen("Ok"));
 
 	ssize_t numBytesRecv = 0;
-	char * aux2 = malloc(tamanioBuffer +1);
-	memset(aux2,0,tamanioBuffer+1);
+	char * aux = malloc(tamanioBuffer+1);
+	memset(aux,0,tamanioBuffer+1);
 
 	do{
-		numBytesRecv = numBytesRecv + recv(socket, aux2, tamanioBuffer, 0);
+		numBytesRecv = numBytesRecv + recv(socket, aux, tamanioBuffer, 0);
 		if ( numBytesRecv < 0)
 			printf("ERROR\n");
-		string_append(&recibido,aux2);
+		string_append(&recibido,aux);
 		strcat(bloque,recibido);
 		free(recibido);
 		recibido=string_new();
-		//printf("------ %d -----\n",strlen(bloque));
-		memset(aux2, 0, tamanioBuffer+10);
-
+		printf("------ %d -----\n",strlen(bloque));
+		memset(aux, 0, tamanioBuffer+10);
 	}while (numBytesRecv <tamanioBuffer);
 
 
@@ -414,7 +411,8 @@ int subirArchivoDelNodo(char* buffer,int *cantRafaga, int socket){
 	}
 	char * nombreResultado = strdup(array[cont-1]);
 	array[cont-1] = NULL;
-	int j=0,k,padre,correcto=1;
+	int j=0;
+	int k,padre,correcto=1;
 
 	while(array[j]!=NULL&&correcto){
 		if(j==0){
@@ -430,9 +428,13 @@ int subirArchivoDelNodo(char* buffer,int *cantRafaga, int socket){
 		}
 	}
 	if(correcto){
-		archivo = archivo_create(nombreResultado,strlen(bloque),padre,1);
+		archivo = archivo_create(nombreResultado,tamanioBuffer,padre,1);
 		list_add(lista_archivos,archivo);
 		crear_archivo_mongo(archivo);
+
+		FILE * arch = fopen("postadirecto.txt","w");
+		fwrite(bloque,1,tamanioBuffer,arch);
+		fclose(arch);
 
 		enviarBloque(bloque);
 
@@ -755,9 +757,6 @@ int AtiendeCliente(void * arg) {
 			case COMANDO:
 				printf("Muestre toda la lista de Nodos:\n");
 				RecorrerNodos();
-				printf("Emisor:%d\n",emisor);
-				printf("BUFFER:%s\n",buffer);
-				abort();
 				mensaje = "Ok";
 				break;
 			case COMANDOFILESYSTEM:
@@ -842,8 +841,10 @@ void HiloOrquestadorDeConexiones() {
 					//socket_client);
 			// Aca hay que crear un nuevo hilo, que será el encargado de atender al cliente
 			pthread_t hNuevoCliente;
+			sem_wait(&semHilos);
 			pthread_create(&hNuevoCliente, NULL, (void*) AtiendeCliente,
 					(void *) socket_client);
+			sem_post(&semHilos);
 		} else {
 			log_info(logger,"ERROR AL ACEPTAR LA CONEXIÓN DE UN CLIENTE");
 		}
@@ -942,7 +943,11 @@ void RecorrerListaNodos(){
 
 	int i=0;
 
-	while(i<list_size(lista_nodos)){
+	//sem_wait(&semLNodos);
+	int cantNodos = list_size(lista_nodos);
+	//sem_post(&semLNodos);
+
+	while(i<cantNodos){
 		el_nodo = list_get(lista_nodos, i);
 		printf("Nombre Nodo:%s\n",el_nodo->nombre);
 		printf("IP:%s\n",el_nodo->ip);
@@ -950,7 +955,6 @@ void RecorrerListaNodos(){
 		printf("Activo:%d\n\n",el_nodo->estado);
 		i++;
 	}
-
 }
 
 t_nodo * buscarNodo(char* ipNodo,char* puertoNodo){
@@ -958,12 +962,15 @@ t_nodo * buscarNodo(char* ipNodo,char* puertoNodo){
 	bool _true(void *elem){
 		return ((!strcmp(((t_nodo*) elem)->ip,ipNodo)) && (!strcmp(((t_nodo*) elem)->puerto,puertoNodo)));
 	}
+	sem_wait(&semLNodos);
 	el_nodo = list_find(lista_nodos, _true);
+	sem_post(&semLNodos);
 	return el_nodo;
 }
 
 void cargarListaBloquesDisponibles(t_nodo* nodo){
-	int i,cantBloques = atoi(nodo->tamanio)/TAMANIO_BLOQUE;//controla que sea entero
+	long unsigned i,cantBloques;
+	cantBloques = ObtenerLu(nodo->tamanio)/TAMANIO_BLOQUE;
 	//printf("Cantidad Bloques:%d",cantBloques);
 	t_bloque_disponible * bloque;
 	for(i=0;i<cantBloques;i++){
@@ -985,8 +992,9 @@ int agregarNodo(){
 		printf("Ingrese el puerto de escucha del nodo: ");
 		scanf("%s",puertoNodo);
 		fflush(stdin);
+		//sem_wait(&semLNodos);
 		el_nodo = buscarNodo(ipNodo,puertoNodo);
-
+		//sem_post(&semLNodos);
 		if(el_nodo!=NULL){
 			if(el_nodo->estado==-1){
 				printf("\nVolvio a habilitarse el %s !\n",el_nodo->nombre);
@@ -1050,48 +1058,53 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 	*tamanio = ftell(*fArchivo);
 	rewind(*fArchivo);
 
-	//printf("El Tamaño del archivo es:%lu\n",*tamanio);
+	if((((*tamanio)/1024/1024)*3)<tamanioDisponible()){
+		//printf("El Tamaño del archivo es:%lu\n",*tamanio);
 
-	if(!tamanio){
-		printf("No se pudo abrir correctamente el archivo:%s\n",nombreArchivo);
-	}
-
-	int j=0,padre=0,k;
-	while(!correcto){
-		mostrarFilesystem();
-		printf("Ingrese de un directorio: ejemplo: home\n");
-		printf("Path Ingresados:%s\n",path);
-		printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
-		scanf("%s",directorio);
-		fflush(stdin);
-		//printf("PADRE INICIO:%d\n",padre);
-		if(strcmp(directorio,"1")){
-			if(!strcmp(directorio,"0")){
-					j=0;
-					path=string_new();
-			} else {
-				if(j==0){
-					k=validarDirectorio(directorio,0);
-				} else {
-					k=validarDirectorio(directorio,padre);
-				}
-				if(k!=0){
-					padre=k;
-					string_append(&path,"/");
-					string_append(&path,directorio);
-					j++;
-				}
-			}
-		} else {
-			correcto = 1;
-			//printf("PADRE FIN:%d\n",padre);
+		if(!tamanio){
+			printf("No se pudo abrir correctamente el archivo:%s\n",nombreArchivo);
 		}
-		//system("clear");
+
+		int j=0,padre=0,k;
+		while(!correcto){
+			mostrarFilesystem();
+			printf("Ingrese de un directorio: ejemplo: home\n");
+			printf("Path Ingresados:%s\n",path);
+			printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+			scanf("%s",directorio);
+			fflush(stdin);
+			//printf("PADRE INICIO:%d\n",padre);
+			if(strcmp(directorio,"1")){
+				if(!strcmp(directorio,"0")){
+						j=0;
+						path=string_new();
+				} else {
+					if(j==0){
+						k=validarDirectorio(directorio,0);
+					} else {
+						k=validarDirectorio(directorio,padre);
+					}
+					if(k!=0){
+						padre=k;
+						string_append(&path,"/");
+						string_append(&path,directorio);
+						j++;
+					}
+				}
+			} else {
+				correcto = 1;
+				//printf("PADRE FIN:%d\n",padre);
+			}
+			//system("clear");
+		}
+		//printf("PADRE POSTA:%d\n",padre);
+		archivo = archivo_create(nombreArchivo,*tamanio,padre,1);
+		list_add(lista_archivos,archivo);
+		return 1;
+	} else {
+		printf("El espacio disponible del fs es insuficiente para subir este archivo\n");
+		return 0;
 	}
-	//printf("PADRE POSTA:%d\n",padre);
-	archivo = archivo_create(nombreArchivo,*tamanio,padre,1);
-	list_add(lista_archivos,archivo);
-	return 1;
 }
 
 int cargarArchivo(int *padre,FILE ** fArchivo,char**nombreArchivo){
@@ -1128,10 +1141,8 @@ int cargarArchivo(int *padre,FILE ** fArchivo,char**nombreArchivo){
 int buscarNodoEnArrayPorNombre (char* nombre){
 
     int k=0;
-    int cantNodos=list_size(lista_nodos);
     t_array_nodo *el_array_nodo;
-
-    for(k=0;k<cantNodos;k++){
+    for(k=0;k<list_size(lista_nodos);k++){
         if(list_size(arrayNodos[k])>0){
             el_array_nodo=list_get(arrayNodos[k],0);
             if(strcmp(el_array_nodo->nombre,nombre)==0 ){
@@ -1146,14 +1157,14 @@ int buscarNodoEnArrayPorNombre (char* nombre){
 int buscarNodoEnArray (int bloque){
 
     int i=0,k=0,bandera=0;
-    int cantNodos=list_size(lista_nodos);
+
     t_array_nodo *el_array_nodo;
 
     char *bloqueChar = string_new();
     string_append(&bloqueChar,"bloque");
     string_append(&bloqueChar,string_itoa(bloque));
 
-    for(k=0;k<cantNodos;k++){
+    for(k=0;k<list_size(lista_nodos);k++){
         if(list_size(arrayNodos[k])>0){
             i=1;
             while(i<list_size(arrayNodos[k])){
@@ -1179,7 +1190,6 @@ int buscarNodoEnArray (int bloque){
 void imprimirArrayNodos(){
 	int i=0;
 	t_array_nodo *el_array_nodo;
-
 	for(i=0;i<list_size(lista_nodos);i++){
     	if(list_size(arrayNodos[i])>0){
     		el_array_nodo = list_get(arrayNodos[i],0);
@@ -1190,19 +1200,18 @@ void imprimirArrayNodos(){
 
 void llenarArrayDeNodos (){
 
-    arrayNodos=(t_list**)malloc(list_size(lista_nodos)*sizeof(t_array_nodo));
-
     int i=0,k=0;
     t_nodo *el_nodo;
     t_array_nodo *el_array_nodo;
 
 
+    arrayNodos=(t_list**)malloc(list_size(lista_nodos)*sizeof(t_array_nodo));
+
     for(i=0;i<list_size(lista_nodos);i++){
         arrayNodos[i] = list_create();
     }
-
     for(i=0;i<list_size(lista_nodos);i++){
-        el_nodo=list_get(lista_nodos,i);
+    	el_nodo=list_get(lista_nodos,i);
 
         for(k=0;k<list_size(lista_nodos);k++){
 
@@ -1214,12 +1223,8 @@ void llenarArrayDeNodos (){
             if(el_array_nodo != NULL){
                 k=list_size(lista_nodos);
             }
-
         }
-
-
         if(el_array_nodo == NULL){
-
         	for(k=0;k<list_size(lista_nodos);k++){
 
         		if(list_size(arrayNodos[k])==0){
@@ -1229,7 +1234,6 @@ void llenarArrayDeNodos (){
         	}
 
         }
-
     }
     //imprimirArrayNodos();
 }
@@ -1238,9 +1242,9 @@ void ordenarArrayNodos(){
 	int k;
 	t_list *aux;
 	int ordenado =0;
-
 	while(ordenado==0){
 		ordenado=1;
+
 		for(k=1;k<list_size(lista_nodos);k++){
 			if(list_size(arrayNodos[k])<list_size(arrayNodos[k-1])){
 				aux = arrayNodos[k-1];
@@ -1249,6 +1253,7 @@ void ordenarArrayNodos(){
 				ordenado=0;
 			}
 		}
+
 	}
 	//imprimirArrayNodos();
 	//sleep(5);
@@ -1316,7 +1321,6 @@ void eliminarNodo (){
     	}
         i++;
     }
-
 }
 
 
@@ -1441,9 +1445,11 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 			envio_nodo = envio_nodo_create(buffer,el_nodo->ip,el_nodo->puerto,bloqueDisponible);
 			agregarBloqueEnArrayNodos(nroNodo,bloqueDisponible,(*bloque)->bloque);
 			//printf("EL GRAN BLOQUE:%d",(*bloque)->bloque);
-
-			int iThreadHilo = pthread_create(&hNodos, NULL,
+			pthread_t henviarNodos;
+			sem_wait(&semHilos);
+			int iThreadHilo = pthread_create(&henviarNodos, NULL,
 					(void*) enviarBufferANodo, (void*) envio_nodo );
+			sem_post(&semHilos);
 			if (iThreadHilo) {
 				fprintf(stderr,
 					"Error al crear hilo - pthread_create() return code: %d\n",
@@ -1452,7 +1458,7 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 			}
 
 
-			pthread_join(hNodos, NULL );
+			pthread_join(henviarNodos, NULL );
 
 			char *nombre = string_new();
 			string_append(&nombre,"Bloque");
@@ -1482,7 +1488,6 @@ int enviarCopias(char*bufferAux,t_bloque ** bloque){
 
 int enviarBloque(char *bufferAux){
 	t_bloque * bloque;
-	tamanioTotal = tamanioTotal + strlen(bufferAux);
 	bloque = bloque_create(nroBloque++);
 	if(enviarCopias(bufferAux,&bloque)==1){
 		list_add(archivo->listaBloques,bloque);
@@ -1506,11 +1511,10 @@ int recorrerArchivo(FILE *fArchivo){
 	nroBloque=0;
 	while(!feof(fArchivo)){
 		fread(buffer,1,TAMANIO_BLOQUE,fArchivo);
-		//printf("STRLEN BUFFER:%lu\n",strlen(buffer));
 		for(j=0;j<TAMANIO_BLOQUE;j++){
 			if(buffer[TAMANIO_BLOQUE-j]=='\n'){
-				bufferAux = malloc(TAMANIO_BLOQUE-j+1);
-				memset(bufferAux,0,TAMANIO_BLOQUE-j+1);
+				bufferAux = malloc(TAMANIO_BLOQUE-j+2);
+				memset(bufferAux,0,TAMANIO_BLOQUE-j+2);
 				memcpy(bufferAux,buffer,TAMANIO_BLOQUE-j+1);
 				if(enviarBloque(bufferAux)){
 					tamanio = ftell(fArchivo);
@@ -1577,7 +1581,7 @@ int getBloque(int nroBloque,char* ip,char*puerto,char**buffer){
 					strcat(bloque,recibido);
 					free(recibido);
 					recibido=string_new();
-					printf("------ %d -----\n",strlen(bloque));
+					//printf("------ %d -----\n",strlen(bloque));
 					memset(aux, 0, tamanio+1);
 
 				}while (numBytesRecv <tamanio);
@@ -2195,15 +2199,51 @@ int formatearFs(){
 		eliminarArchivos();
 		mongoc_collection_drop(archivosMongo,NULL);
 		printf("Se eliminaron todos los archivos\n");
+		//sem_wait(&semLNodos);
 		eliminarListaNodos();
+		//sem_post(&semLNodos);
 		mongoc_collection_drop(nodosMongo,NULL);
 
 		printf("Se eliminaron todos los Nodos\n");
 	return 1;
 }
 
+long unsigned tamanioDisponible(){
+	int i=0;
+	long unsigned tamanio=0;
+	t_nodo* nodo;
+	while(i<list_size(lista_nodos)){
+		nodo = list_get(lista_nodos,i);
+		if(nodo->estado==1){
+			tamanio = tamanio + (list_size(nodo->bloquesDisponibles)*20);
+		}
+		i++;
+	}
+	return tamanio;
+}
+
+long unsigned tamanioTotal(){
+	int i=0;
+	t_nodo* nodo;
+	long unsigned tamanio=0,bloques;
+	while(i<list_size(lista_nodos)){
+		nodo = list_get(lista_nodos,i);
+		if(nodo->estado==1){
+			bloques = ObtenerLu(nodo->tamanio)/TAMANIO_BLOQUE;
+			tamanio = tamanio + bloques*20;
+		}
+		i++;
+	}
+	return tamanio;
+}
+
+long unsigned tamanioOcupado(){
+	return tamanioTotal()-tamanioDisponible();
+}
+
 int operaciones_consola() {
 	//system("clear");
+	printf("------------Tamaño del Fs:%luMb Tamaño Ocupado:%luMb Tamaño Disponible:%luMb-------------\n",tamanioTotal(),tamanioOcupado(),tamanioDisponible());
 	printf("Comandos posibles: \n");
 	printf("1 - Formatear MDFS\n");
 	printf("2 - Eliminar/Renombrar/Mover Archivos\n");
@@ -2377,8 +2417,8 @@ t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo, char* tama
 	t_nodo *new = malloc(sizeof(t_nodo));
 	new->nombre = strdup(nombreNodo);
 	new->ip = strdup(ipNodo);
-	new->puerto = puertoNodo;
-	new->tamanio = tamanio;
+	new->puerto = strdup(puertoNodo);
+	new->tamanio = strdup(tamanio);
 	new->estado = activo;
 	new->bloquesDisponibles = list_create();
 	return new;
@@ -2559,6 +2599,7 @@ int leer_nodo_mongo(){
 	int bloque;
 	query  = bson_new ();
 
+
 	cursor = mongoc_collection_find (nodosMongo, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
 	while (mongoc_cursor_next (cursor, &doc)) {
 		str = bson_as_json (doc, NULL);
@@ -2616,7 +2657,6 @@ int leer_nodo_mongo(){
 
 	bson_destroy (query);
 	mongoc_cursor_destroy (cursor);
-
 
 	return list_size(lista_nodos);
 }
@@ -2928,7 +2968,6 @@ void cargar_listas_mongo(){
 	}else{
 	printf("Se cargaron %d elementos a la lista de archivos\n",larch);
 	}
-
 	int lnodo= leer_nodo_mongo();
 	if (lnodo==0){
 	printf("La lista de nodos esta vacias\n");

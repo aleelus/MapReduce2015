@@ -572,6 +572,7 @@ void ObtenerInfoDeNodos(int id){
 	//Recibo la segunda rafaga de Fs
 	buffer = RecibirDatos(socket_fs,buffer, &bytesRecibidos,&cantRafaga,&tamanio);
 	rafaga2Fs= buffer;
+	printf("RAFAGA2 DE FS:%s\n",rafaga2Fs);
 
 
 	//BUFFER RECIBIDO = 1212237/user/juan/datos/temperatura-2012.txt1215NODOA18Bloque3015NODOB18Bloque3715NODOF17Bloque8
@@ -1347,6 +1348,39 @@ t_archivo * buscarPorNombre (char *nombre){
 }
 
 
+void eliminarPorId(int id){
+	t_archivo* el_archivo;
+	t_bloque* bloque;
+	int i=0,p,j;
+	while(i<list_size(lista_archivos)){
+		el_archivo = list_get(lista_archivos,i);
+		if(el_archivo->idJob == id){
+			/*free(el_archivo->nombreArchivo);
+			free(el_archivo->nombreArchivoResultado);
+			j=0;
+			while(j<list_size(el_archivo->listaBloques)){
+				bloque = list_remove(el_archivo->listaBloques,j);
+				free(bloque->bloque);
+				for(p=0;p<3;p++){
+					free(bloque->array[p].bloque);
+					free(bloque->array[p].nodo);
+				}
+				free(bloque);
+			}*/
+			el_archivo = list_remove(lista_archivos,i);
+			free(el_archivo);
+		} else {
+			i++;
+		}
+	}
+}
+
+void borrarTodo(t_archivo *el_archivo){
+
+	int id = el_archivo->idJob;
+	eliminarPorId(id);
+}
+
 void reducesOk(char *buffer){
 	//24234/users/dasdas/resultado.txt
 	t_archivo *el_archivo;
@@ -1361,6 +1395,8 @@ void reducesOk(char *buffer){
 		printf(COLOR_VERDE"****** TODOS LOS MAP's Y REDUCES FUERON HECHOS! ******\n"DEFAULT);
 		printf("\nArchivo [ "COLOR_VERDE"%s"DEFAULT" ] procesado con exito!\n\n",el_archivo->nombreArchivo);
 	}
+	eliminarJobEnviados(el_archivo);
+	borrarTodo(el_archivo);
 
 }
 
@@ -1386,6 +1422,19 @@ void eliminarBloqueDeListaDeNodos(char* nodo,char *bloque){
 	}
 }
 
+void eliminarJobEnviados(t_archivo *el_archivo){
+	t_job_enviado* el_job;
+	int i=0;
+	while(i<list_size(lista_job_enviado)){
+		el_job = list_get(lista_job_enviado,i);
+		if(!strcmp(el_archivo->nombreArchivo,el_job->archivo)){
+			el_job = list_remove(lista_job_enviado,i);
+			free(el_job);
+		} else {
+			i++;
+		}
+	}
+}
 
 void reciboOk(char *buffer,int socket){
 
