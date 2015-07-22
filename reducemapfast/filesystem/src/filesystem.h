@@ -239,3 +239,5 @@ bool borrar_archivo_mongo(t_archivo* el_archivo);
 int grabar_archivo_mongo(t_archivo* el_archivo_viejo, t_archivo* el_archivo_nuevo);
 int leer_archivo_mongo();
 void cargar_listas_mongo();
+int manejoDeBloques();
+int verBloquesArchivo();

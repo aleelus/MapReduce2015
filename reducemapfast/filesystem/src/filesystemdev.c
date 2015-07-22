@@ -2270,7 +2270,11 @@ int operaciones_consola() {
 			break;
 
 	case 7:
+		if(manejoDeBloques()){
 		log_info(logger, "Se realizo Ver/Borrar/Copiar los bloques que componen un archivo\n");
+		} else{
+			log_info(logger, "No se pudo realizar Ver/Borrar/Copiar los bloques que componen un archivo\n");
+		}
 		break;
 	case 8:
 		if(agregarNodo()){
@@ -2937,6 +2941,8 @@ void cargar_listas_mongo(){
 	letra =letra+lnodo;
 	}
 
+
+
 	int lfs= leer_filesystem_mongo();
 	if (lfs==0){
 	printf("La lista de archivos esta vacias\n");
@@ -2947,3 +2953,155 @@ void cargar_listas_mongo(){
 
 }
 
+int verBloquesArchivo(){
+	t_archivo * el_archivo;
+	t_bloque * el_bloque;
+
+		char pathConArchivo[100];
+		char* nombreArchivo = malloc(sizeof(char)*30);
+		int padre;
+		mostrarFilesystem();
+
+		printf("Ingrese la ruta completa con el nombre del archivo para ver los bloques\n ");
+		printf("Ejemplo: /home/utnso/temperatura.txt\n");
+		scanf("%s",pathConArchivo);
+		fflush(stdin);
+
+		padre = validarDirectorios(pathConArchivo,&nombreArchivo);
+		if(padre!=-1){
+
+			el_archivo = buscarArchivoPorNombre(nombreArchivo,padre);
+
+
+			int j=0;
+
+			printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque = list_get(el_archivo->listaBloques, j);
+			printf("%d :: ",el_bloque->bloque);
+			printf("Copia1:\n");
+			printf("%s--",el_bloque->array[0].nombreNodo);
+			printf("%s  ",el_bloque->array[0].nro_bloque);
+			printf("Copia2:\n");
+			printf("%s--",el_bloque->array[1].nombreNodo);
+			printf("%s  ",el_bloque->array[1].nro_bloque);
+			printf("Copia3:\n");
+			printf("%s--",el_bloque->array[2].nombreNodo);
+			printf("%s  \n",el_bloque->array[2].nro_bloque);
+			j++;
+		}
+		return 1;
+	} else {
+		return 0;
+	}
+
+}
+
+int borrarBloquesArchivo(){
+	t_archivo * el_archivo;
+	t_bloque * el_bloque;
+
+		char pathConArchivo[100];
+		char* nombreArchivo = malloc(sizeof(char)*30);
+		int padre;
+		mostrarFilesystem();
+
+		printf("Ingrese la ruta completa con el nombre del archivo para ver los bloques\n ");
+		printf("Ejemplo: /home/utnso/temperatura.txt\n");
+		scanf("%s",pathConArchivo);
+		fflush(stdin);
+
+		padre = validarDirectorios(pathConArchivo,&nombreArchivo);
+		if(padre!=-1){
+
+			el_archivo = buscarArchivoPorNombre(nombreArchivo,padre);
+
+
+			int j=0;
+
+			printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque = list_get(el_archivo->listaBloques, j);
+			printf("%d :: ",el_bloque->bloque);
+			printf("Copia1:\n");
+			printf("%s--",el_bloque->array[0].nombreNodo);
+			printf("%s  ",el_bloque->array[0].nro_bloque);
+			printf("Copia2:\n");
+			printf("%s--",el_bloque->array[1].nombreNodo);
+			printf("%s  ",el_bloque->array[1].nro_bloque);
+			printf("Copia3:\n");
+			printf("%s--",el_bloque->array[2].nombreNodo);
+			printf("%s  \n",el_bloque->array[2].nro_bloque);
+			j++;
+		}
+		return 1;
+	} else {
+		return 0;
+	}
+
+}
+
+
+int copiarBloquesArchivo(){
+	t_archivo * el_archivo;
+	t_bloque * el_bloque;
+
+		char pathConArchivo[100];
+		char* nombreArchivo = malloc(sizeof(char)*30);
+		int padre;
+		mostrarFilesystem();
+
+		printf("Ingrese la ruta completa con el nombre del archivo para copiar un bloque\n ");
+		printf("Ejemplo: /home/utnso/temperatura.txt\n");
+		scanf("%s",pathConArchivo);
+		fflush(stdin);
+
+		padre = validarDirectorios(pathConArchivo,&nombreArchivo);
+		if(padre!=-1){
+			int bloqueCopia;
+			el_archivo = buscarArchivoPorNombre(nombreArchivo,padre);
+			int cantBloques = list_size(el_archivo->listaBloques)
+			printf("Ingrese el numero de bloque que quiere copiar\n ");
+					printf("El archivo tiene %d bloques\n",cantBloques);
+					scanf("%d",bloqueCopia);
+					fflush(stdin);
+					if(bloqueCopia> cantBloques || bloqueCopia<0){
+						return 0;
+					}
+			el_archivo = buscarArchivoPorNombre(nombreArchivo,padre);
+			el_bloque = list_get(el_archivo->listaBloques,bloqueCopia);
+
+
+		return 1;
+	} else {
+		return 0;
+	}
+
+}
+
+
+
+
+int manejoDeBloques(){
+	int seleccion;
+	mostrarFilesystem();
+	printf("Ingrese un comando:\n");
+	printf("1: Ver 2: Borrar 3: Copiar ");
+	scanf("%d", &seleccion);
+	switch(seleccion){
+		case 1: printf("Se eligio Ver\n");
+				return verBloquesArchivo();
+				break;
+		case 2: printf("Se eligio Borrar\n");
+				return borrarBloquesArchivo();
+				break;
+		case 3: printf("Se eligio Copiar\n");
+				return copiarBloquesArchivo();
+				break;
+		default: printf("Se ha ingresado un comando incorrecto.\n");
+				break;
+	}
+	return 0;
+}
