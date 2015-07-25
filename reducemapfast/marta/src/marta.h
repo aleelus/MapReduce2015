@@ -24,7 +24,7 @@
 #define DEFAULT   "\x1b[0m"
 
 
-sem_t semaforoListaNodos,semaforoListaArchivos,semaforoListaJobEnviados,semIdJob;
+sem_t semaforoListaNodos,semaforoListaArchivos,semaforoListaJobEnviados,semIdJob,semSocket;
 
 // CONSTANTES //
 //Ruta del config
@@ -39,6 +39,8 @@ sem_t semaforoListaNodos,semaforoListaArchivos,semaforoListaJobEnviados,semIdJob
 
 //Tamaño del buffer
 #define BUFFERSIZE 50
+
+t_list* lista_nodos;
 
 int socket_fs;
 
@@ -67,13 +69,13 @@ char* g_Ip_Nodo;
 int g_Puerto_Nodo;
 
 //Lista de Archivos
-t_list *lista_archivos;
+//t_list *lista_archivos;
 
 //Array de Listas para funcion magica
-t_list **array_listas;
+//t_list **array_listas;
 
 //Lista de Nodos
-t_list *lista_nodos;
+//t_list *lista_nodos;
 
 // METODOS CONFIGURACION //
 void LevantarConfig();
@@ -95,7 +97,7 @@ void HiloOrquestadorDeConexiones();
 
 char* obtenerSubBuffer(char *);
 void conectarAFileSystem();
-void FuncionMagica(t_list* );
+void FuncionMagica(t_list*, t_list*** );
 int cuentaDigitos(int );
 
 // - Bandera que controla la ejecución o no del programa. Si está en 0 el programa se cierra.
@@ -108,7 +110,7 @@ int longitudBuffer;
 int id_job=0;
 
 void reciboError_Brusco(char *buffer,int socket);
-void reciboError(char *buffer,int socket);
+void reciboError(char *buffer,int socket,t_list** lista_archivos);
 
 //Mensajes aceptados
 //#define MSJ_SALUDO          1
@@ -143,7 +145,7 @@ typedef struct{
 	t_list *listaBloques;
 }t_job_enviado;
 
-t_list *lista_job_enviado;
+//t_list *lista_job_enviado;
 
 
 static t_job_enviado *job_enviado_create(char *nodo, char *bloque,char* archivo,char* res) {
@@ -211,7 +213,7 @@ typedef struct{
 }t_archivo;
 
 
-t_bloque* buscarNodoYBloque (char * , char *,int*,t_archivo **,int *);
+t_bloque* buscarNodoYBloque (char * , char *,int*,t_archivo **,int *,t_list*);
 
 static t_archivo *archivo_create(char *nombreArchivo, int id) {
 	t_archivo *new = malloc(sizeof(t_archivo));
@@ -269,4 +271,4 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo) {
 #define ES_MUCHOS_ARCHIVOS 2
 
 
-void eliminarJobEnviados(t_archivo* el_archivo);
+void eliminarJobEnviados(t_archivo* el_archivo,t_list** lista_job_enviado);

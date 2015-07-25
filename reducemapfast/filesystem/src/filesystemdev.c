@@ -1020,7 +1020,9 @@ int validarDirectorio(char *directorio,int i){
 	bool _true(void *elem){
 		return ((t_filesystem*) elem)->padre==i;
 	}
+	sem_wait(&semLFs);
 	lista = list_filter(lista_filesystem,_true);
+	sem_post(&semLFs);
 	if(lista!=NULL){
 		bool _true2(void *elem){
 			return !strcmp(((t_filesystem*) elem)->directorio,directorio);
@@ -1098,8 +1100,10 @@ int subirArchivo(long unsigned *tamanio,FILE ** fArchivo){
 			//system("clear");
 		}
 		//printf("PADRE POSTA:%d\n",padre);
+		sem_wait(&semArchivos);
 		archivo = archivo_create(nombreArchivo,*tamanio,padre,1);
 		list_add(lista_archivos,archivo);
+		sem_post(&semArchivos);
 		return 1;
 	} else {
 		printf("El espacio disponible del fs es insuficiente para subir este archivo\n");
@@ -1336,6 +1340,7 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	string_append(&buffer2,"13");
 	aux=obtenerSubBuffer(string_itoa(envio_nodo->bloque));
 	string_append(&buffer2,aux);
+
 	free(aux);
 	aux=string_new();
 	aux=obtenerSubBuffer(envio_nodo->buffer);
@@ -1353,7 +1358,6 @@ void enviarBufferANodo(t_envio_nodo* envio_nodo){
 	string_append(&buffer1,aux);
 	free(aux);
 	aux=string_new();
-	//printf("PRIMERA RAFAGA:%s\n",buffer1);
 	EnviarDatos(socket,buffer1,strlen(buffer1));
 	bufferR=RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 	//EnviarDatos(socket,buffer2,strlen(buffer2));
@@ -1722,7 +1726,9 @@ int crearDirectorio(){
 	int existe = list_any_satisfy(lista_filesystem,_true);
 	if(existe==0){
 		crear_filesystem_mongo(filesystem);
+		sem_wait(&semLFs);
 		list_add(lista_filesystem,filesystem);
+		sem_post(&semLFs);
 		mostrarFilesystem();
 		return 1;
 	} else {
@@ -2212,6 +2218,7 @@ long unsigned tamanioDisponible(){
 	int i=0;
 	long unsigned tamanio=0;
 	t_nodo* nodo;
+	sem_wait(&semLNodos);
 	while(i<list_size(lista_nodos)){
 		nodo = list_get(lista_nodos,i);
 		if(nodo->estado==1){
@@ -2219,6 +2226,7 @@ long unsigned tamanioDisponible(){
 		}
 		i++;
 	}
+	sem_post(&semLNodos);
 	return tamanio;
 }
 
@@ -2226,6 +2234,7 @@ long unsigned tamanioTotal(){
 	int i=0;
 	t_nodo* nodo;
 	long unsigned tamanio=0,bloques;
+	sem_wait(&semLNodos);
 	while(i<list_size(lista_nodos)){
 		nodo = list_get(lista_nodos,i);
 		if(nodo->estado==1){
@@ -2234,6 +2243,7 @@ long unsigned tamanioTotal(){
 		}
 		i++;
 	}
+	sem_post(&semLNodos);
 	return tamanio;
 }
 
@@ -2451,6 +2461,7 @@ t_array_nodo *array_nodo_create(char *nombre) {
 t_envio_nodo *envio_nodo_create(char *buffer, char* ip, char* puerto, int bloque) {
     t_envio_nodo *new = malloc(sizeof(t_envio_nodo));
     new->buffer=strdup(buffer);
+    //printf("BUFFER POSTA:%d BUFFER CON PUTO STRDUP:%d\n",strlen(buffer),strlen(new->buffer));
     new->ip=strdup(ip);
     new->puerto=strdup(puerto);
     new->bloque = bloque;
@@ -3082,7 +3093,7 @@ int borrarBloquesArchivo(){
 
 }
 
-
+/*
 int copiarBloquesArchivo(){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
@@ -3119,7 +3130,7 @@ int copiarBloquesArchivo(){
 	}
 
 }
-
+*/
 
 
 
@@ -3137,7 +3148,7 @@ int manejoDeBloques(){
 				return borrarBloquesArchivo();
 				break;
 		case 3: printf("Se eligio Copiar\n");
-				return copiarBloquesArchivo();
+				//return copiarBloquesArchivo();
 				break;
 		default: printf("Se ha ingresado un comando incorrecto.\n");
 				break;

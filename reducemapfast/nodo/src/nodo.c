@@ -19,6 +19,7 @@ int main(int argv, char** argc) {
 
 
 	sem_init(&semaforoScript,0,1);
+	sem_init(&semaforoMmap,0,1);
 	sem_init(&semaforoH,0,0);
 	sem_init(&semaforoGrabar,0,1);
 	sem_init(&semaforoSetBloque,0,1);
@@ -78,10 +79,13 @@ int main(int argv, char** argc) {
 	printf("Escriba el numero de bloque que quiere ver.\n");
 	scanf("%d", &numero);
 	char * bloqueSolicitado;
+		sem_wait(&semaforoMmap);
 		bloqueSolicitado = getBloque(numero);
+		sem_post(&semaforoMmap);
 		printf ("Bloque Nro: %d\nContenido:'%s'\n", numero, bloqueSolicitado);
+		sem_wait(&semaforoMmap);
 		munmap( bloqueSolicitado, TAMANIO_BLOQUE ); //Desmapeo el bloque obtenido, IMPORTANTE!
-
+		sem_post(&semaforoMmap);
 	printf("Ok\n");
 	fclose(archivoEspacioDatos);
 	return 0;
@@ -176,13 +180,16 @@ void conexionAFs(){
 		string_append(&bufferE,string_itoa(strlen(buffer)));
 
 		//Primera Rafaga
+		sem_wait(&semCon);
 		EnviarDatos(socket_Fs,bufferE, strlen(bufferE));
-
+		sem_post(&semCon);
 		bufferR = RecibirDatos(socket_Fs,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 		//Recibo respuesta de FS
 		if(bufferR!=NULL){
 			//Segunda Rafaga
+			sem_wait(&semCon);
 			EnviarDatos(socket_Fs,buffer, strlen(buffer));
+			sem_post(&semCon);
 			bufferR = RecibirDatos(socket_Fs,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 			//printf("\nNodo Conectado al Fs!");
 		} else {
@@ -301,9 +308,10 @@ void setBloque(int numero, char*datos){
 			printf("El bloque no existe en el archivo. \n");
 			abort();
 		}
+	//printf("TAMANIO DENTRO DEL SETBLOQUE:%d\n",strlen(datos));
 	long unsigned tamanio = TAMANIO_BLOQUE; //Tamanio del bloque 20mb
 	char*txtBloq = malloc(TAMANIO_BLOQUE+1);
-	memset(txtBloq, '\0', tamanio +1);
+	memset(txtBloq,0,tamanio +1);
 	//Rellena de 0 el txtBloq que se va a grabar
 
 	sem_wait(&semaforoSetBloque);
@@ -385,6 +393,7 @@ int runScriptFile(char* script,char* archNom, char* input)
 {
 
       int a[2],cont=0,status;
+      long unsigned tamanio;
       pipe(a);
       char **array = string_split(script,"/");
       while(array[cont]!=NULL){
@@ -414,8 +423,13 @@ int runScriptFile(char* script,char* archNom, char* input)
     } else {
 
 		close(a[0]);
+		if(input[TAMANIO_BLOQUE-1]==0){
+			tamanio = strlen(input);
+		} else {
+			tamanio = TAMANIO_BLOQUE;
+		}
 
-		write(a[1],input,strlen(input));
+		write(a[1],input,tamanio);
 
 		close(a[1]);
 		wait(&status);
@@ -723,25 +737,31 @@ void AtiendeFS (t_bloque ** bloque,char *buffer){
 		long unsigned posActual=0,tam=0;
 
 		digitosCantDeDigitosBloque=PosicionDeBufferAInt(buffer,2);
-
+		//printf("digitosCantDeDigitosBloque:%d\n",digitosCantDeDigitosBloque);
 		cantDigNumBloque=ObtenerTamanio(buffer,3,digitosCantDeDigitosBloque);
+		//printf("cantDigNumBloque:%d\n",cantDigNumBloque);
 		numeroBloq=ObtenerTamanio(buffer,4,cantDigNumBloque);
+		//printf("numeroBloq:%d\n",numeroBloq);
 
 		posActual=3+cantDigNumBloque+digitosCantDeDigitosBloque;
 
 		digitosCantDeDigitosTamanioBloq = PosicionDeBufferAInt(buffer,posActual);
+		//printf("digitosCantDeDigitosTamanioBloq:%d\n",digitosCantDeDigitosTamanioBloq);
 
 		tam= ObtenerTamanioLong(buffer,posActual+1,digitosCantDeDigitosTamanioBloq);
+		//printf("tam:%lu\n",tam);
 
 		posActual=posActual+digitosCantDeDigitosTamanioBloq+1;
 
 		contenidoBloq=string_substring(buffer,posActual,tam);
+		//printf("TAMAÑO POSTA DEL BLOQUE:%d\n",strlen(contenidoBloq));
 
 		*bloque = (t_bloque*)malloc(sizeof(t_bloque));
 		(*bloque)->numeroBloque = numeroBloq;
 		(*bloque)->contenidoBloque = string_new();
 		(*bloque)->tamanioBloque = strlen(contenidoBloq);
 		string_append(&(*bloque)->contenidoBloque,contenidoBloq);
+		//printf("TAMAÑIO COPIADO A LA ESTRUCTURA:%d\n",strlen((*bloque)->contenidoBloque));
 		//sem_wait(&semLBloques);
 		//list_add(lista_Bloques,*bloque);
 		//sem_post(&semLBloques);
@@ -811,8 +831,9 @@ long unsigned obtenerCantidadLineas(int socket,char* bloque,long unsigned* taman
 
 	//printf("Primera Rafaga:%s\n",bufferE);
 
-	//sem_wait(&semCon);
+	sem_wait(&semCon);
 	EnviarDatos(socket,bufferE,strlen(bufferE));
+	sem_post(&semCon);
 
 	free(bufferE);
 
@@ -834,8 +855,9 @@ long unsigned obtenerCantidadLineas(int socket,char* bloque,long unsigned* taman
 	}
 
 	free(bufferR);
-
+	sem_wait(&semCon);
 	EnviarDatos(socket,buffer,strlen(buffer));
+	sem_post(&semCon);
 	free(buffer);
 	bufferR = string_new();
 
@@ -893,7 +915,6 @@ long unsigned cantidadDeLineas(t_list** bloques,t_list* nodos){
 		bloque = list_get(*bloques,i);
 		if(!bloque->pertenece){
 			nodo = buscarNodoPorNombre(bloque->nombreNodo,nodos);
-			//printf("BLOQUE:%s LINEAS REMOTAS:%lu\n",bloque->bloque,cantidadLineas);
 			cantidadLineas = cantidadLineas + obtenerCantidadLineas(nodo->socket,bloque->bloque,&tamanioA);
 		} else {
 			cantidadLineas = cantidadLineas + cantidadLineasArchivo(bloque->bloque,&tamanioA);
@@ -945,9 +966,9 @@ void borradoRemoto(int socket,char* bloque){
 
 	//printf("Primera Rafaga:%s\n",bufferE);
 
-	//sem_wait(&semCon);
+	sem_wait(&semCon);
 	EnviarDatos(socket,bufferE,strlen(bufferE));
-
+	sem_post(&semCon);
 	free(bufferE);
 
 	tamanio = strlen("*");
@@ -967,8 +988,9 @@ void borradoRemoto(int socket,char* bloque){
 	}
 
 	free(bufferR);
-
+	sem_wait(&semCon);
 	EnviarDatos(socket,buffer,strlen(buffer));
+	sem_post(&semCon);
 	free(buffer);
 }
 
@@ -983,19 +1005,12 @@ void borradoLocal(char* archivo){
 char * dameMenor(t_list* nodos, t_list** bloques){
 	int indice;
 	char * menor;
-	t_nodo * nodo;
 
 	menor = burbujeo(*bloques,&indice);
 
 	if(menor!=NULL){
 		t_bloque_script * bloque = list_get(*bloques,0);
 		if(bloque->fsd == bloque->tamanio){
-			if(bloque->pertenece){
-				borradoLocal(bloque->bloque);
-			} else {
-				nodo = buscarNodoPorNombre(bloque->nombreNodo,nodos);
-				borradoRemoto(nodo->socket,bloque->bloque);
-			}
 			if(bloque->contenidoBloque != NULL){
 				free(bloque->contenidoBloque);
 			}
@@ -1031,12 +1046,16 @@ char * dameLinea(char * bloque, long unsigned fCur) {
 
 		fseek(fA,fCur,SEEK_SET);
 
-
+		//printf("DAME LINEA:fCur:%lu\n",fCur);
 		char * aux = malloc(300+1);
 		memset(aux,0,300+1);
 		fgets(aux,300,fA);
-
-		fclose(fA);
+		if(feof(fA)){
+			fclose(fA);
+			borradoLocal(bloque);
+		} else {
+			fclose(fA);
+		}
 		return aux;
 	} else {
 		return NULL;
@@ -1068,9 +1087,10 @@ char* obtenerLinea(int socket,t_bloque_script *bloque){
 	string_append(&bufferE,string_itoa(cuentaDigitos(strlen(buffer))));
 	string_append(&bufferE,string_itoa(strlen(buffer)));
 
-	//sem_wait(&semCon);
+	sem_wait(&semCon);
 	//printf("Primer Rafaga del Maravilloso:%s\n",bufferE);
 	EnviarDatos(socket,bufferE,strlen(bufferE));
+	sem_post(&semCon);
 	free(bufferE);
 
 	tamanio = strlen("*");
@@ -1090,7 +1110,9 @@ char* obtenerLinea(int socket,t_bloque_script *bloque){
 	}
 	free(bufferR);
 	//printf("Segunda Rafaga del Maravilloso:%s\n",buffer);
+	sem_wait(&semCon);
 	EnviarDatos(socket,buffer,strlen(buffer));
+	sem_post(&semCon);
 	free(buffer);
 
 	bufferR=string_new();
@@ -1114,8 +1136,11 @@ char * elMaravilloso(t_list* nodos,t_list**bloques){
 			if(!bloque->pertenece){
 				nodo = buscarNodoPorNombre(bloque->nombreNodo,nodos);
 				bloque->contenidoBloque=obtenerLinea(nodo->socket,bloque);
+				//printf("NODO:%s Bloque:%s\n",nodo->nombreNodo,bloque->bloque);
 			} else {
+				//printf("Bloque:%s\n",bloque->bloque);
 				bloque->contenidoBloque=dameLinea(bloque->bloque,bloque->fsd);
+
 			}
 			bloque->nuevaLinea = 0;
 		}
@@ -1156,9 +1181,10 @@ void subirArchivoAFilesystem(char *nombreArchivoFinal){
 	string_append(&bufferE,obtenerSubBuffer(nombreArchivoFinal));
 
 	//Primera Rafaga
-	printf("Primer Rafaga a FS:%s\n",bufferE);
+	//printf("Primer Rafaga a FS:%s\n",bufferE);
+	sem_wait(&semCon);
 	EnviarDatos(socket_Fs,bufferE, strlen(bufferE));
-
+	sem_post(&semCon);
 	bufferR = string_new();
 	cantRafaga = 1;
 	bufferR = RecibirDatos(socket_Fs,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
@@ -1196,7 +1222,6 @@ void subirArchivoAFilesystem(char *nombreArchivoFinal){
 
 void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,char* nombreArchivoFinal){
 	long unsigned cB = cantidadDeLineas(bloques,nodos);
-	printf("CANTIDAD DE LINEAS:%lu\n",cB);
 	int cont=0;
 	float d;
 	long unsigned posicion=0;
@@ -1262,8 +1287,8 @@ int AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 	//semaforo
 	t_list * nodos = list_create();
 	t_list * bloques = list_create();
-	t_nodo* el_nodo=malloc(sizeof(t_nodo));
 	t_bloque_script * bloque_script;
+	t_nodo* el_nodo;
 	int cantNodos,digCantNodos,cantArchivos,cantDigArchivos;
 	char *nombreResultado;
 	int i,j,posActual=0;
@@ -1275,9 +1300,9 @@ int AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 	posActual=3+digCantNodos;
 
 	for(i=0;i<cantNodos;i++){
+		el_nodo=malloc(sizeof(t_nodo));
 
 		el_nodo->nombreNodo = DigitosNombreArchivo(buffer,&posActual);
-
 		cantDigArchivos=PosicionDeBufferAInt(buffer,posActual);
 
 		posActual= posActual + 1;
@@ -1298,7 +1323,8 @@ int AtiendeJobCombiner (t_jobComb ** job,char *buffer, int *cantRafaga){
 			list_add(bloques,bloque_script);
 			//free(nombreResultado);
 		}
-		el_nodo->nombreNodo = DigitosNombreArchivo(buffer,&posActual);
+		//el_nodo->nombreNodo =
+		DigitosNombreArchivo(buffer,&posActual);
 		el_nodo->ipNodo=DigitosNombreArchivo(buffer,&posActual);
 		el_nodo->puertoNodo=DigitosNombreArchivo(buffer,&posActual);
 		int valor=0;
@@ -1366,10 +1392,12 @@ void ordenarConSort(char * nombreArchivo,char* nombrePosta){
 
 int procesarRutinaMap(t_job * job){
 	sem_wait(&semaforoMapper);
+	printf("Se solicita Mapper sobre el bloque:%s\n",job->bloque);
 	//char *aux = string_new();
 	//string_append(&aux,job->nombreResultado);
 	//string_append(&aux,".sh");
 	grabarScript(job->nombreSH,job->contenidoSH);
+	printf("Se graba el script:%s a ejecutar\n",job->nombreSH);
 	//Creo el script y grabo el contenido.
 	char ** array;
 
@@ -1380,8 +1408,11 @@ int procesarRutinaMap(t_job * job){
 
 	//printf("EL NUMERO DE BLOQUE A MAPEAR: %d \n",numBloque);
 	char* contenidoBloque ;//= malloc(TAMANIO_BLOQUE);
+	//printf("Nro de Bloque:%d\n",nroBloque);
+	sem_wait(&semaforoMmap);
+	//printf("Nro de Bloque:%d\n",nroBloque);
 	contenidoBloque= getBloque(nroBloque);
-
+	sem_post(&semaforoMmap);
 
 	//Obtengo el contendio del numero de bloque solicitado.
 	//printf("%s",contenidoBloque);
@@ -1393,23 +1424,28 @@ int procesarRutinaMap(t_job * job){
 	string_append(&elnombre,"tmp");
 	string_append(&elnombre,job->nombreResultado);
 
+	//printf("TAMAÑO DE BLOQUE:%li\n",(long int)strlen(contenidoBloque));
 	sem_wait(&semaforoScript);
 	int valor = runScriptFile(job->nombreSH,elnombre,contenidoBloque);
+	printf("Proceso de Mapper Terminado\n");
 	sem_post(&semaforoScript);
 
 	ordenarConSort(elnombre,job->nombreResultado);
+	printf("Se aplica Sort sobre el resultado\n");
 	char *comandoScript = string_new();
 	string_append(&comandoScript,"rm ");
 	string_append(&comandoScript,job->nombreSH);
 	system(comandoScript);
 	free(comandoScript);
-
 	free(elnombre);
 	free(*array);
+
 	if (valor){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
 		if (contenidoBloque != NULL){
+			sem_wait(&semaforoMmap);
 			munmap(contenidoBloque,TAMANIO_BLOQUE);
+			sem_post(&semaforoMmap);
 		}
 		sem_post(&semaforoMapper);
 		return 1;
@@ -1423,6 +1459,7 @@ int procesarRutinaMap(t_job * job){
 
 int procesarRutinaReduce(t_job * job){
 	sem_wait(&semaforoMapper);
+	printf("Se solicitar aplicar Reduce:%s\n",job->nombreSH);
 	char *aux = string_new();
 	string_append(&aux,job->bloque);
 	string_append(&aux,".sh");
@@ -1446,7 +1483,7 @@ int procesarRutinaReduce(t_job * job){
 	fread(contenido,1,TAMANIO_BLOQUE,fd);
 //	sem_wait(&semaforoScript);
 	int valor = runScriptFile(aux,job->nombreResultado,contenido);
-
+	printf("Finalizacion del Reduce\n");
 	fclose(fd);
 	free(contenido);
 
@@ -1460,6 +1497,7 @@ int procesarRutinaReduce(t_job * job){
 	system(comandoScript);
 	free(comandoScript);
 //	sem_post(&semPermiso);
+	borradoLocal(job->bloque);
 
 	if (valor){
 		//Si la ejecucion es correta devuelvo 1 y libero el bloque.
@@ -1621,8 +1659,9 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 	char * bufferR = string_new();
 
 	//printf("Te mando el asterisco!!!\n");
+	sem_wait(&semCon);
 	EnviarDatos(socket,"*",strlen("*"));
-
+	sem_post(&semCon);
 
 	*cantRafaga = 2;
 	*tamanio=100;
@@ -1644,7 +1683,9 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 			string_append(&bufferE,obtenerSubBuffer(string_itoa(cantidadLineas)));
 			string_append(&bufferE,obtenerSubBuffer(string_itoa(tamanioArchivo)));
 			//printf("Envio cantidad de lineas:%s\n",bufferE);
+			sem_wait(&semCon);
 			EnviarDatos(socket,bufferE,strlen(bufferE));
+			sem_post(&semCon);
 			free(bufferE);
 			free(bufferR);
 			free(nombreResultado);
@@ -1696,12 +1737,14 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 	bufferR = string_new();
 	int bytesRecibidos;
 	if(*cantRafaga == 1){
+		sem_wait(&semCon);
 		EnviarDatos(socket, "Ok",2);
+		sem_post(&semCon);
 	}
 	*cantRafaga = 2;
 	bufferR = RecibirDatos(socket, bufferR, &bytesRecibidos,cantRafaga,tamanio);
 	int tipo_mensaje = ObtenerComandoMSJ(bufferR+1);
-
+	printf("-----------------------------------------------------------------------------\n");
 	switch(tipo_mensaje){
 		case MAPPING:
 			AtiendeJob(&job,bufferR,cantRafaga);
@@ -1718,8 +1761,8 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 				//No pudo hacerla
 				*mensaje="30";
 			}
+			printf("-----------------------------------------------------------------------------\n");
 			break;
-
 		case REDUCE_COMBINER:
 			//4215NodoB19127.0.0.114600117Bloque1220Reduce2resultado.txt
 			AtiendeJobReduce_Combiner(&job,bufferR,cantRafaga);
@@ -1731,7 +1774,7 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 				//No pudo hacerla
 				*mensaje="30";
 			}
-
+			printf("-----------------------------------------------------------------------------\n");
 			break;
 
 		case REDUCE_SIN_COMBINER:
@@ -1742,13 +1785,15 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 					//No pudo hacerla
 					*mensaje = "30";
 				}
+				printf("-----------------------------------------------------------------------------\n");
 				break;
 		default:
 			break;
 	}
 	int longitudBuffer = strlen(*mensaje);
+	sem_wait(&semCon);
 	EnviarDatos(socket, *mensaje,longitudBuffer);
-
+	sem_post(&semCon);
 	*cantRafaga = 1;
 }
 
@@ -1821,7 +1866,9 @@ void implementoFS(char * buffer,int *cantRafaga,char** mensaje,int socket){
 				*cantRafaga=1;
 				char* contenidoBloque, * bloqueMsj;
 				int numBloq = obtenerNumBloque(buffer);
+				sem_wait(&semaforoMmap);
 				contenidoBloque = getBloque(numBloq);
+				sem_post(&semaforoMmap);
 				bloqueMsj = obtenerSubBuffer(contenidoBloque);
 				if(contenidoBloque !=NULL){
 					//Obtuvo el bloque
@@ -1878,7 +1925,7 @@ int sendall(int s, char *buf, long unsigned *len){
 		}
 		total += n;
 		bytesleft -= n;
-		printf("Cantidad Enviada :%lu\n",n);
+		//printf("Cantidad Enviada :%lu\n",n);
 	}
 	*len = total; // devuelve aquí la cantidad enviada en realidad
 	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
@@ -1893,15 +1940,17 @@ int procesarGetBloqueDeFs(char* buffer,char**mensaje,int socket){
 
 	cantDigBloque=PosicionDeBufferAInt(buffer,2);
 	nroBloque=ObtenerTamanio(buffer,3,cantDigBloque);
-
+	sem_wait(&semaforoMmap);
 	bloque = getBloque(nroBloque);
-
+	sem_post(&semaforoMmap);
 	if(bloque!=NULL){
 		string_append(&bufferE,"3");
 		cantDigitos = cuentaDigitos(strlen(bloque));
 		string_append(&bufferE,string_itoa(cantDigitos));
 		string_append(&bufferE,string_itoa(strlen(bloque)));
+		sem_wait(&semCon);
 		EnviarDatos(socket,bufferE, strlen(bufferE));
+		sem_post(&semCon);
 		bufferR=RecibirDatos(socket,bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
 		if(strcmp(bufferR,"1")==0){
 			long unsigned len=0;
@@ -1934,17 +1983,17 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 
 	//printf("TAMAÑO:%d\n",strlen(buffer));
 	//printf("BUFFER:%s\n",buffer);
-
+	//printf("OBTENER TAMANIO:%d\n",tamanio);
 	*mensaje = string_new();
 
 	string_append(mensaje,"1");
-
+	sem_wait(&semCon);
 	EnviarDatos(socket, *mensaje,strlen(*mensaje));
-
+	sem_post(&semCon);
 	char *aux=malloc(tamanio+10);
 
 	char *bloque=malloc(tamanio+10);
-
+	//printf("Tamanio:%d\n",tamanio);
 	memset(bloque,0,tamanio+10);
 
 	char *recibido=string_new();
@@ -1968,7 +2017,15 @@ int procesarSetBloqueDeFs(char* buffer,char**mensaje,int socket){
 	AtiendeFS(&bloqueSet,bloque);
 	//printf(COLOR_VERDE"---%d---\n"DEFAULT,strlen(bloqueSet->contenidoBloque));
 	setBloque(bloqueSet->numeroBloque,bloqueSet->contenidoBloque);
+	//printf("TAMANIO DEL CONTENIDO DEL SETBLOQUE:%d\n",strlen(bloqueSet->contenidoBloque));
 	free(bloqueSet->contenidoBloque);
+	//sem_wait(&semaforoGetBloque);
+	//char* prueba = getBloque(bloqueSet->numeroBloque);
+
+	//printf("PASO\n");
+	//printf("TAMANIO DEL CONTENIDO DEL GETBLOQUE:%d\n",strlen(prueba));
+	//munmap(bloqueSet->contenidoBloque,TAMANIO_BLOQUE);
+	//sem_post(&semaforoGetBloque);
 	//string_append(mensaje,"Listo");
 	/*if(1){ //Hacer que setBloque devuelva algo para saber si fallo
 		*mensaje = string_new();
@@ -2049,13 +2106,17 @@ int AtiendeCliente(void * arg) {
 			//Evaluamos los comandos
 			switch (emisor) {
 			case ES_JOB:
+				printf("Se conecta Proceso Job\n");
 				implementoJob(&id,buffer,&cantRafaga,&mensaje,socket,&tamanio);
+				printf("Se desconecta Proceso Job\n");
 				free(buffer);
 				close(socket);
+				pthread_exit(NULL);
 				return 1;
 				cantRafaga=1;
 				break;
 			case ES_FS:
+				printf("Se conecta Proceso Filesystem\n");
 				//printf("implementar atiendeFS\n");
 				//implementoFS(buffer,&cantRafaga,&mensaje,socket);
 				trabajo=ObtenerComandoMSJ(buffer+1);
@@ -2068,17 +2129,22 @@ int AtiendeCliente(void * arg) {
 					if (trabajo==2){
 						procesarGetBloqueDeFs(buffer,&mensaje,socket);
 						cantRafaga=1;
+						printf("Se desconecta Proceso Filesystem\n");
 						free(buffer);
 						close(socket);
+						pthread_exit(NULL);
 						return 1;
 					}
 				}
 				//desconexionCliente=1;
 				break;
 			case ES_NODO:
+				printf("Se conecta Proceso Nodo\n");
 				//printf("implementar atiendeNodo\n");
 
 				atiendeNodo(socket,buffer,&cantRafaga,&mensaje,&tamanio);
+
+				printf("Se desconecta Proceso Nodo\n");
 
 				cantRafaga=1;
 				//printf(COLOR_VERDE"CERRADO EL SOCKET:%d\n"DEFAULT,socket);
@@ -2114,6 +2180,7 @@ int AtiendeCliente(void * arg) {
 	//printf("EL SOCKET PUTO:%d\n",socket);
 	CerrarSocket(socket);
 
+	pthread_exit(NULL);
 
 	return code;
 }

@@ -24,6 +24,7 @@ int main(int argv, char** argc) {
 	sem_init(&semHilos,0,1);
 	sem_init(&semArchivos,0,1);
 	sem_init(&semTamanioTotal,0,1);
+	sem_init(&semLFs,0,1);
 	nombre = string_new();				//Variable del nombre de los nodos
 
 	lista_nodos    = list_create();		//Lista de nodos
