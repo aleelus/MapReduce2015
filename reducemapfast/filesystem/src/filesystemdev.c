@@ -26,6 +26,18 @@ int ChartToInt(char x) {
 	return numero;
 }
 
+int CharAToInt(char* x) {
+	int numero = 0;
+	char * aux = string_new();
+	string_append_with_format(&aux, "%c", x);
+
+	numero = strtol(aux, (char **) NULL, 10);
+
+	if (aux != NULL )
+		free(aux);
+	return numero;
+}
+
 int PosicionDeBufferAInt(char* buffer, int posicion) {
 	int logitudBuffer = 0;
 	logitudBuffer = strlen(buffer);
@@ -3046,36 +3058,51 @@ int borrarBloquesArchivo(){
 		int padre;
 		mostrarFilesystem();
 
-		printf("Ingrese la ruta completa con el nombre del archivo para ver los bloques\n ");
+		printf("Ingrese la ruta completa con el nombre del archivo para borrar los bloques\n ");
 		printf("Ejemplo: /home/utnso/temperatura.txt\n");
 		scanf("%s",pathConArchivo);
 		fflush(stdin);
 
 		padre = validarDirectorios(pathConArchivo,&nombreArchivo);
 		if(padre!=-1){
-
+			char bloqueIng[10];
+			int bloqueBorrar;
 			el_archivo = buscarArchivoPorNombre(nombreArchivo,padre);
-
-
-			int j=0;
-
-			printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
-
-		while(j<list_size(el_archivo->listaBloques)){
-			el_bloque = list_get(el_archivo->listaBloques, j);
+			int cantBloques = list_size(el_archivo->listaBloques);
+			printf("Ingrese el numero de bloque que quiere borrar\n ");
+			printf("El archivo tiene %d bloques\n",cantBloques);
+			scanf("%s",bloqueIng);
+			bloqueBorrar = CharAToInt(bloqueIng);
+			fflush(stdin);
+			if(bloqueBorrar> cantBloques || bloqueBorrar<0){
+				return 0;
+			}
+			el_bloque = list_get(el_archivo->listaBloques,bloqueBorrar);
+			int i = 0;
 			printf("%d :: ",el_bloque->bloque);
-			printf("Copia1:\n");
+
+			while(i<3){
+			printf("Copia %d:",(i+1));
 			printf("%s--",el_bloque->array[0].nombreNodo);
-			printf("%s  ",el_bloque->array[0].nro_bloque);
-			printf("Copia2:\n");
-			printf("%s--",el_bloque->array[1].nombreNodo);
-			printf("%s  ",el_bloque->array[1].nro_bloque);
-			printf("Copia3:\n");
-			printf("%s--",el_bloque->array[2].nombreNodo);
-			printf("%s  \n",el_bloque->array[2].nro_bloque);
-			j++;
-		}
-		return 1;
+			printf("%s  \n",el_bloque->array[0].nro_bloque);
+			i++;
+			}
+			char copiaIng[10];
+			int copiaBorrar;
+			printf("Ingrese la copia a borrar\n");
+						scanf("%s",copiaIng);
+						copiaBorrar = CharAToInt(copiaIng);
+						fflush(stdin);
+						if(copiaBorrar> 3 || copiaBorrar<0){
+							return 0;
+						}
+			t_nodo* el_nodo = buscarNodoPorNombre(el_bloque->array[copiaBorrar].nombreNodo);
+			int liberarBloque = CharAToInt(el_bloque->array[copiaBorrar].nro_bloque);
+			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(liberarBloque));
+			el_bloque->array[copiaBorrar].nombreNodo="Vacio";
+			el_bloque->array[copiaBorrar].nro_bloque="0";
+
+			return 1;
 	} else {
 		return 0;
 	}
@@ -3099,12 +3126,14 @@ int copiarBloquesArchivo(){
 
 		padre = validarDirectorios(pathConArchivo,&nombreArchivo);
 		if(padre!=-1){
+			char* bloqueIng;
 			int bloqueCopia;
 			el_archivo = buscarArchivoPorNombre(nombreArchivo,padre);
-			int cantBloques = list_size(el_archivo->listaBloques)
+			int cantBloques = list_size(el_archivo->listaBloques);
 			printf("Ingrese el numero de bloque que quiere copiar\n ");
 					printf("El archivo tiene %d bloques\n",cantBloques);
-					scanf("%d",bloqueCopia);
+					scanf("%s",bloqueIng);
+					bloqueCopia = CharAToInt(bloqueIng);
 					fflush(stdin);
 					if(bloqueCopia> cantBloques || bloqueCopia<0){
 						return 0;
