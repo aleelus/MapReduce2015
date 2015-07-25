@@ -25,7 +25,7 @@
 
 
 sem_t semaforo,semaforoH,semaforoScript,semaforoGrabar,semaforoSetBloque,semaforoGetBloque,semaforoNodo;
-sem_t semCon,semPermiso,semMunmap,contador,semaforoReduce,semaforoMapper,semLBloques;
+sem_t semCon,semPermiso,semMunmap,contador,semaforoReduce,semaforoMapper,semLBloques,semaforoMmap;
 
 #define COLOR_VERDE   			"\x1b[32m"
 #define DEFAULT   				"\x1b[0m"

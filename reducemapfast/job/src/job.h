@@ -20,9 +20,9 @@
 #include <semaphore.h>
 #include <netdb.h>
 
-int contador;
+int contador,contadorReduce;
 
-sem_t semaforoLogger, semaforoMarta, semaforoNodo,semAux;
+sem_t semaforoLogger, semaforoMarta, semaforoNodo,semAux,semContador,semCantLista;
 
 // CONSTANTES //
 //Ruta del config
@@ -61,6 +61,14 @@ typedef struct {
 	char *archResultado;
 	char * buffer;
 }t_job_a_nodo;
+
+typedef struct {
+	char *nodo;
+	char *bloque;
+	int emisor;
+}t_marta;
+
+void enviarAMarta();
 
 int conectarNodo(t_job_a_nodo el_job,int socket_nodo,int emisor);
 t_job_a_nodo *procesoJob (char *);
@@ -107,3 +115,7 @@ void Error(const char* mensaje, ...);
 
 // Logger del commons
 t_log* logger;
+
+
+
+t_list* lista_RMarta;

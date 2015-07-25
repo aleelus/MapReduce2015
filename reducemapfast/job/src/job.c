@@ -19,8 +19,10 @@ int main(int argv, char** argc) {
 
 	sem_init(&semaforoLogger, 0, 1);
 	sem_init(&semaforoMarta,0,0);
-	sem_init(&semaforoNodo,1,1);
-	sem_init(&semAux,1,1);
+	sem_init(&semaforoNodo,0,1);
+	sem_init(&semContador,0,1);
+	sem_init(&semAux,0,1);
+	sem_init(&semCantLista,0,0);
 	//sem_init(&semaforo,1,0);
 	//sem_init(&semaforoJob,1,0);
 	// Instanciamos el archivo donde se grabará lo solicitado por consola
@@ -36,12 +38,16 @@ int main(int argv, char** argc) {
 	char *bufferRafaga_Dos=string_new();
 	char *bufferRafaga_Uno=string_new();
 	bufferANodo=string_new();
+	lista_RMarta = list_create();
+
+	enviarAMarta();
 
 	//Flags
 	int cantidadRafagaMarta=1, cantRafaga=1;
 	int desconexionCliente = 0;
 	int g_Ejecutando = 1;
 	contador=0;
+	contadorReduce=0;
 
 	//Tamaños iniciales y contadores
 	int tamanio=10;
@@ -130,8 +136,11 @@ int main(int argv, char** argc) {
 					printf("Recibe Planificacion de Marta: %s\n",buffer);
 
 					// Buffer para los nodos
+					sem_wait(&semaforoNodo);
 					el_job->buffer=string_new();
+
 					string_append(&el_job->buffer,buffer);
+					sem_post(&semaforoNodo);
 
 					// Aca hay que crear un nuevo hilo, que será el encargado de atender al nodo
 					pthread_t hNuevoCliente;
@@ -175,10 +184,62 @@ int cuentaDigitos(int valor){
 	return cont;
 }
 
+void envioAMarta(){
+	char* bufferAMartaDos=string_new();
+	t_marta* marta;
+	while(1){
+		sem_wait(&semaforoMarta);
+		sem_wait(&semCantLista);
+		sem_wait(&semAux);
+		marta = list_get(lista_RMarta,0);
+
+		if(marta == NULL){
+			printf("Que mierda\n");
+			abort();
+		}
+
+		if(marta->emisor==1){
+			sem_wait(&semContador);
+			printf(COLOR_VERDE"RECIBO OK DEL NODO (map): %s--%s"DEFAULT"    contador: %d\n",marta->bloque,marta->nodo,contador);
+			contador++;
+			sem_post(&semContador);
+
+		} else if(marta->emisor==2){
+			sem_wait(&semContador);
+			contadorReduce++;
+			printf(COLOR_VERDE"RECIBO OK DEL NODO (reduce): %s--%s"DEFAULT"	contador:%d\n",marta->bloque,marta->nodo,contadorReduce);
+			sem_post(&semContador);
+		}
+
+
+		string_append(&bufferAMartaDos,"23");
+		string_append(&bufferAMartaDos,obtenerSubBuffer(marta->bloque));
+		string_append(&bufferAMartaDos,obtenerSubBuffer(marta->nodo));
+
+		EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
+
+		free(marta->bloque);
+		free(marta->nodo);
+		list_remove(lista_RMarta,0);
+
+		sem_post(&semAux);
+
+		bufferAMartaDos=string_new();
+	}
+}
+
+void enviarAMarta(){
+	pthread_t hEnvioMarta;
+	pthread_create(&hEnvioMarta, NULL, (void*) envioAMarta,NULL);
+}
+
 
 int AtiendeCliente(void * arg) {
 	t_job_a_nodo *el_job = (t_job_a_nodo*) arg;
+	sem_wait(&semaforoNodo);
 	char *buff=el_job->buffer;
+	sem_post(&semaforoNodo);
+
 	char *aux=string_new();
 	char * bufferANodo=string_new();
 	int emisor=0;
@@ -437,93 +498,30 @@ int AtiendeCliente(void * arg) {
 					pthread_exit(NULL);
 
 				}else if (emisor==1){
-
-					sem_wait(&semaforoMarta);
-					printf(COLOR_VERDE"RECIBO OK DEL NODO (map): %s--%s"DEFAULT"    contador: %d\n",el_job->bloque,el_job->nodo,contador);
-					string_append(&bufferAMartaDos,"23");
-					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
-					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
-
-					string_append(&bufferAMartaUno,"2");
-					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
-					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
-
-					contador++;
-
-
-
-
-					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-
-					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
-
-					/*cantRafaga=1;
-					tamanio=20;
-					free(bufferR);
-					bufferR = string_new();
-					bufferR = RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
-
-
-					printf("Recibo: %s  (%s-%s)\n",bufferR,el_job->bloque,el_job->nodo);*/
-					/*int p,bandera=0;
-					for(p=0;p<strlen(bufferR);p++){
-						if(bufferR[p]=='*'){
-							bandera=1;
-						}
-					}
-
-					if(bandera == 0){
-						printf("NO ASTERISCO!!!\n)");
-						return 0;
-					}*/
-
-					//sleep(3);
-					//sem_post(&semaforoMarta);
-
-
-					bufferAMartaDos=string_new();
-					bufferAMartaUno=string_new();
+					sem_wait(&semAux);
+					t_marta* marta = malloc(sizeof(t_marta));
+					marta->bloque = string_new();
+					marta->nodo = string_new();
+					string_append(&marta->bloque,el_job->bloque);
+					string_append(&marta->nodo,el_job->nodo);
+					marta->emisor = emisor;
+					list_add(lista_RMarta,marta);
+					sem_post(&semCantLista);
+					sem_post(&semAux);
 					pthread_exit(NULL);
 
 				}else if(emisor == 2){
-					sem_wait(&semaforoMarta);
-					printf(COLOR_VERDE"RECIBO OK DEL NODO (reduce): %s--%s\n"DEFAULT,el_job->bloque,el_job->nodo);
-					string_append(&bufferAMartaDos,"23");
-					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->bloque));
-					string_append(&bufferAMartaDos,obtenerSubBuffer(el_job->nodo));
+					sem_wait(&semAux);
+					t_marta* marta = malloc(sizeof(t_marta));
+					marta->bloque = string_new();
+					marta->nodo = string_new();
+					string_append(&marta->bloque,el_job->bloque);
+					string_append(&marta->nodo,el_job->nodo);
+					marta->emisor = emisor;
+					list_add(lista_RMarta,marta);
+					sem_post(&semCantLista);
+					sem_post(&semAux);
 
-
-					string_append(&bufferAMartaUno,"2");
-					string_append(&bufferAMartaUno,string_itoa(cuentaDigitos(strlen(bufferAMartaDos))));
-					string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
-
-
-					//HAY QUE VER BIEN PORQUE NO ANDA CON EL RECIBIR EN EL MEDIO
-
-					//RAFAGA 1
-					//printf("---bufferAMartaUno : %s\n",bufferAMartaUno);
-
-					EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
-					//sem_post(&semaforoMarta);
-
-
-					//RAFAGA 2
-					//printf("---bufferAMartaDos : %s\n",bufferAMartaDos);
-					//sem_wait(&semaforoMarta);
-					EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
-
-
-					/*cantRafaga=1;
-					free(bufferR);
-					bufferR = string_new();
-					bufferR = RecibirDatos(socket_Marta, bufferR, &bytesRecibidos,&cantRafaga,&tamanio);
-
-					printf("Recibo: %s  (%s-%s)\n",bufferR,el_job->bloque,el_job->nodo);*/
-
-					//sleep(3);
-					//sem_post(&semaforoMarta);
-					bufferAMartaUno=string_new();
-					bufferAMartaDos=string_new();
 					buffer=string_new();
 
 					pthread_exit(NULL);
@@ -548,7 +546,7 @@ int AtiendeCliente(void * arg) {
 				string_append(&bufferAMartaUno,string_itoa(strlen(bufferAMartaDos)));
 
 
-				EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
+				//EnviarDatos(socket_Marta,bufferAMartaUno, strlen(bufferAMartaUno));
 
 				EnviarDatos(socket_Marta,bufferAMartaDos, strlen(bufferAMartaDos));
 

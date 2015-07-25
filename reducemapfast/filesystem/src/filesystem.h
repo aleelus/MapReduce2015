@@ -44,7 +44,7 @@
 #define BUFFERSIZE 				50					//Tamaño del buffer
 
 
-sem_t semLNodos,semHilos,semArchivos,semTamanioTotal;
+sem_t semLNodos,semHilos,semArchivos,semTamanioTotal,semLFs;
 
 // TIPOS //
 typedef enum {
