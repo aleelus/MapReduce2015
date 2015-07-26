@@ -187,7 +187,7 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 	t_archivo * el_archivo = malloc(sizeof(t_archivo));
 	t_bloque * el_bloque = malloc(sizeof(t_bloque));
 	t_nodo * el_nodo = malloc(sizeof(t_nodo));
-
+	t_array_copias * la_copia= malloc(sizeof(t_array_copias));
 	//BUFFER RECIBIDO = 4270 (EJEMPLO)
 	//BUFFER RECIBIDO = 4112220temperatura-2012.txt220temperatura-2013.txt
 	//Ese 3 que tenemos abajo es la posicion para empezar a leer el buffer 411
@@ -226,16 +226,18 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 				string_append(&*bufferE,string_itoa(list_size(el_archivo->listaBloques)));
 				for(i=0;i<list_size(el_archivo->listaBloques);i++){
 					el_bloque = list_get(el_archivo->listaBloques,i);
-					for(k=0;k<3;k++){
-						if((el_bloque->array+k)!=NULL){
-							string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nombreNodo));
+					for(k=0;k<list_size(el_bloque->listaCopias);k++){
+						la_copia = list_get(el_bloque->listaCopias,k);
+						if(la_copia != NULL){
+							string_append(&*bufferE,obtenerSubBuffer(la_copia->nombreNodo));
 							bool _true(void *elem){
-								return (!strcmp((char*)elem,el_bloque->array[k].nombreNodo));
+								return (!strcmp((char*)elem,la_copia->nombreNodo));
 							}
 							if(!list_any_satisfy(nodos,_true)){
-								list_add(nodos,el_bloque->array[k].nombreNodo);
+								list_add(nodos,la_copia->nombreNodo);
 							}
-							string_append(&*bufferE,obtenerSubBuffer(el_bloque->array[k].nro_bloque));
+							string_append(&*bufferE,"Bloque"); //Le agrego la palabra que le habia sacado de antes
+							string_append(&*bufferE,obtenerSubBuffer(la_copia->nro_bloque));
 						}
 					}
 				}
@@ -592,9 +594,10 @@ void RecorrerNodosYBloques(){
 void RecorrerListaBloques(){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
-
+	t_array_copias * la_copia;
 	int i=0;
 	int j=0;
+	int k=0;
 
 	while(i<list_size(lista_archivos)){
 		el_archivo = list_get(lista_archivos, i);
@@ -602,16 +605,15 @@ void RecorrerListaBloques(){
 
 		while(j<list_size(el_archivo->listaBloques)){
 			el_bloque = list_get(el_archivo->listaBloques, j);
-			printf("%d :: ",el_bloque->bloque);
-			printf("Copia1:\n");
-			printf("%s--",el_bloque->array[0].nombreNodo);
-			printf("%s  ",el_bloque->array[0].nro_bloque);
-			printf("Copia2:\n");
-			printf("%s--",el_bloque->array[1].nombreNodo);
-			printf("%s  ",el_bloque->array[1].nro_bloque);
-			printf("Copia3:\n");
-			printf("%s--",el_bloque->array[2].nombreNodo);
-			printf("%s  \n",el_bloque->array[2].nro_bloque);
+			printf("%d :: \n",el_bloque->bloque);
+			while(k<list_size(el_bloque->listaCopias)){
+			la_copia = list_get(el_bloque->listaCopias,k);
+			printf("Copia %d: ", (k+1));
+			printf("%s--",la_copia->nombreNodo);
+			printf("%s  \n",la_copia->nro_bloque);
+			k++;
+			}
+			k=0;
 			j++;
 		}
 		j=0;
@@ -1449,6 +1451,7 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 		t_nodo* el_nodo;
 		t_array_nodo* nodo;
 		t_envio_nodo* envio_nodo;
+		t_array_copias * la_copia= malloc(sizeof(t_array_copias));
 		ordenarArrayNodos();
 		nroNodo = buscarNodoEnArray((*bloque)->bloque);
 		if(nroNodo!=-1){
@@ -1477,11 +1480,15 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 			pthread_join(henviarNodos, NULL );
 
 			char *nombre = string_new();
-			string_append(&nombre,"Bloque");
+			//string_append(&nombre,"Bloque"); //Lo comento para poder liberar los bloques, sino no tengo como saber el numero de bloque
 			string_append(&nombre,string_itoa(bloqueDisponible));
 
-			(*bloque)->array[j].nombreNodo=nodo->nombre;
-			(*bloque)->array[j].nro_bloque=nombre;
+			la_copia->nombreNodo=nodo->nombre;
+			la_copia->nro_bloque=nombre;
+
+			list_add((*bloque)->listaCopias,la_copia);
+			//(*bloque)->array[j].nombreNodo=nodo->nombre;
+			//(*bloque)->array[j].nro_bloque=nombre;
 
 
 
@@ -1614,10 +1621,10 @@ int getBloque(int nroBloque,char* ip,char*puerto,char**buffer){
 	return 0;
 }
 
-int pedirBloque(int nroBloque, t_array_copias copia,char** buffer){
+int pedirBloque(int nroBloque, t_array_copias* copia,char** buffer){
 	t_nodo * nodo;
-	char** array = string_split(copia.nro_bloque,"e");
-	nodo = buscarNodoPorNombre(copia.nombreNodo);
+	char** array = string_split(copia->nro_bloque,"e");
+	nodo = buscarNodoPorNombre(copia->nombreNodo);
 	if (nodo!=NULL){
 		if(nodo->estado==1){
 			if(getBloque(atoi(array[1]),nodo->ip,nodo->puerto,buffer)){
@@ -1645,8 +1652,14 @@ int recuperarArchivo(FILE *fArchivo,int padre, char*nombre){
 				int l = 0;
 				t_bloque * bloque = malloc(sizeof(t_bloque));
 				bloque = list_get(listaBloques,j);
-				while(!pedirBloque(bloque->bloque,bloque->array[l++],&buffer))
-					if(l==3) return 0;
+				t_array_copias * copia = malloc(sizeof(t_array_copias));
+				copia = list_get(bloque->listaCopias,l);
+				while(!pedirBloque(bloque->bloque,copia,&buffer)){
+					if(l>list_size(bloque->listaCopias)) return 0;
+					l++;
+					copia = list_get(bloque->listaCopias,l);
+				}
+					if(l>list_size(bloque->listaCopias)) return 0;
 				fwrite(buffer,sizeof(char),strlen(buffer),fArchivo);
 			}
 			fclose(fArchivo);
@@ -1680,20 +1693,20 @@ int procesarArchivo(){
 
 void eliminarFilesystem(){
 	int i = 0;
-	while(i<list_size(lista_filesystem)){
+	while(list_size(lista_filesystem)!=0){
 		t_filesystem* filesystemEliminar= list_get(lista_filesystem,i);
 		borrar_filesystem_mongo(filesystemEliminar);
-		list_remove_and_destroy_element(lista_filesystem,i++,(void*)filesystem_destroy);
+		list_remove_and_destroy_element(lista_filesystem,i,(void*)filesystem_destroy);
 	}
 	//free(lista_filesystem);
 }
 
 void eliminarArchivos(){
 	int i = 0;
-	while(i<list_size(lista_archivos)){
+	while(list_size(lista_archivos)!=0){
 		t_archivo* archEliminar = list_get(lista_archivos,i);
 		borrar_archivo_mongo(archEliminar);
-		list_remove_and_destroy_element(lista_archivos,i++,(void*)archivo_destroy);
+		list_remove_and_destroy_element(lista_archivos,i,(void*)archivo_destroy);
 	}
 	//free(lista_archivos);
 }
@@ -1857,7 +1870,6 @@ int moverDirectorio(){
 			return ((((t_filesystem*) elem)->index==indeX)&&(!strcmp(((t_filesystem*) elem)->directorio,directorio)));
 		}
 		fs = list_find(lista_filesystem,_true);
-		t_filesystem* fs2 = list_find(lista_filesystem,_true); //Para actualizar el mongo
 		correcto=0;
 		padre=0;
 		k=0;
@@ -1895,8 +1907,9 @@ int moverDirectorio(){
 			if(strcmp(destino,"/")){
 				indexDestino=validarDirectorio(destino,padre);
 				if(indexDestino>0){
+					borrar_filesystem_mongo(fs);
 					fs->padre = indexDestino;
-					grabar_filesystem_mongo(fs2,fs);
+					crear_filesystem_mongo(fs);
 					printf("Se ha realizado el movimiento con exito!");
 					return 1;
 				} else {
@@ -1904,8 +1917,9 @@ int moverDirectorio(){
 					return 0;
 				}
 			} else {
+				borrar_filesystem_mongo(fs);
 				fs->padre = 0;
-				grabar_filesystem_mongo(fs2,fs);
+				crear_filesystem_mongo(fs);
 				printf("Se ha realizado el movimiento con exito!");
 				return 1;
 			}
@@ -2021,6 +2035,127 @@ int renombrarArchivo(){
 	}
 }
 
+void liberarBloquesArchivo(t_archivo * el_archivo){
+
+	t_bloque * el_bloque;
+	t_array_copias * la_copia;
+
+			int j=0;
+			int k=0;
+			printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
+
+		while(j<list_size(el_archivo->listaBloques)){
+			el_bloque = list_get(el_archivo->listaBloques, j);
+
+			while(list_size(el_bloque->listaCopias)!=0){
+			la_copia = list_remove(el_bloque->listaCopias,k);
+			t_nodo* el_nodo = buscarNodoPorNombre(la_copia->nombreNodo);
+			int liberarBloque = CharAToInt(la_copia->nro_bloque);
+			borrar_nodo_mongo(el_nodo);
+			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(liberarBloque));
+			crear_nodo_mongo(el_nodo);
+            free(la_copia);
+            k++;
+			}
+			k=0;
+			j++;
+		}
+		archivo_destroy(el_archivo);
+}
+
+
+int eliminarArchivo(){
+
+	char pathConArchivo[100];
+	char* nombreArchivo = malloc(sizeof(char)*30);
+	int padre;
+	mostrarFilesystem();
+
+	printf("Ingrese la ruta completa con el nombre del archivo para eliminar\n ");
+	printf("Ejemplo: /home/utnso/temperatura.txt\n");
+	scanf("%s",pathConArchivo);
+	fflush(stdin);
+
+	padre = validarDirectorios(pathConArchivo,&nombreArchivo);
+	if(padre!=-1){
+		t_archivo* archivo = buscarArchivoPorNombre(nombreArchivo,padre);
+			if(archivo!=NULL){
+				borrar_archivo_mongo(archivo);
+				liberarBloquesArchivo(archivo);
+			}
+
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+int moverArchivo(){
+
+	char pathConArchivo[100];
+	char* nombreArchivo = malloc(sizeof(char)*30);
+	int padre1;
+	mostrarFilesystem();
+	char directorio[50];
+	int correcto = 0;
+	char * path = string_new();
+
+
+
+	printf("Ingrese la ruta completa con el nombre del archivo para mover\n ");
+	printf("Ejemplo: /home/utnso/temperatura.txt\n");
+	scanf("%s",pathConArchivo);
+	fflush(stdin);
+
+	padre1 = validarDirectorios(pathConArchivo,&nombreArchivo);
+	if(padre1!=-1){
+
+		int j=0,padre=0,k;
+				while(!correcto){
+					mostrarFilesystem();
+					printf("Ingrese de un directorio a donde mover el archivo: ejemplo: home\n");
+					printf("Path Ingresados:%s\n",path);
+					printf("Ingrese directorio o 1 para confirmar o 0 volver a empezar: ");
+					scanf("%s",directorio);
+					fflush(stdin);
+					//printf("PADRE INICIO:%d\n",padre);
+					if(strcmp(directorio,"1")){
+						if(!strcmp(directorio,"0")){
+								j=0;
+								path=string_new();
+						} else {
+							if(j==0){
+								k=validarDirectorio(directorio,0);
+							} else {
+								k=validarDirectorio(directorio,padre);
+							}
+							if(k!=0){
+								padre=k;
+								string_append(&path,"/");
+								string_append(&path,directorio);
+								j++;
+							}
+						}
+					} else {
+						correcto = 1;
+						//printf("PADRE FIN:%d\n",padre);
+					}
+					//system("clear");
+				}
+
+		t_archivo* archivo = buscarArchivoPorNombre(nombreArchivo,padre1);
+			if(archivo!=NULL){
+				borrar_archivo_mongo(archivo);
+				archivo->padre= padre;
+				crear_archivo_mongo(archivo);
+			}
+
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 int manejoDeArchivos(){
 	int seleccion;
 	mostrarFilesystem();
@@ -2029,13 +2164,13 @@ int manejoDeArchivos(){
 	scanf("%d", &seleccion);
 	switch(seleccion){
 		case 1: printf("Se eligio Eliminar\n");
-				return eliminarDirectorio();
+				return eliminarArchivo();
 				break;
 		case 2: printf("Se eligio Renombrar\n");
 				return renombrarArchivo();
 				break;
 		case 3: printf("Se eligio Mover\n");
-				return moverDirectorio();
+				return moverArchivo();
 				break;
 		default: printf("Se ha ingresado un comando incorrecto.\n");
 				break;
@@ -2180,9 +2315,14 @@ int recuperarArchivoMD5(FILE *fArchivo,int padre, char*nombre){
 			for(j=0;j<i;j++){
 				int l = 0;
 				t_bloque * bloque = malloc(sizeof(t_bloque));
-				bloque = list_get(listaBloques,j);
-				while(!pedirBloque(bloque->bloque,bloque->array[l++],&buffer))
-					if(l==3) return 0;
+				t_array_copias * copia = malloc(sizeof(t_array_copias));
+				copia = list_get(bloque->listaCopias,l);
+				while(!pedirBloque(bloque->bloque,copia,&buffer)){
+				if(l>list_size(bloque->listaCopias)) return 0;
+				l++;
+				copia = list_get(bloque->listaCopias,l);
+				}
+				if(l>list_size(bloque->listaCopias)) return 0;
 				fwrite(buffer,sizeof(char),strlen(buffer),fArchivo);
 			}
 			fclose(fArchivo);
@@ -2400,6 +2540,7 @@ void levantarConfig() {
 
 t_bloque *bloque_create(int bloque) {
 	t_bloque *new = malloc(sizeof(t_bloque));
+	new->listaCopias  = list_create();
 	new->bloque   = bloque;
 	return new;
 }
@@ -2414,6 +2555,7 @@ void archivo_destroy(t_archivo* self) {
 }
 
 void bloque_destroy(t_bloque* self) {
+	free(self->listaCopias);
 	free(self);
 }
 
@@ -2454,10 +2596,10 @@ void nodo_destroy(t_nodo* self) {
 	free(self);
 }
 
-t_array_copias* array_copias_create(char* nombre, int bloque){
+t_array_copias* array_copias_create(char* nombre, char* bloque){
 	t_array_copias* new = malloc(sizeof(t_array_copias));
-	new->nombreNodo = nombre;
-	new->nro_bloque = string_itoa(bloque);
+	new->nombreNodo = strdup(nombre);
+	new->nro_bloque = strdup(bloque);
 	return new;
 }
 
@@ -2810,13 +2952,12 @@ bson_t* armar_archivo_mongo(t_archivo*el_archivo, bson_t *listaBloques, bson_t *
 
 
 			bson_append_int32((void*)listaBloques, "bloque", 6, el_bloque->bloque);
-			bson_append_array_begin((void*)listaBloques, "copias", 6, (void*)copiasArray);
+			bson_append_array_begin((void*)listaBloques, "copias", 6, copiasArray);
 			int i ;
-			for (i= 0; i < 3; i++) {
+			for (i= 0; i < list_size(el_bloque->listaCopias); i++) {
 
 				t_array_copias* la_copia = malloc(sizeof(t_array_copias));
-				la_copia->nombreNodo = el_bloque->array[i].nombreNodo; //Chequear si tiene que arrancar en 0 para el primer elemento
-				la_copia->nro_bloque = el_bloque->array[i].nro_bloque;
+				la_copia = list_get(el_bloque->listaCopias,i);
 
 				bson_append_utf8((void*)copiasArray, "nombreNodo", 10, la_copia->nombreNodo, strlen(la_copia->nombreNodo));
 				bson_append_utf8((void*)copiasArray, "nroBloque", 9, la_copia->nro_bloque, strlen(la_copia->nro_bloque));
@@ -2911,7 +3052,9 @@ int leer_archivo_mongo(){
 	long unsigned tamanio;
 	t_bloque* el_bloque;
 	int bloque;
-	//t_array_copias* el_array =malloc(sizeof (t_array_copias));
+	t_array_copias* la_copia;
+	char * nombreNodoC;
+	char * nro_bloqueC;
 
 	query  = bson_new ();
 
@@ -2953,13 +3096,18 @@ int leer_archivo_mongo(){
 		        			 while(bson_iter_next(&child2)){
 
 		        			// if(bson_iter_find(&child2,"nombreNodo")){
-		        				 el_bloque->array[i].nombreNodo =strdup(bson_iter_utf8(&child2,NULL));
+		        				 nombreNodoC=string_new();
+		        				 string_append(&nombreNodoC,strdup(bson_iter_utf8(&child2,NULL)));
 		        			 //}
 		        			 if(bson_iter_next(&child2)){
-		        				 el_bloque->array[i].nro_bloque = strdup(bson_iter_utf8(&child2,NULL));
+		        				 nro_bloqueC=string_new();
+		        				 string_append(&nro_bloqueC,strdup(bson_iter_utf8(&child2,NULL)));
 		        				 }
 
 		        			 i++;
+		        			 la_copia = array_copias_create(nombreNodoC,nro_bloqueC);
+		        			 list_add(el_bloque->listaCopias,la_copia);
+		        			 printf("CARGO EL ELEMNTO %d que es %s del %s \n",list_size(el_bloque->listaCopias),la_copia->nombreNodo,la_copia->nro_bloque);
 		        			 }
 
 
@@ -3018,7 +3166,7 @@ void cargar_listas_mongo(){
 int verBloquesArchivo(){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
-
+	t_array_copias * la_copia;
 		char pathConArchivo[100];
 		char* nombreArchivo = malloc(sizeof(char)*30);
 		int padre;
@@ -3036,21 +3184,21 @@ int verBloquesArchivo(){
 
 
 			int j=0;
-
+			int k=0;
 			printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
 
 		while(j<list_size(el_archivo->listaBloques)){
 			el_bloque = list_get(el_archivo->listaBloques, j);
-			printf("%d :: ",el_bloque->bloque);
-			printf("Copia1:\n");
-			printf("%s--",el_bloque->array[0].nombreNodo);
-			printf("%s  ",el_bloque->array[0].nro_bloque);
-			printf("Copia2:\n");
-			printf("%s--",el_bloque->array[1].nombreNodo);
-			printf("%s  ",el_bloque->array[1].nro_bloque);
-			printf("Copia3:\n");
-			printf("%s--",el_bloque->array[2].nombreNodo);
-			printf("%s  \n",el_bloque->array[2].nro_bloque);
+			printf("%d :: \n",el_bloque->bloque);
+
+			while(k<list_size(el_bloque->listaCopias)){
+			la_copia = list_get(el_bloque->listaCopias,k);
+			printf("Copia %d: ", (k+1));
+			printf("%s--",la_copia->nombreNodo);
+			printf("%s  \n",la_copia->nro_bloque);
+			k++;
+			}
+			k=0;
 			j++;
 		}
 		return 1;
@@ -3063,6 +3211,7 @@ int verBloquesArchivo(){
 int borrarBloquesArchivo(){
 	t_archivo * el_archivo;
 	t_bloque * el_bloque;
+	t_array_copias * la_copia;
 
 		char pathConArchivo[100];
 		char* nombreArchivo = malloc(sizeof(char)*30);
@@ -3090,29 +3239,33 @@ int borrarBloquesArchivo(){
 			}
 			el_bloque = list_get(el_archivo->listaBloques,bloqueBorrar);
 			int i = 0;
-			printf("%d :: ",el_bloque->bloque);
+			printf("%d :: \n",el_bloque->bloque);
 
-			while(i<3){
-			printf("Copia %d:",(i+1));
-			printf("%s--",el_bloque->array[0].nombreNodo);
-			printf("%s  \n",el_bloque->array[0].nro_bloque);
+			while(i<list_size(el_bloque->listaCopias)){
+			la_copia = list_get(el_bloque->listaCopias,i);
+			printf("Copia %d: ", (i+1));
+			printf("%s--",la_copia->nombreNodo);
+			printf("%s  \n",la_copia->nro_bloque);
 			i++;
 			}
+
 			char copiaIng[10];
 			int copiaBorrar;
 			printf("Ingrese la copia a borrar\n");
 						scanf("%s",copiaIng);
 						copiaBorrar = CharAToInt(copiaIng);
 						fflush(stdin);
-						if(copiaBorrar> 3 || copiaBorrar<0){
+						if(copiaBorrar> list_size(el_bloque->listaCopias) || copiaBorrar<0){
 							return 0;
 						}
-			t_nodo* el_nodo = buscarNodoPorNombre(el_bloque->array[copiaBorrar].nombreNodo);
-			int liberarBloque = CharAToInt(el_bloque->array[copiaBorrar].nro_bloque);
+			la_copia = list_remove(el_bloque->listaCopias,copiaBorrar);
+			t_nodo* el_nodo = buscarNodoPorNombre(la_copia->nombreNodo);
+			int liberarBloque = CharAToInt(la_copia->nro_bloque);
+			borrar_nodo_mongo(el_nodo);
 			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(liberarBloque));
-			el_bloque->array[copiaBorrar].nombreNodo="Vacio";
-			el_bloque->array[copiaBorrar].nro_bloque="0";
+			crear_nodo_mongo(el_nodo);
 
+			free(la_copia);
 			return 1;
 	} else {
 		return 0;

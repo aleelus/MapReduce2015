@@ -82,12 +82,13 @@ typedef struct {
 typedef struct {
 	char *nombreNodo;
 	char *nro_bloque;
+	int activo;
 } t_array_copias;							//Tipo Bloque
 
 
 typedef struct {
 	int bloque;
-	t_array_copias array[3];
+	t_list *listaCopias;
 } t_bloque;						//Tipo Bloques
 
 typedef struct{
@@ -201,7 +202,7 @@ void nodo_destroy(t_nodo*);
 void archivo_destroy(t_archivo*);
 t_array_nodo *array_nodo_create(char *);
 t_envio_nodo *envio_nodo_create(char *,char*,char*,int);
-t_array_copias* array_copias_create(char* nombre, int bloque);
+t_array_copias* array_copias_create(char* nombre, char* bloque);
 t_bloque_disponible *bloque_disponible_create(int);
 int sendall(int s, char *buf, long unsigned *len);
 int buscarNodoEnArrayPorNombre(char *);
@@ -243,3 +244,4 @@ int leer_archivo_mongo();
 void cargar_listas_mongo();
 int manejoDeBloques();
 int verBloquesArchivo();
+void RecorrerListaBloques();
