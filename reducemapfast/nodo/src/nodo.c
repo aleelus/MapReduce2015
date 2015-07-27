@@ -392,16 +392,16 @@ int enviarDatos(int socket, void *buffer) {
 int runScriptFile(char* script,char* archNom, char* input)
 {
 
-      int a[2],cont=0,status;
-      long unsigned tamanio;
-      pipe(a);
-      char **array = string_split(script,"/");
-      while(array[cont]!=NULL){
-    	  cont++;
-      }
-
-    char *argv[]={ array[cont-1], "-q", 0};
-    if(!fork()) {
+	int a[2],cont=0,status;
+    long unsigned tamanio;
+    pipe(a);
+    char **array = string_split(script,"/");
+    while(array[cont]!=NULL){
+    	cont++;
+     }
+     char *argv[]={ array[cont-1], "-q", 0};
+     printf("ARCHIVO GUARDADO:%s SCRIPT:%s\n",archNom,script);
+     if(!fork()) {
 
     	close(a[1]);
 
@@ -424,10 +424,60 @@ int runScriptFile(char* script,char* archNom, char* input)
 
 		close(a[0]);
 		if(input[TAMANIO_BLOQUE-1]==0){
+			printf("ES CERO\n");
 			tamanio = strlen(input);
 		} else {
 			tamanio = TAMANIO_BLOQUE;
+			printf("NO es cero sino:%lu\n",tamanio);
 		}
+
+		write(a[1],input,tamanio);
+
+		close(a[1]);
+		wait(&status);
+
+
+    }
+
+    return 1;
+}
+
+int runScriptFileBloqueGrande(char* script,char* archNom, char* input)
+{
+
+	int a[2],cont=0,status;
+    long unsigned tamanio;
+    pipe(a);
+    char **array = string_split(script,"/");
+    while(array[cont]!=NULL){
+    	cont++;
+     }
+     char *argv[]={ array[cont-1], "-q", 0};
+     printf("ARCHIVO GUARDADO:%s SCRIPT:%s\n",archNom,script);
+     if(!fork()) {
+
+    	close(a[1]);
+
+    	dup2(a[0],STDIN_FILENO);
+
+    	close(STDOUT_FILENO);
+
+    	open(archNom, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+
+    	close(a[0]);
+        dup(STDOUT_FILENO);
+
+        execl(argv[0],argv[0],NULL);
+        exit(0);
+
+
+
+
+    } else {
+
+		close(a[0]);
+
+		tamanio = strlen(input);
 
 		write(a[1],input,tamanio);
 
@@ -1181,7 +1231,7 @@ void subirArchivoAFilesystem(char *nombreArchivoFinal){
 	string_append(&bufferE,obtenerSubBuffer(nombreArchivoFinal));
 
 	//Primera Rafaga
-	//printf("Primer Rafaga a FS:%s\n",bufferE);
+	printf("Primer Rafaga a FS:%s\n",bufferE);
 	sem_wait(&semCon);
 	EnviarDatos(socket_Fs,bufferE, strlen(bufferE));
 	sem_post(&semCon);
@@ -1191,7 +1241,7 @@ void subirArchivoAFilesystem(char *nombreArchivoFinal){
 	//Recibo respuesta de FS
 	if(bufferR!=NULL){
 		//Segunda Rafaga
-//	    printf("Segunda Rafaga a FS:%s\n",buffer);
+	    //printf("Segunda Rafaga a FS:%s\n",buffer);
 	//    printf("Tamaño del buffer:%d\n",strlen(buffer));
 		long unsigned len = strlen(buffer);
 		if (sendall(socket_Fs, buffer, &len) == -1) {
@@ -1227,9 +1277,9 @@ void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,
 	long unsigned posicion=0;
 
 	char * aux;
-
-	char * buffer = malloc((1024*1024*200)+1);
-	memset(buffer,0,(1024*1024*200)+1);
+	FILE * posta = fopen("seba.txt", "w");
+	char * buffer = malloc((1024*1024*300)+1);
+	memset(buffer,0,(1024*1024*300)+1);
 	float cuenta;
 	printf("\n");
 	long unsigned j;
@@ -1255,12 +1305,14 @@ void script_Reduce_Sin_Combiner(t_list**bloques,t_list* nodos,char*nombreScript,
 	}
 
 
+	fwrite(buffer,1,strlen(buffer),posta);
+	fclose(posta);
 	char **array = string_split(nombreArchivoFinal,"/");
 	while(array[cont]!=NULL){
 		  cont++;
 	}
 	sem_wait(&semaforoScript);
-	runScriptFile(nombreScript,array[cont-1],buffer);
+	runScriptFileBloqueGrande(nombreScript,array[cont-1],buffer);
 	sem_post(&semaforoScript);
 
 	free(buffer);
@@ -1459,7 +1511,7 @@ int procesarRutinaMap(t_job * job){
 
 int procesarRutinaReduce(t_job * job){
 	sem_wait(&semaforoMapper);
-	printf("Se solicitar aplicar Reduce:%s\n",job->nombreSH);
+	printf("Se solicita aplicar Reduce:%s\n",job->nombreSH);
 	char *aux = string_new();
 	string_append(&aux,job->bloque);
 	string_append(&aux,".sh");
@@ -1678,6 +1730,7 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 			posActual = 1;
 			nombreResultado = DigitosNombreArchivo(bufferR,&posActual);
 			//printf("ARCHIVO DE RESULTAD:%s\n",nombreResultado);
+			printf("Se solicita cantidad lineas del archivo:%s\n",nombreResultado);
 			cantidadLineas = cantidadLineasArchivo(nombreResultado,&tamanioArchivo);
 			//printf("Cantidad Lineas:%lu\n",cantidadLineas);
 			string_append(&bufferE,obtenerSubBuffer(string_itoa(cantidadLineas)));
@@ -1697,6 +1750,7 @@ void atiendeNodo(int socket, char * buffer,int * cantRafaga,char ** mensaje,int*
 			//printf("************************DAME LINEA*****************************************\n");
 			posActual = 1;
 			nombreResultado = DigitosNombreArchivo(bufferR,&posActual);
+			printf("Se solicita una linea del archivo:%s\n",nombreResultado);
 			long unsigned fCur;
 			fCur = ObtenerLu(DigitosNombreArchivo(bufferR,&posActual));
 			char * linea = dameLinea(nombreResultado,fCur);
@@ -1744,7 +1798,6 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 	*cantRafaga = 2;
 	bufferR = RecibirDatos(socket, bufferR, &bytesRecibidos,cantRafaga,tamanio);
 	int tipo_mensaje = ObtenerComandoMSJ(bufferR+1);
-	printf("-----------------------------------------------------------------------------\n");
 	switch(tipo_mensaje){
 		case MAPPING:
 			AtiendeJob(&job,bufferR,cantRafaga);
@@ -1761,10 +1814,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 				//No pudo hacerla
 				*mensaje="30";
 			}
-			printf("-----------------------------------------------------------------------------\n");
 			break;
 		case REDUCE_COMBINER:
 			//4215NodoB19127.0.0.114600117Bloque1220Reduce2resultado.txt
+			printf("Reduce con Combiner\n");
 			AtiendeJobReduce_Combiner(&job,bufferR,cantRafaga);
 
 			if(procesarRutinaReduce(job)){ //Proceso la rutina de map.
@@ -1774,10 +1827,10 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 				//No pudo hacerla
 				*mensaje="30";
 			}
-			printf("-----------------------------------------------------------------------------\n");
 			break;
 
 		case REDUCE_SIN_COMBINER:
+			printf("Reduce sin Combiner\n");
 				if(AtiendeJobCombiner(&jobR,bufferR,cantRafaga)){
 					//Pudo hacerla
 					*mensaje = "31";
@@ -1785,7 +1838,6 @@ void implementoJob(int *id,char * buffer,int * cantRafaga,char ** mensaje,int so
 					//No pudo hacerla
 					*mensaje = "30";
 				}
-				printf("-----------------------------------------------------------------------------\n");
 				break;
 		default:
 			break;
@@ -1918,6 +1970,7 @@ int sendall(int s, char *buf, long unsigned *len){
 	long unsigned total = 0; // cuántos bytes hemos enviado
 	long unsigned bytesleft = *len; // cuántos se han quedado pendientes
 	long unsigned n;
+	printf("TAMAÑO:%d\n",strlen(buf));
 	while(total < *len) {
 		n = send(s, buf+total, bytesleft, 0);
 		if (n == -1){
@@ -1925,7 +1978,7 @@ int sendall(int s, char *buf, long unsigned *len){
 		}
 		total += n;
 		bytesleft -= n;
-		//printf("Cantidad Enviada :%lu\n",n);
+		printf("Cantidad Enviada :%lu\n",n);
 	}
 	*len = total; // devuelve aquí la cantidad enviada en realidad
 	return n==-1?-1:0;	// devuelve -1 si hay fallo, 0 en otro caso
@@ -2086,6 +2139,7 @@ int AtiendeCliente(void * arg) {
 	int trabajo;
 	int cantRafaga=1,tamanio=0;
 	char * mensaje=string_new();
+	printf("-----------------------Inicia Hilo-------------------------------------------------\n");
 
 	while ((!desconexionCliente) && g_Ejecutando) {
 		//	buffer = realloc(buffer, 1 * sizeof(char)); //-> de entrada lo instanciamos en 1 byte, el tamaño será dinamico y dependerá del tamaño del mensaje.
@@ -2102,7 +2156,6 @@ int AtiendeCliente(void * arg) {
 		if (bytesRecibidos > 0) {
 			//Analisamos que peticion nos está haciendo (obtenemos el comando)
 			emisor = ObtenerComandoMSJ(buffer);
-
 			//Evaluamos los comandos
 			switch (emisor) {
 			case ES_JOB:
@@ -2111,6 +2164,7 @@ int AtiendeCliente(void * arg) {
 				printf("Se desconecta Proceso Job\n");
 				free(buffer);
 				close(socket);
+				printf("----------------------Finaliza Hilo---------------------------------------------\n");
 				pthread_exit(NULL);
 				return 1;
 				cantRafaga=1;
@@ -2132,6 +2186,7 @@ int AtiendeCliente(void * arg) {
 						printf("Se desconecta Proceso Filesystem\n");
 						free(buffer);
 						close(socket);
+						printf("----------------------Finaliza Hilo---------------------------------------------\n");
 						pthread_exit(NULL);
 						return 1;
 					}
@@ -2145,7 +2200,7 @@ int AtiendeCliente(void * arg) {
 				atiendeNodo(socket,buffer,&cantRafaga,&mensaje,&tamanio);
 
 				printf("Se desconecta Proceso Nodo\n");
-
+				printf("--------------------------------------------------------------------------------\n");
 				cantRafaga=1;
 				//printf(COLOR_VERDE"CERRADO EL SOCKET:%d\n"DEFAULT,socket);
 				//close(socket);

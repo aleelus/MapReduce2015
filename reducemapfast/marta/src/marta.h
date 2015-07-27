@@ -250,7 +250,7 @@ typedef struct {
 	    t_list *listaBloqueArchivo;
 	    int cantTareasPendientes;
 	    int trabajando;
-
+	    int reduceFinal;
 } t_nodo;
 
 static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo) {
@@ -262,7 +262,7 @@ static t_nodo *nodo_create(char *nombreNodo, char *ipNodo, char* puertoNodo) {
 	new->listaBloqueArchivo= list_create();
 	new->cantTareasPendientes=0;
 	new->trabajando=0;
-
+	new->reduceFinal=0;
 	return new;
 }
 

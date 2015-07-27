@@ -236,7 +236,7 @@ int AtiendeMarta(char* buffer,int*cantRafaga,char** bufferE){
 							if(!list_any_satisfy(nodos,_true)){
 								list_add(nodos,la_copia->nombreNodo);
 							}
-							string_append(&*bufferE,"Bloque"); //Le agrego la palabra que le habia sacado de antes
+							//string_append(&*bufferE,"Bloque"); //Le agrego la palabra que le habia sacado de antes
 							string_append(&*bufferE,obtenerSubBuffer(la_copia->nro_bloque));
 						}
 					}
@@ -1480,7 +1480,7 @@ int funcionLoca(char* buffer,t_bloque ** bloque,int j){
 			pthread_join(henviarNodos, NULL );
 
 			char *nombre = string_new();
-			//string_append(&nombre,"Bloque"); //Lo comento para poder liberar los bloques, sino no tengo como saber el numero de bloque
+			string_append(&nombre,"Bloque"); //Lo comento para poder liberar los bloques, sino no tengo como saber el numero de bloque
 			string_append(&nombre,string_itoa(bloqueDisponible));
 
 			la_copia->nombreNodo=nodo->nombre;
@@ -2039,25 +2039,25 @@ void liberarBloquesArchivo(t_archivo * el_archivo){
 
 	t_bloque * el_bloque;
 	t_array_copias * la_copia;
+	char **array;
+
 
 			int j=0;
-			int k=0;
+
 			printf("El archivo:"COLOR_VERDE"%s\n"DEFAULT,el_archivo->nombreArchivo);
 
 		while(j<list_size(el_archivo->listaBloques)){
 			el_bloque = list_get(el_archivo->listaBloques, j);
 
 			while(list_size(el_bloque->listaCopias)!=0){
-			la_copia = list_remove(el_bloque->listaCopias,k);
+			la_copia = list_remove(el_bloque->listaCopias,0);
 			t_nodo* el_nodo = buscarNodoPorNombre(la_copia->nombreNodo);
-			int liberarBloque = CharAToInt(la_copia->nro_bloque);
+			array = string_split(la_copia->nro_bloque,"e");
 			borrar_nodo_mongo(el_nodo);
-			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(liberarBloque));
+			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(atoi(array[1])));
 			crear_nodo_mongo(el_nodo);
             free(la_copia);
-            k++;
-			}
-			k=0;
+            }
 			j++;
 		}
 		archivo_destroy(el_archivo);
@@ -3105,9 +3105,10 @@ int leer_archivo_mongo(){
 		        				 }
 
 		        			 i++;
+		        			 //string_append(&nro_bloqueC,"Bloque");
 		        			 la_copia = array_copias_create(nombreNodoC,nro_bloqueC);
 		        			 list_add(el_bloque->listaCopias,la_copia);
-		        			 printf("CARGO EL ELEMNTO %d que es %s del %s \n",list_size(el_bloque->listaCopias),la_copia->nombreNodo,la_copia->nro_bloque);
+		        			 printf("CARGO EL ELEMENTO %d que es %s del %s \n",list_size(el_bloque->listaCopias),la_copia->nombreNodo,la_copia->nro_bloque);
 		        			 }
 
 
@@ -3258,14 +3259,15 @@ int borrarBloquesArchivo(){
 						if(copiaBorrar> list_size(el_bloque->listaCopias) || copiaBorrar<0){
 							return 0;
 						}
+			borrar_archivo_mongo(el_archivo);
 			la_copia = list_remove(el_bloque->listaCopias,copiaBorrar);
 			t_nodo* el_nodo = buscarNodoPorNombre(la_copia->nombreNodo);
-			int liberarBloque = CharAToInt(la_copia->nro_bloque);
 			borrar_nodo_mongo(el_nodo);
-			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(liberarBloque));
+			char** array = string_split(la_copia->nro_bloque,"e");
+			list_add(el_nodo->bloquesDisponibles,bloque_disponible_create(atoi(array[1])));
 			crear_nodo_mongo(el_nodo);
-
 			free(la_copia);
+			crear_archivo_mongo(el_archivo);
 			return 1;
 	} else {
 		return 0;
